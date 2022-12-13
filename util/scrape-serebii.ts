@@ -1,8 +1,18 @@
-// WHY IS DOING THNIS IN NODEJS SO HELLISH
 import { readFile, writeFile } from 'fs/promises';
+import { basename, join as joinPath } from 'path';
 import { DOMParser } from '@xmldom/xmldom';
 import got from 'got';
 import * as xpath from 'xpath';
+
+interface ParsedIngredient {
+  ingredientImagePath: string;
+  ingredientPagePath: string;
+  ingredientName: string;
+  mealPowerBoosts: Record<string, number>;
+  typeBoosts: Record<string, number>;
+}
+
+const outputPath = 'src/data.json';
 
 const getTableRows = (doc: Document, tableHeading: string) => {
   const nodes1 = xpath.select(`//h2[text()="${tableHeading}"]`, doc);
@@ -62,7 +72,7 @@ const parseBoostsCell = (cell: Node) => {
   return results;
 };
 
-const parseRow = (nodes: Node[]) => {
+const parseRow = (nodes: Node[]): ParsedIngredient => {
   const [imageCell, nameCell, tasteCell, mealPowerCell, typeCell] = nodes;
   return {
     ...parseImageCell(imageCell),
@@ -72,21 +82,51 @@ const parseRow = (nodes: Node[]) => {
   };
 };
 
-const main = async () => {
-  // const res = await got(
-  //   'https://www.serebii.net/scarletviolet/sandwichingredients.shtml',
-  // );
+const makeIngredientData = ({
+  ingredientImagePath,
+  ...ing
+}: ParsedIngredient) => ({
+  ingredientImageBasename: basename(ingredientImagePath),
+  ...ing,
+});
 
-  // await writeFile('out.html', res.body);
-  // const docSource = res.body;
-  const docSource = await readFile('out.html', 'utf8');
+const main = async () => {
+  const res = await got(
+    'https://www.serebii.net/scarletviolet/sandwichingredients.shtml',
+  );
+
+  await writeFile('out.html', res.body);
+  const docSource = res.body;
+  // const docSource = await readFile('out.html', 'utf8');
 
   const doc = new DOMParser({
     errorHandler() {},
   }).parseFromString(docSource);
 
   const rowNodes = getTableRows(doc, 'List of Ingredients');
-  console.table(rowNodes.map(parseRow));
+  const ingredients = rowNodes.map(parseRow);
+  const seasoningRows = getTableRows(doc, 'List of Seasoning');
+  const seasonings = seasoningRows.map(parseRow);
+
+  const outputData = {
+    ingredients: ingredients.map(makeIngredientData),
+    seasonings: seasonings.map(makeIngredientData),
+  };
+
+  await writeFile(outputPath, JSON.stringify(outputData));
+  console.log(`Exported ${outputPath}`);
+
+  for (const { ingredientImagePath } of ingredients.concat(seasonings)) {
+    const res = await got(`https://www.serebii.net${ingredientImagePath}`, {
+      responseType: 'buffer',
+    });
+    const imgOutPath = joinPath(
+      'src/assets/dynamic',
+      basename(ingredientImagePath),
+    );
+    await writeFile(imgOutPath, res.body);
+    console.log(`Exported ${imgOutPath}`);
+  }
 };
 
 main().catch((err) => {
