@@ -6,6 +6,7 @@
     "build": "tsc && vite build",
     "serve": "vite preview --port 3000",
     "lint": "eslint . --ext .ts,.tsx,.js",
+    "scrape": "ts-node util/scrape-serebii.ts",
     "test": "jest"
   },
   "dependencies": {
