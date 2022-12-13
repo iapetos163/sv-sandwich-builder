@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'fs/promises';
 import { basename, join as joinPath } from 'path';
 import { DOMParser } from '@xmldom/xmldom';
+import arg from 'arg';
 import got from 'got';
 import * as xpath from 'xpath';
 
@@ -91,13 +92,25 @@ const makeIngredientData = ({
 });
 
 const main = async () => {
-  const res = await got(
-    'https://www.serebii.net/scarletviolet/sandwichingredients.shtml',
-  );
+  const args = arg({
+    '--cached': Boolean,
+    '--skip-images': Boolean,
 
-  await writeFile('out.html', res.body);
-  const docSource = res.body;
-  // const docSource = await readFile('out.html', 'utf8');
+    '-c': '--cached',
+    '-s': '--skip-images',
+  });
+
+  let docSource: string;
+  if (args['--cached']) {
+    docSource = await readFile('out.html', 'utf8');
+  } else {
+    const res = await got(
+      'https://www.serebii.net/scarletviolet/sandwichingredients.shtml',
+    );
+    docSource = res.body;
+
+    await writeFile('sandwichingredients.html', res.body);
+  }
 
   const doc = new DOMParser({
     errorHandler() {},
@@ -116,6 +129,7 @@ const main = async () => {
   await writeFile(outputPath, JSON.stringify(outputData));
   console.log(`Exported ${outputPath}`);
 
+  if (args['--skip-images']) return;
   for (const { ingredientImagePath } of ingredients.concat(seasonings)) {
     const res = await got(`https://www.serebii.net${ingredientImagePath}`, {
       responseType: 'buffer',
