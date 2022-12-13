@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['birbcore', 'birbcore/react'],
+  extends: ['birbcore/react'],
   env: {
     node: true,
     browser: true,
