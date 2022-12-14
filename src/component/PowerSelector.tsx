@@ -7,7 +7,7 @@ export interface PowerSelectorProps {
   onSetPower: (power: Power) => void;
   allowedTypes: Record<string, true>;
   allowedMealPowers: Record<string, true>;
-  removable: boolean;
+  removable?: boolean;
 }
 
 const PowerSelector = ({
