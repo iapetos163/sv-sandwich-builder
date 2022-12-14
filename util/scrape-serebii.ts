@@ -4,6 +4,7 @@ import { DOMParser } from '@xmldom/xmldom';
 import arg from 'arg';
 import got from 'got';
 import * as xpath from 'xpath';
+import { mealPowers, allTypes } from '../src/powers';
 
 interface ParsedIngredient {
   ingredientImagePath: string;
@@ -11,6 +12,8 @@ interface ParsedIngredient {
   ingredientName: string;
   mealPowerBoosts: Record<string, number>;
   typeBoosts: Record<string, number>;
+  mealPowerVector: number[];
+  typeVector: number[];
 }
 
 const outputPath = 'src/data.json';
@@ -75,11 +78,18 @@ const parseBoostsCell = (cell: Node) => {
 
 const parseRow = (nodes: Node[]): ParsedIngredient => {
   const [imageCell, nameCell, tasteCell, mealPowerCell, typeCell] = nodes;
+  const mealPowerBoosts = parseBoostsCell(mealPowerCell);
+  const typeBoosts = parseBoostsCell(typeCell);
+  const mealPowerVector = mealPowers.map((mp) => mealPowerBoosts[mp] ?? 0);
+  const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
+
   return {
     ...parseImageCell(imageCell),
     ...parseNameCell(nameCell),
-    mealPowerBoosts: parseBoostsCell(mealPowerCell),
-    typeBoosts: parseBoostsCell(typeCell),
+    mealPowerBoosts,
+    typeBoosts,
+    mealPowerVector,
+    typeVector,
   };
 };
 
