@@ -53,7 +53,7 @@ const StyledContainer = styled.div`
   justify-content: center;
 
   > main {
-    width: 800px;
+    width: 600px;
   }
 `;
 

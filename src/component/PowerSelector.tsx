@@ -5,9 +5,16 @@ import { allTypes, mealPowerHasType, mealPowers, Power } from '../powers';
 
 const StyledContainer = styled.div`
   display: flex;
-  /* width: 800px; */
-  > * {
-    margin: 0 10px;
+
+  button {
+    background: none;
+    border: none;
+    outline: inherit;
+    padding: 0;
+  }
+
+  button:not(:disabled):hover {
+    cursor: pointer;
   }
 `;
 
@@ -84,10 +91,10 @@ const PowerSelector = ({
 
   return (
     <StyledContainer>
-      <div style={{ flexShrink: 1, flexBasis: 40 }}>
+      <div style={{ flexShrink: 0, flexBasis: 30 }}>
         {isInvalid && <AlertCircle />}
       </div>
-      <label style={{ flexShrink: 4, flexBasis: 300 }}>
+      <label style={{ flexShrink: 1, flexBasis: 300 }}>
         Meal Power:
         <select value={selectedMealPower} onChange={handleChangeMealPower}>
           <option></option>
@@ -98,7 +105,7 @@ const PowerSelector = ({
           ))}
         </select>
       </label>
-      <div style={{ flexShrink: 4, flexBasis: 300 }}>
+      <div style={{ flexShrink: 1, flexBasis: 300 }}>
         {mealPowerHasType(selectedMealPower) && (
           <label>
             Type:
@@ -113,7 +120,7 @@ const PowerSelector = ({
           </label>
         )}
       </div>
-      <StyledLevelController style={{ flexShrink: 2, flexBasis: 100 }}>
+      <StyledLevelController style={{ flexShrink: 0, flexBasis: 70 }}>
         <button
           type="button"
           onClick={decrementLevel}
@@ -132,7 +139,7 @@ const PowerSelector = ({
         </button>
       </StyledLevelController>
 
-      <div style={{ flexShrink: 1, flexBasis: 40 }}>
+      <div style={{ flexShrink: 0, flexBasis: 30 }}>
         {removable && (
           <button type="button" onClick={onRemove}>
             <X />
