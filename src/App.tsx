@@ -23,12 +23,14 @@ function App(): ReactElement {
             onSetPower={() => {}}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
+            maxLevel={3}
           />
           <PowerSelector
             onRemove={() => {}}
             onSetPower={() => {}}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
+            maxLevel={3}
             removable
           />
           <PowerSelector
@@ -36,6 +38,7 @@ function App(): ReactElement {
             onSetPower={() => {}}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
+            maxLevel={3}
             removable
           />
         </form>
@@ -48,6 +51,10 @@ const StyledContainer = styled.div`
   margin: 20px;
   display: flex;
   justify-content: center;
+
+  > main {
+    width: 800px;
+  }
 `;
 
 export default App;

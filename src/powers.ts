@@ -37,4 +37,9 @@ export const mealPowerHasType = (mealPower: string) => mealPower !== 'Egg';
 export interface Power {
   mealPower: string;
   type: string;
+  level: number;
 }
+
+const maxIngredients = 6;
+
+const maxSeasonings = 4;
