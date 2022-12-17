@@ -1,19 +1,6 @@
-import data from '../data/ingredients.json';
-import { Flavor, MealPower, TypeName } from '../strings';
+import { ingredients, Ingredient } from '../data';
 import { diff, innerProduct, norm } from '../vector-math';
 import { getMealPowerVector, getTypeVector, Power } from './powers';
-export interface Ingredient {
-  name: string;
-  mealPowerBoosts: Record<MealPower, number | undefined>;
-  typeBoosts: Record<TypeName, number | undefined>;
-  flavorBoosts: Record<Flavor, number | undefined>;
-  baseMealPowerVector: number[];
-  tasteMealPowerVector: number[];
-  typeVector: number[];
-  imagePath: string;
-  pieces: number;
-  ingredientType: 'filling' | 'condiment';
-}
 
 export interface Sandwich {
   ingredients: Ingredient[];
@@ -93,7 +80,7 @@ const selectIngredient = ({
     };
   };
 
-  const { best, score } = data.reduce<IngredientAggregation>(
+  const { best: bestIngredient } = ingredients.reduce<IngredientAggregation>(
     ingredientReducer,
     {
       best: {} as Ingredient,
@@ -101,7 +88,7 @@ const selectIngredient = ({
     },
   );
 
-  return best;
+  return bestIngredient;
 };
 
 // TO DO: target more than one power
