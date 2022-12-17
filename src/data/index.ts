@@ -3,9 +3,9 @@ import ingredientsData from './ingredients.json';
 
 export interface Ingredient {
   name: string;
-  mealPowerBoosts: Record<MealPower, number | undefined>;
-  typeBoosts: Record<TypeName, number | undefined>;
-  flavorBoosts: Record<Flavor, number | undefined>;
+  mealPowerBoosts: Partial<Record<MealPower, number>>;
+  typeBoosts: Partial<Record<TypeName, number>>;
+  flavorBoosts: Partial<Record<Flavor, number>>;
   baseMealPowerVector: number[];
   tasteMealPowerVector: number[];
   typeVector: number[];

@@ -106,9 +106,20 @@ const calculateLevels = (types: TypeBoost[]): [number, number, number] => {
   return [1, 1, 1];
 };
 
+export const addBoosts = <T extends string>(
+  baseBoosts: Partial<Record<T, number>>,
+  newBoosts: Partial<Record<T, number>>,
+) => {
+  const result = { ...baseBoosts };
+  for (const key of Object.keys(newBoosts) as T[]) {
+    result[key] = (result[key] || 0) + newBoosts[key]!;
+  }
+  return result;
+};
+
 export const evaluateBoosts = (
-  mealPowerBoosts: Record<MealPower, number>,
-  typeBoosts: Record<TypeName, number>,
+  mealPowerBoosts: Partial<Record<MealPower, number>>,
+  typeBoosts: Partial<Record<TypeName, number>>,
 ) => {
   const rankedMealPowerBoosts = Object.entries(mealPowerBoosts)
     .map(([t, v]) => ({ name: t as MealPower, amount: v }))
@@ -137,3 +148,6 @@ export const evaluateBoosts = (
       }),
     );
 };
+
+export const powersMatch = (a: Power, b: Power) =>
+  a.level === b.level && a.mealPower === b.mealPower && a.type === b.type;

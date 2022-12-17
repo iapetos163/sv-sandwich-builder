@@ -1,10 +1,15 @@
 import { ingredients, Ingredient } from '../data';
+import { Flavor, MealPower, TypeName } from '../strings';
 import { add, diff, innerProduct, norm } from '../vector-math';
 import {
+  addBoosts,
   boostMealPowerVector,
+  evaluateBoosts,
   getMealPowerVector,
   getTypeVector,
+  mealPowerHasType,
   Power,
+  powersMatch,
 } from './powers';
 import {
   makeGetRelativeTasteVector,
@@ -13,10 +18,11 @@ import {
 } from './taste';
 
 export interface Sandwich {
-  ingredients: Ingredient[];
+  fillings: Ingredient[];
   condiments: Ingredient[];
-  mealPowerBoosts: Record<string, number | undefined>;
-  typeBoosts: Record<string, number | undefined>;
+  mealPowerBoosts: Partial<Record<MealPower, number>>;
+  typeBoosts: Partial<Record<TypeName, number>>;
+  flavorBoosts: Partial<Record<Flavor, number>>;
 }
 
 interface SelectIngredientProps {
@@ -36,10 +42,11 @@ type IngredientAggregation = {
 
 const maxFillings = 6;
 const maxCondiments = 4;
-const emptySandwich: Sandwich = {
-  ingredients: [],
+export const emptySandwich: Sandwich = {
+  fillings: [],
   condiments: [],
   mealPowerBoosts: {},
+  flavorBoosts: {},
   typeBoosts: {},
 };
 
@@ -123,17 +130,64 @@ const selectIngredient = ({
 };
 
 // TO DO: target more than one power
-const modifySandwichForPower = (
-  baseSandwich: Sandwich,
-  targetPower: Power,
-): Sandwich | null => {
-  const fillings = [...baseSandwich.ingredients];
-  const condiments = [...baseSandwich.condiments];
+export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
+  // const fillings = [...baseSandwich.ingredients];
+  // const condiments = [...baseSandwich.condiments];
+  const fillings: Ingredient[] = [];
+  const condiments: Ingredient[] = [];
+
+  let currentBaseMealPowerVector: number[] = [];
+  let currentTypeVector: number[] = [];
+  let currentMealPowerBoosts: Partial<Record<MealPower, number>> = {};
+  let currentFlavorBoosts: Partial<Record<Flavor, number>> = {};
+  let currentTypeBoosts: Partial<Record<TypeName, number>> = {};
+
+  const checkType = mealPowerHasType(targetPower.mealPower);
 
   while (fillings.length < maxFillings || condiments.length < maxCondiments) {
-    // TODO
-    break;
+    const newIngredient = selectIngredient({
+      targetPower,
+      currentBaseMealPowerVector,
+      currentTypeVector,
+      checkType,
+      allowFillings: fillings.length < maxFillings,
+      allowCondiments: condiments.length < maxCondiments,
+      flavorBoosts: currentFlavorBoosts,
+    });
+
+    currentBaseMealPowerVector = add(
+      currentBaseMealPowerVector,
+      newIngredient.baseMealPowerVector,
+    );
+    currentTypeVector = add(
+      currentBaseMealPowerVector,
+      newIngredient.typeVector,
+    );
+    currentMealPowerBoosts = addBoosts(
+      currentMealPowerBoosts,
+      newIngredient.mealPowerBoosts,
+    );
+    currentFlavorBoosts = addBoosts(
+      currentFlavorBoosts,
+      newIngredient.flavorBoosts,
+    );
+    currentTypeBoosts = addBoosts(currentTypeBoosts, newIngredient.typeBoosts);
+
+    const currentPowers = evaluateBoosts(
+      currentMealPowerBoosts,
+      currentTypeBoosts,
+    );
+    if (currentPowers.some((p) => powersMatch(p, targetPower))) {
+      return {
+        fillings,
+        condiments,
+        typeBoosts: currentTypeBoosts,
+        flavorBoosts: currentFlavorBoosts,
+        mealPowerBoosts: currentMealPowerBoosts,
+      };
+    }
   }
+
   return null;
 };
 
