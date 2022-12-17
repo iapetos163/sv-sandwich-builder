@@ -1,3 +1,23 @@
+export interface Power {
+  mealPower: string;
+  type: string;
+  level: number;
+}
+
+export type MealPower =
+  | 'Egg'
+  | 'Catch'
+  | 'Item'
+  | 'Humungo'
+  | 'Teensy'
+  | 'Raid'
+  | 'Encounter'
+  | 'Exp'
+  | 'Title'
+  | 'Sparkling';
+
+export type Flavor = 'Sweet' | 'Sour' | 'Salty' | 'Bitter' | 'Hot';
+
 export const allTypes = [
   'Normal',
   'Fighting',
@@ -19,26 +39,20 @@ export const allTypes = [
   'Fairy',
 ];
 
-export const mealPowers = [
+export const mealPowers: MealPower[] = [
   'Egg',
-  'Catching',
-  'Encounter',
-  'Exp.',
-  'Item Drop',
+  'Catch',
+  'Exp',
+  'Item',
   'Raid',
+  'Sparkling',
+  'Title',
   'Humungo',
   'Teensy',
-  'Title',
-  'Sparkling',
+  'Encounter',
 ];
 
 export const mealPowerHasType = (mealPower: string) => mealPower !== 'Egg';
-
-export interface Power {
-  mealPower: string;
-  type: string;
-  level: number;
-}
 
 export const getMealPowerVector = (
   { mealPower, level }: Power,
@@ -53,3 +67,104 @@ export const getMealPowerVector = (
 
 export const getTypeVector = (power: Power, matchNorm: number) =>
   allTypes.map((t) => (t === power.type ? matchNorm : 0));
+
+interface TypeBoost {
+  name: string;
+  amount: number;
+}
+
+// Assumes 3+ star sandwich
+const calculateTypes = (
+  rankedTypes: TypeBoost[],
+): [TypeBoost, TypeBoost, TypeBoost] => {
+  const [firstType, secondType, thirdType] = rankedTypes;
+  const { amount: mainTypeAmount } = firstType || { amount: 0 };
+  const { amount: secondTypeAmount } = secondType || { amount: 0 };
+  const oneTwoDiff = mainTypeAmount - secondTypeAmount;
+
+  if (mainTypeAmount > 480) {
+    // mono type
+    return [firstType, firstType, firstType];
+  }
+  if (mainTypeAmount > 280 || (mainTypeAmount > 105 && oneTwoDiff > 105)) {
+    // dual type
+    return [firstType, firstType, thirdType];
+  }
+
+  if (mainTypeAmount <= 105) {
+    if (mainTypeAmount >= 100) {
+      if (oneTwoDiff >= 80 && secondTypeAmount <= 21) {
+        return [firstType, thirdType, firstType];
+      }
+    } else if (mainTypeAmount >= 90) {
+      if (oneTwoDiff >= 78 && secondTypeAmount <= 16) {
+        return [firstType, thirdType, firstType];
+      }
+    } else if (mainTypeAmount >= 80) {
+      if (oneTwoDiff >= 74 && secondTypeAmount <= 9) {
+        return [firstType, thirdType, firstType];
+      }
+    } else if (mainTypeAmount >= 74) {
+      if (oneTwoDiff >= 72 && secondTypeAmount <= 5) {
+        return [firstType, thirdType, firstType];
+      }
+    }
+  }
+
+  return [firstType, thirdType, secondType];
+};
+
+// returns array of levels
+const calculateLevels = (types: TypeBoost[]): [number, number, number] => {
+  const [
+    { amount: firstTypeAmount } = { amount: 0 },
+    { amount: secondTypeAmount } = { amount: 0 },
+    { amount: thirdTypeAmount } = { amount: 0 },
+  ] = types;
+
+  if (firstTypeAmount >= 460) {
+    return [3, 3, 3];
+  }
+
+  if (firstTypeAmount >= 380) {
+    if (secondTypeAmount >= 380 && thirdTypeAmount >= 380) {
+      return [3, 3, 3];
+    }
+    return [3, 3, 2];
+  }
+
+  if (firstTypeAmount > 280) {
+    if (thirdTypeAmount >= 180) {
+      return [2, 2, 2];
+    }
+    return [2, 2, 1];
+  }
+
+  if (firstTypeAmount >= 180) {
+    if (secondTypeAmount >= 180 && thirdTypeAmount >= 180) {
+      return [2, 2, 1];
+    }
+    return [2, 1, 1];
+  }
+
+  return [1, 1, 1];
+};
+
+export const evaluateBoosts = (
+  mealPowerBoosts: Record<string, number>,
+  flavorBoosts: Record<Flavor, number>,
+  typeBoosts: Record<string, number>,
+): Power[] => {
+  const rankedTypeBoosts = Object.entries(typeBoosts)
+    .map(([t, v]) => ({ name: t, amount: v }))
+    .sort((a, b) => a.amount - b.amount);
+
+  // TODO add taste to meal powers
+
+  const assignedTypes = calculateTypes(rankedTypeBoosts);
+
+  // according to sandwich simulator, this is pre-reordering types
+  const assignedLevels = calculateLevels(rankedTypeBoosts);
+
+  return [];
+};

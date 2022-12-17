@@ -10,7 +10,14 @@ export interface Ingredient {
   typeBoosts: Record<string, number | undefined>;
   mealPowerVector: number[];
   typeVector: number[];
-  ingredientType: 'ingredient' | 'seasoning';
+  ingredientType: 'filling' | 'condiment';
+}
+
+export interface Sandwich {
+  ingredients: Ingredient[];
+  condiments: Ingredient[];
+  mealPowerBoosts: Record<string, number>;
+  typeBoosts: Record<string, number>;
 }
 
 interface SelectIngredientProps {
@@ -19,12 +26,21 @@ interface SelectIngredientProps {
   baseTypeVector: number[];
   checkType: boolean;
   allowIngredients: boolean;
-  allowSeasoning: boolean;
+  allowcondiments: boolean;
 }
 
 type IngredientAggregation = {
   best: Ingredient;
   score: number;
+};
+
+const maxIngredients = 6;
+const maxcondiments = 4;
+const emptySandwich: Sandwich = {
+  ingredients: [],
+  condiments: [],
+  mealPowerBoosts: {},
+  typeBoosts: {},
 };
 
 const selectIngredient = ({
@@ -33,7 +49,7 @@ const selectIngredient = ({
   baseTypeVector,
   checkType,
   allowIngredients,
-  allowSeasoning,
+  allowcondiments,
 }: SelectIngredientProps) => {
   const mealPowerVector = getMealPowerVector(
     targetPower,
@@ -47,7 +63,7 @@ const selectIngredient = ({
   const targetTypeVector = diff(typeVector, baseTypeVector);
 
   const makeIngredientReducer =
-    (ingredientType: 'ingredient' | 'seasoning') =>
+    (ingredientType: 'filling' | 'condiment') =>
     (
       agg: IngredientAggregation,
       ing: Omit<Ingredient, 'ingredientType'>,
@@ -74,25 +90,39 @@ const selectIngredient = ({
 
   if (allowIngredients) {
     ({ best, score } = data.ingredients.reduce(
-      makeIngredientReducer('ingredient'),
+      makeIngredientReducer('filling'),
       { best, score },
     ));
   }
 
-  if (allowSeasoning) {
-    const { best: bestSeasoning, score: seasoningScore } =
-      data.ingredients.reduce(makeIngredientReducer('seasoning'), {
+  if (allowcondiments) {
+    const { best: bestcondiments, score: condimentsScore } =
+      data.ingredients.reduce(makeIngredientReducer('condiment'), {
         best,
         score,
       });
-    if (seasoningScore > score) {
-      best = bestSeasoning;
+    if (condimentsScore > score) {
+      best = bestcondiments;
     }
   }
 
   return best;
 };
 
-const maxIngredients = 6;
+// TO DO: target more than one power
+const modifySandwichForPower = (
+  baseSandwich: Sandwich,
+  targetPower: Power,
+): Sandwich | null => {
+  const fillings = [...baseSandwich.ingredients];
+  const condiments = [...baseSandwich.condiments];
 
-const maxSeasonings = 4;
+  while (
+    fillings.length < maxIngredients ||
+    condiments.length < maxcondiments
+  ) {}
+};
+
+// Learning: there can be no more than 12 of a single ingredient, or 15 in multiplayer
+// Learning: Num pieces for an ingredient each count separately
+// Learning: order is very important for types and powers
