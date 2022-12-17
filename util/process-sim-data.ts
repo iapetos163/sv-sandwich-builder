@@ -4,6 +4,7 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
+import { tasteVectors } from '../src/mechanics';
 import {
   Flavor,
   mealPowers,
@@ -28,35 +29,6 @@ type IngredientEntry = {
   imageUrl: string;
   pieces: number;
   ingredientType: 'filling' | 'condiment';
-};
-
-const flavorVectors: Record<Flavor, number[]> = {
-  Sweet: mealPowers.map((mp) => {
-    if (mp === 'Egg') return 1;
-    if (mp === 'Catch') return Math.SQRT1_2;
-    if (mp === 'Raid') return Math.SQRT1_2;
-    return 0;
-  }),
-  Hot: mealPowers.map((mp) => {
-    if (mp === 'Humungo') return 1;
-    if (mp === 'Raid') return Math.SQRT1_2;
-    return 0;
-  }),
-  Bitter: mealPowers.map((mp) => {
-    if (mp === 'Item') return 1;
-    if (mp === 'Exp') return Math.SQRT1_2;
-    return 0;
-  }),
-  Sour: mealPowers.map((mp) => {
-    if (mp === 'Teensy') return 1;
-    if (mp === 'Catch') return Math.SQRT1_2;
-    return 0;
-  }),
-  Salty: mealPowers.map((mp) => {
-    if (mp === 'Encounter') return 1;
-    if (mp === 'Exp') return Math.SQRT1_2;
-    return 0;
-  }),
 };
 
 const getFlavorBoosts = (tastes: { flavor: string; amount: number }[]) =>
@@ -106,8 +78,7 @@ const main = async () => {
         (mp) => mealPowerBoosts[mp] ?? 0,
       );
       const tasteMealPowerVector = tastes.reduce<number[]>(
-        (sum, c) =>
-          add(sum, scale(flavorVectors[c.flavor as Flavor], c.amount)),
+        (sum, c) => add(sum, scale(tasteVectors[c.flavor as Flavor], c.amount)),
         [],
       );
       const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
@@ -139,7 +110,7 @@ const main = async () => {
       );
       const tasteMealPowerVector = tastes.reduce<number[]>(
         (sum, f) =>
-          add(sum, scale(flavorVectors[f.flavor as Flavor], f.amount * pieces)),
+          add(sum, scale(tasteVectors[f.flavor as Flavor], f.amount * pieces)),
         [],
       );
       const typeVector = allTypes.map((t) =>

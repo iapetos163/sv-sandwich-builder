@@ -1,5 +1,5 @@
-import { Flavor, flavors, MealPower, mealPowers } from './strings';
-import { scale } from './vector-math';
+import { Flavor, flavors, MealPower, mealPowers } from '../strings';
+import { scale } from '../vector-math';
 
 interface FlavorBoost {
   name: Flavor;

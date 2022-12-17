@@ -1,4 +1,4 @@
-import { allTypes, MealPower, mealPowers, TypeName } from './strings';
+import { allTypes, MealPower, mealPowers, TypeName } from '../strings';
 
 export interface Power {
   mealPower: MealPower;

@@ -1,7 +1,8 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, AlertCircle } from 'react-feather';
 import styled from 'styled-components';
-import { allTypes, mealPowerHasType, mealPowers, Power } from '../powers';
+import { mealPowerHasType, Power } from '../mechanics';
+import { allTypes, MealPower, mealPowers, TypeName } from '../strings';
 
 const StyledContainer = styled.div`
   display: flex;
@@ -43,8 +44,10 @@ const PowerSelector = ({
   allowedMealPowers,
   maxLevel,
 }: PowerSelectorProps) => {
-  const [selectedMealPower, setSelectedMealPower] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedMealPower, setSelectedMealPower] = useState<MealPower | ''>(
+    '',
+  );
+  const [selectedType, setSelectedType] = useState<TypeName | ''>('');
   const [selectedLevel, setSelectedLevel] = useState(1);
 
   useEffect(() => {
@@ -52,11 +55,11 @@ const PowerSelector = ({
   }, [maxLevel]);
 
   const handleChangeMealPower = (evt: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMealPower(evt.target.value);
+    setSelectedMealPower(evt.target.value as MealPower | '');
   };
 
   const handleChangeType = (evt: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedType(evt.target.value);
+    setSelectedType(evt.target.value as TypeName | '');
   };
 
   const decrementLevel = () => {
@@ -84,7 +87,7 @@ const PowerSelector = ({
     }
     onSetPower({
       mealPower: selectedMealPower,
-      type: selectedType,
+      type: selectedType as TypeName,
       level: selectedLevel,
     });
   }, [selectedMealPower, selectedType, onSetPower, selectedLevel, maxLevel]);
@@ -106,19 +109,20 @@ const PowerSelector = ({
         </select>
       </label>
       <div style={{ flexShrink: 1, flexBasis: 300 }}>
-        {mealPowerHasType(selectedMealPower) && (
-          <label>
-            Type:
-            <select value={selectedType} onChange={handleChangeType}>
-              <option></option>
-              {allTypes.map((t) => (
-                <option key={t} disabled={!allowedTypes[t]}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
+        {!selectedMealPower ||
+          (mealPowerHasType(selectedMealPower) && (
+            <label>
+              Type:
+              <select value={selectedType} onChange={handleChangeType}>
+                <option></option>
+                {allTypes.map((t) => (
+                  <option key={t} disabled={!allowedTypes[t]}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
       </div>
       <StyledLevelController style={{ flexShrink: 0, flexBasis: 70 }}>
         <button

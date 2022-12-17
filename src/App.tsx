@@ -1,7 +1,7 @@
 import { ReactElement, useState } from 'react';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerSelector';
-import { allTypes, mealPowers } from './powers';
+import { allTypes, mealPowers } from './strings';
 
 const allowedMealPowers = mealPowers.reduce<Record<string, true>>(
   (allowed, p) => ({ [p]: true, ...allowed }),

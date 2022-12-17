@@ -1,7 +1,7 @@
-import data from './data/ingredients.json';
+import data from '../data/ingredients.json';
+import { Flavor, MealPower, TypeName } from '../strings';
+import { diff, innerProduct, norm } from '../vector-math';
 import { getMealPowerVector, getTypeVector, Power } from './powers';
-import { Flavor, MealPower, TypeName } from './strings';
-import { diff, innerProduct, norm } from './vector-math';
 export interface Ingredient {
   name: string;
   mealPowerBoosts: Record<MealPower, number | undefined>;
@@ -74,6 +74,7 @@ const selectIngredient = ({
     ) {
       return agg;
     }
+
     const mealPowerProduct = innerProduct(
       ing.baseMealPowerVector,
       targetMealPowerVector,
