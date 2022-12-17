@@ -5,6 +5,10 @@ export interface Power {
   type: TypeName;
   level: number;
 }
+interface TypeBoost {
+  name: TypeName;
+  amount: number;
+}
 
 export const mealPowerHasType = (mealPower: MealPower) => mealPower !== 'Egg';
 
@@ -22,10 +26,8 @@ export const getMealPowerVector = (
 export const getTypeVector = (power: Power, matchNorm: number) =>
   allTypes.map((t) => (t === power.type ? matchNorm : 0));
 
-interface TypeBoost {
-  name: TypeName;
-  amount: number;
-}
+export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>
+  mealPowers.map((mp, i) => (mp === boostedPower ? (v[i] || 0) + 100 : v[i]));
 
 // Assumes 3+ star sandwich
 const calculateTypes = (

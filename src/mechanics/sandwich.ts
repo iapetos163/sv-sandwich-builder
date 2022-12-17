@@ -1,21 +1,32 @@
 import { ingredients, Ingredient } from '../data';
-import { diff, innerProduct, norm } from '../vector-math';
-import { getMealPowerVector, getTypeVector, Power } from './powers';
+import { add, diff, innerProduct, norm } from '../vector-math';
+import {
+  boostMealPowerVector,
+  getMealPowerVector,
+  getTypeVector,
+  Power,
+} from './powers';
+import {
+  makeGetRelativeTasteVector,
+  getBoostedMealPower,
+  rankFlavorBoosts,
+} from './taste';
 
 export interface Sandwich {
   ingredients: Ingredient[];
   condiments: Ingredient[];
-  mealPowerBoosts: Record<string, number>;
-  typeBoosts: Record<string, number>;
+  mealPowerBoosts: Record<string, number | undefined>;
+  typeBoosts: Record<string, number | undefined>;
 }
 
 interface SelectIngredientProps {
   targetPower: Power;
-  baseMealPowerVector: number[];
-  baseTypeVector: number[];
+  currentBaseMealPowerVector: number[];
+  currentTypeVector: number[];
   checkType: boolean;
   allowFillings: boolean;
   allowCondiments: boolean;
+  flavorBoosts: Record<string, number>;
 }
 
 type IngredientAggregation = {
@@ -34,22 +45,39 @@ const emptySandwich: Sandwich = {
 
 const selectIngredient = ({
   targetPower,
-  baseMealPowerVector,
-  baseTypeVector,
+  currentBaseMealPowerVector,
+  currentTypeVector,
+  flavorBoosts,
   checkType,
   allowFillings,
   allowCondiments,
 }: SelectIngredientProps) => {
-  const mealPowerVector = getMealPowerVector(
+  const targetMealPowerVector = getMealPowerVector(
     targetPower,
-    norm(baseMealPowerVector),
+    norm(currentBaseMealPowerVector),
   );
-  const typeVector = checkType
-    ? getTypeVector(targetPower, norm(baseMealPowerVector))
-    : [];
+  const targetTypeVector = checkType
+    ? getTypeVector(targetPower, norm(currentBaseMealPowerVector))
+    : currentTypeVector;
 
-  const targetMealPowerVector = diff(mealPowerVector, baseMealPowerVector);
-  const targetTypeVector = diff(typeVector, baseTypeVector);
+  const rankedFlavorBoosts = rankFlavorBoosts(flavorBoosts);
+  const boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
+  const currentBoostedMealPowerVector = boostedMealPower
+    ? boostMealPowerVector(currentBaseMealPowerVector, boostedMealPower)
+    : currentBaseMealPowerVector;
+
+  const deltaMealPowerVector = diff(
+    targetMealPowerVector,
+    currentBoostedMealPowerVector,
+  );
+  const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
+
+  const getRelativeTasteVector = makeGetRelativeTasteVector(
+    flavorBoosts,
+    rankedFlavorBoosts,
+    boostedMealPower,
+    targetPower.mealPower,
+  );
 
   const ingredientReducer = (
     agg: IngredientAggregation,
@@ -62,13 +90,16 @@ const selectIngredient = ({
       return agg;
     }
 
-    const mealPowerProduct = innerProduct(
-      ing.baseMealPowerVector,
-      targetMealPowerVector,
+    const relativeTasteVector = getRelativeTasteVector(
+      ing.tasteMealPowerVector,
     );
-    // TODO; taste
+    const mealPowerProduct = innerProduct(
+      add(ing.baseMealPowerVector, relativeTasteVector),
+      deltaMealPowerVector,
+    );
+
     const typeProduct = checkType
-      ? innerProduct(ing.typeVector, targetTypeVector)
+      ? innerProduct(ing.typeVector, deltaTypeVector)
       : 0;
     const ingScore = mealPowerProduct + typeProduct;
     if (ingScore <= agg.score) {

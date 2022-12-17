@@ -123,10 +123,10 @@ export const rankFlavorBoosts = (
 
 export const makeGetRelativeTasteVector = (
   flavorBoosts: Record<Flavor, number | undefined>,
+  rankedFlavorBoosts: FlavorBoost[],
+  boostedPower: MealPower | null,
   targetPower: MealPower,
 ) => {
-  const rankedFlavorBoosts = rankFlavorBoosts(flavorBoosts);
-  const boostedPower = getBoostedMealPower(rankedFlavorBoosts);
   const targetIndex = mealPowers.indexOf(targetPower);
   if (!boostedPower) {
     return (tasteVector: number[]) => {
