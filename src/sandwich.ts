@@ -1,15 +1,17 @@
-import data from './data.json';
+import data from './data/ingredients.json';
 import { getMealPowerVector, getTypeVector, Power } from './powers';
+import { Flavor, MealPower, TypeName } from './strings';
 import { diff, innerProduct, norm } from './vector-math';
-
 export interface Ingredient {
-  ingredientImageBasename: string;
-  ingredientPagePath: string;
-  ingredientName: string;
-  mealPowerBoosts: Record<string, number | undefined>;
-  typeBoosts: Record<string, number | undefined>;
-  mealPowerVector: number[];
+  name: string;
+  mealPowerBoosts: Record<MealPower, number | undefined>;
+  typeBoosts: Record<TypeName, number | undefined>;
+  flavorBoosts: Record<Flavor, number | undefined>;
+  baseMealPowerVector: number[];
+  tasteMealPowerVector: number[];
   typeVector: number[];
+  imagePath: string;
+  pieces: number;
   ingredientType: 'filling' | 'condiment';
 }
 
@@ -25,8 +27,8 @@ interface SelectIngredientProps {
   baseMealPowerVector: number[];
   baseTypeVector: number[];
   checkType: boolean;
-  allowIngredients: boolean;
-  allowcondiments: boolean;
+  allowFillings: boolean;
+  allowCondiments: boolean;
 }
 
 type IngredientAggregation = {
@@ -34,8 +36,8 @@ type IngredientAggregation = {
   score: number;
 };
 
-const maxIngredients = 6;
-const maxcondiments = 4;
+const maxFillings = 6;
+const maxCondiments = 4;
 const emptySandwich: Sandwich = {
   ingredients: [],
   condiments: [],
@@ -48,8 +50,8 @@ const selectIngredient = ({
   baseMealPowerVector,
   baseTypeVector,
   checkType,
-  allowIngredients,
-  allowcondiments,
+  allowFillings,
+  allowCondiments,
 }: SelectIngredientProps) => {
   const mealPowerVector = getMealPowerVector(
     targetPower,
@@ -62,49 +64,41 @@ const selectIngredient = ({
   const targetMealPowerVector = diff(mealPowerVector, baseMealPowerVector);
   const targetTypeVector = diff(typeVector, baseTypeVector);
 
-  const makeIngredientReducer =
-    (ingredientType: 'filling' | 'condiment') =>
-    (
-      agg: IngredientAggregation,
-      ing: Omit<Ingredient, 'ingredientType'>,
-    ): IngredientAggregation => {
-      const mealPowerProduct = innerProduct(
-        ing.mealPowerVector,
-        targetMealPowerVector,
-      );
-      const typeProduct = checkType
-        ? innerProduct(ing.typeVector, targetTypeVector)
-        : 0;
-      const ingScore = mealPowerProduct + typeProduct;
-      if (ingScore <= agg.score) {
-        return agg;
-      }
-      return {
-        best: { ingredientType, ...ing },
-        score: ingScore,
-      };
-    };
-
-  let best = {} as Ingredient;
-  let score = -Infinity;
-
-  if (allowIngredients) {
-    ({ best, score } = data.ingredients.reduce(
-      makeIngredientReducer('filling'),
-      { best, score },
-    ));
-  }
-
-  if (allowcondiments) {
-    const { best: bestcondiments, score: condimentsScore } =
-      data.ingredients.reduce(makeIngredientReducer('condiment'), {
-        best,
-        score,
-      });
-    if (condimentsScore > score) {
-      best = bestcondiments;
+  const ingredientReducer = (
+    agg: IngredientAggregation,
+    ing: Ingredient,
+  ): IngredientAggregation => {
+    if (
+      (!allowFillings && ing.ingredientType === 'filling') ||
+      (!allowCondiments && ing.ingredientType === 'condiment')
+    ) {
+      return agg;
     }
-  }
+    const mealPowerProduct = innerProduct(
+      ing.baseMealPowerVector,
+      targetMealPowerVector,
+    );
+    // TODO; taste
+    const typeProduct = checkType
+      ? innerProduct(ing.typeVector, targetTypeVector)
+      : 0;
+    const ingScore = mealPowerProduct + typeProduct;
+    if (ingScore <= agg.score) {
+      return agg;
+    }
+    return {
+      best: ing,
+      score: ingScore,
+    };
+  };
+
+  const { best, score } = data.reduce<IngredientAggregation>(
+    ingredientReducer,
+    {
+      best: {} as Ingredient,
+      score: -Infinity,
+    },
+  );
 
   return best;
 };
@@ -117,10 +111,11 @@ const modifySandwichForPower = (
   const fillings = [...baseSandwich.ingredients];
   const condiments = [...baseSandwich.condiments];
 
-  while (
-    fillings.length < maxIngredients ||
-    condiments.length < maxcondiments
-  ) {}
+  while (fillings.length < maxFillings || condiments.length < maxCondiments) {
+    // TODO
+    break;
+  }
+  return null;
 };
 
 // Learning: there can be no more than 12 of a single ingredient, or 15 in multiplayer

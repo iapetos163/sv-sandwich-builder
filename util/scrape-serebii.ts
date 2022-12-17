@@ -1,3 +1,4 @@
+/* DEPRECATED */
 import { readFile, writeFile } from 'fs/promises';
 import { basename, join as joinPath } from 'path';
 import { DOMParser } from '@xmldom/xmldom';

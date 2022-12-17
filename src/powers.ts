@@ -1,58 +1,12 @@
+import { allTypes, MealPower, mealPowers, TypeName } from './strings';
+
 export interface Power {
-  mealPower: string;
-  type: string;
+  mealPower: MealPower;
+  type: TypeName;
   level: number;
 }
 
-export type MealPower =
-  | 'Egg'
-  | 'Catch'
-  | 'Item'
-  | 'Humungo'
-  | 'Teensy'
-  | 'Raid'
-  | 'Encounter'
-  | 'Exp'
-  | 'Title'
-  | 'Sparkling';
-
-export type Flavor = 'Sweet' | 'Sour' | 'Salty' | 'Bitter' | 'Hot';
-
-export const allTypes = [
-  'Normal',
-  'Fighting',
-  'Flying',
-  'Poison',
-  'Ground',
-  'Rock',
-  'Bug',
-  'Ghost',
-  'Steel',
-  'Fire',
-  'Water',
-  'Grass',
-  'Electric',
-  'Psychic',
-  'Ice',
-  'Dragon',
-  'Dark',
-  'Fairy',
-];
-
-export const mealPowers: MealPower[] = [
-  'Egg',
-  'Catch',
-  'Exp',
-  'Item',
-  'Raid',
-  'Sparkling',
-  'Title',
-  'Humungo',
-  'Teensy',
-  'Encounter',
-];
-
-export const mealPowerHasType = (mealPower: string) => mealPower !== 'Egg';
+export const mealPowerHasType = (mealPower: MealPower) => mealPower !== 'Egg';
 
 export const getMealPowerVector = (
   { mealPower, level }: Power,
@@ -69,7 +23,7 @@ export const getTypeVector = (power: Power, matchNorm: number) =>
   allTypes.map((t) => (t === power.type ? matchNorm : 0));
 
 interface TypeBoost {
-  name: string;
+  name: TypeName;
   amount: number;
 }
 
@@ -151,20 +105,33 @@ const calculateLevels = (types: TypeBoost[]): [number, number, number] => {
 };
 
 export const evaluateBoosts = (
-  mealPowerBoosts: Record<string, number>,
-  flavorBoosts: Record<Flavor, number>,
-  typeBoosts: Record<string, number>,
-): Power[] => {
-  const rankedTypeBoosts = Object.entries(typeBoosts)
-    .map(([t, v]) => ({ name: t, amount: v }))
+  mealPowerBoosts: Record<MealPower, number>,
+  typeBoosts: Record<TypeName, number>,
+) => {
+  const rankedMealPowerBoosts = Object.entries(mealPowerBoosts)
+    .map(([t, v]) => ({ name: t as MealPower, amount: v }))
     .sort((a, b) => a.amount - b.amount);
 
-  // TODO add taste to meal powers
+  const rankedTypeBoosts = Object.entries(typeBoosts)
+    .map(([t, v]) => ({ name: t as TypeName, amount: v }))
+    .sort((a, b) => a.amount - b.amount);
 
   const assignedTypes = calculateTypes(rankedTypeBoosts);
 
   // according to sandwich simulator, this is pre-reordering types
   const assignedLevels = calculateLevels(rankedTypeBoosts);
 
-  return [];
+  return rankedMealPowerBoosts
+    .slice(0, 3)
+    .filter(
+      (mpBoost, i) =>
+        mpBoost.amount > 0 && assignedTypes[i] && assignedTypes[i].amount > 0,
+    )
+    .map(
+      (mpBoost, i): Power => ({
+        mealPower: mpBoost.name,
+        type: assignedTypes[i].name,
+        level: assignedLevels[i],
+      }),
+    );
 };
