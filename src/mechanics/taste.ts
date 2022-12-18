@@ -111,7 +111,7 @@ export const getBoostedMealPower = (rankedFlavorBoosts: FlavorBoost[]) => {
 };
 
 export const rankFlavorBoosts = (
-  flavorBoosts: Record<Flavor, number | undefined>,
+  flavorBoosts: Partial<Record<Flavor, number>>,
 ) =>
   Object.entries(flavorBoosts)
     .sort(
@@ -122,7 +122,7 @@ export const rankFlavorBoosts = (
     .map(([f, v]) => ({ name: f as Flavor, amount: v || 0 }));
 
 export const makeGetRelativeTasteVector = (
-  flavorBoosts: Record<Flavor, number | undefined>,
+  flavorBoosts: Partial<Record<Flavor, number>>,
   rankedFlavorBoosts: FlavorBoost[],
   boostedPower: MealPower | null,
   targetPower: MealPower,

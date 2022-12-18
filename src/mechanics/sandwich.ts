@@ -27,12 +27,12 @@ export interface Sandwich {
 
 interface SelectIngredientProps {
   targetPower: Power;
-  currentBaseMealPowerVector: number[];
+  currentBoostedMealPowerVector: number[];
   currentTypeVector: number[];
   checkType: boolean;
   allowFillings: boolean;
   allowCondiments: boolean;
-  flavorBoosts: Record<string, number>;
+  getRelativeTasteVector(base: number[]): number[];
 }
 
 type IngredientAggregation = {
@@ -52,39 +52,26 @@ export const emptySandwich: Sandwich = {
 
 const selectIngredient = ({
   targetPower,
-  currentBaseMealPowerVector,
+  currentBoostedMealPowerVector,
+  getRelativeTasteVector,
   currentTypeVector,
-  flavorBoosts,
   checkType,
   allowFillings,
   allowCondiments,
 }: SelectIngredientProps) => {
   const targetMealPowerVector = getMealPowerVector(
     targetPower,
-    norm(currentBaseMealPowerVector),
+    norm(currentBoostedMealPowerVector),
   );
   const targetTypeVector = checkType
-    ? getTypeVector(targetPower, norm(currentBaseMealPowerVector))
+    ? getTypeVector(targetPower, norm(currentTypeVector))
     : currentTypeVector;
-
-  const rankedFlavorBoosts = rankFlavorBoosts(flavorBoosts);
-  const boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
-  const currentBoostedMealPowerVector = boostedMealPower
-    ? boostMealPowerVector(currentBaseMealPowerVector, boostedMealPower)
-    : currentBaseMealPowerVector;
 
   const deltaMealPowerVector = diff(
     targetMealPowerVector,
     currentBoostedMealPowerVector,
   );
   const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
-
-  const getRelativeTasteVector = makeGetRelativeTasteVector(
-    flavorBoosts,
-    rankedFlavorBoosts,
-    boostedMealPower,
-    targetPower.mealPower,
-  );
 
   const ingredientReducer = (
     agg: IngredientAggregation,
@@ -145,14 +132,25 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   const checkType = mealPowerHasType(targetPower.mealPower);
 
   while (fillings.length < maxFillings || condiments.length < maxCondiments) {
+    const rankedFlavorBoosts = rankFlavorBoosts(currentFlavorBoosts);
+    const boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
+    const currentBoostedMealPowerVector = boostedMealPower
+      ? boostMealPowerVector(currentBaseMealPowerVector, boostedMealPower)
+      : currentBaseMealPowerVector;
+
     const newIngredient = selectIngredient({
       targetPower,
-      currentBaseMealPowerVector,
+      currentBoostedMealPowerVector,
       currentTypeVector,
       checkType,
       allowFillings: fillings.length < maxFillings,
       allowCondiments: condiments.length < maxCondiments,
-      flavorBoosts: currentFlavorBoosts,
+      getRelativeTasteVector: makeGetRelativeTasteVector(
+        currentFlavorBoosts,
+        rankedFlavorBoosts,
+        boostedMealPower,
+        targetPower.mealPower,
+      ),
     });
 
     currentBaseMealPowerVector = add(
@@ -175,6 +173,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     const currentPowers = evaluateBoosts(
       currentMealPowerBoosts,
+      boostedMealPower,
       currentTypeBoosts,
     );
     if (currentPowers.some((p) => powersMatch(p, targetPower))) {
@@ -192,5 +191,3 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 };
 
 // Learning: there can be no more than 12 of a single ingredient, or 15 in multiplayer
-// Learning: Num pieces for an ingredient each count separately
-// Learning: order is very important for types and powers
