@@ -26,7 +26,7 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: test
+      - name: Test
         run: pnpm run test --ci --reporters=jest-junit
 
       - name: Test Report
@@ -34,4 +34,5 @@ jobs:
         if: success() || failure() # run this step even if previous step failed
         with:
           reporter: jest-junit # Format of test results
-          name: junit.xml
+          path: junit.xml
+          name: Unit Tests # Name of the check run which will be created
