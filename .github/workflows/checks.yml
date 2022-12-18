@@ -1,0 +1,28 @@
+on:
+  pull_request: 'main'
+  push: 'main'
+jobs:
+  checks:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ^7
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - uses: actions/checkout@v3 # checkout the repo
+      - name: Build
+        run: pnpm run build
+      - name: test
+        run: pnpm run test --ci --reporters=jest-junit
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          reporter: jest-junit # Format of test results

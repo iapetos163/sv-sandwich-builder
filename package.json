@@ -27,6 +27,7 @@
     "eslint-config-birbcore": "github:iapetos163/eslint-config-birbcore#v2.2.1",
     "got": "^11",
     "jest": "^27.4.5",
+    "jest-junit": "^15.0.0",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.9.1",
