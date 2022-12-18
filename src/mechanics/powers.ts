@@ -12,19 +12,19 @@ interface TypeBoost {
 
 export const mealPowerHasType = (mealPower: MealPower) => mealPower !== 'Egg';
 
-export const getMealPowerVector = (
+export const getMealPowerVector = (power: Power, matchNorm: number) =>
+  mealPowers.map((mp) => (mp === power.mealPower ? matchNorm : 0));
+
+export const getTypeVector = (
   { mealPower, level }: Power,
   matchNorm: number,
 ) => {
   let minNorm = 1;
-  if (level === 2) minNorm = 100;
-  if (level === 3) minNorm = 2000;
+  if (level === 2) minNorm = 180;
+  if (level === 3) minNorm = 380;
   const norm = Math.max(minNorm, matchNorm);
-  return mealPowers.map((mp) => (mp === mealPower ? norm : 0));
+  return mealPowers.map((t) => (t === mealPower ? norm : 0));
 };
-
-export const getTypeVector = (power: Power, matchNorm: number) =>
-  allTypes.map((t) => (t === power.type ? matchNorm : 0));
 
 export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>
   mealPowers.map((mp, i) => (mp === boostedPower ? (v[i] || 0) + 100 : v[i]));
