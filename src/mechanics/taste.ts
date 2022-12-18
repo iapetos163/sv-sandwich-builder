@@ -116,10 +116,10 @@ export const rankFlavorBoosts = (
   Object.entries(flavorBoosts)
     .sort(
       ([fa, va], [fb, vb]) =>
-        (va || 0) - (vb || 0) ||
+        vb - va ||
         flavors.indexOf(fa as Flavor) - flavors.indexOf(fb as Flavor),
     )
-    .map(([f, v]) => ({ name: f as Flavor, amount: v || 0 }));
+    .map(([f, v]) => ({ name: f as Flavor, amount: v }));
 
 export const makeGetRelativeTasteVector = (
   flavorBoosts: Partial<Record<Flavor, number>>,

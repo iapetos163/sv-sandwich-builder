@@ -129,7 +129,7 @@ export const evaluateBoosts = (
     }))
     .sort(
       (a, b) =>
-        a.amount - b.amount ||
+        b.amount - a.amount ||
         mealPowers.indexOf(a.name) - mealPowers.indexOf(b.name),
     );
 
@@ -137,7 +137,7 @@ export const evaluateBoosts = (
     .map(([t, v]) => ({ name: t as TypeName, amount: v }))
     .sort(
       (a, b) =>
-        a.amount - b.amount ||
+        b.amount - a.amount ||
         allTypes.indexOf(a.name) - allTypes.indexOf(b.name),
     );
 
