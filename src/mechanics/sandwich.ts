@@ -78,6 +78,9 @@ const selectIngredient = ({
   );
   const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
 
+  // let bestMealPowerProduct = -Infinity;
+  // let bestTypeProduct = -Infinity;
+
   const ingredientReducer = (
     agg: IngredientAggregation,
     ing: Ingredient,
@@ -98,13 +101,17 @@ const selectIngredient = ({
       deltaMealPowerVector,
     );
 
+    const n = norm(ing.typeVector);
     const typeProduct = checkType
-      ? innerProduct(ing.typeVector, deltaTypeVector)
+      ? innerProduct(ing.typeVector, deltaTypeVector) / n
       : 0;
     const ingScore = mealPowerProduct + typeProduct;
+
     if (ingScore <= agg.score) {
       return agg;
     }
+    // bestMealPowerProduct = mealPowerProduct;
+    // bestTypeProduct = typeProduct;
     return {
       best: ing,
       score: ingScore,
@@ -118,6 +125,9 @@ const selectIngredient = ({
       score: -Infinity,
     },
   );
+  // console.log(
+  //   `Selecting ${bestIngredient.name}: MP${bestMealPowerProduct} + T${bestTypeProduct}`,
+  // );
 
   return bestIngredient;
 };
@@ -163,6 +173,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     if (newIngredient.ingredientType === 'filling') {
       fillings.push(newIngredient);
+
       const numOfIngredient = fillings.filter(
         (f) => f.name === newIngredient.name,
       ).length;
