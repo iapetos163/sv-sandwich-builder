@@ -15,15 +15,24 @@ export const mealPowerHasType = (mealPower: MealPower) => mealPower !== 'Egg';
 export const getMealPowerVector = (power: Power, matchNorm: number) =>
   mealPowers.map((mp) => (mp === power.mealPower ? matchNorm : 0));
 
-export const getTypeVector = (
-  { mealPower, level }: Power,
-  matchNorm: number,
-) => {
+export const getTypeVector = (power: Power, matchNorm: number) => {
   let minNorm = 1;
-  if (level === 2) minNorm = 180;
-  if (level === 3) minNorm = 380;
+  if (power.level === 2) minNorm = 180;
+  if (power.level === 3) minNorm = 380;
   const norm = Math.max(minNorm, matchNorm);
-  return mealPowers.map((t) => (t === mealPower ? norm : 0));
+  return allTypes.map((t) => (t === power.type ? norm : 0));
+};
+
+export const simplifyTypeVector = (v: number[]) => {
+  const minValue = Math.min(...v);
+  if (minValue > 0) {
+    return v.map((val) => val - minValue);
+  }
+  const maxValue = Math.max(...v);
+  if (maxValue < 0) {
+    return v.map((val) => val - maxValue);
+  }
+  return v;
 };
 
 export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>

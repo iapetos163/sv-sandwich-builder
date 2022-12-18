@@ -4,7 +4,7 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
-import { tasteVectors } from '../src/mechanics';
+import { simplifyTypeVector, tasteVectors } from '../src/mechanics';
 import {
   Flavor,
   mealPowers,
@@ -81,7 +81,9 @@ const main = async () => {
         (sum, c) => add(sum, scale(tasteVectors[c.flavor as Flavor], c.amount)),
         [],
       );
-      const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
+      const typeVector = simplifyTypeVector(
+        allTypes.map((t) => typeBoosts[t] ?? 0),
+      );
 
       return {
         name,
@@ -113,8 +115,8 @@ const main = async () => {
           add(sum, scale(tasteVectors[f.flavor as Flavor], f.amount * pieces)),
         [],
       );
-      const typeVector = allTypes.map((t) =>
-        typeBoosts[t] ? typeBoosts[t] * pieces : 0,
+      const typeVector = simplifyTypeVector(
+        allTypes.map((t) => (typeBoosts[t] ? typeBoosts[t] * pieces : 0)),
       );
 
       return {
