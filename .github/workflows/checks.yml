@@ -1,6 +1,8 @@
 on:
-  pull_request: 'main'
-  push: 'main'
+  push:
+    branches:
+      - main
+  pull_request:
 jobs:
   checks:
     name: Build & Test
