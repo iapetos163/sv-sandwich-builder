@@ -32,6 +32,7 @@ interface SelectIngredientProps {
   checkType: boolean;
   allowFillings: boolean;
   allowCondiments: boolean;
+  skipFillings: Record<string, boolean>;
   getRelativeTasteVector(base: number[]): number[];
 }
 
@@ -40,8 +41,11 @@ type IngredientAggregation = {
   score: number;
 };
 
+// TODO: change these for multiplayer
 const maxFillings = 6;
 const maxCondiments = 4;
+const maxPieces = 12;
+
 export const emptySandwich: Sandwich = {
   fillings: [],
   condiments: [],
@@ -58,6 +62,7 @@ const selectIngredient = ({
   checkType,
   allowFillings,
   allowCondiments,
+  skipFillings,
 }: SelectIngredientProps) => {
   const targetMealPowerVector = getMealPowerVector(
     targetPower,
@@ -79,7 +84,8 @@ const selectIngredient = ({
   ): IngredientAggregation => {
     if (
       (!allowFillings && ing.ingredientType === 'filling') ||
-      (!allowCondiments && ing.ingredientType === 'condiment')
+      (!allowCondiments && ing.ingredientType === 'condiment') ||
+      skipFillings[ing.name]
     ) {
       return agg;
     }
@@ -122,6 +128,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   // const condiments = [...baseSandwich.condiments];
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
+  const skipFillings: Record<string, boolean> = {};
 
   let currentBaseMealPowerVector: number[] = [];
   let currentTypeVector: number[] = [];
@@ -151,7 +158,21 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         boostedMealPower,
         targetPower.mealPower,
       ),
+      skipFillings,
     });
+
+    if (newIngredient.ingredientType === 'filling') {
+      fillings.push(newIngredient);
+      const numOfIngredient = fillings.filter(
+        (f) => f.name === newIngredient.name,
+      ).length;
+      const numPieces = numOfIngredient * newIngredient.pieces;
+      if (numPieces + newIngredient.pieces > maxPieces) {
+        skipFillings[newIngredient.name] = true;
+      }
+    } else {
+      condiments.push(newIngredient);
+    }
 
     currentBaseMealPowerVector = add(
       currentBaseMealPowerVector,
