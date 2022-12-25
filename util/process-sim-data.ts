@@ -25,6 +25,7 @@ type IngredientEntry = {
   baseMealPowerVector: number[];
   tasteMealPowerVector: number[];
   typeVector: number[];
+  diffTypeVector: number[];
   imagePath: string;
   imageUrl: string;
   pieces: number;
@@ -81,9 +82,8 @@ const main = async () => {
         (sum, c) => add(sum, scale(tasteVectors[c.flavor as Flavor], c.amount)),
         [],
       );
-      const typeVector = simplifyTypeVector(
-        allTypes.map((t) => typeBoosts[t] ?? 0),
-      );
+      const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
+      const diffTypeVector = simplifyTypeVector(typeVector);
 
       return {
         name,
@@ -94,6 +94,7 @@ const main = async () => {
         typeBoosts,
         flavorBoosts,
         typeVector,
+        diffTypeVector,
         baseMealPowerVector,
         tasteMealPowerVector,
         ingredientType: 'condiment',
@@ -115,9 +116,10 @@ const main = async () => {
           add(sum, scale(tasteVectors[f.flavor as Flavor], f.amount * pieces)),
         [],
       );
-      const typeVector = simplifyTypeVector(
-        allTypes.map((t) => (typeBoosts[t] ? typeBoosts[t] * pieces : 0)),
+      const typeVector = allTypes.map((t) =>
+        typeBoosts[t] ? typeBoosts[t] * pieces : 0,
       );
+      const diffTypeVector = simplifyTypeVector(typeVector);
 
       return {
         name,
@@ -128,6 +130,7 @@ const main = async () => {
         typeBoosts,
         flavorBoosts,
         typeVector,
+        diffTypeVector,
         baseMealPowerVector,
         tasteMealPowerVector,
         ingredientType: 'filling',
@@ -146,7 +149,7 @@ const main = async () => {
     const res = await got(imageUrl, {
       responseType: 'buffer',
     });
-    const imgOutPath = joinPath('src/assets/dynamic', basename(imagePath));
+    const imgOutPath = joinPath('src/asset/dynamic', basename(imagePath));
     await writeFile(imgOutPath, res.body);
     console.log(`Exported ${imgOutPath}`);
   }
