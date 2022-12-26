@@ -5,8 +5,10 @@ import {
   addBoosts,
   boostMealPowerVector,
   evaluateBoosts,
-  getMealPowerVector,
-  getTypeVector,
+  getBaseVector,
+  getTargetLevelVector,
+  getTargetMealPowerVector,
+  getTargetTypeVector,
   mealPowerHasType,
   Power,
   powersMatch,
@@ -64,19 +66,39 @@ const selectIngredient = ({
   allowCondiments,
   skipFillings,
 }: SelectIngredientProps) => {
-  const targetMealPowerVector = getMealPowerVector(
+  const baseMealPowerVector = getBaseVector(currentBoostedMealPowerVector);
+  const baseTypeVector = getBaseVector(currentTypeVector);
+  const targetMealPowerVector = getTargetMealPowerVector(
     targetPower,
-    norm(currentBoostedMealPowerVector),
+    currentBoostedMealPowerVector,
   );
   const targetTypeVector = checkType
-    ? getTypeVector(targetPower, norm(currentTypeVector))
+    ? getTargetTypeVector(targetPower, currentTypeVector)
     : currentTypeVector;
 
+  const targetLevelVector = getTargetLevelVector(
+    targetPower,
+    currentTypeVector,
+  );
+  const mealPowerBaseDelta = norm(
+    diff(targetMealPowerVector, baseMealPowerVector),
+  );
+  const typeBaseDelta = norm(diff(targetTypeVector, baseTypeVector));
+  const levelBaseDelta = norm(diff(targetLevelVector, baseTypeVector));
   const deltaMealPowerVector = diff(
     targetMealPowerVector,
     currentBoostedMealPowerVector,
   );
   const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
+  const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
+  const mealPowerScoreWeight =
+    mealPowerBaseDelta !== 0
+      ? norm(deltaMealPowerVector) / mealPowerBaseDelta
+      : 0;
+  const typeScoreWeight =
+    typeBaseDelta !== 0 ? norm(deltaTypeVector) / typeBaseDelta : 0;
+  const levelScoreWeight =
+    levelBaseDelta !== 0 ? norm(deltaLevelVector) / levelBaseDelta : 0;
 
   // let bestMealPowerProduct = -Infinity;
   // let bestTypeProduct = -Infinity;
@@ -101,11 +123,14 @@ const selectIngredient = ({
       deltaMealPowerVector,
     );
 
-    const n = norm(ing.typeVector);
     const typeProduct = checkType
-      ? innerProduct(ing.typeVector, deltaTypeVector) / n
+      ? innerProduct(ing.typeVector, deltaTypeVector)
       : 0;
-    const ingScore = mealPowerProduct + typeProduct;
+    const levelProduct = innerProduct(ing.typeVector, deltaLevelVector);
+    const ingScore =
+      mealPowerProduct * mealPowerScoreWeight +
+      typeProduct * typeScoreWeight +
+      levelProduct * levelScoreWeight;
 
     if (ingScore <= agg.score) {
       return agg;
@@ -132,7 +157,7 @@ const selectIngredient = ({
   return bestIngredient;
 };
 
-// TO DO: target more than one power
+// TODO: target more than one power
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   // const fillings = [...baseSandwich.ingredients];
   // const condiments = [...baseSandwich.condiments];
