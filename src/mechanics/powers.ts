@@ -12,15 +12,39 @@ interface TypeBoost {
 
 export const mealPowerHasType = (mealPower: MealPower) => mealPower !== 'Egg';
 
-export const getMealPowerVector = (power: Power, matchNorm: number) =>
-  mealPowers.map((mp) => (mp === power.mealPower ? matchNorm : 0));
+export const getTargetMealPowerVector = (
+  power: Power,
+  currentVector: number[],
+) => {
+  const target = Math.max(...currentVector) + 1;
+  return mealPowers.map((mp, i) =>
+    mp === power.mealPower ? target : Math.min(0, currentVector[i] || 0),
+  );
+};
+export const getTargetTypeVector = (power: Power, currentVector: number[]) => {
+  const target = Math.max(...currentVector) + 1;
+  return allTypes.map((t, i) =>
+    t === power.type ? target : Math.min(0, currentVector[i] || 0),
+  );
+};
 
-export const getTypeVector = (power: Power, matchNorm: number) => {
-  let minNorm = 1;
-  if (power.level === 2) minNorm = 180;
-  if (power.level === 3) minNorm = 380;
-  const norm = Math.max(minNorm, matchNorm);
-  return allTypes.map((t) => (t === power.type ? norm : 0));
+export const getTargetLevelVector = (power: Power, currentVector: number[]) => {
+  const [maxComponent, maxComponentIndex] = currentVector.reduce(
+    ([max, maxI], comp, i) => (comp > max ? [comp, i] : [max, maxI]),
+    [-Infinity, -1],
+  );
+  let minTarget = 1;
+  if (power.level === 2) minTarget = 180;
+  if (power.level === 3) minTarget = 380;
+  const target = Math.max(minTarget, maxComponent + 1);
+  return currentVector.map((comp, i) =>
+    i === maxComponentIndex ? target : comp,
+  );
+};
+
+export const getBaseVector = (currentVector: number[]) => {
+  // const minComponent = Math.min(...currentVector);
+  return currentVector.map((comp) => (comp >= 0 ? 0 : comp));
 };
 
 export const simplifyTypeVector = (v: number[]) => {
