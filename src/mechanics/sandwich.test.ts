@@ -510,5 +510,8 @@ describe('makeSandwichForPower', () => {
       name.endsWith('Herba Mystica'),
     ).length;
     expect(numHerba).toBeLessThanOrEqual(2);
+    expect(
+      sandwich!.condiments.length + sandwich!.fillings.length,
+    ).toBeLessThanOrEqual(3);
   });
 });

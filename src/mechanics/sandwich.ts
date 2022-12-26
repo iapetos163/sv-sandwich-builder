@@ -31,7 +31,9 @@ interface SelectIngredientProps {
   targetPower: Power;
   currentBoostedMealPowerVector: number[];
   currentTypeVector: number[];
+  checkMealPower: boolean;
   checkType: boolean;
+  checkLevel: boolean;
   allowFillings: boolean;
   allowCondiments: boolean;
   skipFillings: Record<string, boolean>;
@@ -76,7 +78,9 @@ const selectIngredient = ({
   currentBoostedMealPowerVector,
   getRelativeTasteVector,
   currentTypeVector,
+  checkMealPower,
   checkType,
+  checkLevel,
   allowFillings,
   allowCondiments,
   skipFillings,
@@ -99,21 +103,19 @@ const selectIngredient = ({
   );
   const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
   const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
-  const mealPowerScoreWeight = getScoreWeight(
-    targetMealPowerVector,
-    deltaMealPowerVector,
-    currentBoostedMealPowerVector,
-  );
-  const typeScoreWeight = getScoreWeight(
-    targetTypeVector,
-    deltaTypeVector,
-    currentTypeVector,
-  );
-  const levelScoreWeight = getScoreWeight(
-    targetLevelVector,
-    deltaLevelVector,
-    currentTypeVector,
-  );
+  const mealPowerScoreWeight = checkMealPower
+    ? getScoreWeight(
+        targetMealPowerVector,
+        deltaMealPowerVector,
+        currentBoostedMealPowerVector,
+      )
+    : 0;
+  const typeScoreWeight = checkType
+    ? getScoreWeight(targetTypeVector, deltaTypeVector, currentTypeVector)
+    : 0;
+  const levelScoreWeight = checkLevel
+    ? getScoreWeight(targetLevelVector, deltaLevelVector, currentTypeVector)
+    : 0;
 
   // let bestMealPowerProduct = -Infinity;
   // let bestTypeProduct = -Infinity;
@@ -133,14 +135,20 @@ const selectIngredient = ({
     const relativeTasteVector = getRelativeTasteVector(
       ing.tasteMealPowerVector,
     );
-    const mealPowerProduct = innerProduct(
-      add(ing.baseMealPowerVector, relativeTasteVector),
-      deltaMealPowerVector,
-    );
+    const n1 = norm(ing.baseMealPowerVector);
+    const mealPowerProduct =
+      checkMealPower && n1 !== 0
+        ? innerProduct(
+            add(ing.baseMealPowerVector, relativeTasteVector),
+            deltaMealPowerVector,
+          ) / n1
+        : 0;
 
-    const typeProduct = checkType
-      ? innerProduct(ing.typeVector, deltaTypeVector)
-      : 0;
+    const n2 = norm(ing.typeVector);
+    const typeProduct =
+      checkType && n2 !== 0
+        ? innerProduct(ing.typeVector, deltaTypeVector) / n2
+        : 0;
     const levelProduct = innerProduct(ing.typeVector, deltaLevelVector);
     const ingScore =
       mealPowerProduct * mealPowerScoreWeight +
@@ -167,6 +175,11 @@ const selectIngredient = ({
   );
   console.log(`Selecting ${bestIngredient.name}
 Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
+Target MP: ${targetMealPowerVector}
+Delta MP: ${deltaMealPowerVector}
+Current MP: ${currentBoostedMealPowerVector}
+Target T: ${targetTypeVector}
+Delta T: ${deltaTypeVector}
 Target L: ${targetLevelVector}
 Delta L: ${deltaLevelVector}
 Current T: ${currentTypeVector}`);
@@ -187,6 +200,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   let currentMealPowerBoosts: Partial<Record<MealPower, number>> = {};
   let currentFlavorBoosts: Partial<Record<Flavor, number>> = {};
   let currentTypeBoosts: Partial<Record<TypeName, number>> = {};
+  let currentPowers: Power[] = [];
 
   const checkType = mealPowerHasType(targetPower.mealPower);
 
@@ -203,7 +217,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       targetPower,
       currentBoostedMealPowerVector,
       currentTypeVector,
-      checkType,
+      checkMealPower: currentPowers[0]?.mealPower !== targetPower.mealPower,
+      checkType: checkType && currentPowers[0]?.type !== targetPower.type,
+      checkLevel: currentPowers[0]?.level !== targetPower.level,
       allowFillings: fillings.length < maxFillings,
       allowCondiments: condiments.length < maxCondiments,
       getRelativeTasteVector: makeGetRelativeTasteVector(
@@ -244,7 +260,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     );
     currentTypeBoosts = addBoosts(currentTypeBoosts, newIngredient.typeBoosts);
 
-    const currentPowers = evaluateBoosts(
+    currentPowers = evaluateBoosts(
       currentMealPowerBoosts,
       boostedMealPower,
       currentTypeBoosts,
@@ -264,5 +280,3 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
   return null;
 };
-
-// Learning: there can be no more than 12 of a single ingredient, or 15 in multiplayer
