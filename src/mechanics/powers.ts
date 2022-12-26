@@ -12,18 +12,53 @@ interface TypeBoost {
 
 export const mealPowerHasType = (mealPower: MealPower) => mealPower !== 'Egg';
 
-export const getMealPowerVector = (power: Power, matchNorm: number) =>
-  mealPowers.map((mp) => (mp === power.mealPower ? matchNorm : 0));
-
-export const getTypeVector = (
-  { mealPower, level }: Power,
-  matchNorm: number,
+export const getTargetMealPowerVector = (
+  power: Power,
+  currentVector: number[],
 ) => {
-  let minNorm = 1;
-  if (level === 2) minNorm = 180;
-  if (level === 3) minNorm = 380;
-  const norm = Math.max(minNorm, matchNorm);
-  return mealPowers.map((t) => (t === mealPower ? norm : 0));
+  const target = Math.max(0, ...currentVector) + 1;
+  return mealPowers.map((mp, i) =>
+    mp === power.mealPower ? target : currentVector[i] || 0,
+  );
+};
+
+export const getTargetTypeVector = (power: Power, currentVector: number[]) => {
+  const target = Math.max(0, ...currentVector) + 1;
+  return allTypes.map((t, i) =>
+    t === power.type ? target : currentVector[i] || 0,
+  );
+};
+
+export const getTargetLevelVector = (power: Power, currentVector: number[]) => {
+  const [maxComponent, maxComponentIndex] = allTypes.reduce(
+    (accum, t, i) => {
+      const comp = currentVector[i] || 0;
+      const [max] = accum;
+      if (comp > max) return [comp, i];
+      if (comp === max && t === power.type) return [comp, i];
+      return accum;
+    },
+    [-Infinity, -1],
+  );
+  let minTarget = 1;
+  if (power.level === 2) minTarget = 180;
+  if (power.level === 3) minTarget = 380;
+  const target = Math.max(minTarget, maxComponent + 1);
+  return allTypes.map((t, i) =>
+    i === maxComponentIndex ? target : currentVector[i] || 0,
+  );
+};
+
+export const simplifyTypeVector = (v: number[]) => {
+  const minValue = Math.min(...v);
+  if (minValue > 0) {
+    return v.map((val) => val - minValue);
+  }
+  const maxValue = Math.max(...v);
+  if (maxValue < 0) {
+    return v.map((val) => val - maxValue);
+  }
+  return v;
 };
 
 export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>
@@ -163,3 +198,10 @@ export const evaluateBoosts = (
 
 export const powersMatch = (a: Power, b: Power) =>
   a.level === b.level && a.mealPower === b.mealPower && a.type === b.type;
+
+export const powerToString = (p: Power) => {
+  if (!mealPowerHasType(p.mealPower)) {
+    return `Lv. ${p.level} ${p.mealPower}`;
+  }
+  return `Lv. ${p.level} ${p.mealPower} ${p.type}`;
+};

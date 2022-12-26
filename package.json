@@ -1,6 +1,7 @@
 {
   "name": "sv-sandwich-builder",
   "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

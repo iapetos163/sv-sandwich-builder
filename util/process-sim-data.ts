@@ -4,7 +4,7 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
-import { tasteVectors } from '../src/mechanics';
+import { simplifyTypeVector, tasteVectors } from '../src/mechanics';
 import {
   Flavor,
   mealPowers,
@@ -25,6 +25,7 @@ type IngredientEntry = {
   baseMealPowerVector: number[];
   tasteMealPowerVector: number[];
   typeVector: number[];
+  diffTypeVector: number[];
   imagePath: string;
   imageUrl: string;
   pieces: number;
@@ -82,6 +83,7 @@ const main = async () => {
         [],
       );
       const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
+      const diffTypeVector = simplifyTypeVector(typeVector);
 
       return {
         name,
@@ -92,6 +94,7 @@ const main = async () => {
         typeBoosts,
         flavorBoosts,
         typeVector,
+        diffTypeVector,
         baseMealPowerVector,
         tasteMealPowerVector,
         ingredientType: 'condiment',
@@ -116,6 +119,7 @@ const main = async () => {
       const typeVector = allTypes.map((t) =>
         typeBoosts[t] ? typeBoosts[t] * pieces : 0,
       );
+      const diffTypeVector = simplifyTypeVector(typeVector);
 
       return {
         name,
@@ -126,6 +130,7 @@ const main = async () => {
         typeBoosts,
         flavorBoosts,
         typeVector,
+        diffTypeVector,
         baseMealPowerVector,
         tasteMealPowerVector,
         ingredientType: 'filling',
@@ -144,7 +149,7 @@ const main = async () => {
     const res = await got(imageUrl, {
       responseType: 'buffer',
     });
-    const imgOutPath = joinPath('src/assets/dynamic', basename(imagePath));
+    const imgOutPath = joinPath('src/asset/dynamic', basename(imagePath));
     await writeFile(imgOutPath, res.body);
     console.log(`Exported ${imgOutPath}`);
   }
