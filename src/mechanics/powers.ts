@@ -197,3 +197,10 @@ export const evaluateBoosts = (
 
 export const powersMatch = (a: Power, b: Power) =>
   a.level === b.level && a.mealPower === b.mealPower && a.type === b.type;
+
+export const powerToString = (p: Power) => {
+  if (!mealPowerHasType(p.mealPower)) {
+    return `Lv. ${p.level} ${p.mealPower}`;
+  }
+  return `Lv. ${p.level} ${p.mealPower} ${p.type}`;
+};

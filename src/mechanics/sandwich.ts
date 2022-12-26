@@ -11,6 +11,7 @@ import {
   mealPowerHasType,
   Power,
   powersMatch,
+  powerToString,
 } from './powers';
 import {
   makeGetRelativeTasteVector,
@@ -164,9 +165,11 @@ const selectIngredient = ({
       score: -Infinity,
     },
   );
-  // console.log(
-  //   `Selecting ${bestIngredient.name}: MP${bestMealPowerProduct} + T${bestTypeProduct}`,
-  // );
+  console.log(`Selecting ${bestIngredient.name}
+Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
+Target L: ${targetLevelVector}
+Delta L: ${deltaLevelVector}
+Current T: ${currentTypeVector}`);
 
   return bestIngredient;
 };
@@ -230,10 +233,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       currentBaseMealPowerVector,
       newIngredient.baseMealPowerVector,
     );
-    currentTypeVector = add(
-      currentBaseMealPowerVector,
-      newIngredient.typeVector,
-    );
+    currentTypeVector = add(currentTypeVector, newIngredient.typeVector);
     currentMealPowerBoosts = addBoosts(
       currentMealPowerBoosts,
       newIngredient.mealPowerBoosts,
@@ -249,6 +249,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       boostedMealPower,
       currentTypeBoosts,
     );
+    console.log(`Current powers:
+  ${currentPowers.map(powerToString).join('\n  ')}`);
     if (currentPowers.some((p) => powersMatch(p, targetPower))) {
       return {
         fillings,
