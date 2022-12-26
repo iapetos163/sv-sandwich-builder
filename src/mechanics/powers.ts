@@ -29,22 +29,23 @@ export const getTargetTypeVector = (power: Power, currentVector: number[]) => {
 };
 
 export const getTargetLevelVector = (power: Power, currentVector: number[]) => {
-  const [maxComponent, maxComponentIndex] = currentVector.reduce(
-    ([max, maxI], comp, i) => (comp > max ? [comp, i] : [max, maxI]),
+  const [maxComponent, maxComponentIndex] = allTypes.reduce(
+    (accum, t, i) => {
+      const comp = currentVector[i] || 0;
+      const [max] = accum;
+      if (comp > max) return [comp, i];
+      if (comp === max && t === power.type) return [comp, i];
+      return accum;
+    },
     [-Infinity, -1],
   );
   let minTarget = 1;
   if (power.level === 2) minTarget = 180;
   if (power.level === 3) minTarget = 380;
   const target = Math.max(minTarget, maxComponent + 1);
-  return currentVector.map((comp, i) =>
-    i === maxComponentIndex ? target : comp,
+  return allTypes.map((t, i) =>
+    i === maxComponentIndex ? target : currentVector[i] || 0,
   );
-};
-
-export const getBaseVector = (currentVector: number[]) => {
-  // const minComponent = Math.min(...currentVector);
-  return currentVector.map((comp) => (comp >= 0 ? 0 : comp));
 };
 
 export const simplifyTypeVector = (v: number[]) => {

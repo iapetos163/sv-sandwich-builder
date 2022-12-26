@@ -5,7 +5,6 @@ import {
   addBoosts,
   boostMealPowerVector,
   evaluateBoosts,
-  getBaseVector,
   getTargetLevelVector,
   getTargetMealPowerVector,
   getTargetTypeVector,
@@ -56,6 +55,21 @@ export const emptySandwich: Sandwich = {
   typeBoosts: {},
 };
 
+const getBaseVector = (currentVector: number[]) => {
+  // const minComponent = Math.min(...currentVector);
+  return currentVector.map((comp) => (comp >= 0 ? 0 : comp));
+};
+
+const getScoreWeight = (
+  target: number[],
+  delta: number[],
+  current: number[],
+) => {
+  const base = getBaseVector(current);
+  const baseDelta = norm(diff(target, base));
+  return baseDelta !== 0 ? norm(delta) / baseDelta : 0;
+};
+
 const selectIngredient = ({
   targetPower,
   currentBoostedMealPowerVector,
@@ -66,8 +80,6 @@ const selectIngredient = ({
   allowCondiments,
   skipFillings,
 }: SelectIngredientProps) => {
-  const baseMealPowerVector = getBaseVector(currentBoostedMealPowerVector);
-  const baseTypeVector = getBaseVector(currentTypeVector);
   const targetMealPowerVector = getTargetMealPowerVector(
     targetPower,
     currentBoostedMealPowerVector,
@@ -80,25 +92,27 @@ const selectIngredient = ({
     targetPower,
     currentTypeVector,
   );
-  const mealPowerBaseDelta = norm(
-    diff(targetMealPowerVector, baseMealPowerVector),
-  );
-  const typeBaseDelta = norm(diff(targetTypeVector, baseTypeVector));
-  const levelBaseDelta = norm(diff(targetLevelVector, baseTypeVector));
   const deltaMealPowerVector = diff(
     targetMealPowerVector,
     currentBoostedMealPowerVector,
   );
   const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
   const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
-  const mealPowerScoreWeight =
-    mealPowerBaseDelta !== 0
-      ? norm(deltaMealPowerVector) / mealPowerBaseDelta
-      : 0;
-  const typeScoreWeight =
-    typeBaseDelta !== 0 ? norm(deltaTypeVector) / typeBaseDelta : 0;
-  const levelScoreWeight =
-    levelBaseDelta !== 0 ? norm(deltaLevelVector) / levelBaseDelta : 0;
+  const mealPowerScoreWeight = getScoreWeight(
+    targetMealPowerVector,
+    deltaMealPowerVector,
+    currentBoostedMealPowerVector,
+  );
+  const typeScoreWeight = getScoreWeight(
+    targetTypeVector,
+    deltaTypeVector,
+    currentTypeVector,
+  );
+  const levelScoreWeight = getScoreWeight(
+    targetLevelVector,
+    deltaLevelVector,
+    currentTypeVector,
+  );
 
   // let bestMealPowerProduct = -Infinity;
   // let bestTypeProduct = -Infinity;
@@ -180,6 +194,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       ? boostMealPowerVector(currentBaseMealPowerVector, boostedMealPower)
       : currentBaseMealPowerVector;
 
+    //     console.log(`Current MP (Boosted): ${currentBoostedMealPowerVector}
+    // Current T: ${currentTypeVector}`);
     const newIngredient = selectIngredient({
       targetPower,
       currentBoostedMealPowerVector,
