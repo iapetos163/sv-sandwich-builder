@@ -16,13 +16,13 @@ export const getTargetMealPowerVector = (
   power: Power,
   currentVector: number[],
 ) => {
-  const target = Math.max(...currentVector) + 1;
+  const target = Math.max(0, ...currentVector) + 1;
   return mealPowers.map((mp, i) =>
     mp === power.mealPower ? target : Math.min(0, currentVector[i] || 0),
   );
 };
 export const getTargetTypeVector = (power: Power, currentVector: number[]) => {
-  const target = Math.max(...currentVector) + 1;
+  const target = Math.max(0, ...currentVector) + 1;
   return allTypes.map((t, i) =>
     t === power.type ? target : Math.min(0, currentVector[i] || 0),
   );

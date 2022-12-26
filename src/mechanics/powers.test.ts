@@ -1,8 +1,11 @@
-import { getTypeVector } from './powers';
+import { getTargetTypeVector } from './powers';
 
-describe('getTypeVector', () => {
+describe('getTargetTypeVector', () => {
   it('Creates a vector with the correct components for Ground', () => {
-    const v = getTypeVector({ mealPower: 'Exp', type: 'Ground', level: 1 }, 1);
+    const v = getTargetTypeVector(
+      { mealPower: 'Exp', type: 'Ground', level: 1 },
+      [],
+    );
     expect(v[4]).toBeGreaterThan(0);
   });
 });
