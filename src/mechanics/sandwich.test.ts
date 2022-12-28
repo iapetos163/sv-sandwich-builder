@@ -489,10 +489,13 @@ describe('makeSandwichForPower', () => {
     const numHerba = sandwich!.condiments.filter(({ name }) =>
       name.endsWith('Herba Mystica'),
     ).length;
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(sandwich!.fillings.length).toBeGreaterThan(0);
+    expect(sandwich!.condiments.length).toBeGreaterThan(0);
     expect(numHerba).toBeLessThanOrEqual(2);
-    expect(
-      sandwich!.condiments.length + sandwich!.fillings.length,
-    ).toBeLessThanOrEqual(3);
+    expect(numIngredients).toBeLessThanOrEqual(3);
   });
 
   it('Produces a sandwich with Lv 2 Title Normal', () => {
@@ -513,6 +516,8 @@ describe('makeSandwichForPower', () => {
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
 
+    expect(sandwich!.fillings.length).toBeGreaterThan(0);
+    expect(sandwich!.condiments.length).toBeGreaterThan(0);
     expect(numHerba).toBeLessThanOrEqual(1);
     expect(numIngredients).toBeLessThanOrEqual(1);
   });
