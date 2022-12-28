@@ -152,12 +152,11 @@ export const addBoosts = <T extends string>(
   return result;
 };
 
-export const evaluateBoosts = (
+const rankMealPowerBoosts = (
   mealPowerBoosts: Partial<Record<MealPower, number>>,
   boostedMealPower: MealPower | null,
-  typeBoosts: Partial<Record<TypeName, number>>,
-) => {
-  const rankedMealPowerBoosts = Object.entries(mealPowerBoosts)
+) =>
+  Object.entries(mealPowerBoosts)
     .map(([t, v]) => ({
       name: t as MealPower,
       amount: t === boostedMealPower ? v + 100 : v,
@@ -168,7 +167,8 @@ export const evaluateBoosts = (
         mealPowers.indexOf(a.name) - mealPowers.indexOf(b.name),
     );
 
-  const rankedTypeBoosts = Object.entries(typeBoosts)
+const rankTypeBoosts = (typeBoosts: Partial<Record<TypeName, number>>) =>
+  Object.entries(typeBoosts)
     .map(([t, v]) => ({ name: t as TypeName, amount: v }))
     .sort(
       (a, b) =>
@@ -176,16 +176,29 @@ export const evaluateBoosts = (
         allTypes.indexOf(a.name) - allTypes.indexOf(b.name),
     );
 
+export const evaluateBoosts = (
+  mealPowerBoosts: Partial<Record<MealPower, number>>,
+  boostedMealPower: MealPower | null,
+  typeBoosts: Partial<Record<TypeName, number>>,
+) => {
+  const rankedMealPowerBoosts = rankMealPowerBoosts(
+    mealPowerBoosts,
+    boostedMealPower,
+  );
+  const rankedTypeBoosts = rankTypeBoosts(typeBoosts);
+
   const assignedTypes = calculateTypes(rankedTypeBoosts);
 
   // according to sandwich simulator, this is pre-reordering types
   const assignedLevels = calculateLevels(rankedTypeBoosts);
 
   return rankedMealPowerBoosts
+    .filter((mpBoost) => mpBoost.name !== 'Sparkling' || mpBoost.amount > 1000)
     .slice(0, 3)
     .filter(
       (mpBoost, i) =>
         mpBoost.amount > 0 && assignedTypes[i] && assignedTypes[i].amount > 0,
+      // (mpBoost.name !== 'Sparkling' || mpBoost.amount > 1000),
     )
     .map(
       (mpBoost, i): Power => ({
@@ -196,8 +209,10 @@ export const evaluateBoosts = (
     );
 };
 
-export const powersMatch = (a: Power, b: Power) =>
-  a.level === b.level && a.mealPower === b.mealPower && a.type === b.type;
+export const powersMatch = (test: Power, target: Power) =>
+  test.level >= target.level &&
+  test.mealPower === target.mealPower &&
+  test.type === target.type;
 
 export const powerToString = (p: Power) => {
   if (!mealPowerHasType(p.mealPower)) {
