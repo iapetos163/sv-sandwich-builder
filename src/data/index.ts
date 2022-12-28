@@ -3,6 +3,7 @@ import ingredientsData from './ingredients.json';
 
 export interface Ingredient {
   name: string;
+  isHerbaMystica: boolean;
   mealPowerBoosts: Partial<Record<MealPower, number>>;
   typeBoosts: Partial<Record<TypeName, number>>;
   flavorBoosts: Partial<Record<Flavor, number>>;

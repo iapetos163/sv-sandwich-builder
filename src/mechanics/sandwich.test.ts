@@ -486,8 +486,8 @@ describe('makeSandwichForPower', () => {
 
     expect(sandwich).not.toBeNull();
 
-    const numHerba = sandwich!.condiments.filter(({ name }) =>
-      name.endsWith('Herba Mystica'),
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
     ).length;
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
@@ -507,8 +507,8 @@ describe('makeSandwichForPower', () => {
 
     expect(sandwich).not.toBeNull();
 
-    const numHerba = sandwich!.condiments.filter(({ name }) =>
-      name.endsWith('Herba Mystica'),
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
     ).length;
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
@@ -530,8 +530,8 @@ describe('makeSandwichForPower', () => {
     console.log(sandwich?.condiments.map((f) => f.name));
     expect(sandwich).not.toBeNull();
 
-    const numHerba = sandwich!.condiments.filter(({ name }) =>
-      name.endsWith('Herba Mystica'),
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
     ).length;
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;

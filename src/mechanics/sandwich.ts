@@ -175,14 +175,14 @@ const selectIngredient = ({
   );
   console.log(`Selecting ${bestIngredient.name}
   Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
-Target MP: ${targetMealPowerVector}
-Delta MP: ${deltaMealPowerVector}
-Current MP: ${currentBoostedMealPowerVector}
-Target T: ${targetTypeVector}
-Delta T: ${deltaTypeVector}
-Target L: ${targetLevelVector}
-Delta L: ${deltaLevelVector}
-Current T: ${currentTypeVector}`);
+  Target MP: ${targetMealPowerVector}
+  Delta MP: ${deltaMealPowerVector}
+  Current MP: ${currentBoostedMealPowerVector}
+  Target T: ${targetTypeVector}
+  Delta T: ${deltaTypeVector}
+  Target L: ${targetLevelVector}
+  Delta L: ${deltaLevelVector}
+  Current T: ${currentTypeVector}`);
 
   return bestIngredient;
 };
