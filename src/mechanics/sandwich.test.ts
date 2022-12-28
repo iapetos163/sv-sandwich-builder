@@ -476,34 +476,14 @@ const TEST_SET_NONHERBA = [
 //   },
 // ];
 
-// 4-star
-const TEST_SET_4_STAR = [
-  {
-    recipe:
-      'Ham-3,Ham-3,Ham-3,Ham-3_Bitter Herba Mystica,Curry Powder,Curry Powder,Curry Powder,Curry Powder,Salty Herba Mystica,Sour Herba Mystica,Sweet Herba Mystica',
-    result: 'Sparkling,Ground,3/Title,Ground,3/Encounter,Ground,3',
-  },
-  {
-    recipe:
-      'Basil-4,Herbed Sausage-3,Herbed Sausage-3,Herbed Sausage-3,Noodles-1,Noodles-1,Onion-3,Onion-3,Onion-3,Potato Tortilla-1,Potato Tortilla-1,Potato Tortilla-1,Strawberry-3,Strawberry-3,Strawberry-3_Salt,Salt,Salt,Salt,Vinegar,Vinegar,Vinegar,Vinegar,Wasabi,Wasabi,Wasabi,Wasabi',
-    result: 'Encounter,Psychic,3/Raid,Psychic,3/Item,Ghost,2',
-  },
-  {
-    recipe:
-      'Ham-3,Ham-3,Ham-3,Ham-3_Bitter Herba Mystica,Curry Powder,Curry Powder,Curry Powder,Curry Powder,Salty Herba Mystica,Sour Herba Mystica,Sweet Herba Mystica',
-    result: 'Sparkling,Ground,3/Title,Ground,3/Encounter,Ground,3',
-  },
-];
-
 describe('makeSandwichForPower', () => {
-  it('Does something', () => {
+  it('Produces a sandwich with Lv 3 Sparkling Ground', () => {
     const sandwich = makeSandwichForPower({
       mealPower: 'Sparkling',
       type: 'Ground',
       level: 3,
     });
 
-    console.log(sandwich);
     expect(sandwich).not.toBeNull();
 
     const numHerba = sandwich!.condiments.filter(({ name }) =>
@@ -513,5 +493,27 @@ describe('makeSandwichForPower', () => {
     expect(
       sandwich!.condiments.length + sandwich!.fillings.length,
     ).toBeLessThanOrEqual(3);
+  });
+
+  it('Produces a sandwich with Lv 2 Title Normal', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Title',
+      type: 'Normal',
+      level: 2,
+    });
+
+    console.log(sandwich?.fillings.map((f) => f.name));
+    console.log(sandwich?.condiments.map((f) => f.name));
+    expect(sandwich).not.toBeNull();
+
+    // Expected recipe: Tofu, Bitter Herba
+    const numHerba = sandwich!.condiments.filter(({ name }) =>
+      name.endsWith('Herba Mystica'),
+    ).length;
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numIngredients).toBeLessThanOrEqual(1);
   });
 });

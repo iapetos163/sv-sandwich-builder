@@ -174,7 +174,7 @@ const selectIngredient = ({
     },
   );
   console.log(`Selecting ${bestIngredient.name}
-Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
+  Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
 Target MP: ${targetMealPowerVector}
 Delta MP: ${deltaMealPowerVector}
 Current MP: ${currentBoostedMealPowerVector}
@@ -213,13 +213,16 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     //     console.log(`Current MP (Boosted): ${currentBoostedMealPowerVector}
     // Current T: ${currentTypeVector}`);
+    const selectedPower = currentPowers[0];
     const newIngredient = selectIngredient({
       targetPower,
       currentBoostedMealPowerVector,
       currentTypeVector,
-      checkMealPower: currentPowers[0]?.mealPower !== targetPower.mealPower,
-      checkType: checkType && currentPowers[0]?.type !== targetPower.type,
-      checkLevel: currentPowers[0]?.level !== targetPower.level,
+      // TODO: meal power doesn't depend on being first, but type does
+      checkMealPower: selectedPower?.mealPower === targetPower.mealPower,
+      checkType: checkType && selectedPower?.type !== targetPower.type,
+      checkLevel:
+        !selectedPower?.level || selectedPower.level < targetPower.level,
       allowFillings: fillings.length < maxFillings,
       allowCondiments: condiments.length < maxCondiments,
       getRelativeTasteVector: makeGetRelativeTasteVector(
@@ -265,8 +268,11 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       boostedMealPower,
       currentTypeBoosts,
     );
-    console.log(`Current powers:
-  ${currentPowers.map(powerToString).join('\n  ')}`);
+    console.log(
+      `Current powers:${['', ...currentPowers.map(powerToString)].join(
+        '\n  ',
+      )}`,
+    );
     if (currentPowers.some((p) => powersMatch(p, targetPower))) {
       return {
         fillings,
