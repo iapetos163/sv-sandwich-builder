@@ -519,6 +519,6 @@ describe('makeSandwichForPower', () => {
     expect(sandwich!.fillings.length).toBeGreaterThan(0);
     expect(sandwich!.condiments.length).toBeGreaterThan(0);
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numIngredients).toBeLessThanOrEqual(1);
+    expect(numIngredients).toBeLessThanOrEqual(2);
   });
 });

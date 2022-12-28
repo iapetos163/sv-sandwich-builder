@@ -201,6 +201,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   let currentFlavorBoosts: Partial<Record<Flavor, number>> = {};
   let currentTypeBoosts: Partial<Record<TypeName, number>> = {};
   let currentPowers: Power[] = [];
+  let targetPowerFound = false;
 
   const checkType = mealPowerHasType(targetPower.mealPower);
 
@@ -218,13 +219,19 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       targetPower,
       currentBoostedMealPowerVector,
       currentTypeVector,
-      // TODO: meal power doesn't depend on being first, but type does
-      checkMealPower: selectedPower?.mealPower === targetPower.mealPower,
-      checkType: checkType && selectedPower?.type !== targetPower.type,
+      checkMealPower:
+        targetPowerFound || selectedPower?.mealPower !== targetPower.mealPower,
+      checkType:
+        targetPowerFound ||
+        (checkType && selectedPower?.type !== targetPower.type),
       checkLevel:
         !selectedPower?.level || selectedPower.level < targetPower.level,
-      allowFillings: fillings.length < maxFillings,
-      allowCondiments: condiments.length < maxCondiments,
+      allowFillings:
+        fillings.length < maxFillings &&
+        (!targetPowerFound || fillings.length === 0),
+      allowCondiments:
+        condiments.length < maxCondiments &&
+        (!targetPowerFound || condiments.length === 0),
       getRelativeTasteVector: makeGetRelativeTasteVector(
         currentFlavorBoosts,
         rankedFlavorBoosts,
@@ -273,7 +280,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         '\n  ',
       )}`,
     );
-    if (currentPowers.some((p) => powersMatch(p, targetPower))) {
+    targetPowerFound = currentPowers.some((p) => powersMatch(p, targetPower));
+
+    if (targetPowerFound && fillings.length > 0 && condiments.length > 0) {
       return {
         fillings,
         condiments,
