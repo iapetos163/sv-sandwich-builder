@@ -189,11 +189,19 @@ const selectIngredient = ({
 
 // TODO: target more than one power
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
-  // const fillings = [...baseSandwich.ingredients];
-  // const condiments = [...baseSandwich.condiments];
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
   const skipFillings: Record<string, boolean> = {};
+  if (
+    targetPower.mealPower !== 'Sparkling' &&
+    targetPower.mealPower !== 'Title'
+  ) {
+    for (const ingredient of ingredients) {
+      if (ingredient.isHerbaMystica) {
+        skipFillings[ingredient.name] = true;
+      }
+    }
+  }
 
   let currentBaseMealPowerVector: number[] = [];
   let currentTypeVector: number[] = [];
@@ -269,6 +277,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       newIngredient.flavorBoosts,
     );
     currentTypeBoosts = addBoosts(currentTypeBoosts, newIngredient.typeBoosts);
+
+    console.log(currentMealPowerBoosts, boostedMealPower, currentTypeBoosts);
 
     currentPowers = evaluateBoosts(
       currentMealPowerBoosts,

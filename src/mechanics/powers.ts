@@ -152,20 +152,24 @@ export const addBoosts = <T extends string>(
   return result;
 };
 
-const rankMealPowerBoosts = (
+export const rankMealPowerBoosts = (
   mealPowerBoosts: Partial<Record<MealPower, number>>,
   boostedMealPower: MealPower | null,
-) =>
-  Object.entries(mealPowerBoosts)
-    .map(([t, v]) => ({
-      name: t as MealPower,
-      amount: t === boostedMealPower ? v + 100 : v,
+) => {
+  const boosts = boostedMealPower
+    ? { ...mealPowerBoosts, [boostedMealPower]: 0 }
+    : mealPowerBoosts;
+  return Object.entries(boosts)
+    .map(([mp, v]) => ({
+      name: mp as MealPower,
+      amount: mp === boostedMealPower ? v + 100 : v,
     }))
     .sort(
       (a, b) =>
         b.amount - a.amount ||
         mealPowers.indexOf(a.name) - mealPowers.indexOf(b.name),
     );
+};
 
 const rankTypeBoosts = (typeBoosts: Partial<Record<TypeName, number>>) =>
   Object.entries(typeBoosts)
@@ -198,7 +202,6 @@ export const evaluateBoosts = (
     .filter(
       (mpBoost, i) =>
         mpBoost.amount > 0 && assignedTypes[i] && assignedTypes[i].amount > 0,
-      // (mpBoost.name !== 'Sparkling' || mpBoost.amount > 1000),
     )
     .map(
       (mpBoost, i): Power => ({
