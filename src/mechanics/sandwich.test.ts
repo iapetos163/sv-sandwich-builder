@@ -1,4 +1,5 @@
 import { makeSandwichForPower } from './sandwich';
+import { makeGetRelativeTasteVector } from './taste';
 
 const TEST_SET_HERBA = [
   {
@@ -476,6 +477,30 @@ const TEST_SET_NONHERBA = [
 //   },
 // ];
 
+describe('makeGetRelativeTasteVector', () => {
+  it('Does not make a function that outputs infinite components', () => {
+    const getRelativeTasteVector = makeGetRelativeTasteVector(
+      { Salty: 20, Bitter: 10, Hot: 20, Sweet: 16, Sour: 16 },
+      [
+        { name: 'Salty', amount: 20 },
+        { name: 'Hot', amount: 20 },
+        { name: 'Sweet', amount: 16 },
+        { name: 'Sour', amount: 16 },
+        { name: 'Bitter', amount: 10 },
+      ],
+      'Encounter',
+      'Encounter',
+    );
+    const res = getRelativeTasteVector([
+      3, 14.8492424049175, 2.121320343559643, 3, 8.485281374238571, 0, 0, -12,
+      -3, -3,
+    ]);
+
+    expect(res).not.toContain(Infinity);
+    expect(res).not.toContain(-Infinity);
+  });
+});
+
 describe('makeSandwichForPower', () => {
   it('Produces a sandwich with Lv 3 Sparkling Ground', () => {
     const sandwich = makeSandwichForPower({
@@ -526,6 +551,7 @@ describe('makeSandwichForPower', () => {
       level: 2,
     });
 
+    // One acceptable recipe: 4x chorizo, 2x rice, 1x peanut butter
     console.log(sandwich?.fillings.map((f) => f.name));
     console.log(sandwich?.condiments.map((f) => f.name));
     expect(sandwich).not.toBeNull();
@@ -537,6 +563,6 @@ describe('makeSandwichForPower', () => {
       sandwich!.condiments.length + sandwich!.fillings.length;
 
     expect(numHerba).toBe(0);
-    expect(numIngredients).toBeLessThanOrEqual(10);
+    expect(numIngredients).toBeLessThanOrEqual(7);
   });
 });
