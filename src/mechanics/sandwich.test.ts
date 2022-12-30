@@ -1,5 +1,4 @@
 import { makeSandwichForPower } from './sandwich';
-import { makeGetRelativeTasteVector } from './taste';
 
 const TEST_SET_HERBA = [
   {
@@ -476,30 +475,6 @@ const TEST_SET_NONHERBA = [
 //     result: 'Encounter,Steel,1/Raid,Flying,1/Catch,Steel,1',
 //   },
 // ];
-
-describe('makeGetRelativeTasteVector', () => {
-  it('Does not make a function that outputs infinite components', () => {
-    const getRelativeTasteVector = makeGetRelativeTasteVector(
-      { Salty: 20, Bitter: 10, Hot: 20, Sweet: 16, Sour: 16 },
-      [
-        { name: 'Salty', amount: 20 },
-        { name: 'Hot', amount: 20 },
-        { name: 'Sweet', amount: 16 },
-        { name: 'Sour', amount: 16 },
-        { name: 'Bitter', amount: 10 },
-      ],
-      'Encounter',
-      'Encounter',
-    );
-    const res = getRelativeTasteVector([
-      3, 14.8492424049175, 2.121320343559643, 3, 8.485281374238571, 0, 0, -12,
-      -3, -3,
-    ]);
-
-    expect(res).not.toContain(Infinity);
-    expect(res).not.toContain(-Infinity);
-  });
-});
 
 describe('makeSandwichForPower', () => {
   it('Produces a sandwich with Lv 3 Sparkling Ground', () => {

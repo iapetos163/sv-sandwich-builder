@@ -1,4 +1,8 @@
-import { getBoostedMealPower, rankFlavorBoosts } from './taste';
+import {
+  getBoostedMealPower,
+  makeGetRelativeTasteVector,
+  rankFlavorBoosts,
+} from './taste';
 
 describe('rankFlavorBoosts', () => {
   it('Orders flavors in descending order', () => {
@@ -259,5 +263,24 @@ describe('getBoostedMealPower', () => {
     });
     const boosted2 = getBoostedMealPower(ranked2);
     expect(boosted2).toBe('Raid');
+  });
+});
+
+describe('makeGetRelativeTasteVector', () => {
+  it('Does not make a function that outputs infinite components', () => {
+    const flavorBoosts = { Salty: 20, Hot: 20, Sweet: 16 };
+    const getRelativeTasteVector = makeGetRelativeTasteVector(
+      flavorBoosts,
+      rankFlavorBoosts(flavorBoosts),
+      'Encounter',
+      'Encounter',
+    );
+    const res = getRelativeTasteVector([
+      3, 14.8492424049175, 2.121320343559643, 3, 8.485281374238571, 0, 0, -12,
+      -3, -3,
+    ]);
+
+    expect(res).not.toContain(Infinity);
+    expect(res).not.toContain(-Infinity);
   });
 });
