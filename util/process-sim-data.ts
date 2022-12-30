@@ -29,6 +29,7 @@ type IngredientEntry = {
   imagePath: string;
   imageUrl: string;
   pieces: number;
+  isHerbaMystica: boolean;
   ingredientType: 'filling' | 'condiment';
 };
 
@@ -87,6 +88,7 @@ const main = async () => {
 
       return {
         name,
+        isHerbaMystica: name.endsWith('Herba Mystica'),
         imagePath: basename(imageUrl),
         imageUrl,
         pieces: 1,
@@ -123,9 +125,10 @@ const main = async () => {
 
       return {
         name,
+        isHerbaMystica: false,
         imagePath: basename(imageUrl),
         imageUrl,
-        pieces: 1,
+        pieces,
         mealPowerBoosts,
         typeBoosts,
         flavorBoosts,

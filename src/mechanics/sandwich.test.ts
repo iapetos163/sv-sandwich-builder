@@ -486,8 +486,8 @@ describe('makeSandwichForPower', () => {
 
     expect(sandwich).not.toBeNull();
 
-    const numHerba = sandwich!.condiments.filter(({ name }) =>
-      name.endsWith('Herba Mystica'),
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
     ).length;
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
@@ -505,13 +505,10 @@ describe('makeSandwichForPower', () => {
       level: 2,
     });
 
-    console.log(sandwich?.fillings.map((f) => f.name));
-    console.log(sandwich?.condiments.map((f) => f.name));
     expect(sandwich).not.toBeNull();
 
-    // Expected recipe: Tofu, Bitter Herba
-    const numHerba = sandwich!.condiments.filter(({ name }) =>
-      name.endsWith('Herba Mystica'),
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
     ).length;
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
@@ -520,5 +517,27 @@ describe('makeSandwichForPower', () => {
     expect(sandwich!.condiments.length).toBeGreaterThan(0);
     expect(numHerba).toBeLessThanOrEqual(1);
     expect(numIngredients).toBeLessThanOrEqual(2);
+  });
+
+  it('Produces a sandwich with Lv 2 Encounter Fire', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Encounter',
+      type: 'Fire',
+      level: 2,
+    });
+
+    // One acceptable recipe: 4x chorizo, 2x rice, 1x peanut butter
+    console.log(sandwich?.fillings.map((f) => f.name));
+    console.log(sandwich?.condiments.map((f) => f.name));
+    expect(sandwich).not.toBeNull();
+
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(numHerba).toBe(0);
+    expect(numIngredients).toBeLessThanOrEqual(7);
   });
 });

@@ -1,4 +1,8 @@
-import { getTargetLevelVector, getTargetTypeVector } from './powers';
+import {
+  getTargetLevelVector,
+  getTargetTypeVector,
+  rankMealPowerBoosts,
+} from './powers';
 
 describe('getTargetTypeVector', () => {
   it('Creates a vector with the correct components for Ground', () => {
@@ -25,5 +29,15 @@ describe('getTargetLevelVector', () => {
       [],
     );
     expect(v[1]).toBe(380);
+  });
+});
+
+describe('rankMealPowerBoosts', () => {
+  it('Considers an unboosted meal power when applying flavor boost', () => {
+    const ranked = rankMealPowerBoosts(
+      { Exp: 60, Item: 18, Encounter: 24, Egg: 4 },
+      'Catch',
+    );
+    expect(ranked[0].name).toBe('Catch');
   });
 });

@@ -136,10 +136,11 @@ export const makeGetRelativeTasteVector = (
       return scale(tasteVector, scaleFactor);
     };
   }
+  const highestFlavorBoostAmount = rankedFlavorBoosts[0].amount;
   if (boostedPower !== targetPower) {
     // Flavor needed to achieve desired power boost
     const maxNeeded =
-      rankedFlavorBoosts[0].amount -
+      highestFlavorBoostAmount -
       Math.min(
         ...componentFlavors[targetPower].map((f) => flavorBoosts[f] || 0),
       );
@@ -152,10 +153,13 @@ export const makeGetRelativeTasteVector = (
     };
   }
 
+  const runnerUpIndex = componentFlavors[targetPower].length;
+  const runnerUpBoostAmount = rankedFlavorBoosts[runnerUpIndex]?.amount || 0;
   // Difference between highest flavor and the runner up that threatens to change the boosted meal power
-  const dangerThreshold =
-    rankedFlavorBoosts[0].amount -
-    (rankedFlavorBoosts[componentFlavors[targetPower].length]?.amount || 0);
+  const dangerThreshold = Math.max(
+    highestFlavorBoostAmount - runnerUpBoostAmount,
+    1,
+  );
   return (tasteVector: number[]) =>
     mealPowers.map((mp, i) => {
       if (mp === targetPower) return 0;

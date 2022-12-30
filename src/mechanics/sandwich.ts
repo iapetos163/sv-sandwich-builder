@@ -117,8 +117,9 @@ const selectIngredient = ({
     ? getScoreWeight(targetLevelVector, deltaLevelVector, currentTypeVector)
     : 0;
 
-  // let bestMealPowerProduct = -Infinity;
-  // let bestTypeProduct = -Infinity;
+  let bestMealPowerProduct = -Infinity;
+  let bestTypeProduct = -Infinity;
+  let bestLevelProduct = -Infinity;
 
   const ingredientReducer = (
     agg: IngredientAggregation,
@@ -135,13 +136,14 @@ const selectIngredient = ({
     const relativeTasteVector = getRelativeTasteVector(
       ing.tasteMealPowerVector,
     );
-    const n1 = norm(ing.baseMealPowerVector);
+    const boostedMealPowerVector = add(
+      ing.baseMealPowerVector,
+      relativeTasteVector,
+    );
+    const n1 = norm(boostedMealPowerVector);
     const mealPowerProduct =
       checkMealPower && n1 !== 0
-        ? innerProduct(
-            add(ing.baseMealPowerVector, relativeTasteVector),
-            deltaMealPowerVector,
-          ) / n1
+        ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
 
     const n2 = norm(ing.typeVector);
@@ -158,8 +160,9 @@ const selectIngredient = ({
     if (ingScore <= agg.score) {
       return agg;
     }
-    // bestMealPowerProduct = mealPowerProduct;
-    // bestTypeProduct = typeProduct;
+    bestMealPowerProduct = mealPowerProduct;
+    bestTypeProduct = typeProduct;
+    bestLevelProduct = levelProduct;
     return {
       best: ing,
       score: ingScore,
@@ -175,25 +178,36 @@ const selectIngredient = ({
   );
   console.log(`Selecting ${bestIngredient.name}
   Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
-Target MP: ${targetMealPowerVector}
-Delta MP: ${deltaMealPowerVector}
-Current MP: ${currentBoostedMealPowerVector}
-Target T: ${targetTypeVector}
-Delta T: ${deltaTypeVector}
-Target L: ${targetLevelVector}
-Delta L: ${deltaLevelVector}
-Current T: ${currentTypeVector}`);
+  Raw scores: ${bestMealPowerProduct}, ${bestTypeProduct}, ${bestLevelProduct}
+
+  Target MP: ${targetMealPowerVector}
+  Delta MP: ${deltaMealPowerVector}
+  Current MP: ${currentBoostedMealPowerVector}
+  Target T: ${targetTypeVector}
+  Delta T: ${deltaTypeVector}
+  Target L: ${targetLevelVector}
+  Delta L: ${deltaLevelVector}
+  Current T: ${currentTypeVector}`);
 
   return bestIngredient;
 };
 
 // TODO: target more than one power
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
-  // const fillings = [...baseSandwich.ingredients];
-  // const condiments = [...baseSandwich.condiments];
+  console.log('~~~HAZ SANDWICH~~~');
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
   const skipFillings: Record<string, boolean> = {};
+  if (
+    targetPower.mealPower !== 'Sparkling' &&
+    targetPower.mealPower !== 'Title'
+  ) {
+    for (const ingredient of ingredients) {
+      if (ingredient.isHerbaMystica) {
+        skipFillings[ingredient.name] = true;
+      }
+    }
+  }
 
   let currentBaseMealPowerVector: number[] = [];
   let currentTypeVector: number[] = [];
@@ -214,6 +228,13 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     //     console.log(`Current MP (Boosted): ${currentBoostedMealPowerVector}
     // Current T: ${currentTypeVector}`);
+    // console.log(
+    //   'makeGet',
+    //   currentFlavorBoosts,
+    //   rankedFlavorBoosts,
+    //   boostedMealPower,
+    //   targetPower.mealPower,
+    // );
     const selectedPower = currentPowers[0];
     const newIngredient = selectIngredient({
       targetPower,
@@ -248,7 +269,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         (f) => f.name === newIngredient.name,
       ).length;
       const numPieces = numOfIngredient * newIngredient.pieces;
+      // console.log(newIngredient.name, numPieces);
       if (numPieces + newIngredient.pieces > maxPieces) {
+        // console.log('Skipping', newIngredient.name);
         skipFillings[newIngredient.name] = true;
       }
     } else {
@@ -263,12 +286,20 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     currentMealPowerBoosts = addBoosts(
       currentMealPowerBoosts,
       newIngredient.mealPowerBoosts,
+      newIngredient.pieces,
     );
     currentFlavorBoosts = addBoosts(
       currentFlavorBoosts,
       newIngredient.flavorBoosts,
+      newIngredient.pieces,
     );
-    currentTypeBoosts = addBoosts(currentTypeBoosts, newIngredient.typeBoosts);
+    currentTypeBoosts = addBoosts(
+      currentTypeBoosts,
+      newIngredient.typeBoosts,
+      newIngredient.pieces,
+    );
+
+    // console.log(currentMealPowerBoosts, boostedMealPower, currentTypeBoosts);
 
     currentPowers = evaluateBoosts(
       currentMealPowerBoosts,
