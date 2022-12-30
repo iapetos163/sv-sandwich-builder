@@ -269,7 +269,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         (f) => f.name === newIngredient.name,
       ).length;
       const numPieces = numOfIngredient * newIngredient.pieces;
+      // console.log(newIngredient.name, numPieces);
       if (numPieces + newIngredient.pieces > maxPieces) {
+        // console.log('Skipping', newIngredient.name);
         skipFillings[newIngredient.name] = true;
       }
     } else {
@@ -284,14 +286,20 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     currentMealPowerBoosts = addBoosts(
       currentMealPowerBoosts,
       newIngredient.mealPowerBoosts,
+      newIngredient.pieces,
     );
     currentFlavorBoosts = addBoosts(
       currentFlavorBoosts,
       newIngredient.flavorBoosts,
+      newIngredient.pieces,
     );
-    currentTypeBoosts = addBoosts(currentTypeBoosts, newIngredient.typeBoosts);
+    currentTypeBoosts = addBoosts(
+      currentTypeBoosts,
+      newIngredient.typeBoosts,
+      newIngredient.pieces,
+    );
 
-    console.log(currentMealPowerBoosts, boostedMealPower, currentTypeBoosts);
+    // console.log(currentMealPowerBoosts, boostedMealPower, currentTypeBoosts);
 
     currentPowers = evaluateBoosts(
       currentMealPowerBoosts,

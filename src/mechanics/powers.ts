@@ -144,10 +144,11 @@ const calculateLevels = (types: TypeBoost[]): [number, number, number] => {
 export const addBoosts = <T extends string>(
   baseBoosts: Partial<Record<T, number>>,
   newBoosts: Partial<Record<T, number>>,
+  pieces: number,
 ) => {
   const result = { ...baseBoosts };
   for (const key of Object.keys(newBoosts) as T[]) {
-    result[key] = (result[key] || 0) + newBoosts[key]!;
+    result[key] = (result[key] || 0) + newBoosts[key]! * pieces;
   }
   return result;
 };
