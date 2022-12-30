@@ -133,6 +133,7 @@ const selectIngredient = ({
       return agg;
     }
 
+    // Fixme: taste meal power vector depends on current flavor boosts
     const relativeTasteVector = getRelativeTasteVector(
       ing.tasteMealPowerVector,
     );
@@ -140,13 +141,13 @@ const selectIngredient = ({
       ing.baseMealPowerVector,
       relativeTasteVector,
     );
-    const n1 = norm(boostedMealPowerVector);
+    const n1 = norm(boostedMealPowerVector.map((c) => (c > 0 ? c : 0)));
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
 
-    const n2 = norm(ing.typeVector);
+    const n2 = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
@@ -157,6 +158,19 @@ const selectIngredient = ({
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
+    //   if (
+    //     ing.name === 'Banana' ||
+    //     ing.name === 'Cherry Tomatoes' ||
+    //     ing.name === 'Jam'
+    //   ) {
+    //     console.debug(
+    //       `${ing.name}:
+    // Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
+    // Taste meal power vector: ${ing.tasteMealPowerVector},
+    // Relative taste vector: ${relativeTasteVector}
+    // Boosted meal power vector: ${boostedMealPowerVector}`,
+    //     );
+    //   }
     if (ingScore <= agg.score) {
       return agg;
     }
@@ -176,7 +190,7 @@ const selectIngredient = ({
       score: -Infinity,
     },
   );
-  console.log(`Selecting ${bestIngredient.name}
+  console.debug(`Selecting ${bestIngredient.name}
   Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
   Raw scores: ${bestMealPowerProduct}, ${bestTypeProduct}, ${bestLevelProduct}
 
