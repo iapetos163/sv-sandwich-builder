@@ -128,7 +128,7 @@ const main = async () => {
         isHerbaMystica: false,
         imagePath: basename(imageUrl),
         imageUrl,
-        pieces: 1,
+        pieces,
         mealPowerBoosts,
         typeBoosts,
         flavorBoosts,
