@@ -45,21 +45,6 @@ const tasteMap: Record<Flavor, Record<Flavor, MealPower>> = {
   },
 };
 
-/*
-const componentFlavors: Record<MealPower, Flavor[]> = {
-  Egg: ['Sweet'],
-  Humungo: ['Hot'],
-  Teensy: ['Sour'],
-  Item: ['Bitter'],
-  Encounter: ['Salty'],
-  Exp: ['Bitter', 'Salty'],
-  Catch: ['Sweet', 'Sour'],
-  Raid: ['Sweet', 'Hot'],
-  Title: [],
-  Sparkling: [],
-};
-*/
-
 const primaryFlavorsForPower: Record<MealPower, Flavor | null> = {
   Egg: 'Sweet',
   Humungo: 'Hot',
@@ -86,6 +71,21 @@ const secondaryFlavorsForPower: Record<MealPower, Flavor[]> = {
   Sparkling: [],
 };
 
+/*
+  const componentFlavors: Record<MealPower, Flavor[]> = {
+    Egg: ['Sweet'],
+    Humungo: ['Hot'],
+    Teensy: ['Sour'],
+    Item: ['Bitter'],
+    Encounter: ['Salty'],
+    Exp: ['Bitter', 'Salty'],
+    Catch: ['Sweet', 'Sour'],
+    Raid: ['Sweet', 'Hot'],
+    Title: [],
+    Sparkling: [],
+  };
+  */
+
 export const secondaryTasteVectors: Record<Flavor, number[]> = {
   Sweet: mealPowers.map((mp) => {
     switch (mp) {
@@ -96,12 +96,13 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
       case 'Sparkling':
         return 0;
     }
-    return 0;
+    return -1;
   }),
   Hot: mealPowers.map((mp) => {
     switch (mp) {
-      case 'Humungo':
+      case 'Raid':
         return 1;
+      case 'Humungo':
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -112,7 +113,6 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Item':
       case 'Exp':
-        return 1;
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -121,8 +121,9 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
   }),
   Sour: mealPowers.map((mp) => {
     switch (mp) {
-      case 'Teensy':
+      case 'Catch':
         return 1;
+      case 'Teensy':
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -131,8 +132,9 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
   }),
   Salty: mealPowers.map((mp) => {
     switch (mp) {
-      case 'Encounter':
+      case 'Exp':
         return 1;
+      case 'Encounter':
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -158,6 +160,7 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Humungo':
         return 1;
+      // case 'Raid':
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -179,6 +182,7 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Teensy':
         return 1;
+      // case 'Catch':
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -189,6 +193,7 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Encounter':
         return 1;
+      // case 'Exp':
       case 'Title':
       case 'Sparkling':
         return 0;
