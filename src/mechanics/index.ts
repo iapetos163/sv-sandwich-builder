@@ -1,5 +1,5 @@
 export { mealPowerHasType, simplifyTypeVector } from './powers';
-export { tasteVectors } from './taste';
+export { primaryTasteVectors, secondaryTasteVectors } from './taste';
 export { makeSandwichForPower } from './sandwich';
 
 export type { Power } from './powers';

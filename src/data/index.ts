@@ -8,7 +8,8 @@ export interface Ingredient {
   typeBoosts: Partial<Record<TypeName, number>>;
   flavorBoosts: Partial<Record<Flavor, number>>;
   baseMealPowerVector: number[];
-  tasteMealPowerVector: number[];
+  primaryTasteMealPowerVector: number[];
+  secondaryTasteMealPowerVector: number[];
   typeVector: number[];
   imagePath: string;
   pieces: number;

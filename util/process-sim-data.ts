@@ -4,7 +4,7 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
-import { tasteVectors } from '../src/mechanics';
+import { primaryTasteVectors, secondaryTasteVectors } from '../src/mechanics';
 import {
   Flavor,
   mealPowers,
@@ -23,7 +23,8 @@ type IngredientEntry = {
   typeBoosts: Record<TypeName, number>;
   flavorBoosts: Record<Flavor, number>;
   baseMealPowerVector: number[];
-  tasteMealPowerVector: number[];
+  primaryTasteMealPowerVector: number[];
+  secondaryTasteMealPowerVector: number[];
   typeVector: number[];
   imagePath: string;
   imageUrl: string;
@@ -78,8 +79,14 @@ const main = async () => {
       const baseMealPowerVector = mealPowers.map(
         (mp) => mealPowerBoosts[mp] ?? 0,
       );
-      const tasteMealPowerVector = tastes.reduce<number[]>(
-        (sum, c) => add(sum, scale(tasteVectors[c.flavor as Flavor], c.amount)),
+      const primaryTasteMealPowerVector = tastes.reduce<number[]>(
+        (sum, c) =>
+          add(sum, scale(primaryTasteVectors[c.flavor as Flavor], c.amount)),
+        [],
+      );
+      const secondaryTasteMealPowerVector = tastes.reduce<number[]>(
+        (sum, c) =>
+          add(sum, scale(secondaryTasteVectors[c.flavor as Flavor], c.amount)),
         [],
       );
       const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
@@ -95,7 +102,8 @@ const main = async () => {
         flavorBoosts,
         typeVector,
         baseMealPowerVector,
-        tasteMealPowerVector,
+        primaryTasteMealPowerVector,
+        secondaryTasteMealPowerVector,
         ingredientType: 'condiment',
       };
     },
@@ -110,9 +118,20 @@ const main = async () => {
       const baseMealPowerVector = mealPowers.map((mp) =>
         mealPowerBoosts[mp] ? mealPowerBoosts[mp] * pieces : 0,
       );
-      const tasteMealPowerVector = tastes.reduce<number[]>(
+      const primaryTasteMealPowerVector = tastes.reduce<number[]>(
         (sum, f) =>
-          add(sum, scale(tasteVectors[f.flavor as Flavor], f.amount * pieces)),
+          add(
+            sum,
+            scale(primaryTasteVectors[f.flavor as Flavor], f.amount * pieces),
+          ),
+        [],
+      );
+      const secondaryTasteMealPowerVector = tastes.reduce<number[]>(
+        (sum, f) =>
+          add(
+            sum,
+            scale(secondaryTasteVectors[f.flavor as Flavor], f.amount * pieces),
+          ),
         [],
       );
       const typeVector = allTypes.map((t) =>
@@ -130,7 +149,8 @@ const main = async () => {
         flavorBoosts,
         typeVector,
         baseMealPowerVector,
-        tasteMealPowerVector,
+        primaryTasteMealPowerVector,
+        secondaryTasteMealPowerVector,
         ingredientType: 'filling',
       };
     },

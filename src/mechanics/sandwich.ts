@@ -1,6 +1,7 @@
 import { ingredients, Ingredient } from '../data';
 import { Flavor, MealPower, TypeName } from '../strings';
 import { add, diff, innerProduct, norm } from '../vector-math';
+import { Boosts } from './boost';
 import {
   addBoosts,
   boostMealPowerVector,
@@ -14,7 +15,7 @@ import {
   powerToString,
 } from './powers';
 import {
-  makeGetRelativeTasteVector,
+  getRelativeTasteVector,
   getBoostedMealPower,
   rankFlavorBoosts,
   FlavorBoost,
@@ -38,7 +39,7 @@ interface SelectIngredientProps {
   allowFillings: boolean;
   allowCondiments: boolean;
   skipFillings: Record<string, boolean>;
-  getRelativeTasteVector(base: number[]): number[];
+  currentFlavorBoosts: Boosts<Flavor>;
 }
 
 type IngredientAggregation = {
@@ -77,8 +78,8 @@ const getScoreWeight = (
 const selectIngredient = ({
   targetPower,
   currentBoostedMealPowerVector,
-  getRelativeTasteVector,
   currentTypeVector,
+  currentFlavorBoosts,
   checkMealPower,
   checkType,
   checkLevel,
@@ -134,9 +135,12 @@ const selectIngredient = ({
       return agg;
     }
 
-    const relativeTasteVector = getRelativeTasteVector(
-      ing.tasteMealPowerVector,
-    );
+    const relativeTasteVector = getRelativeTasteVector({
+      currentFlavorBoosts,
+      targetPower: targetPower.mealPower,
+      primaryTasteVector: ing.primaryTasteMealPowerVector,
+      secondaryTasteVector: ing.secondaryTasteMealPowerVector,
+    });
     const boostedMealPowerVector = add(
       ing.baseMealPowerVector,
       relativeTasteVector,
@@ -267,12 +271,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       allowCondiments:
         condiments.length < maxCondiments &&
         (!targetPowerFound || condiments.length === 0),
-      getRelativeTasteVector: makeGetRelativeTasteVector(
-        currentFlavorBoosts,
-        rankedFlavorBoosts,
-        boostedMealPower,
-        targetPower.mealPower,
-      ),
+      currentFlavorBoosts,
       skipFillings,
     });
 

@@ -568,11 +568,80 @@ describe('makeSandwichForPower', () => {
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
 
-    // console.debug(
-    //   `${sandwich!.fillings
-    //     .map((f) => f.name)
-    //     .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
-    // );
     expect(numIngredients).toBeLessThanOrEqual(8);
   });
+
+  it('Produces a sandwich with Lv 2 Exp Dark', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Exp',
+      type: 'Dark',
+      level: 2,
+    });
+
+    // 4x Herbed Sausage, 2x Potato Salad, Yogurt
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(numIngredients).toBeLessThanOrEqual(7);
+  });
+  it('Produces a sandwich with Lv 2 Humungo Dragon', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Humungo',
+      type: 'Dragon',
+      level: 2,
+    });
+
+    // 4x Chorizo, Potato Salad, Jalapeno, 2x Vinegar
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(numIngredients).toBeLessThanOrEqual(8);
+  });
+
+  it('Produces a sandwich with Lv 2 Item Electric', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Item',
+      type: 'Electric',
+      level: 2,
+    });
+
+    // 4x Chorizo, 2x Yellow Pepper, 2x Vinegar, Marmalade
+    // were back to where we were w flavor vectors
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    console.debug(
+      `${sandwich!.fillings
+        .map((f) => f.name)
+        .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
+    );
+    expect(numIngredients).toBeLessThanOrEqual(9);
+  });
+
+  // it('Produces a sandwich with Lv 2 mp t', () => {
+  //   const sandwich = makeSandwichForPower({
+  //     mealPower: 'Catch',
+  //     type: 'Bug',
+  //     level: 2,
+  //   });
+
+  //   //
+  //   expect(sandwich).not.toBeNull();
+
+  //   const numIngredients =
+  //     sandwich!.condiments.length + sandwich!.fillings.length;
+
+  //   console.debug(
+  //     `${sandwich!.fillings
+  //       .map((f) => f.name)
+  //       .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
+  //   );
+  //   expect(numIngredients).toBeLessThanOrEqual(7);
+  // });
 });

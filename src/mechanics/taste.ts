@@ -1,5 +1,6 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
-import { scale } from '../vector-math';
+import { add, scale } from '../vector-math';
+import { boostsEqual } from './boost';
 
 export interface FlavorBoost {
   name: Flavor;
@@ -44,19 +45,7 @@ const tasteMap: Record<Flavor, Record<Flavor, MealPower>> = {
   },
 };
 
-const powerFactors: Record<MealPower, number> = {
-  Egg: 1,
-  Humungo: 1,
-  Teensy: 1,
-  Item: 1,
-  Encounter: 1,
-  Catch: Math.SQRT1_2,
-  Raid: Math.SQRT1_2,
-  Exp: Math.SQRT1_2,
-  Title: 0,
-  Sparkling: 0,
-};
-
+/*
 const componentFlavors: Record<MealPower, Flavor[]> = {
   Egg: ['Sweet'],
   Humungo: ['Hot'],
@@ -69,33 +58,142 @@ const componentFlavors: Record<MealPower, Flavor[]> = {
   Title: [],
   Sparkling: [],
 };
+*/
 
-export const tasteVectors: Record<Flavor, number[]> = {
+const primaryFlavorsForPower: Record<MealPower, Flavor | null> = {
+  Egg: 'Sweet',
+  Humungo: 'Hot',
+  Teensy: 'Sour',
+  Item: 'Bitter',
+  Encounter: 'Salty',
+  Exp: 'Bitter',
+  Catch: 'Sweet',
+  Raid: 'Sweet',
+  Title: null,
+  Sparkling: null,
+};
+
+const secondaryFlavorsForPower: Record<MealPower, Flavor[]> = {
+  Egg: ['Salty', 'Bitter'],
+  Humungo: [],
+  Teensy: [],
+  Item: ['Hot', 'Sour', 'Sweet'],
+  Encounter: [],
+  Exp: ['Salty'],
+  Catch: ['Sour'],
+  Raid: ['Hot'],
+  Title: [],
+  Sparkling: [],
+};
+
+export const secondaryTasteVectors: Record<Flavor, number[]> = {
   Sweet: mealPowers.map((mp) => {
-    if (mp === 'Egg' || mp === 'Catch' || mp === 'Raid')
-      return powerFactors[mp];
-    if (mp === 'Humungo' || mp === 'Teensy') return -powerFactors[mp];
+    switch (mp) {
+      case 'Egg':
+      case 'Catch':
+      case 'Raid':
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
     return 0;
   }),
   Hot: mealPowers.map((mp) => {
-    if (mp === 'Humungo' || mp === 'Raid') return powerFactors[mp];
-    if (mp === 'Egg') return -powerFactors[mp];
-    return 0;
+    switch (mp) {
+      case 'Humungo':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
   }),
   Bitter: mealPowers.map((mp) => {
-    if (mp === 'Item' || mp === 'Exp') return powerFactors[mp];
-    if (mp === 'Encounter') return -powerFactors[mp];
-    return 0;
+    switch (mp) {
+      case 'Item':
+      case 'Exp':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
   }),
   Sour: mealPowers.map((mp) => {
-    if (mp === 'Teensy' || mp === 'Catch') return powerFactors[mp];
-    if (mp === 'Egg') return -powerFactors[mp];
-    return 0;
+    switch (mp) {
+      case 'Teensy':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
   }),
   Salty: mealPowers.map((mp) => {
-    if (mp === 'Encounter' || mp === 'Exp') return powerFactors[mp];
-    if (mp === 'Item') return -powerFactors[mp];
-    return 0;
+    switch (mp) {
+      case 'Encounter':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
+  }),
+};
+
+export const primaryTasteVectors: Record<Flavor, number[]> = {
+  Sweet: mealPowers.map((mp) => {
+    switch (mp) {
+      case 'Egg':
+      case 'Catch':
+      case 'Raid':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
+  }),
+  Hot: mealPowers.map((mp) => {
+    switch (mp) {
+      case 'Humungo':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
+  }),
+  Bitter: mealPowers.map((mp) => {
+    switch (mp) {
+      case 'Item':
+      case 'Exp':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
+  }),
+  Sour: mealPowers.map((mp) => {
+    switch (mp) {
+      case 'Teensy':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
+  }),
+  Salty: mealPowers.map((mp) => {
+    switch (mp) {
+      case 'Encounter':
+        return 1;
+      case 'Title':
+      case 'Sparkling':
+        return 0;
+    }
+    return -1;
   }),
 };
 
@@ -121,42 +219,104 @@ export const rankFlavorBoosts = (
     )
     .map(([f, v]) => ({ name: f as Flavor, amount: v }));
 
-export const makeGetRelativeTasteVector = (
-  flavorBoosts: Partial<Record<Flavor, number>>,
-  rankedFlavorBoosts: FlavorBoost[],
-  boostedPower: MealPower | null,
-  targetPower: MealPower,
-) => {
-  const targetIndex = mealPowers.indexOf(targetPower);
+export interface RelativeTasteVectorProps {
+  currentFlavorBoosts: Partial<Record<Flavor, number>>;
+  primaryTasteVector: number[];
+  secondaryTasteVector: number[];
+  targetPower: MealPower;
+}
 
-  const highestFlavorBoostAmount = rankedFlavorBoosts[0]?.amount || 0;
-  if (boostedPower !== targetPower) {
-    // Flavor needed to achieve desired power boost
-    const maxNeeded =
-      highestFlavorBoostAmount -
-      Math.min(
-        ...componentFlavors[targetPower].map((f) => flavorBoosts[f] || 0),
-      ) +
-      1;
+export const getRelativeTasteVector = (() => {
+  // todo: memoize by currentFlavorBoosts, currentRankedFlavorBoosts, boostedPower, targetPower
+  // memoize independently: ing
 
-    return (tasteVector: number[]) => {
-      const targetComponent = tasteVector[targetIndex] || 0;
-      const invScaleFactor = Math.max(maxNeeded, Math.abs(targetComponent));
-      if (invScaleFactor === 0) return tasteVector;
-      return scale(tasteVector, 100 / invScaleFactor);
-    };
-  }
+  let memoRankFlavorBoosts = (
+    flavorBoosts: Partial<Record<Flavor, number>>,
+  ) => {
+    const res = rankFlavorBoosts(flavorBoosts);
+    const thisFn = memoRankFlavorBoosts;
+    memoRankFlavorBoosts = (b: Partial<Record<Flavor, number>>) =>
+      boostsEqual(flavorBoosts, b) ? res : thisFn(b);
+    return res;
+  };
 
-  const runnerUpIndex = componentFlavors[targetPower].length;
-  const runnerUpBoostAmount = rankedFlavorBoosts[runnerUpIndex]?.amount || 0;
-  // Difference between highest flavor and the runner up that threatens to change the boosted meal power
-  const dangerThreshold = Math.max(
-    highestFlavorBoostAmount - runnerUpBoostAmount,
-    1,
-  );
-  return (tasteVector: number[]) =>
-    mealPowers.map((mp, i) => {
-      if (mp === targetPower) return 0;
-      return tasteVector[i] ? (tasteVector[i] * 100) / dangerThreshold : 0;
-    });
-};
+  return ({
+    currentFlavorBoosts,
+    targetPower,
+    primaryTasteVector,
+    secondaryTasteVector,
+  }: RelativeTasteVectorProps) => {
+    const primaryFlavor = primaryFlavorsForPower[targetPower];
+    const secondaryFlavors = secondaryFlavorsForPower[targetPower];
+    if (!primaryFlavor) return [];
+
+    const currentRankedFlavorBoosts = memoRankFlavorBoosts(currentFlavorBoosts);
+    const targetIndex = mealPowers.indexOf(targetPower);
+
+    const highestBoostAmount = currentRankedFlavorBoosts[0]?.amount || 0;
+    const highestBoostedFlavor = currentRankedFlavorBoosts[0]?.name;
+    const secondHighestBoostAmount = currentRankedFlavorBoosts[1]?.amount || 0;
+    const secondHighestBoostedFlavor = currentRankedFlavorBoosts[1]?.name;
+    const thirdHighestBoostAmount = currentRankedFlavorBoosts[2]?.amount || 0;
+
+    let primaryVector: number[];
+    if (highestBoostedFlavor !== primaryFlavor) {
+      // Flavor needed to achieve desired power boost
+      // Assumption: needed > 0
+      const needed =
+        highestBoostAmount - (currentFlavorBoosts[primaryFlavor] || 0) + 1;
+
+      const targetComponent = primaryTasteVector[targetIndex] || 0;
+      const invScaleFactor = Math.max(needed, needed - targetComponent);
+      primaryVector = scale(primaryTasteVector, 100 / invScaleFactor);
+    } else {
+      // Difference between highest flavor and the runner up that threatens to change the boosted meal power
+      const dangerThreshold = Math.max(
+        highestBoostAmount - secondHighestBoostAmount,
+        1,
+      );
+      primaryVector = mealPowers.map((mp, i) => {
+        if (mp === targetPower) return 0;
+        return primaryTasteVector[i]
+          ? (primaryTasteVector[i] * 100) / dangerThreshold
+          : 0;
+      });
+    }
+
+    if (secondaryFlavors.length === 0) return primaryVector;
+
+    let halfSecondaryVector: number[];
+    if (!flavors.includes(secondHighestBoostedFlavor)) {
+      const flavorSum = flavors.reduce<number[]>((sum, flavor) => {
+        // Flavor needed to achieve desired power boost
+        // Assumption: needed > 0
+        const needed =
+          secondHighestBoostAmount - (currentFlavorBoosts[flavor] || 0) + 1;
+
+        const targetComponent = secondaryTasteVector[targetIndex] || 0;
+        const invScaleFactor = Math.max(needed, needed - targetComponent);
+        const tasteVector = scale(secondaryTasteVector, 50 / invScaleFactor);
+        return add(sum, tasteVector);
+      }, []);
+
+      halfSecondaryVector = scale(flavorSum, 1 / flavors.length);
+    } else {
+      // Difference between highest flavor and the runner up that threatens to change the boosted meal power
+      const dangerThreshold = Math.max(
+        Math.min(
+          highestBoostAmount - secondHighestBoostAmount,
+          secondHighestBoostAmount - thirdHighestBoostAmount,
+        ),
+        1,
+      );
+      halfSecondaryVector = mealPowers.map((mp, i) => {
+        if (mp === targetPower) return 0;
+        return secondaryTasteVector[i]
+          ? (secondaryTasteVector[i] * 50) / dangerThreshold
+          : 0;
+      });
+    }
+
+    return add(scale(primaryVector, 0.5), halfSecondaryVector);
+  };
+})();
