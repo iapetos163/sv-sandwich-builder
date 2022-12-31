@@ -1,5 +1,6 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
 import { add, scale } from '../vector-math';
+import { addBoosts } from './powers';
 
 interface FlavorBoost {
   name: Flavor;
@@ -139,35 +140,26 @@ export const makeGetRelativeTasteVector = (
   targetPower: MealPower,
 ) => {
   const targetIndex = mealPowers.indexOf(targetPower);
-  if (!boostedPower) {
-    return (
-      ingFlavorBoosts: Partial<Record<Flavor, number>>,
-      pieces: number,
-    ) => {
-      const tasteVector = getTasteVector(ingFlavorBoosts, pieces);
-      const targetComponent = tasteVector[targetIndex] || 0;
-      if (targetComponent === 0) return tasteVector;
-      const scaleFactor = Math.abs(100 / targetComponent);
-      return scale(tasteVector, scaleFactor);
-    };
-  }
-  const highestFlavorBoostAmount = rankedFlavorBoosts[0].amount;
+
+  const highestFlavorBoostAmount = rankedFlavorBoosts[0]?.amount || 0;
   if (boostedPower !== targetPower) {
     // Flavor needed to achieve desired power boost
     const maxNeeded =
       highestFlavorBoostAmount -
       Math.min(
         ...componentFlavors[targetPower].map((f) => flavorBoosts[f] || 0),
-      );
+      ) +
+      1;
 
     return (
       ingFlavorBoosts: Partial<Record<Flavor, number>>,
       pieces: number,
     ) => {
+      // const addedBoosts = addBoosts(flavorBoosts, ingFlavorBoosts, pieces);
       const tasteVector = getTasteVector(ingFlavorBoosts, pieces);
       const targetComponent = tasteVector[targetIndex] || 0;
       const invScaleFactor = Math.max(maxNeeded, Math.abs(targetComponent));
-      if (invScaleFactor === 0) return tasteVector;
+      if (invScaleFactor === 0) return tasteVector; //
       return scale(tasteVector, 100 / invScaleFactor);
     };
   }
