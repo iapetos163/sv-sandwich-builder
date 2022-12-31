@@ -101,7 +101,7 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
   Hot: mealPowers.map((mp) => {
     switch (mp) {
       case 'Raid':
-        return 1;
+        return 0.5;
       case 'Humungo':
       case 'Title':
       case 'Sparkling':
@@ -122,7 +122,7 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
   Sour: mealPowers.map((mp) => {
     switch (mp) {
       case 'Catch':
-        return 1;
+        return 0.5;
       case 'Teensy':
       case 'Title':
       case 'Sparkling':
@@ -133,7 +133,7 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
   Salty: mealPowers.map((mp) => {
     switch (mp) {
       case 'Exp':
-        return 1;
+        return 0.5;
       case 'Encounter':
       case 'Title':
       case 'Sparkling':
@@ -147,9 +147,10 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
   Sweet: mealPowers.map((mp) => {
     switch (mp) {
       case 'Egg':
+        return 1;
       case 'Catch':
       case 'Raid':
-        return 1;
+        return 0.5;
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -160,7 +161,7 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Humungo':
         return 1;
-      // case 'Raid':
+      case 'Raid':
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -170,8 +171,9 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
   Bitter: mealPowers.map((mp) => {
     switch (mp) {
       case 'Item':
-      case 'Exp':
         return 1;
+      case 'Exp':
+        return 0.5;
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -182,7 +184,7 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Teensy':
         return 1;
-      // case 'Catch':
+      case 'Catch':
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -193,7 +195,7 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Encounter':
         return 1;
-      // case 'Exp':
+      case 'Exp':
       case 'Title':
       case 'Sparkling':
         return 0;
