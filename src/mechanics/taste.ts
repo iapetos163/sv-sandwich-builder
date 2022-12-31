@@ -1,5 +1,5 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
-import { scale } from '../vector-math';
+import { add, scale } from '../vector-math';
 
 interface FlavorBoost {
   name: Flavor;
@@ -121,6 +121,17 @@ export const rankFlavorBoosts = (
     )
     .map(([f, v]) => ({ name: f as Flavor, amount: v }));
 
+const foomoo = (
+  flavorBoosts: Partial<Record<Flavor, number>>,
+  pieces: number,
+) =>
+  Object.entries(flavorBoosts).reduce<number[]>(
+    (sum, [flavor, amount]) =>
+      add(sum, scale(tasteVectors[flavor as Flavor], amount * pieces)),
+    [],
+  );
+
+// Fixme: taste meal power vector depends on current flavor boosts
 export const makeGetRelativeTasteVector = (
   flavorBoosts: Partial<Record<Flavor, number>>,
   rankedFlavorBoosts: FlavorBoost[],
@@ -129,7 +140,11 @@ export const makeGetRelativeTasteVector = (
 ) => {
   const targetIndex = mealPowers.indexOf(targetPower);
   if (!boostedPower) {
-    return (tasteVector: number[]) => {
+    return (
+      ingFlavorBoosts: Partial<Record<Flavor, number>>,
+      pieces: number,
+    ) => {
+      const tasteVector = foomoo(ingFlavorBoosts, pieces);
       const targetComponent = tasteVector[targetIndex] || 0;
       if (targetComponent === 0) return tasteVector;
       const scaleFactor = Math.abs(100 / targetComponent);
@@ -145,7 +160,11 @@ export const makeGetRelativeTasteVector = (
         ...componentFlavors[targetPower].map((f) => flavorBoosts[f] || 0),
       );
 
-    return (tasteVector: number[]) => {
+    return (
+      ingFlavorBoosts: Partial<Record<Flavor, number>>,
+      pieces: number,
+    ) => {
+      const tasteVector = foomoo(ingFlavorBoosts, pieces);
       const targetComponent = tasteVector[targetIndex] || 0;
       const invScaleFactor = Math.max(maxNeeded, Math.abs(targetComponent));
       if (invScaleFactor === 0) return tasteVector;
@@ -160,9 +179,11 @@ export const makeGetRelativeTasteVector = (
     highestFlavorBoostAmount - runnerUpBoostAmount,
     1,
   );
-  return (tasteVector: number[]) =>
-    mealPowers.map((mp, i) => {
+  return (ingFlavorBoosts: Partial<Record<Flavor, number>>, pieces: number) => {
+    const tasteVector = foomoo(ingFlavorBoosts, pieces);
+    return mealPowers.map((mp, i) => {
       if (mp === targetPower) return 0;
       return tasteVector[i] ? (tasteVector[i] * 100) / dangerThreshold : 0;
     });
+  };
 };

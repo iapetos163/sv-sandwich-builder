@@ -37,7 +37,10 @@ interface SelectIngredientProps {
   allowFillings: boolean;
   allowCondiments: boolean;
   skipFillings: Record<string, boolean>;
-  getRelativeTasteVector(base: number[]): number[];
+  getRelativeTasteVector(
+    ingFlavorBoosts: Partial<Record<Flavor, number>>,
+    pieces: number,
+  ): number[];
 }
 
 type IngredientAggregation = {
@@ -133,9 +136,9 @@ const selectIngredient = ({
       return agg;
     }
 
-    // Fixme: taste meal power vector depends on current flavor boosts
     const relativeTasteVector = getRelativeTasteVector(
-      ing.tasteMealPowerVector,
+      ing.flavorBoosts,
+      ing.pieces,
     );
     const boostedMealPowerVector = add(
       ing.baseMealPowerVector,
