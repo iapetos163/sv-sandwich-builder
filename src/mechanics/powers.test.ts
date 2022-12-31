@@ -1,6 +1,7 @@
 import {
   getTargetLevelVector,
   getTargetTypeVector,
+  powersMatch,
   rankMealPowerBoosts,
 } from './powers';
 
@@ -39,5 +40,24 @@ describe('rankMealPowerBoosts', () => {
       'Catch',
     );
     expect(ranked[0].name).toBe('Catch');
+  });
+});
+
+describe('powersMatch', () => {
+  it('Handles typeless powers', () => {
+    const match = powersMatch(
+      {
+        mealPower: 'Egg',
+        type: 'Fighting',
+        level: 2,
+      },
+      {
+        mealPower: 'Egg',
+        type: 'Bug',
+        level: 2,
+      },
+    );
+
+    expect(match).toBe(true);
   });
 });
