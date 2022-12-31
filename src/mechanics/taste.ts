@@ -121,7 +121,7 @@ export const rankFlavorBoosts = (
     )
     .map(([f, v]) => ({ name: f as Flavor, amount: v }));
 
-const foomoo = (
+const getTasteVector = (
   flavorBoosts: Partial<Record<Flavor, number>>,
   pieces: number,
 ) =>
@@ -144,7 +144,7 @@ export const makeGetRelativeTasteVector = (
       ingFlavorBoosts: Partial<Record<Flavor, number>>,
       pieces: number,
     ) => {
-      const tasteVector = foomoo(ingFlavorBoosts, pieces);
+      const tasteVector = getTasteVector(ingFlavorBoosts, pieces);
       const targetComponent = tasteVector[targetIndex] || 0;
       if (targetComponent === 0) return tasteVector;
       const scaleFactor = Math.abs(100 / targetComponent);
@@ -164,7 +164,7 @@ export const makeGetRelativeTasteVector = (
       ingFlavorBoosts: Partial<Record<Flavor, number>>,
       pieces: number,
     ) => {
-      const tasteVector = foomoo(ingFlavorBoosts, pieces);
+      const tasteVector = getTasteVector(ingFlavorBoosts, pieces);
       const targetComponent = tasteVector[targetIndex] || 0;
       const invScaleFactor = Math.max(maxNeeded, Math.abs(targetComponent));
       if (invScaleFactor === 0) return tasteVector;
@@ -180,7 +180,7 @@ export const makeGetRelativeTasteVector = (
     1,
   );
   return (ingFlavorBoosts: Partial<Record<Flavor, number>>, pieces: number) => {
-    const tasteVector = foomoo(ingFlavorBoosts, pieces);
+    const tasteVector = getTasteVector(ingFlavorBoosts, pieces);
     return mealPowers.map((mp, i) => {
       if (mp === targetPower) return 0;
       return tasteVector[i] ? (tasteVector[i] * 100) / dangerThreshold : 0;
