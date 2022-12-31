@@ -216,7 +216,7 @@ export const evaluateBoosts = (
 export const powersMatch = (test: Power, target: Power) =>
   test.level >= target.level &&
   test.mealPower === target.mealPower &&
-  test.type === target.type;
+  (!mealPowerHasType(test.mealPower) || test.type === target.type);
 
 export const powerToString = (p: Power) => {
   if (!mealPowerHasType(p.mealPower)) {

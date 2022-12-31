@@ -527,8 +527,6 @@ describe('makeSandwichForPower', () => {
     });
 
     // One acceptable recipe: 4x chorizo, 2x rice, 1x peanut butter
-    console.log(sandwich?.fillings.map((f) => f.name));
-    console.log(sandwich?.condiments.map((f) => f.name));
     expect(sandwich).not.toBeNull();
 
     const numHerba = sandwich!.condiments.filter(
@@ -539,5 +537,42 @@ describe('makeSandwichForPower', () => {
 
     expect(numHerba).toBe(0);
     expect(numIngredients).toBeLessThanOrEqual(7);
+  });
+
+  it('Produces a sandwich with Lv 2 Catch Bug', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Catch',
+      type: 'Bug',
+      level: 2,
+    });
+
+    // One viable recipe: 4x chorizo, 1x cherry tomato, 1x banana, 3x jam
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(numIngredients).toBeLessThanOrEqual(9);
+  });
+
+  it('Produces a sandwich with Lv 2 Egg', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Egg',
+      type: 'Bug',
+      level: 2,
+    });
+
+    // 4x Chorizo, 2x Banana, 2x Whippped Cream
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    // console.debug(
+    //   `${sandwich!.fillings
+    //     .map((f) => f.name)
+    //     .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
+    // );
+    expect(numIngredients).toBeLessThanOrEqual(8);
   });
 });

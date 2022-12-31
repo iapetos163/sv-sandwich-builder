@@ -10,7 +10,6 @@ export interface Ingredient {
   baseMealPowerVector: number[];
   tasteMealPowerVector: number[];
   typeVector: number[];
-  diffTypeVector: number[];
   imagePath: string;
   pieces: number;
   ingredientType: 'filling' | 'condiment';
