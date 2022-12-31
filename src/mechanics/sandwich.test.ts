@@ -548,18 +548,31 @@ describe('makeSandwichForPower', () => {
 
     // One viable recipe: 4x chorizo, 1x cherry tomato, 1x banana, 3x jam
     expect(sandwich).not.toBeNull();
-    // chorizo, chorizo, chorizo, chorizo,
-    // fried fillet, cherry tomato,
-    // jam, jam, jam, jam
 
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
 
-    console.debug(
-      `${sandwich!.fillings
-        .map((f) => f.name)
-        .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
-    );
     expect(numIngredients).toBeLessThanOrEqual(9);
+  });
+
+  it('Produces a sandwich with Lv 2 Egg', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Egg',
+      type: 'Bug',
+      level: 2,
+    });
+
+    // 4x Chorizo, 2x Banana, 2x Whippped Cream
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    // console.debug(
+    //   `${sandwich!.fillings
+    //     .map((f) => f.name)
+    //     .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
+    // );
+    expect(numIngredients).toBeLessThanOrEqual(8);
   });
 });

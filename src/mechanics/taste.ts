@@ -1,8 +1,7 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
 import { add, scale } from '../vector-math';
-import { addBoosts } from './powers';
 
-interface FlavorBoost {
+export interface FlavorBoost {
   name: Flavor;
   amount: number;
 }

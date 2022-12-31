@@ -17,6 +17,7 @@ import {
   makeGetRelativeTasteVector,
   getBoostedMealPower,
   rankFlavorBoosts,
+  FlavorBoost,
 } from './taste';
 
 export interface Sandwich {
@@ -233,12 +234,12 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   let currentTypeBoosts: Partial<Record<TypeName, number>> = {};
   let currentPowers: Power[] = [];
   let targetPowerFound = false;
+  let boostedMealPower: MealPower | null = null;
+  let rankedFlavorBoosts: FlavorBoost[] = [];
 
   const checkType = mealPowerHasType(targetPower.mealPower);
 
   while (fillings.length < maxFillings || condiments.length < maxCondiments) {
-    const rankedFlavorBoosts = rankFlavorBoosts(currentFlavorBoosts);
-    const boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
     const currentBoostedMealPowerVector = boostedMealPower
       ? boostMealPowerVector(currentBaseMealPowerVector, boostedMealPower)
       : currentBaseMealPowerVector;
@@ -315,6 +316,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       newIngredient.typeBoosts,
       newIngredient.pieces,
     );
+    rankedFlavorBoosts = rankFlavorBoosts(currentFlavorBoosts);
+    boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
 
     // console.log(currentMealPowerBoosts, boostedMealPower, currentTypeBoosts);
 
