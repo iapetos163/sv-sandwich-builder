@@ -4,6 +4,7 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
+import { tasteVectors } from '../src/mechanics';
 import {
   Flavor,
   mealPowers,
@@ -14,6 +15,7 @@ import {
   isType,
   isFlavor,
 } from '../src/strings';
+import { add, scale } from '../src/vector-math';
 
 type IngredientEntry = {
   name: string;
@@ -21,6 +23,7 @@ type IngredientEntry = {
   typeBoosts: Record<TypeName, number>;
   flavorBoosts: Record<Flavor, number>;
   baseMealPowerVector: number[];
+  tasteMealPowerVector: number[];
   typeVector: number[];
   imagePath: string;
   imageUrl: string;
@@ -75,6 +78,10 @@ const main = async () => {
       const baseMealPowerVector = mealPowers.map(
         (mp) => mealPowerBoosts[mp] ?? 0,
       );
+      const tasteMealPowerVector = tastes.reduce<number[]>(
+        (sum, c) => add(sum, scale(tasteVectors[c.flavor as Flavor], c.amount)),
+        [],
+      );
       const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
 
       return {
@@ -88,6 +95,7 @@ const main = async () => {
         flavorBoosts,
         typeVector,
         baseMealPowerVector,
+        tasteMealPowerVector,
         ingredientType: 'condiment',
       };
     },
@@ -101,6 +109,11 @@ const main = async () => {
 
       const baseMealPowerVector = mealPowers.map((mp) =>
         mealPowerBoosts[mp] ? mealPowerBoosts[mp] * pieces : 0,
+      );
+      const tasteMealPowerVector = tastes.reduce<number[]>(
+        (sum, f) =>
+          add(sum, scale(tasteVectors[f.flavor as Flavor], f.amount * pieces)),
+        [],
       );
       const typeVector = allTypes.map((t) =>
         typeBoosts[t] ? typeBoosts[t] * pieces : 0,
@@ -117,6 +130,7 @@ const main = async () => {
         flavorBoosts,
         typeVector,
         baseMealPowerVector,
+        tasteMealPowerVector,
         ingredientType: 'filling',
       };
     },
