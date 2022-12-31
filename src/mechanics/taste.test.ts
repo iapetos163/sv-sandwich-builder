@@ -275,13 +275,10 @@ describe('makeGetRelativeTasteVector', () => {
       'Encounter',
       'Encounter',
     );
-    const res = getRelativeTasteVector(
-      {
-        Sweet: 4,
-        Salty: 1,
-      },
-      4,
-    );
+    const res = getRelativeTasteVector([
+      3, 14.8492424049175, 2.121320343559643, 3, 8.485281374238571, 0, 0, -12,
+      -3, -3,
+    ]);
 
     expect(res).not.toContain(Infinity);
     expect(res).not.toContain(-Infinity);

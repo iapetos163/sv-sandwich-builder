@@ -1,5 +1,5 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
-import { add, scale } from '../vector-math';
+import { scale } from '../vector-math';
 
 export interface FlavorBoost {
   name: Flavor;
@@ -121,17 +121,6 @@ export const rankFlavorBoosts = (
     )
     .map(([f, v]) => ({ name: f as Flavor, amount: v }));
 
-const getTasteVector = (
-  flavorBoosts: Partial<Record<Flavor, number>>,
-  pieces: number,
-) =>
-  Object.entries(flavorBoosts).reduce<number[]>(
-    (sum, [flavor, amount]) =>
-      add(sum, scale(tasteVectors[flavor as Flavor], amount * pieces)),
-    [],
-  );
-
-// Fixme: taste meal power vector depends on current flavor boosts
 export const makeGetRelativeTasteVector = (
   flavorBoosts: Partial<Record<Flavor, number>>,
   rankedFlavorBoosts: FlavorBoost[],
@@ -150,15 +139,10 @@ export const makeGetRelativeTasteVector = (
       ) +
       1;
 
-    return (
-      ingFlavorBoosts: Partial<Record<Flavor, number>>,
-      pieces: number,
-    ) => {
-      // const addedBoosts = addBoosts(flavorBoosts, ingFlavorBoosts, pieces);
-      const tasteVector = getTasteVector(ingFlavorBoosts, pieces);
+    return (tasteVector: number[]) => {
       const targetComponent = tasteVector[targetIndex] || 0;
       const invScaleFactor = Math.max(maxNeeded, Math.abs(targetComponent));
-      if (invScaleFactor === 0) return tasteVector; //
+      if (invScaleFactor === 0) return tasteVector;
       return scale(tasteVector, 100 / invScaleFactor);
     };
   }
@@ -170,11 +154,9 @@ export const makeGetRelativeTasteVector = (
     highestFlavorBoostAmount - runnerUpBoostAmount,
     1,
   );
-  return (ingFlavorBoosts: Partial<Record<Flavor, number>>, pieces: number) => {
-    const tasteVector = getTasteVector(ingFlavorBoosts, pieces);
-    return mealPowers.map((mp, i) => {
+  return (tasteVector: number[]) =>
+    mealPowers.map((mp, i) => {
       if (mp === targetPower) return 0;
       return tasteVector[i] ? (tasteVector[i] * 100) / dangerThreshold : 0;
     });
-  };
 };
