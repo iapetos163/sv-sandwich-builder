@@ -149,9 +149,12 @@ const selectIngredient = ({
       ing.baseMealPowerVector,
       relativeTasteVector,
     );
-    const n1 =
-      norm(boostedMealPowerVector.map((c) => (c > 0 ? c : 0))) *
-      norm(deltaMealPowerVector);
+
+    const positiveBoostedMpNorm = norm(
+      boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
+    );
+    const deltaMpNorm = norm(deltaMealPowerVector);
+    const n1 = positiveBoostedMpNorm * deltaMpNorm;
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
@@ -171,14 +174,15 @@ const selectIngredient = ({
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    if (ing.name === 'Chorizo' || ing.name === 'Potato Salad') {
+    if (ing.name === 'Banana' || ing.name === 'Potato Salad') {
       console.debug(
         `${ing.name}:
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
     Primary Taste meal power vector: ${ing.primaryTasteMealPowerVector},
     Secondary Taste meal power vector: ${ing.secondaryTasteMealPowerVector},
     Relative taste vector: ${relativeTasteVector}
-    Boosted meal power vector: ${boostedMealPowerVector}`,
+    Boosted meal power vector: ${boostedMealPowerVector}
+      n1: ${deltaMpNorm} * ${positiveBoostedMpNorm} = ${n1}`,
       );
     }
     if (ingScore <= agg.score) {
