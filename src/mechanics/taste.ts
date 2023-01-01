@@ -1,6 +1,6 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
 import { add, scale } from '../vector-math';
-import { boostsEqual } from './boost';
+import { Boosts, boostsEqual } from './boost';
 
 export interface FlavorBoost {
   name: Flavor;
@@ -101,7 +101,7 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
   Hot: mealPowers.map((mp) => {
     switch (mp) {
       case 'Raid':
-        return 0.5;
+        return 1;
       case 'Humungo':
       case 'Title':
       case 'Sparkling':
@@ -122,7 +122,7 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
   Sour: mealPowers.map((mp) => {
     switch (mp) {
       case 'Catch':
-        return 0.5;
+        return 1;
       case 'Teensy':
       case 'Title':
       case 'Sparkling':
@@ -133,7 +133,7 @@ export const secondaryTasteVectors: Record<Flavor, number[]> = {
   Salty: mealPowers.map((mp) => {
     switch (mp) {
       case 'Exp':
-        return 0.5;
+        return 1;
       case 'Encounter':
       case 'Title':
       case 'Sparkling':
@@ -147,10 +147,9 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
   Sweet: mealPowers.map((mp) => {
     switch (mp) {
       case 'Egg':
-        return 1;
       case 'Catch':
       case 'Raid':
-        return 0.5;
+        return 1;
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -161,6 +160,7 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Humungo':
         return 1;
+      case 'Egg':
       case 'Raid':
       case 'Title':
       case 'Sparkling':
@@ -171,9 +171,8 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
   Bitter: mealPowers.map((mp) => {
     switch (mp) {
       case 'Item':
-        return 1;
       case 'Exp':
-        return 0.5;
+        return 1;
       case 'Title':
       case 'Sparkling':
         return 0;
@@ -184,6 +183,7 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     switch (mp) {
       case 'Teensy':
         return 1;
+      case 'Egg':
       case 'Catch':
       case 'Title':
       case 'Sparkling':
@@ -202,6 +202,49 @@ export const primaryTasteVectors: Record<Flavor, number[]> = {
     }
     return -1;
   }),
+};
+
+export const makeMealPowerVectors = (
+  flavorBoosts: Boosts<Flavor>,
+  pieces = 1,
+) => {
+  const components = mealPowers.map((mp) => {
+    const primaryFlavor = primaryFlavorsForPower[mp];
+    const secondaryFlavors = secondaryFlavorsForPower[mp];
+    if (!primaryFlavor) return { primary: 0, secondary: 0 };
+
+    const primaryAmount = flavorBoosts[primaryFlavor] || 0;
+    const secondaryAmounts = Object.entries(flavorBoosts)
+      .filter(([flavor]) => secondaryFlavors.includes(flavor as Flavor))
+      .map(([flavor, amount]) => amount);
+    const otherAmounts = Object.entries(flavorBoosts)
+      .filter(
+        ([flavor]) =>
+          flavor !== primaryFlavor &&
+          !secondaryFlavors.includes(flavor as Flavor),
+      )
+      .map(([flavor, amount]) => amount);
+
+    const maxSecondary =
+      secondaryAmounts.length > 0 ? Math.max(...secondaryAmounts) : 0;
+    const maxOther = otherAmounts.length > 0 ? Math.max(...otherAmounts) : 0;
+
+    if (maxSecondary > maxOther) {
+      return {
+        primary: pieces * primaryAmount,
+        secondary: pieces * (maxSecondary - maxOther),
+      };
+    }
+    return {
+      primary: pieces * (primaryAmount - maxOther),
+      secondary: pieces * maxSecondary,
+    };
+  });
+
+  return {
+    primary: components.map((c) => c.primary),
+    secondary: components.map((c) => c.secondary),
+  };
 };
 
 export const getBoostedMealPower = (rankedFlavorBoosts: FlavorBoost[]) => {

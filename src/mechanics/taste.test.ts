@@ -281,4 +281,15 @@ describe('getRelativeTasteVector', () => {
     expect(res).not.toContain(Infinity);
     expect(res).not.toContain(-Infinity);
   });
+
+  // it('foo', () => {
+  //   const res = getRelativeTasteVector({
+  //     currentFlavorBoosts: { Salty: 49, Hot: 49, Bitter: 25},
+  //     targetPower: 'Catch',
+  //     primaryTasteMealPowerVector: [-4, -4, -36, -36, -4, 0, 0, -36, -4, -28],
+  //     secondaryTasteMealPowerVector: [
+  //       -20, -20, -20, -20, -20, 0, 0, -20, 12, -12
+  //     ],
+  //   })
+  // })
 });

@@ -72,7 +72,9 @@ const getScoreWeight = (
 ) => {
   const base = getBaseVector(current);
   const baseDelta = norm(diff(target, base));
-  return baseDelta !== 0 ? norm(delta) / baseDelta : 0;
+  if (baseDelta === 0) return 0;
+  const r = norm(delta) / baseDelta;
+  return r;
 };
 
 const selectIngredient = ({
@@ -115,9 +117,11 @@ const selectIngredient = ({
   const typeScoreWeight = checkType
     ? getScoreWeight(targetTypeVector, deltaTypeVector, currentTypeVector)
     : 0;
-  const levelScoreWeight = checkLevel
+  const baseLevelScoreWeight = checkLevel
     ? getScoreWeight(targetLevelVector, deltaLevelVector, currentTypeVector)
     : 0;
+  // const levelScoreWeight = baseLevelScoreWeight * targetPower.level;
+  const levelScoreWeight = baseLevelScoreWeight;
 
   let bestMealPowerProduct = -Infinity;
   let bestTypeProduct = -Infinity;
@@ -145,36 +149,38 @@ const selectIngredient = ({
       ing.baseMealPowerVector,
       relativeTasteVector,
     );
-    const n1 = norm(boostedMealPowerVector.map((c) => (c > 0 ? c : 0)));
+    const n1 =
+      norm(boostedMealPowerVector.map((c) => (c > 0 ? c : 0))) *
+      norm(deltaMealPowerVector);
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
 
-    const n2 = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
+    const n2 =
+      norm(ing.typeVector.map((c) => (c > 0 ? c : 0))) * norm(deltaTypeVector);
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
         : 0;
-    const levelProduct = innerProduct(ing.typeVector, deltaLevelVector);
+    const n3 = norm(deltaLevelVector);
+    const levelProduct =
+      n3 !== 0 ? innerProduct(ing.typeVector, deltaLevelVector) / n3 : 0;
     const ingScore =
       mealPowerProduct * mealPowerScoreWeight +
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    //   if (
-    //     ing.name === 'Banana' ||
-    //     ing.name === 'Cherry Tomatoes' ||
-    //     ing.name === 'Jam'
-    //   ) {
-    //     console.debug(
-    //       `${ing.name}:
-    // Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
-    // Taste meal power vector: ${ing.tasteMealPowerVector},
-    // Relative taste vector: ${relativeTasteVector}
-    // Boosted meal power vector: ${boostedMealPowerVector}`,
-    //     );
-    //   }
+    if (ing.name === 'Chorizo' || ing.name === 'Potato Salad') {
+      console.debug(
+        `${ing.name}:
+    Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
+    Primary Taste meal power vector: ${ing.primaryTasteMealPowerVector},
+    Secondary Taste meal power vector: ${ing.secondaryTasteMealPowerVector},
+    Relative taste vector: ${relativeTasteVector}
+    Boosted meal power vector: ${boostedMealPowerVector}`,
+      );
+    }
     if (ingScore <= agg.score) {
       return agg;
     }
@@ -246,13 +252,6 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     //     console.log(`Current MP (Boosted): ${currentBoostedMealPowerVector}
     // Current T: ${currentTypeVector}`);
-    // console.log(
-    //   'makeGet',
-    //   currentFlavorBoosts,
-    //   rankedFlavorBoosts,
-    //   boostedMealPower,
-    //   targetPower.mealPower,
-    // );
     const selectedPower = currentPowers[0];
     const newIngredient = selectIngredient({
       targetPower,

@@ -4,7 +4,7 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
-import { primaryTasteVectors, secondaryTasteVectors } from '../src/mechanics';
+import { makeMealPowerVectors } from '../src/mechanics';
 import {
   Flavor,
   mealPowers,
@@ -79,16 +79,10 @@ const main = async () => {
       const baseMealPowerVector = mealPowers.map(
         (mp) => mealPowerBoosts[mp] ?? 0,
       );
-      const primaryTasteMealPowerVector = tastes.reduce<number[]>(
-        (sum, c) =>
-          add(sum, scale(primaryTasteVectors[c.flavor as Flavor], c.amount)),
-        [],
-      );
-      const secondaryTasteMealPowerVector = tastes.reduce<number[]>(
-        (sum, c) =>
-          add(sum, scale(secondaryTasteVectors[c.flavor as Flavor], c.amount)),
-        [],
-      );
+      const {
+        primary: primaryTasteMealPowerVector,
+        secondary: secondaryTasteMealPowerVector,
+      } = makeMealPowerVectors(flavorBoosts);
       const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
 
       return {
@@ -118,22 +112,10 @@ const main = async () => {
       const baseMealPowerVector = mealPowers.map((mp) =>
         mealPowerBoosts[mp] ? mealPowerBoosts[mp] * pieces : 0,
       );
-      const primaryTasteMealPowerVector = tastes.reduce<number[]>(
-        (sum, f) =>
-          add(
-            sum,
-            scale(primaryTasteVectors[f.flavor as Flavor], f.amount * pieces),
-          ),
-        [],
-      );
-      const secondaryTasteMealPowerVector = tastes.reduce<number[]>(
-        (sum, f) =>
-          add(
-            sum,
-            scale(secondaryTasteVectors[f.flavor as Flavor], f.amount * pieces),
-          ),
-        [],
-      );
+      const {
+        primary: primaryTasteMealPowerVector,
+        secondary: secondaryTasteMealPowerVector,
+      } = makeMealPowerVectors(flavorBoosts, pieces);
       const typeVector = allTypes.map((t) =>
         typeBoosts[t] ? typeBoosts[t] * pieces : 0,
       );
