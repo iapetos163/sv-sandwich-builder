@@ -1,6 +1,7 @@
 import {
   getBoostedMealPower,
   getRelativeTasteVector,
+  makeMealPowerVectors,
   rankFlavorBoosts,
 } from './taste';
 
@@ -270,7 +271,6 @@ describe('getRelativeTasteVector', () => {
   it('Does not output infinite components', () => {
     const res = getRelativeTasteVector({
       currentFlavorBoosts: { Salty: 20, Hot: 20, Sweet: 16 },
-      targetPower: 'Encounter',
       primaryTasteVector: [
         3, 14.8492424049175, 2.121320343559643, 3, 8.485281374238571, 0, 0, -12,
         -3, -3,
@@ -282,14 +282,25 @@ describe('getRelativeTasteVector', () => {
     expect(res).not.toContain(-Infinity);
   });
 
-  // it('foo', () => {
-  //   const res = getRelativeTasteVector({
-  //     currentFlavorBoosts: { Salty: 49, Hot: 49, Bitter: 25},
-  //     targetPower: 'Catch',
-  //     primaryTasteMealPowerVector: [-4, -4, -36, -36, -4, 0, 0, -36, -4, -28],
-  //     secondaryTasteMealPowerVector: [
-  //       -20, -20, -20, -20, -20, 0, 0, -20, 12, -12
-  //     ],
-  //   })
-  // })
+  it('Does not output a vector where any component has abs value >100', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: { Salty: 48, Hot: 48, Bitter: 24 },
+      primaryTasteVector: [9, 12, -12, 0, 9, 0, 0, -12, -9, -12],
+      secondaryTasteVector: [0, 3, 0, 12, 0, 0, 0, 0, 0, 0],
+    });
+    console.debug(res);
+    const gt100 = res.find((c) => Math.abs(c) > 100);
+    expect(gt100).toBeUndefined();
+  });
+});
+
+describe('makeMealPowerVectors', () => {
+  it('Makes the expected Egg components for Banana', () => {
+    const { primary, secondary } = makeMealPowerVectors(
+      { Sweet: 4, Sour: 1 },
+      3,
+    );
+    expect(primary[0]).toBe(12);
+    expect(secondary[0]).toBe(-3);
+  });
 });

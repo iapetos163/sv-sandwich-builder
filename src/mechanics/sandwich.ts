@@ -141,7 +141,6 @@ const selectIngredient = ({
 
     const relativeTasteVector = getRelativeTasteVector({
       currentFlavorBoosts,
-      targetPower: targetPower.mealPower,
       primaryTasteVector: ing.primaryTasteMealPowerVector,
       secondaryTasteVector: ing.secondaryTasteMealPowerVector,
     });
