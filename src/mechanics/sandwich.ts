@@ -107,21 +107,25 @@ const selectIngredient = ({
   );
   const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
   const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
-  const mealPowerScoreWeight = checkMealPower
+
+  const typeScoreWeight = checkType
+    ? getScoreWeight(targetTypeVector, deltaTypeVector, currentTypeVector)
+    : 0;
+  const levelScoreWeight = checkLevel
+    ? getScoreWeight(targetLevelVector, deltaLevelVector, currentTypeVector)
+    : 0;
+  const baseMealPowerScoreWeight = checkMealPower
     ? getScoreWeight(
         targetMealPowerVector,
         deltaMealPowerVector,
         currentBoostedMealPowerVector,
       )
     : 0;
-  const typeScoreWeight = checkType
-    ? getScoreWeight(targetTypeVector, deltaTypeVector, currentTypeVector)
-    : 0;
-  const baseLevelScoreWeight = checkLevel
-    ? getScoreWeight(targetLevelVector, deltaLevelVector, currentTypeVector)
-    : 0;
-  // const levelScoreWeight = baseLevelScoreWeight * targetPower.level;
-  const levelScoreWeight = baseLevelScoreWeight;
+  const mealPowerScoreWeight = Math.min(
+    baseMealPowerScoreWeight,
+    1 - typeScoreWeight,
+    1 - levelScoreWeight,
+  );
 
   let bestMealPowerProduct = -Infinity;
   let bestTypeProduct = -Infinity;
@@ -149,11 +153,11 @@ const selectIngredient = ({
       relativeTasteVector,
     );
 
-    const positiveBoostedMpNorm = norm(
-      boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
-    );
+    // const positiveBoostedMpNorm = norm(
+    //   boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
+    // );
     const deltaMpNorm = norm(deltaMealPowerVector);
-    const n1 = positiveBoostedMpNorm * deltaMpNorm;
+    const n1 = deltaMpNorm;
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
@@ -173,7 +177,7 @@ const selectIngredient = ({
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    if (ing.name === 'Banana' || ing.name === 'Potato Salad') {
+    if (ing.name === 'Egg' || ing.name === 'Bacon') {
       console.debug(
         `${ing.name}:
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
@@ -181,7 +185,7 @@ const selectIngredient = ({
     Secondary Taste meal power vector: ${ing.secondaryTasteMealPowerVector},
     Relative taste vector: ${relativeTasteVector}
     Boosted meal power vector: ${boostedMealPowerVector}
-      n1: ${deltaMpNorm} * ${positiveBoostedMpNorm} = ${n1}`,
+      n1: ${n1}`,
       );
     }
     if (ingScore <= agg.score) {
