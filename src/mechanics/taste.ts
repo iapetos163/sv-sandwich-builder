@@ -165,9 +165,6 @@ export interface RelativeTasteVectorProps {
 }
 
 export const getRelativeTasteVector = (() => {
-  // todo: memoize by currentFlavorBoosts, currentRankedFlavorBoosts, boostedPower, targetPower
-  // memoize independently: ing
-
   let memoRankFlavorBoosts = (
     flavorBoosts: Partial<Record<Flavor, number>>,
   ) => {
@@ -205,7 +202,10 @@ export const getRelativeTasteVector = (() => {
           highestBoostAmount - (currentFlavorBoosts[primaryFlavor] || 0) + 1;
 
         const invScaleFactor = Math.max(needed, needed - absPrimaryComponent);
-        relPrimaryComponent = (absPrimaryComponent * 100) / invScaleFactor;
+        relPrimaryComponent = Math.max(
+          Math.min((absPrimaryComponent * 100) / invScaleFactor, 100),
+          -100,
+        );
       } else {
         // Difference between highest flavor and the runner up that threatens to change the boosted meal power
         const dangerThreshold = Math.max(
@@ -234,7 +234,11 @@ export const getRelativeTasteVector = (() => {
               needed,
               needed - absSecondaryComponent,
             );
-            return sum + (absSecondaryComponent * 50) / invScaleFactor;
+            const component = Math.max(
+              Math.min((absSecondaryComponent * 50) / invScaleFactor, 50),
+              -50,
+            );
+            return sum + component;
           },
           0,
         );

@@ -283,14 +283,22 @@ describe('getRelativeTasteVector', () => {
   });
 
   it('Does not output a vector where any component has abs value >100', () => {
-    const res = getRelativeTasteVector({
+    const res1 = getRelativeTasteVector({
       currentFlavorBoosts: { Salty: 48, Hot: 48, Bitter: 24 },
       primaryTasteVector: [9, 12, -12, 0, 9, 0, 0, -12, -9, -12],
       secondaryTasteVector: [0, 3, 0, 12, 0, 0, 0, 0, 0, 0],
     });
-    console.debug(res);
-    const gt100 = res.find((c) => Math.abs(c) > 100);
-    expect(gt100).toBeUndefined();
+    const gt100_1 = res1.find((c) => Math.abs(c) > 100);
+    expect(gt100_1).toBeUndefined();
+
+    const res2 = getRelativeTasteVector({
+      currentFlavorBoosts: {},
+      primaryTasteVector: [0, -20, 4, -16, -20, 0, 0, -20, -20, 16],
+      secondaryTasteVector: [20, 0, 20, 0, 0, 0, 0, 0, 0, 0],
+    });
+    console.debug(res2);
+    const gt100_2 = res2.find((c) => Math.abs(c) > 100);
+    expect(gt100_2).toBeUndefined();
   });
 });
 
