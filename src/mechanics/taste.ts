@@ -109,9 +109,8 @@ export const rankFlavorBoosts = (
     .map(([f, v]) => ({ name: f as Flavor, amount: v }));
 
 export interface RelativeTasteVectorProps {
-  currentFlavorBoosts: Partial<Record<Flavor, number>>;
-  primaryTasteVector: number[];
-  secondaryTasteVector: number[];
+  currentFlavorBoosts: Boosts<Flavor>;
+  ingredientFlavorBoosts: Boosts<Flavor>;
 }
 
 export const getRelativeTasteVector = (() => {
@@ -127,15 +126,13 @@ export const getRelativeTasteVector = (() => {
 
   return ({
     currentFlavorBoosts,
-    primaryTasteVector,
-    secondaryTasteVector,
+    ingredientFlavorBoosts,
   }: RelativeTasteVectorProps) => {
     const currentRankedFlavorBoosts = memoRankFlavorBoosts(currentFlavorBoosts);
 
     const highestBoostAmount = currentRankedFlavorBoosts[0]?.amount || 0;
     const highestBoostedFlavor = currentRankedFlavorBoosts[0]?.name;
     const secondHighestBoostAmount = currentRankedFlavorBoosts[1]?.amount || 0;
-    const secondHighestBoostedFlavor = currentRankedFlavorBoosts[1]?.name;
     const thirdHighestBoostAmount = currentRankedFlavorBoosts[2]?.amount || 0;
 
     return mealPowers.map((mp, i) => {
@@ -143,42 +140,64 @@ export const getRelativeTasteVector = (() => {
       const secondaryFlavors = secondaryFlavorsForPower[mp];
       if (!primaryFlavor) return 0;
 
-      const absPrimaryComponent = primaryTasteVector[i] || 0;
+      const ingPrimaryBoost = ingredientFlavorBoosts[primaryFlavor] || 0;
+      const currentPrimaryBoost = currentFlavorBoosts[primaryFlavor] || 0;
       let relPrimaryComponent: number;
-      if (highestBoostedFlavor !== primaryFlavor) {
+      // TODO?: Deal with moving targets
+      if (
+        currentPrimaryBoost === 0 ||
+        currentPrimaryBoost !== highestBoostAmount
+      ) {
         // Flavor needed to achieve desired power boost
         // Assumption: needed > 0
-        const needed =
-          highestBoostAmount - (currentFlavorBoosts[primaryFlavor] || 0) + 1;
+        const needed = highestBoostAmount - currentPrimaryBoost + 1;
 
-        const invScaleFactor = Math.max(needed, needed - absPrimaryComponent);
-        relPrimaryComponent = Math.max(
-          Math.min((absPrimaryComponent * 100) / invScaleFactor, 100),
-          -100,
-        );
+        const invScaleFactor = Math.max(needed, needed - ingPrimaryBoost);
+        relPrimaryComponent =
+          100 * Math.max(Math.min(ingPrimaryBoost / invScaleFactor, 1), -1);
+
+        // Need to consider here: the movement of the currently highest flavor
       } else {
         // Difference between highest flavor and the runner up that threatens to change the boosted meal power
         const dangerThreshold = Math.max(
           highestBoostAmount - secondHighestBoostAmount,
           1,
         );
-        relPrimaryComponent = Math.max(
-          Math.min((absPrimaryComponent * 100) / dangerThreshold, 100),
-          -100,
-        );
+        relPrimaryComponent =
+          100 * Math.max(Math.min(ingPrimaryBoost / dangerThreshold, 1), -1);
+
+        // Need to consider here: other flavors WITH secondHighestBoostAmount going up
       }
 
       if (secondaryFlavors.length === 0) return relPrimaryComponent;
 
-      const absSecondaryComponent = secondaryTasteVector[i] || 0;
       let halfRelSecondaryComponent: number;
-      if (!secondaryFlavors.includes(secondHighestBoostedFlavor)) {
+
+      // foomoo: ingBoost, currentBoost
+      const secondaryMatch = secondaryFlavors.some(
+        (f) => currentFlavorBoosts[f] === secondHighestBoostAmount,
+      );
+
+      // WE HAVE A FEW SCENARIOS TO CONSIDER
+      // Secondary overshot => need to go down
+      // Secondary undershot => need to go up
+      // Secondary where it needs to be
+
+      // other overshot primary
+      // other overshot secondary but not primary
+
+      // I think we need to preserve the primary/secondary here
+      //
+
+      if (secondHighestBoostAmount === 0 || !secondaryMatch) {
         const secondaryFlavorComponents = secondaryFlavors.reduce<number>(
           (sum, flavor) => {
+            const ingBoost = ingredientFlavorBoosts[flavor] || 0;
+            const currentBoost = currentFlavorBoosts[flavor] || 0;
+
             // Flavor needed to achieve desired power boost
             // Assumption: needed > 0
-            const needed =
-              secondHighestBoostAmount - (currentFlavorBoosts[flavor] || 0) + 1;
+            const needed = secondHighestBoostAmount - currentBoost + 1;
 
             const invScaleFactor = Math.max(
               needed,
@@ -195,6 +214,8 @@ export const getRelativeTasteVector = (() => {
 
         halfRelSecondaryComponent =
           secondaryFlavorComponents / secondaryFlavors.length;
+
+        // Need to consider here
       } else {
         // Difference between highest flavor and the runner up that threatens to change the boosted meal power
         const oneTwo = highestBoostAmount - secondHighestBoostAmount;
