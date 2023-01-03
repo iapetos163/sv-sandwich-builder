@@ -36,9 +36,9 @@ interface SelectIngredientProps {
   checkMealPower: boolean;
   checkType: boolean;
   checkLevel: boolean;
-  allowFillings: boolean;
-  allowCondiments: boolean;
-  skipFillings: Record<string, boolean>;
+  remainingFillings: number;
+  remainingCondiments: number;
+  skipIngredients: Record<string, boolean>;
   currentFlavorBoosts: Boosts<Flavor>;
 }
 
@@ -65,16 +65,54 @@ const getBaseVector = (currentVector: number[]) => {
   return currentVector.map((comp) => (comp >= 0 ? 0 : comp));
 };
 
-const getScoreWeight = (
-  target: number[],
-  delta: number[],
-  current: number[],
-) => {
+const getBaseDelta = (target: number[], current: number[]) => {
   const base = getBaseVector(current);
-  const baseDelta = norm(diff(target, base));
-  if (baseDelta === 0) return 0;
-  const r = norm(delta) / baseDelta;
-  return r;
+  return norm(diff(target, base));
+};
+
+const MP_FILLING = 36;
+const MP_CONDIMENT = 4;
+const TYPE_FILLING = 36;
+const TYPE_CONDIMENT = 4;
+
+interface ScoreWeightProps {
+  targetVector: number[];
+  deltaVector: number[];
+  currentVector: number[];
+  remainingFillings: number;
+  remainingCondiments: number;
+}
+
+const getMpScoreWeight = ({
+  targetVector,
+  deltaVector,
+  currentVector,
+  remainingFillings,
+  remainingCondiments,
+}: ScoreWeightProps) => {
+  const baseDelta = getBaseDelta(targetVector, currentVector);
+  const progress = norm(deltaVector) / baseDelta;
+
+  return (
+    progress /
+    (MP_FILLING * remainingFillings + MP_CONDIMENT * remainingCondiments)
+  );
+};
+
+const getTypeScoreWeight = ({
+  targetVector,
+  deltaVector,
+  currentVector,
+  remainingFillings,
+  remainingCondiments,
+}: ScoreWeightProps) => {
+  const baseDelta = getBaseDelta(targetVector, currentVector);
+  const progress = norm(deltaVector) / baseDelta;
+
+  return (
+    progress /
+    (TYPE_FILLING * remainingFillings + TYPE_CONDIMENT * remainingCondiments)
+  );
 };
 
 const selectIngredient = ({
@@ -85,9 +123,9 @@ const selectIngredient = ({
   checkMealPower,
   checkType,
   checkLevel,
-  allowFillings,
-  allowCondiments,
-  skipFillings,
+  skipIngredients,
+  remainingCondiments,
+  remainingFillings,
 }: SelectIngredientProps) => {
   const targetMealPowerVector = getTargetMealPowerVector(
     targetPower,
@@ -109,23 +147,32 @@ const selectIngredient = ({
   const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
 
   const typeScoreWeight = checkType
-    ? getScoreWeight(targetTypeVector, deltaTypeVector, currentTypeVector)
+    ? getTypeScoreWeight({
+        targetVector: targetTypeVector,
+        deltaVector: deltaTypeVector,
+        currentVector: currentTypeVector,
+        remainingFillings,
+        remainingCondiments,
+      })
     : 0;
   const levelScoreWeight = checkLevel
-    ? getScoreWeight(targetLevelVector, deltaLevelVector, currentTypeVector)
+    ? getTypeScoreWeight({
+        targetVector: targetLevelVector,
+        deltaVector: deltaLevelVector,
+        currentVector: currentTypeVector,
+        remainingFillings,
+        remainingCondiments,
+      })
     : 0;
-  const baseMealPowerScoreWeight = checkMealPower
-    ? getScoreWeight(
-        targetMealPowerVector,
-        deltaMealPowerVector,
-        currentBoostedMealPowerVector,
-      )
+  const mealPowerScoreWeight = checkMealPower
+    ? getMpScoreWeight({
+        targetVector: targetMealPowerVector,
+        deltaVector: deltaMealPowerVector,
+        currentVector: currentBoostedMealPowerVector,
+        remainingFillings,
+        remainingCondiments,
+      })
     : 0;
-  const mealPowerScoreWeight = Math.min(
-    baseMealPowerScoreWeight,
-    1 - typeScoreWeight,
-    1 - levelScoreWeight,
-  );
 
   let bestMealPowerProduct = -Infinity;
   let bestTypeProduct = -Infinity;
@@ -136,9 +183,9 @@ const selectIngredient = ({
     ing: Ingredient,
   ): IngredientAggregation => {
     if (
-      (!allowFillings && ing.ingredientType === 'filling') ||
-      (!allowCondiments && ing.ingredientType === 'condiment') ||
-      skipFillings[ing.name]
+      (remainingFillings <= 0 && ing.ingredientType === 'filling') ||
+      (remainingCondiments <= 0 && ing.ingredientType === 'condiment') ||
+      skipIngredients[ing.name]
     ) {
       return agg;
     }
@@ -163,8 +210,7 @@ const selectIngredient = ({
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
 
-    const n2 =
-      norm(ing.typeVector.map((c) => (c > 0 ? c : 0))) * norm(deltaTypeVector);
+    const n2 = norm(deltaTypeVector);
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
@@ -228,14 +274,14 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   console.log('~~~HAZ SANDWICH~~~');
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
-  const skipFillings: Record<string, boolean> = {};
+  const skipIngredients: Record<string, boolean> = {};
   if (
     targetPower.mealPower !== 'Sparkling' &&
     targetPower.mealPower !== 'Title'
   ) {
     for (const ingredient of ingredients) {
       if (ingredient.isHerbaMystica) {
-        skipFillings[ingredient.name] = true;
+        skipIngredients[ingredient.name] = true;
       }
     }
   }
@@ -271,14 +317,16 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         (checkType && selectedPower?.type !== targetPower.type),
       checkLevel:
         !selectedPower?.level || selectedPower.level < targetPower.level,
-      allowFillings:
-        fillings.length < maxFillings &&
-        (!targetPowerFound || fillings.length === 0),
-      allowCondiments:
-        condiments.length < maxCondiments &&
-        (!targetPowerFound || condiments.length === 0),
+      remainingFillings:
+        !targetPowerFound || fillings.length === 0
+          ? maxFillings - fillings.length
+          : 0,
+      remainingCondiments:
+        !targetPowerFound || condiments.length === 0
+          ? maxCondiments - condiments.length
+          : 0,
       currentFlavorBoosts,
-      skipFillings,
+      skipIngredients,
     });
 
     if (newIngredient.ingredientType === 'filling') {
@@ -291,7 +339,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       // console.log(newIngredient.name, numPieces);
       if (numPieces + newIngredient.pieces > maxPieces) {
         // console.log('Skipping', newIngredient.name);
-        skipFillings[newIngredient.name] = true;
+        skipIngredients[newIngredient.name] = true;
       }
     } else {
       condiments.push(newIngredient);
