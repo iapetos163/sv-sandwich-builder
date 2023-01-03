@@ -38,6 +38,7 @@ interface SelectIngredientProps {
   checkLevel: boolean;
   remainingFillings: number;
   remainingCondiments: number;
+  allowHerbaMystica: boolean;
   skipIngredients: Record<string, boolean>;
   currentFlavorBoosts: Boosts<Flavor>;
 }
@@ -124,6 +125,7 @@ const selectIngredient = ({
   checkType,
   checkLevel,
   skipIngredients,
+  allowHerbaMystica,
   remainingCondiments,
   remainingFillings,
 }: SelectIngredientProps) => {
@@ -185,6 +187,7 @@ const selectIngredient = ({
     if (
       (remainingFillings <= 0 && ing.ingredientType === 'filling') ||
       (remainingCondiments <= 0 && ing.ingredientType === 'condiment') ||
+      (!allowHerbaMystica && ing.isHerbaMystica) ||
       skipIngredients[ing.name]
     ) {
       return agg;
@@ -271,20 +274,10 @@ const selectIngredient = ({
 
 // TODO: target more than one power
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
-  console.log('~~~HAZ SANDWICH~~~');
+  console.debug('~~~HAZ SANDWICH~~~');
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
   const skipIngredients: Record<string, boolean> = {};
-  if (
-    targetPower.mealPower !== 'Sparkling' &&
-    targetPower.mealPower !== 'Title'
-  ) {
-    for (const ingredient of ingredients) {
-      if (ingredient.isHerbaMystica) {
-        skipIngredients[ingredient.name] = true;
-      }
-    }
-  }
 
   let currentBaseMealPowerVector: number[] = [];
   let currentTypeVector: number[] = [];
@@ -295,6 +288,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   let targetPowerFound = false;
   let boostedMealPower: MealPower | null = null;
   let rankedFlavorBoosts: FlavorBoost[] = [];
+  let allowHerbaMystica =
+    targetPower.mealPower === 'Sparkling' || targetPower.mealPower === 'Title';
 
   const checkType = mealPowerHasType(targetPower.mealPower);
 
@@ -326,6 +321,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
           ? maxCondiments - condiments.length
           : 0,
       currentFlavorBoosts,
+      allowHerbaMystica,
       skipIngredients,
     });
 
@@ -368,7 +364,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     rankedFlavorBoosts = rankFlavorBoosts(currentFlavorBoosts);
     boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
 
-    // console.log(currentMealPowerBoosts, boostedMealPower, currentTypeBoosts);
+    if (condiments.filter((c) => c.isHerbaMystica).length >= 2) {
+      allowHerbaMystica = false;
+    }
 
     currentPowers = evaluateBoosts(
       currentMealPowerBoosts,
