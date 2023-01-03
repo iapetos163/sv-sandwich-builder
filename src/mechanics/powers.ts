@@ -147,18 +147,6 @@ export const calculateLevels = (
   return [1, 1, 1];
 };
 
-export const addBoosts = <T extends string>(
-  baseBoosts: Partial<Record<T, number>>,
-  newBoosts: Partial<Record<T, number>>,
-  pieces: number,
-) => {
-  const result = { ...baseBoosts };
-  for (const key of Object.keys(newBoosts) as T[]) {
-    result[key] = (result[key] || 0) + newBoosts[key]! * pieces;
-  }
-  return result;
-};
-
 export const rankMealPowerBoosts = (
   mealPowerBoosts: Partial<Record<MealPower, number>>,
   boostedMealPower: MealPower | null,

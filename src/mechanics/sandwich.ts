@@ -1,9 +1,8 @@
 import { ingredients, Ingredient } from '../data';
 import { Flavor, MealPower, TypeName } from '../strings';
 import { add, diff, innerProduct, norm } from '../vector-math';
-import { Boosts } from './boost';
+import { Boosts, addBoosts } from './boost';
 import {
-  addBoosts,
   boostMealPowerVector,
   evaluateBoosts,
   getTargetLevelVector,
@@ -219,8 +218,7 @@ const selectIngredient = ({
     //   });
     const relativeTasteVector = getRelativeTasteVector({
       currentFlavorBoosts,
-      primaryTasteVector: ing.primaryTasteMealPowerVector,
-      secondaryTasteVector: ing.secondaryTasteMealPowerVector,
+      ingredientFlavorBoosts: ing.totalFlavorBoosts,
     });
     const boostedMealPowerVector = add(
       ing.baseMealPowerVector,
@@ -259,8 +257,6 @@ const selectIngredient = ({
       console.debug(
         `${ing.name}:
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
-    Primary Taste meal power vector: ${ing.primaryTasteMealPowerVector},
-    Secondary Taste meal power vector: ${ing.secondaryTasteMealPowerVector},
     Relative taste vector: ${relativeTasteVector}
     Boosted meal power vector: ${boostedMealPowerVector}
       n1: ${n1}`,
@@ -379,18 +375,15 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     currentTypeVector = add(currentTypeVector, newIngredient.typeVector);
     currentMealPowerBoosts = addBoosts(
       currentMealPowerBoosts,
-      newIngredient.mealPowerBoosts,
-      newIngredient.pieces,
+      newIngredient.totalMealPowerBoosts,
     );
     currentFlavorBoosts = addBoosts(
       currentFlavorBoosts,
-      newIngredient.flavorBoosts,
-      newIngredient.pieces,
+      newIngredient.totalFlavorBoosts,
     );
     currentTypeBoosts = addBoosts(
       currentTypeBoosts,
-      newIngredient.typeBoosts,
-      newIngredient.pieces,
+      newIngredient.totalTypeBoosts,
     );
     rankedFlavorBoosts = rankFlavorBoosts(currentFlavorBoosts);
     boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
