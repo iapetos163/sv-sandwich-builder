@@ -76,7 +76,7 @@ const MP_CONDIMENT = 21;
 const TYPE_FILLING = 36;
 const TYPE_CONDIMENT = 4;
 
-interface ScoreWeightProps {
+export interface ScoreWeightProps {
   targetVector: number[];
   deltaVector: number[];
   currentVector: number[];
@@ -84,7 +84,7 @@ interface ScoreWeightProps {
   remainingCondiments: number;
 }
 
-const getMpScoreWeight = ({
+export const getMpScoreWeight = ({
   targetVector,
   deltaVector,
   currentVector,
@@ -92,15 +92,20 @@ const getMpScoreWeight = ({
   remainingCondiments,
 }: ScoreWeightProps) => {
   const baseDelta = getBaseDelta(targetVector, currentVector);
-  const progress = norm(deltaVector) / baseDelta;
 
-  return (
-    progress /
-    (MP_FILLING * remainingFillings + MP_CONDIMENT * remainingCondiments)
-  );
+  const urgency =
+    norm(deltaVector) /
+    (MP_FILLING * remainingFillings + MP_CONDIMENT * remainingCondiments);
+  const weight = urgency / Math.max(baseDelta, 100);
+  // console.debug(
+  //   `${weight} = ${norm(
+  //     deltaVector,
+  //   )} / (${MP_FILLING} * ${remainingFillings} + ${MP_CONDIMENT} * ${remainingCondiments})`,
+  // );
+  return weight;
 };
 
-const getTypeScoreWeight = ({
+export const getTypeScoreWeight = ({
   targetVector,
   deltaVector,
   currentVector,
@@ -108,12 +113,18 @@ const getTypeScoreWeight = ({
   remainingCondiments,
 }: ScoreWeightProps) => {
   const baseDelta = getBaseDelta(targetVector, currentVector);
-  const progress = norm(deltaVector) / baseDelta;
 
-  return (
-    progress /
-    (TYPE_FILLING * remainingFillings + TYPE_CONDIMENT * remainingCondiments)
-  );
+  const weight =
+    norm(deltaVector) /
+    (baseDelta *
+      (TYPE_FILLING * remainingFillings +
+        TYPE_CONDIMENT * remainingCondiments));
+  // console.debug(
+  //   `${weight} = ${norm(
+  //     deltaVector,
+  //   )} / (${TYPE_FILLING} * ${remainingFillings} + ${TYPE_CONDIMENT} * ${remainingCondiments})`,
+  // );
+  return weight;
 };
 
 const selectIngredient = ({
@@ -157,6 +168,13 @@ const selectIngredient = ({
         remainingCondiments,
       })
     : 0;
+  // console.debug({
+  //   targetVector: targetLevelVector,
+  //   deltaVector: deltaLevelVector,
+  //   currentVector: currentTypeVector,
+  //   remainingFillings,
+  //   remainingCondiments,
+  // });
   const levelScoreWeight = checkLevel
     ? getTypeScoreWeight({
         targetVector: targetLevelVector,
@@ -203,22 +221,22 @@ const selectIngredient = ({
       relativeTasteVector,
     );
 
-    // const positiveBoostedMpNorm = norm(
-    //   boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
-    // );
+    const positiveBoostedMpNorm = norm(
+      boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
+    );
     const deltaMpNorm = norm(deltaMealPowerVector);
-    const n1 = deltaMpNorm;
+    const n1 = deltaMpNorm * positiveBoostedMpNorm; // * norm(targetMealPowerVector);
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
-
-    const n2 = norm(deltaTypeVector);
+    const postiveTypeNorm = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
+    const n2 = postiveTypeNorm * norm(deltaTypeVector); // norm(targetTypeVector);
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
         : 0;
-    const n3 = norm(deltaLevelVector);
+    const n3 = norm(deltaLevelVector); // * norm(targetLevelVector);
     const levelProduct =
       n3 !== 0 ? innerProduct(ing.typeVector, deltaLevelVector) / n3 : 0;
     const ingScore =
@@ -226,7 +244,12 @@ const selectIngredient = ({
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    if (ing.name === 'Egg' || ing.name === 'Bacon') {
+    if (
+      ing.name === 'Potato Salad' ||
+      ing.name === 'Banana' ||
+      ing.name === 'Whipped Cream' ||
+      ing.name === 'Rice'
+    ) {
       console.debug(
         `${ing.name}:
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
@@ -267,7 +290,9 @@ const selectIngredient = ({
   Delta T: ${deltaTypeVector}
   Target L: ${targetLevelVector}
   Delta L: ${deltaLevelVector}
-  Current T: ${currentTypeVector}`);
+  Current T: ${currentTypeVector}
+  Remaining fillings: ${remainingFillings}
+  Remaining condiments: ${remainingCondiments}`);
 
   return bestIngredient;
 };

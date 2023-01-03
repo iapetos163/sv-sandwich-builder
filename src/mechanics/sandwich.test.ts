@@ -1,4 +1,8 @@
-import { makeSandwichForPower } from './sandwich';
+import {
+  getMpScoreWeight,
+  getTypeScoreWeight,
+  makeSandwichForPower,
+} from './sandwich';
 
 const TEST_SET_HERBA = [
   {
@@ -476,6 +480,29 @@ const TEST_SET_NONHERBA = [
 //   },
 // ];
 
+describe('getTypeScoreWeight', () => {
+  it('Initially weighs level over meal power', () => {
+    const levelWeight = getTypeScoreWeight({
+      targetVector: [0, 0, 0, 0, 0, 0, 180, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      deltaVector: [0, 0, 0, 0, 0, 0, 180, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      currentVector: [],
+      remainingFillings: 6,
+      remainingCondiments: 4,
+    });
+
+    const mpWeight = getMpScoreWeight({
+      targetVector: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      deltaVector: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      currentVector: [],
+      remainingFillings: 6,
+      remainingCondiments: 4,
+    });
+
+    console.debug({ levelWeight, mpWeight });
+    expect(levelWeight).toBeGreaterThan(mpWeight);
+  });
+});
+
 describe('makeSandwichForPower', () => {
   it('Produces a sandwich with Lv 3 Sparkling Ground', () => {
     const sandwich = makeSandwichForPower({
@@ -555,6 +582,7 @@ describe('makeSandwichForPower', () => {
     expect(numIngredients).toBeLessThanOrEqual(9);
   });
 
+  // TODO: check MP scores for condiments
   it('Produces a sandwich with Lv 2 Egg', () => {
     const sandwich = makeSandwichForPower({
       mealPower: 'Egg',
@@ -563,6 +591,7 @@ describe('makeSandwichForPower', () => {
     });
 
     // 4x Chorizo, 2x Banana, 2x Whippped Cream
+    // or 4x Chorizo, 1x Banana, 1x Potato Salad, 2x Whippped Cream
     expect(sandwich).not.toBeNull();
 
     const numIngredients =
