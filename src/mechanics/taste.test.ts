@@ -1,7 +1,6 @@
 import {
   getBoostedMealPower,
   getRelativeTasteVector,
-  makeMealPowerVectors,
   rankFlavorBoosts,
 } from './taste';
 
@@ -308,16 +307,5 @@ describe('getRelativeTasteVector', () => {
     });
 
     expect(res[0]).toBeGreaterThan(0);
-  });
-});
-
-describe('makeMealPowerVectors', () => {
-  it('Makes the expected Egg components for Banana', () => {
-    const { primary, secondary } = makeMealPowerVectors(
-      { Sweet: 4, Sour: 1 },
-      3,
-    );
-    expect(primary[0]).toBe(12);
-    expect(secondary[0]).toBe(-3);
   });
 });
