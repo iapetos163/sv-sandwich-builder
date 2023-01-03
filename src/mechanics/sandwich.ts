@@ -70,8 +70,8 @@ const getBaseDelta = (target: number[], current: number[]) => {
   return norm(diff(target, base));
 };
 
-const MP_FILLING = 36;
-const MP_CONDIMENT = 4;
+const MP_FILLING = 21;
+const MP_CONDIMENT = 21;
 const TYPE_FILLING = 36;
 const TYPE_CONDIMENT = 4;
 
