@@ -86,47 +86,61 @@ const secondaryFlavorsForPower: Record<MealPower, Flavor[]> = {
   };
   */
 
-export const makeMealPowerVectors = (
+export const makeMealPowerMatrix = (
   flavorBoosts: Boosts<Flavor>,
   pieces = 1,
-) => {
+): { primary: Boosts<Flavor>[]; secondary: Boosts<Flavor>[] } => {
   const components = mealPowers.map((mp) => {
     const primaryFlavor = primaryFlavorsForPower[mp];
     const secondaryFlavors = secondaryFlavorsForPower[mp];
     if (!primaryFlavor) return { primary: 0, secondary: 0 };
 
-    const primaryAmount = flavorBoosts[primaryFlavor] || 0;
-    const otherAmounts = Object.entries(flavorBoosts)
+    const primaryAmount = pieces * (flavorBoosts[primaryFlavor] || 0);
+    const otherFlavorEntries = Object.entries(flavorBoosts)
       .filter(
         ([flavor]) =>
           flavor !== primaryFlavor &&
           !secondaryFlavors.includes(flavor as Flavor),
       )
-      .map(([flavor, amount]) => amount);
-    const maxOther = otherAmounts.length > 0 ? Math.max(...otherAmounts) : 0;
+      .map(([flavor, amount]) => [flavor, amount * pieces]) as [
+      Flavor,
+      number,
+    ][];
 
     if (secondaryFlavors.length === 0) {
       return {
-        primary: pieces * (primaryAmount - maxOther),
-        secondary: 0,
+        primary: {
+          [primaryFlavor]: primaryAmount * pieces,
+          ...Object.fromEntries(otherFlavorEntries.map(([f, a]) => [f, -a])),
+        },
+        secondary: {},
       };
     }
 
-    const secondaryAmounts = Object.entries(flavorBoosts)
+    const secondaryEntries = Object.entries(flavorBoosts)
       .filter(([flavor]) => secondaryFlavors.includes(flavor as Flavor))
-      .map(([flavor, amount]) => amount);
-    const maxSecondary =
-      secondaryAmounts.length > 0 ? Math.max(...secondaryAmounts) : 0;
+      .map(([flavor, amount]) => [flavor, amount * pieces]) as [
+      Flavor,
+      number,
+    ][];
 
-    if (maxOther > primaryAmount) {
-      return {
-        primary: pieces * (primaryAmount - maxOther),
-        secondary: pieces * maxSecondary,
-      };
-    }
     return {
-      primary: pieces * primaryAmount,
-      secondary: pieces * (maxSecondary - maxOther),
+      primary: {
+        [primaryFlavor]: primaryAmount,
+        ...Object.fromEntries(
+          otherFlavorEntries
+            .filter(([f, a]) => a >= primaryAmount)
+            .map(([f, a]) => [f, -a]),
+        ),
+      },
+      secondary: {
+        ...Object.fromEntries(secondaryEntries),
+        ...Object.fromEntries(
+          otherFlavorEntries
+            .filter(([f, a]) => a < primaryAmount)
+            .map(([f, a]) => [f, -a]),
+        ),
+      },
     };
   });
 
