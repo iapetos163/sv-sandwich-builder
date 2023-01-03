@@ -211,6 +211,12 @@ const selectIngredient = ({
       return agg;
     }
 
+    // if (ing.name === 'Banana')
+    //   console.debug('BANAYNAY', {
+    //     currentFlavorBoosts,
+    //     primaryTasteVector: ing.primaryTasteMealPowerVector,
+    //     secondaryTasteVector: ing.secondaryTasteMealPowerVector,
+    //   });
     const relativeTasteVector = getRelativeTasteVector({
       currentFlavorBoosts,
       primaryTasteVector: ing.primaryTasteMealPowerVector,

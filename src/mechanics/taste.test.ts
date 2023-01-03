@@ -296,9 +296,18 @@ describe('getRelativeTasteVector', () => {
       primaryTasteVector: [0, -20, 4, -16, -20, 0, 0, -20, -20, 16],
       secondaryTasteVector: [20, 0, 20, 0, 0, 0, 0, 0, 0, 0],
     });
-    console.debug(res2);
     const gt100_2 = res2.find((c) => Math.abs(c) > 100);
     expect(gt100_2).toBeUndefined();
+  });
+
+  it('Outputs a positive Egg component when adding banana to chorizo', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: { Salty: 48, Bitter: 24, Hot: 48 },
+      primaryTasteVector: [12, 12, -12, 0, 12, 0, 0, -12, -9, -12],
+      secondaryTasteVector: [-3, 3, 0, 12, -3, 0, 0, 0, 0, 0],
+    });
+
+    expect(res[0]).toBeGreaterThan(0);
   });
 });
 

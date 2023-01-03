@@ -250,12 +250,19 @@ export const getRelativeTasteVector = (() => {
         const oneTwo = highestBoostAmount - secondHighestBoostAmount;
         const twoThree = secondHighestBoostAmount - thirdHighestBoostAmount;
         const dangerThreshold =
-          oneTwo > twoThree ? Math.min(-oneTwo, -1) : Math.max(twoThree, 1);
+          highestBoostedFlavor === primaryFlavor && oneTwo > twoThree
+            ? Math.min(-oneTwo, -1)
+            : Math.max(twoThree, 1);
         halfRelSecondaryComponent = Math.max(
           Math.min((absSecondaryComponent * 50) / dangerThreshold, 50),
           -50,
         );
       }
+      if (i === 0)
+        console.debug({
+          relPrimaryComponent,
+          relSecondaryComponent: 2 * halfRelSecondaryComponent,
+        });
       return relPrimaryComponent / 2 + halfRelSecondaryComponent;
     });
   };
