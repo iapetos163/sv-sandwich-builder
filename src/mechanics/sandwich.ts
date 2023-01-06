@@ -1,5 +1,5 @@
 import { ingredients, Ingredient } from '../data';
-import { Flavor, MealPower, TypeName } from '../strings';
+import { Flavor, MealPower, mealPowers, TypeName } from '../strings';
 import { add, diff, innerProduct, norm } from '../vector-math';
 import { Boosts, addBoosts } from './boost';
 import {
@@ -214,22 +214,23 @@ const selectIngredient = ({
       currentFlavorBoosts,
       ingredientFlavorBoosts: ing.totalFlavorBoosts,
     });
-    const boostedMealPowerVector = add(
-      ing.baseMealPowerVector,
-      relativeTasteVector,
+
+    const relevantTaste = relativeTasteVector.map((c, i) =>
+      mealPowers[i] === targetPower.mealPower || c < 0 ? c : 0,
     );
+    const boostedMealPowerVector = add(ing.baseMealPowerVector, relevantTaste);
 
     const positiveBoostedMpNorm = norm(
       boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
     );
     const deltaMpNorm = norm(deltaMealPowerVector);
-    const n1 = deltaMpNorm * positiveBoostedMpNorm; // * norm(targetMealPowerVector);
+    const n1 = deltaMpNorm * Math.sqrt(positiveBoostedMpNorm); // * norm(targetMealPowerVector);
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
     const postiveTypeNorm = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
-    const n2 = postiveTypeNorm * norm(deltaTypeVector); // norm(targetTypeVector);
+    const n2 = Math.sqrt(postiveTypeNorm) * norm(deltaTypeVector); // norm(targetTypeVector);
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
@@ -242,20 +243,19 @@ const selectIngredient = ({
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    if (
-      ing.name === 'Potato Salad' ||
-      ing.name === 'Banana' ||
-      ing.name === 'Whipped Cream' ||
-      ing.name === 'Rice'
-    ) {
-      console.debug(
-        `${ing.name}:
-    Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
-    Relative taste vector: ${relativeTasteVector}
-    Boosted meal power vector: ${boostedMealPowerVector}
-      n1: ${n1}`,
-      );
-    }
+    // if (
+    //   ing.name === 'Whipped Cream' ||
+    //   ing.name === 'Butter' ||
+    //   ing.name === 'Cream Cheese'
+    // ) {
+    //   console.debug(
+    //     `${ing.name}: ${ingScore}
+    // Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
+    // Relative taste vector: ${relativeTasteVector}
+    // Boosted meal power vector: ${boostedMealPowerVector}
+    //   n1: ${deltaMpNorm} * ${positiveBoostedMpNorm} = ${n1}`,
+    //   );
+    // }
     if (ingScore <= agg.score) {
       return agg;
     }

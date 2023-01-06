@@ -582,7 +582,6 @@ describe('makeSandwichForPower', () => {
     expect(numIngredients).toBeLessThanOrEqual(9);
   });
 
-  // TODO: check MP scores for condiments
   it('Produces a sandwich with Lv 2 Egg', () => {
     const sandwich = makeSandwichForPower({
       mealPower: 'Egg',
