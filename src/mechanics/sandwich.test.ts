@@ -639,8 +639,27 @@ describe('makeSandwichForPower', () => {
     });
 
     // 4x Chorizo, 2x Yellow Pepper, 2x Vinegar, Marmalade
-    // were back to where we were w flavor vectors
+    // 4x Chorizo, 2x Banana, 2x Marmalade
     expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(numIngredients).toBeLessThanOrEqual(8);
+  });
+
+  it('Produces a sandwich with Lv 2 Raid Fairy', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Raid',
+      type: 'Fairy',
+      level: 2,
+    });
+
+    // 4x Egg, 1x potato salad, 2x Wasabi, 1x yogurt
+    // Need to check if wasabi works and if so, our algorithm needs to change
+    // Otherwise adding potato salad and sub horseradish for wasabi definitely should work
+    expect(sandwich).not.toBeNull();
+    // point of screwup: adding third horseradish or PB
 
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
@@ -650,7 +669,7 @@ describe('makeSandwichForPower', () => {
         .map((f) => f.name)
         .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
     );
-    expect(numIngredients).toBeLessThanOrEqual(9);
+    expect(numIngredients).toBeLessThanOrEqual(10);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {
