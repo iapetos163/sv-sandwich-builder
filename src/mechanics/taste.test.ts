@@ -270,11 +270,7 @@ describe('getRelativeTasteVector', () => {
   it('Does not output infinite components', () => {
     const res = getRelativeTasteVector({
       currentFlavorBoosts: { Salty: 20, Hot: 20, Sweet: 16 },
-      primaryTasteVector: [
-        3, 14.8492424049175, 2.121320343559643, 3, 8.485281374238571, 0, 0, -12,
-        -3, -3,
-      ],
-      secondaryTasteVector: [],
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
     });
 
     expect(res).not.toContain(Infinity);
@@ -284,16 +280,14 @@ describe('getRelativeTasteVector', () => {
   it('Does not output a vector where any component has abs value >100', () => {
     const res1 = getRelativeTasteVector({
       currentFlavorBoosts: { Salty: 48, Hot: 48, Bitter: 24 },
-      primaryTasteVector: [9, 12, -12, 0, 9, 0, 0, -12, -9, -12],
-      secondaryTasteVector: [0, 3, 0, 12, 0, 0, 0, 0, 0, 0],
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
     });
     const gt100_1 = res1.find((c) => Math.abs(c) > 100);
     expect(gt100_1).toBeUndefined();
 
     const res2 = getRelativeTasteVector({
       currentFlavorBoosts: {},
-      primaryTasteVector: [0, -20, 4, -16, -20, 0, 0, -20, -20, 16],
-      secondaryTasteVector: [20, 0, 20, 0, 0, 0, 0, 0, 0, 0],
+      ingredientFlavorBoosts: { Sweet: 16, Salty: 12 },
     });
     const gt100_2 = res2.find((c) => Math.abs(c) > 100);
     expect(gt100_2).toBeUndefined();
@@ -302,8 +296,7 @@ describe('getRelativeTasteVector', () => {
   it('Outputs a positive Egg component when adding banana to chorizo', () => {
     const res = getRelativeTasteVector({
       currentFlavorBoosts: { Salty: 48, Bitter: 24, Hot: 48 },
-      primaryTasteVector: [12, 12, -12, 0, 12, 0, 0, -12, -9, -12],
-      secondaryTasteVector: [-3, 3, 0, 12, -3, 0, 0, 0, 0, 0],
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
     });
 
     expect(res[0]).toBeGreaterThan(0);
