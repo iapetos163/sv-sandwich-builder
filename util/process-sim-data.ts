@@ -106,10 +106,10 @@ const main = async () => {
       const totalFlavorBoosts = getFlavorBoosts(tastes, pieces);
 
       const baseMealPowerVector = mealPowers.map((mp) =>
-        totalMealPowerBoosts[mp] ? totalMealPowerBoosts[mp] * pieces : 0,
+        totalMealPowerBoosts[mp] ? totalMealPowerBoosts[mp] : 0,
       );
       const typeVector = allTypes.map((t) =>
-        totalTypeBoosts[t] ? totalTypeBoosts[t] * pieces : 0,
+        totalTypeBoosts[t] ? totalTypeBoosts[t] : 0,
       );
 
       return {

@@ -615,6 +615,7 @@ describe('makeSandwichForPower', () => {
 
     expect(numIngredients).toBeLessThanOrEqual(7);
   });
+
   it('Produces a sandwich with Lv 2 Humungo Dragon', () => {
     const sandwich = makeSandwichForPower({
       mealPower: 'Humungo',
@@ -622,7 +623,7 @@ describe('makeSandwichForPower', () => {
       level: 2,
     });
 
-    // 4x Chorizo, Potato Salad, Jalapeno, 2x Vinegar
+    // 4x Chorizo, Potato Salad, Jalapeno OR curry, 2x Vinegar
     expect(sandwich).not.toBeNull();
 
     const numIngredients =
