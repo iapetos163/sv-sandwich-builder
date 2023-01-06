@@ -182,7 +182,7 @@ export const getRelativeTasteVector = (() => {
       if (secondaryFlavors.length === 0) return relPrimaryComponent;
 
       const secondaryMatches = secondaryFlavors.filter(
-        (f) => currentFlavorBoosts[f] === secondHighestBoostAmount,
+        (f) => (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount,
       );
       const competingBoostsSecondary = flavorsCompetingWithSecondary.map(
         (f) => ingredientFlavorBoosts[f] || 0,

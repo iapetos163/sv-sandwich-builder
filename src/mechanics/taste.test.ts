@@ -301,4 +301,19 @@ describe('getRelativeTasteVector', () => {
 
     expect(res[0]).toBeGreaterThan(0);
   });
+
+  it("Doesn't output a positive Exp component when adding banana to 4x chorizo + 1 potato salad", () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: {
+        Salty: 51,
+        Sweet: 2,
+        Bitter: 25,
+        Hot: 48,
+        Sour: 4,
+      },
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
+    });
+
+    expect(res[2]).toBeLessThanOrEqual(0);
+  });
 });
