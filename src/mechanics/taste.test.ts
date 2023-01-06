@@ -1,6 +1,6 @@
 import {
   getBoostedMealPower,
-  makeGetRelativeTasteVector,
+  getRelativeTasteVector,
   rankFlavorBoosts,
 } from './taste';
 
@@ -266,21 +266,54 @@ describe('getBoostedMealPower', () => {
   });
 });
 
-describe('makeGetRelativeTasteVector', () => {
-  it('Does not make a function that outputs infinite components', () => {
-    const flavorBoosts = { Salty: 20, Hot: 20, Sweet: 16 };
-    const getRelativeTasteVector = makeGetRelativeTasteVector(
-      flavorBoosts,
-      rankFlavorBoosts(flavorBoosts),
-      'Encounter',
-      'Encounter',
-    );
-    const res = getRelativeTasteVector([
-      3, 14.8492424049175, 2.121320343559643, 3, 8.485281374238571, 0, 0, -12,
-      -3, -3,
-    ]);
+describe('getRelativeTasteVector', () => {
+  it('Does not output infinite components', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: { Salty: 20, Hot: 20, Sweet: 16 },
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
+    });
 
     expect(res).not.toContain(Infinity);
     expect(res).not.toContain(-Infinity);
+  });
+
+  it('Does not output a vector where any component has abs value >100', () => {
+    const res1 = getRelativeTasteVector({
+      currentFlavorBoosts: { Salty: 48, Hot: 48, Bitter: 24 },
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
+    });
+    const gt100_1 = res1.find((c) => Math.abs(c) > 100);
+    expect(gt100_1).toBeUndefined();
+
+    const res2 = getRelativeTasteVector({
+      currentFlavorBoosts: {},
+      ingredientFlavorBoosts: { Sweet: 16, Salty: 12 },
+    });
+    const gt100_2 = res2.find((c) => Math.abs(c) > 100);
+    expect(gt100_2).toBeUndefined();
+  });
+
+  it('Outputs a positive Egg component when adding banana to chorizo', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: { Salty: 48, Bitter: 24, Hot: 48 },
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
+    });
+
+    expect(res[0]).toBeGreaterThan(0);
+  });
+
+  it("Doesn't output a positive Exp component when adding banana to 4x chorizo + 1 potato salad", () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: {
+        Salty: 51,
+        Sweet: 2,
+        Bitter: 25,
+        Hot: 48,
+        Sour: 4,
+      },
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
+    });
+
+    expect(res[2]).toBeLessThanOrEqual(0);
   });
 });

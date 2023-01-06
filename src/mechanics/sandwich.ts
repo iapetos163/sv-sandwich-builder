@@ -1,8 +1,8 @@
 import { ingredients, Ingredient } from '../data';
-import { Flavor, MealPower, TypeName } from '../strings';
+import { Flavor, MealPower, mealPowers, TypeName } from '../strings';
 import { add, diff, innerProduct, norm } from '../vector-math';
+import { Boosts, addBoosts } from './boost';
 import {
-  addBoosts,
   boostMealPowerVector,
   evaluateBoosts,
   getTargetLevelVector,
@@ -14,7 +14,7 @@ import {
   powerToString,
 } from './powers';
 import {
-  makeGetRelativeTasteVector,
+  getRelativeTasteVector,
   getBoostedMealPower,
   rankFlavorBoosts,
   FlavorBoost,
@@ -35,10 +35,11 @@ interface SelectIngredientProps {
   checkMealPower: boolean;
   checkType: boolean;
   checkLevel: boolean;
-  allowFillings: boolean;
-  allowCondiments: boolean;
-  skipFillings: Record<string, boolean>;
-  getRelativeTasteVector(base: number[]): number[];
+  remainingFillings: number;
+  remainingCondiments: number;
+  allowHerbaMystica: boolean;
+  skipIngredients: Record<string, boolean>;
+  currentFlavorBoosts: Boosts<Flavor>;
 }
 
 type IngredientAggregation = {
@@ -64,27 +65,79 @@ const getBaseVector = (currentVector: number[]) => {
   return currentVector.map((comp) => (comp >= 0 ? 0 : comp));
 };
 
-const getScoreWeight = (
-  target: number[],
-  delta: number[],
-  current: number[],
-) => {
+const getBaseDelta = (target: number[], current: number[]) => {
   const base = getBaseVector(current);
-  const baseDelta = norm(diff(target, base));
-  return baseDelta !== 0 ? norm(delta) / baseDelta : 0;
+  return norm(diff(target, base));
+};
+
+const MP_FILLING = 21;
+const MP_CONDIMENT = 21;
+const TYPE_FILLING = 36;
+const TYPE_CONDIMENT = 4;
+
+export interface ScoreWeightProps {
+  targetVector: number[];
+  deltaVector: number[];
+  currentVector: number[];
+  remainingFillings: number;
+  remainingCondiments: number;
+}
+
+export const getMpScoreWeight = ({
+  targetVector,
+  deltaVector,
+  currentVector,
+  remainingFillings,
+  remainingCondiments,
+}: ScoreWeightProps) => {
+  const baseDelta = getBaseDelta(targetVector, currentVector);
+
+  const urgency =
+    norm(deltaVector) /
+    (MP_FILLING * remainingFillings + MP_CONDIMENT * remainingCondiments);
+  const weight = urgency / Math.max(baseDelta, 100);
+  // console.debug(
+  //   `${weight} = ${norm(
+  //     deltaVector,
+  //   )} / (${MP_FILLING} * ${remainingFillings} + ${MP_CONDIMENT} * ${remainingCondiments})`,
+  // );
+  return weight;
+};
+
+export const getTypeScoreWeight = ({
+  targetVector,
+  deltaVector,
+  currentVector,
+  remainingFillings,
+  remainingCondiments,
+}: ScoreWeightProps) => {
+  const baseDelta = getBaseDelta(targetVector, currentVector);
+
+  const weight =
+    norm(deltaVector) /
+    (baseDelta *
+      (TYPE_FILLING * remainingFillings +
+        TYPE_CONDIMENT * remainingCondiments));
+  // console.debug(
+  //   `${weight} = ${norm(
+  //     deltaVector,
+  //   )} / (${TYPE_FILLING} * ${remainingFillings} + ${TYPE_CONDIMENT} * ${remainingCondiments})`,
+  // );
+  return weight;
 };
 
 const selectIngredient = ({
   targetPower,
   currentBoostedMealPowerVector,
-  getRelativeTasteVector,
   currentTypeVector,
+  currentFlavorBoosts,
   checkMealPower,
   checkType,
   checkLevel,
-  allowFillings,
-  allowCondiments,
-  skipFillings,
+  skipIngredients,
+  allowHerbaMystica,
+  remainingCondiments,
+  remainingFillings,
 }: SelectIngredientProps) => {
   const targetMealPowerVector = getTargetMealPowerVector(
     targetPower,
@@ -104,18 +157,40 @@ const selectIngredient = ({
   );
   const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
   const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
-  const mealPowerScoreWeight = checkMealPower
-    ? getScoreWeight(
-        targetMealPowerVector,
-        deltaMealPowerVector,
-        currentBoostedMealPowerVector,
-      )
-    : 0;
+
   const typeScoreWeight = checkType
-    ? getScoreWeight(targetTypeVector, deltaTypeVector, currentTypeVector)
+    ? getTypeScoreWeight({
+        targetVector: targetTypeVector,
+        deltaVector: deltaTypeVector,
+        currentVector: currentTypeVector,
+        remainingFillings,
+        remainingCondiments,
+      })
     : 0;
+  // console.debug({
+  //   targetVector: targetLevelVector,
+  //   deltaVector: deltaLevelVector,
+  //   currentVector: currentTypeVector,
+  //   remainingFillings,
+  //   remainingCondiments,
+  // });
   const levelScoreWeight = checkLevel
-    ? getScoreWeight(targetLevelVector, deltaLevelVector, currentTypeVector)
+    ? getTypeScoreWeight({
+        targetVector: targetLevelVector,
+        deltaVector: deltaLevelVector,
+        currentVector: currentTypeVector,
+        remainingFillings,
+        remainingCondiments,
+      })
+    : 0;
+  const mealPowerScoreWeight = checkMealPower
+    ? getMpScoreWeight({
+        targetVector: targetMealPowerVector,
+        deltaVector: deltaMealPowerVector,
+        currentVector: currentBoostedMealPowerVector,
+        remainingFillings,
+        remainingCondiments,
+      })
     : 0;
 
   let bestMealPowerProduct = -Infinity;
@@ -127,50 +202,60 @@ const selectIngredient = ({
     ing: Ingredient,
   ): IngredientAggregation => {
     if (
-      (!allowFillings && ing.ingredientType === 'filling') ||
-      (!allowCondiments && ing.ingredientType === 'condiment') ||
-      skipFillings[ing.name]
+      (remainingFillings <= 0 && ing.ingredientType === 'filling') ||
+      (remainingCondiments <= 0 && ing.ingredientType === 'condiment') ||
+      (!allowHerbaMystica && ing.isHerbaMystica) ||
+      skipIngredients[ing.name]
     ) {
       return agg;
     }
 
-    const relativeTasteVector = getRelativeTasteVector(
-      ing.tasteMealPowerVector,
+    const relativeTasteVector = getRelativeTasteVector({
+      currentFlavorBoosts,
+      ingredientFlavorBoosts: ing.totalFlavorBoosts,
+    });
+
+    const relevantTaste = relativeTasteVector.map((c, i) =>
+      mealPowers[i] === targetPower.mealPower || c < 0 ? c : 0,
     );
-    const boostedMealPowerVector = add(
-      ing.baseMealPowerVector,
-      relativeTasteVector,
+    const boostedMealPowerVector = add(ing.baseMealPowerVector, relevantTaste);
+
+    const positiveBoostedMpNorm = norm(
+      boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
     );
-    const n1 = norm(boostedMealPowerVector.map((c) => (c > 0 ? c : 0)));
+    const deltaMpNorm = norm(deltaMealPowerVector);
+    const n1 = deltaMpNorm * Math.sqrt(positiveBoostedMpNorm); // * norm(targetMealPowerVector);
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
-
-    const n2 = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
+    const postiveTypeNorm = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
+    const n2 = Math.sqrt(postiveTypeNorm) * norm(deltaTypeVector); // norm(targetTypeVector);
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
         : 0;
-    const levelProduct = innerProduct(ing.typeVector, deltaLevelVector);
+    const n3 = norm(deltaLevelVector); // * norm(targetLevelVector);
+    const levelProduct =
+      n3 !== 0 ? innerProduct(ing.typeVector, deltaLevelVector) / n3 : 0;
     const ingScore =
       mealPowerProduct * mealPowerScoreWeight +
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    //   if (
-    //     ing.name === 'Banana' ||
-    //     ing.name === 'Cherry Tomatoes' ||
-    //     ing.name === 'Jam'
-    //   ) {
-    //     console.debug(
-    //       `${ing.name}:
+    // if (
+    //   ing.name === 'Whipped Cream' ||
+    //   ing.name === 'Butter' ||
+    //   ing.name === 'Cream Cheese'
+    // ) {
+    //   console.debug(
+    //     `${ing.name}: ${ingScore}
     // Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
-    // Taste meal power vector: ${ing.tasteMealPowerVector},
     // Relative taste vector: ${relativeTasteVector}
-    // Boosted meal power vector: ${boostedMealPowerVector}`,
-    //     );
-    //   }
+    // Boosted meal power vector: ${boostedMealPowerVector}
+    //   n1: ${deltaMpNorm} * ${positiveBoostedMpNorm} = ${n1}`,
+    //   );
+    // }
     if (ingScore <= agg.score) {
       return agg;
     }
@@ -201,27 +286,19 @@ const selectIngredient = ({
   Delta T: ${deltaTypeVector}
   Target L: ${targetLevelVector}
   Delta L: ${deltaLevelVector}
-  Current T: ${currentTypeVector}`);
+  Current T: ${currentTypeVector}
+  Remaining fillings: ${remainingFillings}
+  Remaining condiments: ${remainingCondiments}`);
 
   return bestIngredient;
 };
 
 // TODO: target more than one power
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
-  console.log('~~~HAZ SANDWICH~~~');
+  console.debug('~~~HAZ SANDWICH~~~');
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
-  const skipFillings: Record<string, boolean> = {};
-  if (
-    targetPower.mealPower !== 'Sparkling' &&
-    targetPower.mealPower !== 'Title'
-  ) {
-    for (const ingredient of ingredients) {
-      if (ingredient.isHerbaMystica) {
-        skipFillings[ingredient.name] = true;
-      }
-    }
-  }
+  const skipIngredients: Record<string, boolean> = {};
 
   let currentBaseMealPowerVector: number[] = [];
   let currentTypeVector: number[] = [];
@@ -232,6 +309,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   let targetPowerFound = false;
   let boostedMealPower: MealPower | null = null;
   let rankedFlavorBoosts: FlavorBoost[] = [];
+  let allowHerbaMystica =
+    targetPower.mealPower === 'Sparkling' || targetPower.mealPower === 'Title';
 
   const checkType = mealPowerHasType(targetPower.mealPower);
 
@@ -242,13 +321,6 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     //     console.log(`Current MP (Boosted): ${currentBoostedMealPowerVector}
     // Current T: ${currentTypeVector}`);
-    // console.log(
-    //   'makeGet',
-    //   currentFlavorBoosts,
-    //   rankedFlavorBoosts,
-    //   boostedMealPower,
-    //   targetPower.mealPower,
-    // );
     const selectedPower = currentPowers[0];
     const newIngredient = selectIngredient({
       targetPower,
@@ -261,19 +333,17 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         (checkType && selectedPower?.type !== targetPower.type),
       checkLevel:
         !selectedPower?.level || selectedPower.level < targetPower.level,
-      allowFillings:
-        fillings.length < maxFillings &&
-        (!targetPowerFound || fillings.length === 0),
-      allowCondiments:
-        condiments.length < maxCondiments &&
-        (!targetPowerFound || condiments.length === 0),
-      getRelativeTasteVector: makeGetRelativeTasteVector(
-        currentFlavorBoosts,
-        rankedFlavorBoosts,
-        boostedMealPower,
-        targetPower.mealPower,
-      ),
-      skipFillings,
+      remainingFillings:
+        !targetPowerFound || fillings.length === 0
+          ? maxFillings - fillings.length
+          : 0,
+      remainingCondiments:
+        !targetPowerFound || condiments.length === 0
+          ? maxCondiments - condiments.length
+          : 0,
+      currentFlavorBoosts,
+      allowHerbaMystica,
+      skipIngredients,
     });
 
     if (newIngredient.ingredientType === 'filling') {
@@ -286,7 +356,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       // console.log(newIngredient.name, numPieces);
       if (numPieces + newIngredient.pieces > maxPieces) {
         // console.log('Skipping', newIngredient.name);
-        skipFillings[newIngredient.name] = true;
+        skipIngredients[newIngredient.name] = true;
       }
     } else {
       condiments.push(newIngredient);
@@ -299,23 +369,22 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     currentTypeVector = add(currentTypeVector, newIngredient.typeVector);
     currentMealPowerBoosts = addBoosts(
       currentMealPowerBoosts,
-      newIngredient.mealPowerBoosts,
-      newIngredient.pieces,
+      newIngredient.totalMealPowerBoosts,
     );
     currentFlavorBoosts = addBoosts(
       currentFlavorBoosts,
-      newIngredient.flavorBoosts,
-      newIngredient.pieces,
+      newIngredient.totalFlavorBoosts,
     );
     currentTypeBoosts = addBoosts(
       currentTypeBoosts,
-      newIngredient.typeBoosts,
-      newIngredient.pieces,
+      newIngredient.totalTypeBoosts,
     );
     rankedFlavorBoosts = rankFlavorBoosts(currentFlavorBoosts);
     boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
 
-    // console.log(currentMealPowerBoosts, boostedMealPower, currentTypeBoosts);
+    if (condiments.filter((c) => c.isHerbaMystica).length >= 2) {
+      allowHerbaMystica = false;
+    }
 
     currentPowers = evaluateBoosts(
       currentMealPowerBoosts,

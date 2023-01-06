@@ -1,4 +1,8 @@
-import { makeSandwichForPower } from './sandwich';
+import {
+  getMpScoreWeight,
+  getTypeScoreWeight,
+  makeSandwichForPower,
+} from './sandwich';
 
 const TEST_SET_HERBA = [
   {
@@ -476,6 +480,29 @@ const TEST_SET_NONHERBA = [
 //   },
 // ];
 
+describe('getTypeScoreWeight', () => {
+  it('Initially weighs level over meal power', () => {
+    const levelWeight = getTypeScoreWeight({
+      targetVector: [0, 0, 0, 0, 0, 0, 180, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      deltaVector: [0, 0, 0, 0, 0, 0, 180, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      currentVector: [],
+      remainingFillings: 6,
+      remainingCondiments: 4,
+    });
+
+    const mpWeight = getMpScoreWeight({
+      targetVector: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      deltaVector: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      currentVector: [],
+      remainingFillings: 6,
+      remainingCondiments: 4,
+    });
+
+    console.debug({ levelWeight, mpWeight });
+    expect(levelWeight).toBeGreaterThan(mpWeight);
+  });
+});
+
 describe('makeSandwichForPower', () => {
   it('Produces a sandwich with Lv 3 Sparkling Ground', () => {
     const sandwich = makeSandwichForPower({
@@ -563,16 +590,87 @@ describe('makeSandwichForPower', () => {
     });
 
     // 4x Chorizo, 2x Banana, 2x Whippped Cream
+    // or 4x Chorizo, 1x Banana, 1x Potato Salad, 2x Whippped Cream
     expect(sandwich).not.toBeNull();
 
     const numIngredients =
       sandwich!.condiments.length + sandwich!.fillings.length;
 
-    // console.debug(
-    //   `${sandwich!.fillings
-    //     .map((f) => f.name)
-    //     .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
-    // );
     expect(numIngredients).toBeLessThanOrEqual(8);
   });
+
+  it('Produces a sandwich with Lv 2 Exp Dark', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Exp',
+      type: 'Dark',
+      level: 2,
+    });
+
+    // 4x Herbed Sausage, 2x Potato Salad, Yogurt
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(numIngredients).toBeLessThanOrEqual(7);
+  });
+
+  it('Produces a sandwich with Lv 2 Humungo Dragon', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Humungo',
+      type: 'Dragon',
+      level: 2,
+    });
+
+    // 4x Chorizo, Potato Salad, Jalapeno OR curry, 2x Vinegar
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    expect(numIngredients).toBeLessThanOrEqual(8);
+  });
+
+  it('Produces a sandwich with Lv 2 Item Electric', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Item',
+      type: 'Electric',
+      level: 2,
+    });
+
+    // 4x Chorizo, 2x Yellow Pepper, 2x Vinegar, Marmalade
+    // were back to where we were w flavor vectors
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.condiments.length + sandwich!.fillings.length;
+
+    console.debug(
+      `${sandwich!.fillings
+        .map((f) => f.name)
+        .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
+    );
+    expect(numIngredients).toBeLessThanOrEqual(9);
+  });
+
+  // it('Produces a sandwich with Lv 2 mp t', () => {
+  //   const sandwich = makeSandwichForPower({
+  //     mealPower: 'Catch',
+  //     type: 'Bug',
+  //     level: 2,
+  //   });
+
+  //   //
+  //   expect(sandwich).not.toBeNull();
+
+  //   const numIngredients =
+  //     sandwich!.condiments.length + sandwich!.fillings.length;
+
+  //   console.debug(
+  //     `${sandwich!.fillings
+  //       .map((f) => f.name)
+  //       .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
+  //   );
+  //   expect(numIngredients).toBeLessThanOrEqual(7);
+  // });
 });

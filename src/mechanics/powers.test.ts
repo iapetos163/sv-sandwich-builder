@@ -1,4 +1,5 @@
 import {
+  calculateTypes,
   getTargetLevelVector,
   getTargetTypeVector,
   powersMatch,
@@ -59,5 +60,15 @@ describe('powersMatch', () => {
     );
 
     expect(match).toBe(true);
+  });
+});
+
+describe('calculateTypes', () => {
+  it('Does not output holes', () => {
+    const levels = calculateTypes([
+      { name: 'Steel', amount: 2 },
+      { name: 'Fire', amount: 2 },
+    ]);
+    expect(levels[1]).toBeDefined();
   });
 });

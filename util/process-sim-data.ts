@@ -4,7 +4,6 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
-import { tasteVectors } from '../src/mechanics';
 import {
   Flavor,
   mealPowers,
@@ -15,15 +14,13 @@ import {
   isType,
   isFlavor,
 } from '../src/strings';
-import { add, scale } from '../src/vector-math';
 
 type IngredientEntry = {
   name: string;
-  mealPowerBoosts: Record<MealPower, number>;
-  typeBoosts: Record<TypeName, number>;
-  flavorBoosts: Record<Flavor, number>;
+  totalMealPowerBoosts: Record<MealPower, number>;
+  totalTypeBoosts: Record<TypeName, number>;
+  totalFlavorBoosts: Record<Flavor, number>;
   baseMealPowerVector: number[];
-  tasteMealPowerVector: number[];
   typeVector: number[];
   imagePath: string;
   imageUrl: string;
@@ -32,33 +29,39 @@ type IngredientEntry = {
   ingredientType: 'filling' | 'condiment';
 };
 
-const getFlavorBoosts = (tastes: { flavor: string; amount: number }[]) =>
+const getFlavorBoosts = (
+  tastes: { flavor: string; amount: number }[],
+  pieces = 1,
+) =>
   Object.fromEntries(
     tastes.map((p) => {
       if (!isFlavor(p.flavor)) {
         throw new Error(`Unrecognized flavor: ${p.flavor}`);
       }
-      return [p.flavor, p.amount];
+      return [p.flavor, p.amount * pieces];
     }),
   ) as Record<Flavor, number>;
 
-const getMealPowerBoosts = (powers: { type: string; amount: number }[]) =>
+const getMealPowerBoosts = (
+  powers: { type: string; amount: number }[],
+  pieces = 1,
+) =>
   Object.fromEntries(
     powers.map((p) => {
       if (!isMealPower(p.type)) {
         throw new Error(`Unrecognized meal power: ${p}`);
       }
-      return [p.type, p.amount];
+      return [p.type, p.amount * pieces];
     }),
   ) as Record<MealPower, number>;
 
-const getTypeBoosts = (types: { type: string; amount: number }[]) =>
+const getTypeBoosts = (types: { type: string; amount: number }[], pieces = 1) =>
   Object.fromEntries(
     types.map((p) => {
       if (!isType(p.type)) {
         throw new Error(`Unrecognized type: ${p}`);
       }
-      return [p.type, p.amount];
+      return [p.type, p.amount * pieces];
     }),
   ) as Record<TypeName, number>;
 
@@ -71,18 +74,14 @@ const main = async () => {
 
   const parsedCondiments = condiments.map(
     ({ name, imageUrl, powers, types, tastes }): IngredientEntry => {
-      const mealPowerBoosts = getMealPowerBoosts(powers);
-      const typeBoosts = getTypeBoosts(types);
-      const flavorBoosts = getFlavorBoosts(tastes);
+      const totalMealPowerBoosts = getMealPowerBoosts(powers);
+      const totalTypeBoosts = getTypeBoosts(types);
+      const totalFlavorBoosts = getFlavorBoosts(tastes);
 
       const baseMealPowerVector = mealPowers.map(
-        (mp) => mealPowerBoosts[mp] ?? 0,
+        (mp) => totalMealPowerBoosts[mp] ?? 0,
       );
-      const tasteMealPowerVector = tastes.reduce<number[]>(
-        (sum, c) => add(sum, scale(tasteVectors[c.flavor as Flavor], c.amount)),
-        [],
-      );
-      const typeVector = allTypes.map((t) => typeBoosts[t] ?? 0);
+      const typeVector = allTypes.map((t) => totalTypeBoosts[t] ?? 0);
 
       return {
         name,
@@ -90,12 +89,11 @@ const main = async () => {
         imagePath: basename(imageUrl),
         imageUrl,
         pieces: 1,
-        mealPowerBoosts,
-        typeBoosts,
-        flavorBoosts,
+        totalMealPowerBoosts,
+        totalTypeBoosts,
+        totalFlavorBoosts,
         typeVector,
         baseMealPowerVector,
-        tasteMealPowerVector,
         ingredientType: 'condiment',
       };
     },
@@ -103,20 +101,15 @@ const main = async () => {
 
   const parsedFillings = fillings.map(
     ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => {
-      const mealPowerBoosts = getMealPowerBoosts(powers);
-      const typeBoosts = getTypeBoosts(types);
-      const flavorBoosts = getFlavorBoosts(tastes);
+      const totalMealPowerBoosts = getMealPowerBoosts(powers, pieces);
+      const totalTypeBoosts = getTypeBoosts(types, pieces);
+      const totalFlavorBoosts = getFlavorBoosts(tastes, pieces);
 
       const baseMealPowerVector = mealPowers.map((mp) =>
-        mealPowerBoosts[mp] ? mealPowerBoosts[mp] * pieces : 0,
-      );
-      const tasteMealPowerVector = tastes.reduce<number[]>(
-        (sum, f) =>
-          add(sum, scale(tasteVectors[f.flavor as Flavor], f.amount * pieces)),
-        [],
+        totalMealPowerBoosts[mp] ? totalMealPowerBoosts[mp] : 0,
       );
       const typeVector = allTypes.map((t) =>
-        typeBoosts[t] ? typeBoosts[t] * pieces : 0,
+        totalTypeBoosts[t] ? totalTypeBoosts[t] : 0,
       );
 
       return {
@@ -125,12 +118,11 @@ const main = async () => {
         imagePath: basename(imageUrl),
         imageUrl,
         pieces,
-        mealPowerBoosts,
-        typeBoosts,
-        flavorBoosts,
+        totalTypeBoosts,
+        totalFlavorBoosts,
+        totalMealPowerBoosts,
         typeVector,
         baseMealPowerVector,
-        tasteMealPowerVector,
         ingredientType: 'filling',
       };
     },

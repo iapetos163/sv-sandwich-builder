@@ -65,12 +65,16 @@ export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>
   mealPowers.map((mp, i) => (mp === boostedPower ? (v[i] || 0) + 100 : v[i]));
 
 // Assumes 3+ star sandwich
-const calculateTypes = (
+export const calculateTypes = (
   rankedTypes: TypeBoost[],
 ): [TypeBoost, TypeBoost, TypeBoost] => {
-  const [firstType, secondType, thirdType] = rankedTypes;
-  const { amount: mainTypeAmount } = firstType || { amount: 0 };
-  const { amount: secondTypeAmount } = secondType || { amount: 0 };
+  const [
+    firstType = { name: 'Normal', amount: 0 },
+    secondType = { name: 'Normal', amount: 0 },
+    thirdType = { name: 'Normal', amount: 0 },
+  ] = rankedTypes;
+  const { amount: mainTypeAmount } = firstType;
+  const { amount: secondTypeAmount } = secondType;
   const oneTwoDiff = mainTypeAmount - secondTypeAmount;
 
   if (mainTypeAmount > 480) {
@@ -106,7 +110,9 @@ const calculateTypes = (
 };
 
 // returns array of levels
-const calculateLevels = (types: TypeBoost[]): [number, number, number] => {
+export const calculateLevels = (
+  types: TypeBoost[],
+): [number, number, number] => {
   const [
     { amount: firstTypeAmount } = { amount: 0 },
     { amount: secondTypeAmount } = { amount: 0 },
@@ -139,18 +145,6 @@ const calculateLevels = (types: TypeBoost[]): [number, number, number] => {
   }
 
   return [1, 1, 1];
-};
-
-export const addBoosts = <T extends string>(
-  baseBoosts: Partial<Record<T, number>>,
-  newBoosts: Partial<Record<T, number>>,
-  pieces: number,
-) => {
-  const result = { ...baseBoosts };
-  for (const key of Object.keys(newBoosts) as T[]) {
-    result[key] = (result[key] || 0) + newBoosts[key]! * pieces;
-  }
-  return result;
 };
 
 export const rankMealPowerBoosts = (

@@ -4,11 +4,10 @@ import ingredientsData from './ingredients.json';
 export interface Ingredient {
   name: string;
   isHerbaMystica: boolean;
-  mealPowerBoosts: Partial<Record<MealPower, number>>;
-  typeBoosts: Partial<Record<TypeName, number>>;
-  flavorBoosts: Partial<Record<Flavor, number>>;
+  totalMealPowerBoosts: Partial<Record<MealPower, number>>;
+  totalTypeBoosts: Partial<Record<TypeName, number>>;
+  totalFlavorBoosts: Partial<Record<Flavor, number>>;
   baseMealPowerVector: number[];
-  tasteMealPowerVector: number[];
   typeVector: number[];
   imagePath: string;
   pieces: number;
