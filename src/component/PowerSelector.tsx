@@ -30,7 +30,7 @@ const StyledLevelDisplay = styled.div`
 
 export interface PowerSelectorProps {
   onRemove: () => void;
-  onSetPower: (power: Power) => void;
+  onChange: (power: Power | null) => void;
   allowedTypes: Record<string, true>;
   allowedMealPowers: Record<string, true>;
   removable?: boolean;
@@ -39,7 +39,7 @@ export interface PowerSelectorProps {
 
 const PowerSelector = ({
   onRemove,
-  onSetPower,
+  onChange,
   removable,
   allowedTypes,
   allowedMealPowers,
@@ -84,14 +84,15 @@ const PowerSelector = ({
       (!selectedType && mealPowerHasType(selectedMealPower)) ||
       selectedLevel > maxLevel
     ) {
+      onChange(null);
       return;
     }
-    onSetPower({
+    onChange({
       mealPower: selectedMealPower,
       type: selectedType as TypeName,
       level: selectedLevel,
     });
-  }, [selectedMealPower, selectedType, onSetPower, selectedLevel, maxLevel]);
+  }, [selectedMealPower, selectedType, onChange, selectedLevel, maxLevel]);
 
   return (
     <StyledContainer>

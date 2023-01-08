@@ -1,10 +1,4 @@
-import {
-  FormEvent,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { FormEvent, ReactElement, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerSelector';
 import SandwichResult from './component/SandwichResult';
@@ -28,7 +22,7 @@ function App(): ReactElement {
   const [queryChanged, setQueryChanged] = useState(true);
   const [calculating, setCalculating] = useState(false);
 
-  const handleSetPower = useCallback((power: Power) => {
+  const handleSetPower = useCallback((power: Power | null) => {
     setQueryPower(power);
     setQueryChanged(true);
   }, []);
@@ -54,14 +48,14 @@ function App(): ReactElement {
         <form onSubmit={handleSubmit}>
           <PowerSelector
             onRemove={() => {}}
-            onSetPower={handleSetPower}
+            onChange={handleSetPower}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
             maxLevel={3}
           />
           {/* <PowerSelector
             onRemove={() => {}}
-            onSetPower={() => {}}
+            onChange={() => {}}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
             maxLevel={3}
@@ -69,13 +63,15 @@ function App(): ReactElement {
           />
           <PowerSelector
             onRemove={() => {}}
-            onSetPower={() => {}}
+            onChange={() => {}}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
             maxLevel={3}
             removable
           /> */}
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={!queryPower}>
+            Submit
+          </button>
         </form>
         {calculating && <>Calculating...</>}
         {!calculating && !queryChanged && !resultSandwich && (
