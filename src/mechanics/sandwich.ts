@@ -457,7 +457,12 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     if (sandwichCandidates.length === 0) return null;
 
-    sandwichCandidates.sort((a, b) => a.fillings.length - b.fillings.length);
+    sandwichCandidates.sort(
+      (a, b) =>
+        10 * (a.fillings.length - b.fillings.length) +
+        a.condiments.length -
+        b.condiments.length,
+    );
     return sandwichCandidates[0];
   };
 
