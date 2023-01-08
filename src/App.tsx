@@ -1,6 +1,7 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerSelector';
+import SandwichResult from './component/SandwichResult';
 import { makeSandwichForPower, powersEqual } from './mechanics';
 import { allTypes, mealPowers } from './strings';
 import { Power, Sandwich } from './types';
@@ -18,19 +19,16 @@ const allowedTypes = allTypes.reduce<Record<string, true>>(
 function App(): ReactElement {
   const [resultSandwich, setResultSandwich] = useState<Sandwich | null>(null);
   const [queryPower, setQueryPower] = useState<Power | null>(null);
-  const handleSetPower = (power: Power) => {
-    let samePower = false;
+  const handleSetPower = useCallback((power: Power) => {
     setQueryPower((prev) => {
-      if (prev && powersEqual(power, prev)) {
-        samePower = true;
+      if (!prev || !powersEqual(power, prev)) {
+        const sandwich = makeSandwichForPower(power);
+        setResultSandwich(sandwich);
       }
+
       return power;
     });
-    if (!samePower) {
-      const sandwich = makeSandwichForPower(power);
-      setResultSandwich(sandwich);
-    }
-  };
+  }, []);
 
   return (
     <StyledContainer>
@@ -38,7 +36,7 @@ function App(): ReactElement {
         <form>
           <PowerSelector
             onRemove={() => {}}
-            onSetPower={() => {}}
+            onSetPower={handleSetPower}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
             maxLevel={3}
@@ -63,7 +61,7 @@ function App(): ReactElement {
         {queryPower && !resultSandwich && (
           <>Could not create a sandwich with the requested power.</>
         )}
-        {resultSandwich && 'sandwich here'}
+        {resultSandwich && <SandwichResult sandwich={resultSandwich} />}
       </main>
     </StyledContainer>
   );
