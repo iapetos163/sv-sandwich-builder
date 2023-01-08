@@ -1,4 +1,10 @@
-import { FormEvent, ReactElement, useCallback, useState } from 'react';
+import {
+  FormEvent,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerSelector';
 import SandwichResult from './component/SandwichResult';
@@ -20,6 +26,7 @@ function App(): ReactElement {
   const [resultSandwich, setResultSandwich] = useState<Sandwich | null>(null);
   const [queryPower, setQueryPower] = useState<Power | null>(null);
   const [queryChanged, setQueryChanged] = useState(true);
+  const [calculating, setCalculating] = useState(false);
 
   const handleSetPower = useCallback((power: Power) => {
     setQueryPower(power);
@@ -29,12 +36,16 @@ function App(): ReactElement {
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
       evt.preventDefault();
-      if (!queryPower) return;
-      const sandwich = makeSandwichForPower(queryPower);
-      setResultSandwich(sandwich);
-      setQueryChanged(false);
+      if (calculating || !queryPower) return;
+      setCalculating(true);
+      setTimeout(() => {
+        const sandwich = makeSandwichForPower(queryPower);
+        setResultSandwich(sandwich);
+        setQueryChanged(false);
+        setCalculating(false);
+      }, 10);
     },
-    [queryPower],
+    [calculating, queryPower],
   );
 
   return (
@@ -66,10 +77,13 @@ function App(): ReactElement {
           /> */}
           <button type="submit">Submit</button>
         </form>
-        {!queryChanged && !resultSandwich && (
+        {calculating && <>Calculating...</>}
+        {!calculating && !queryChanged && !resultSandwich && (
           <>Could not create a sandwich with the requested power.</>
         )}
-        {resultSandwich && <SandwichResult sandwich={resultSandwich} />}
+        {!calculating && resultSandwich && (
+          <SandwichResult sandwich={resultSandwich} />
+        )}
       </main>
     </StyledContainer>
   );

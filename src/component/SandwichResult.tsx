@@ -77,7 +77,7 @@ const SandwichResult = ({ sandwich }: SandwichResultProps) => {
       <RecipeList fillings={fillings} condiments={condiments} />
       <div>
         {powers.map((power) => (
-          <div key={power.type}>
+          <div key={power.type + power.mealPower}>
             Lv. {power.level} {power.type} {power.mealPower} Power
           </div>
         ))}
