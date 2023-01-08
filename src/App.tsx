@@ -1,13 +1,9 @@
 import { ReactElement, useState } from 'react';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerSelector';
-import {
-  makeSandwichForPower,
-  Power,
-  powersEqual,
-  Sandwich,
-} from './mechanics';
+import { makeSandwichForPower, powersEqual } from './mechanics';
 import { allTypes, mealPowers } from './strings';
+import { Power, Sandwich } from './types';
 
 const allowedMealPowers = mealPowers.reduce<Record<string, true>>(
   (allowed, p) => ({ [p]: true, ...allowed }),

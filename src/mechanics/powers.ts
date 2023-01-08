@@ -1,10 +1,6 @@
 import { allTypes, MealPower, mealPowers, TypeName } from '../strings';
+import { Power } from '../types';
 
-export interface Power {
-  mealPower: MealPower;
-  type: TypeName;
-  level: number;
-}
 interface TypeBoost {
   name: TypeName;
   amount: number;

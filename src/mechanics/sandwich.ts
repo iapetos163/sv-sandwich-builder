@@ -1,5 +1,6 @@
-import { ingredients, Ingredient } from '../data';
+import { ingredients } from '../data';
 import { Flavor, MealPower, mealPowers, TypeName } from '../strings';
+import { Ingredient, Power, Sandwich } from '../types';
 import { add, diff, innerProduct, norm } from '../vector-math';
 import { Boosts, addBoosts } from './boost';
 import {
@@ -9,7 +10,6 @@ import {
   getTargetMealPowerVector,
   getTargetTypeVector,
   mealPowerHasType,
-  Power,
   powersMatch,
 } from './powers';
 import {
@@ -20,14 +20,6 @@ import {
 
 const CANDIDATE_SCORE_THRESHOLD = 0.4;
 const MAX_CANDIDATES = 3;
-
-export interface Sandwich {
-  fillings: Ingredient[];
-  condiments: Ingredient[];
-  mealPowerBoosts: Partial<Record<MealPower, number>>;
-  typeBoosts: Partial<Record<TypeName, number>>;
-  flavorBoosts: Partial<Record<Flavor, number>>;
-}
 
 interface SelectIngredientProps {
   targetPower: Power;
@@ -49,7 +41,7 @@ const maxFillings = 6;
 const maxCondiments = 4;
 const maxPieces = 12;
 
-export const emptySandwich: Sandwich = {
+export const emptySandwich = {
   fillings: [],
   condiments: [],
   mealPowerBoosts: {},
