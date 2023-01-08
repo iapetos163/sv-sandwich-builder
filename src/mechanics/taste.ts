@@ -45,6 +45,7 @@ const tasteMap: Record<Flavor, Record<Flavor, MealPower>> = {
   },
 };
 
+/** If has more than one element, then it is a subset of secondaryFlavorsForPower[power] */
 const primaryFlavorsForPower: Record<MealPower, Flavor[]> = {
   Egg: ['Sweet'],
   Humungo: ['Hot'],
@@ -113,6 +114,12 @@ export interface RelativeTasteVectorProps {
   ingredientFlavorBoosts: Boosts<Flavor>;
 }
 
+/**
+ * Takes the average of two numbers, scales that by 100, and clamps that between -100 and 100.
+ */
+const avgScaleClamp = (n1: number, n2: number) =>
+  50 * Math.max(Math.min(n1 + n2, 2), -2);
+
 export const getRelativeTasteVector = (() => {
   let memoRankFlavorBoosts = (
     flavorBoosts: Partial<Record<Flavor, number>>,
@@ -132,130 +139,188 @@ export const getRelativeTasteVector = (() => {
 
     const highestBoostAmount = currentRankedFlavorBoosts[0]?.amount || 0;
     const secondHighestBoostAmount = currentRankedFlavorBoosts[1]?.amount || 0;
-    const thirdHighestBoostAmount = currentRankedFlavorBoosts[2]?.amount || 0;
+
+    if (highestBoostAmount === 0) {
+      // Return zero in this case for the sake of simplicity
+      return [];
+    }
 
     return mealPowers.map((mp, i) => {
       const primaryFlavors = primaryFlavorsForPower[mp];
       const secondaryFlavors = secondaryFlavorsForPower[mp];
       if (primaryFlavors.length === 0) return 0;
 
-      const primaryMatches = primaryFlavors.filter(
+      const nonPrimaryFlavors = flavors.filter(
+        (f) => !primaryFlavors.includes(f),
+      );
+      const otherFlavors = nonPrimaryFlavors.filter(
+        (f) => !secondaryFlavors.includes(f),
+      );
+
+      const primaryFirstMatches = primaryFlavors.filter(
         (f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount,
       );
-      const secondaryMatches = secondaryFlavors.filter(
-        (f) => (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount,
-      );
+      if (primaryFirstMatches.length === 0) {
+        const secondaryFirstMatches = primaryFlavors.filter(
+          (f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount,
+        );
 
-      const flavorsCompetingWithPrimary = flavors.filter(
-        (f) =>
-          !primaryFlavors.includes(f) &&
-          (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount,
-      );
-      const flavorsCompetingWithSecondary = flavors.filter(
-        (f) =>
-          !primaryFlavors.includes(f) &&
-          !secondaryFlavors.includes(f) &&
-          (currentFlavorBoosts[f] || 0) < secondHighestBoostAmount,
-      );
+        const otherFlavorsBelowHighest = otherFlavors.filter(
+          (f) => (currentFlavorBoosts[f] || 0) < highestBoostAmount,
+        );
 
-      const competingBoosts = flavorsCompetingWithPrimary.map(
-        (f) => ingredientFlavorBoosts[f] || 0,
-      );
-      const maxDetractingBoost = Math.max(...competingBoosts, 0);
-      let primaryComponents: number[];
+        // When on the offense: detractors use the supporters' thresholds
 
-      // TODO?: Deal with moving targets
+        const highestBoost = Math.max(
+          ...flavors
+            .filter((f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount)
+            .map((f) => ingredientFlavorBoosts[f] || 0),
+        );
 
-      if (highestBoostAmount === 0 || primaryMatches.length === 0) {
-        primaryComponents = primaryFlavors.map((flavor) => {
-          const ingBoost = ingredientFlavorBoosts[flavor] || 0;
-          const currentBoost = currentFlavorBoosts[flavor] || 0;
-          // Flavor needed to achieve desired power boost
-          const primaryThreshold = highestBoostAmount - currentBoost + 1;
-          // Difference between highest flavor and the runner up that threatens to change the boosted meal power
-          Math.max(highestBoostAmount - secondHighestBoostAmount, 1);
+        const primaryComponents = primaryFlavors.map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          const currentBoost = currentFlavorBoosts[f] || 0;
           return (
-            50 *
-            Math.max(
-              Math.min((ingBoost - maxDetractingBoost) / primaryThreshold, 1),
-              -1,
-            )
+            (ingBoost - highestBoost) /
+            Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
           );
         });
-      } else {
-        primaryComponents = primaryFlavors.map((flavor) => {
-          const ingBoost = ingredientFlavorBoosts[flavor] || 0;
-          // Difference between highest flavor and the runner up that threatens to change the boosted meal power
-          // FIXME another primary is ok
-          const primaryThreshold = Math.max(
-            highestBoostAmount - secondHighestBoostAmount,
-            1,
+
+        if (secondaryFirstMatches.length === 0) {
+          // offensive on primary, toward highestBoostAmount
+          // offensive on secondary, toward highestBoostAmount
+          // primary supporters: primaries
+          // secondary supporters: secondaries
+          // primary detractors: others >= highestBoostAmount
+          // secondary detractors: others < highestBoostAmount
+
+          const others2 = Math.max(
+            ...otherFlavorsBelowHighest.map(
+              (f) => ingredientFlavorBoosts[f] || 0,
+            ),
           );
+
+          const secondaryComponents = secondaryFlavors.map((f) => {
+            const ingBoost = ingredientFlavorBoosts[f] || 0;
+            const currentBoost = currentFlavorBoosts[f] || 0;
+            return (
+              (ingBoost - others2) /
+              Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
+            );
+          });
+
+          return avgScaleClamp(
+            Math.max(...primaryComponents),
+            Math.max(...secondaryComponents),
+          );
+        }
+        // offensive on primary, toward highestBoostAmount
+        // defensive on nonPrimary secondary, from highestBoostAmount
+        // primary supporters: primaries
+        // primary detractors: nonprimaries >= highestBoostAmount
+        // secondary detractors: others < highestBoostAmount
+        // neutral: secondary < highestBoostAmount
+
+        const otherToHighest = otherFlavorsBelowHighest.map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          const currentBoost = currentFlavorBoosts[f] || 0;
           return (
-            50 *
-            Math.max(
-              Math.min((ingBoost - maxDetractingBoost) / primaryThreshold, 1),
-              -1,
-            )
+            ingBoost / Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
           );
         });
+
+        const secondaryToHighest = secondaryFlavors.map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          const currentBoost = currentFlavorBoosts[f] || 0;
+          return (
+            ingBoost / Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
+          );
+        });
+        return avgScaleClamp(
+          Math.max(...primaryComponents),
+          Math.max(...secondaryToHighest) - Math.max(...otherToHighest),
+        );
       }
-      const halfPrimaryComponent = Math.max(...primaryComponents);
-      const competingBoostsSecondary = flavorsCompetingWithSecondary.map(
-        (f) => ingredientFlavorBoosts[f] || 0,
-      );
-      const maxDetractingBoostSecondary = Math.max(
-        ...competingBoostsSecondary,
-        0,
+
+      /*
+      Established:
+      * highestBoostAmount > 0
+      * primaryFirstMatches.length > 0
+      */
+      const secondarySecondMatches = secondaryFlavors.filter(
+        (f) => (currentFlavorBoosts[f] || 0) === secondHighestBoostAmount,
       );
 
-      let secondaryFlavorComponents: number[];
-      if (secondHighestBoostAmount === 0 || secondaryMatches.length === 0) {
-        secondaryFlavorComponents = secondaryFlavors.map((flavor) => {
-          const ingBoost = ingredientFlavorBoosts[flavor] || 0;
-          const currentBoost = currentFlavorBoosts[flavor] || 0;
-
-          // Flavor needed to achieve desired power boost
-          // Assumption: secondaryThreshold > 0
-          const secondaryThreshold =
-            secondHighestBoostAmount - currentBoost + 1;
+      const nonPrimariesFromSecondToHighest = nonPrimaryFlavors
+        .filter(
+          (f) => (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount,
+        )
+        .map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          const currentBoost = currentFlavorBoosts[f] || 0;
           return (
-            50 *
-            Math.max(
-              Math.min(
-                (ingBoost - maxDetractingBoostSecondary) / secondaryThreshold,
-                1,
-              ),
-              -1,
-            )
+            ingBoost / Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
           );
         });
-      } else {
-        // Difference between highest flavor and the runner up that threatens to change the boosted meal power
-        secondaryFlavorComponents = secondaryMatches.map((flavor) => {
-          const ingBoost = ingredientFlavorBoosts[flavor] || 0;
 
-          const oneTwo = highestBoostAmount - secondHighestBoostAmount;
-          const twoThree = secondHighestBoostAmount - thirdHighestBoostAmount;
-          const secondaryThreshold =
-            primaryMatches.length > 0 && oneTwo > twoThree
-              ? Math.min(-oneTwo, -1)
-              : Math.max(twoThree, 1);
+      const othersToSecond = otherFlavors
+        .filter((f) => (currentFlavorBoosts[f] || 0) < secondHighestBoostAmount)
+        .map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          const currentBoost = currentFlavorBoosts[f] || 0;
           return (
-            50 *
-            Math.max(
-              Math.min(
-                (ingBoost - maxDetractingBoostSecondary) / secondaryThreshold,
-                1,
-              ),
-              -1,
-            )
+            ingBoost /
+            Math.max(secondHighestBoostAmount - currentBoost, ingBoost, 1)
           );
         });
+
+      if (
+        secondHighestBoostAmount === 0 ||
+        secondarySecondMatches.length === 0
+      ) {
+        // Whatever's on second isn't a primary
+        // defensive on primary from highestBoostAmount
+        // offensive on secondary toward secondHighestBoostAmount
+        // secondary supporters: secondaries < secondHighestBoostAmount
+        // primary detractors: nonprimaries >= secondHighestBoostAmount
+        // Secondary detractors: others < secondHighestBoostAmount
+        // neutral: primaries
+
+        const secondariesToSecond = secondaryFlavors
+          .filter(
+            (f) => (currentFlavorBoosts[f] || 0) < secondHighestBoostAmount,
+          )
+          .map((f) => {
+            const ingBoost = ingredientFlavorBoosts[f] || 0;
+            const currentBoost = currentFlavorBoosts[f] || 0;
+            return (
+              ingBoost /
+              Math.max(secondHighestBoostAmount - currentBoost, ingBoost, 1)
+            );
+          });
+        return avgScaleClamp(
+          -Math.max(...nonPrimariesFromSecondToHighest),
+          Math.max(...secondariesToSecond) - Math.max(...othersToSecond),
+        );
       }
-      const halfRelSecondaryComponent = Math.max(...secondaryFlavorComponents);
 
-      return halfPrimaryComponent + halfRelSecondaryComponent;
+      /*
+      Established:
+      * highestBoostAmount > 0
+      * secondHighestBoostAmount > 0
+      * primaryFirstMatches.length > 0
+      * secondarySecondMatches.length > 0
+      */
+
+      // defensive on primary from highestBoostAmount
+      // defensive on secondary from secondHighestBoostAmount
+      // primary detractors: nonprimaries >= secondHighestBoostAmount
+      // secondary detractors: others < secondHighestBoostAmount
+      // neutral: primaries, secondaries < secondHighestBoostAmount
+      return avgScaleClamp(
+        -Math.max(...nonPrimariesFromSecondToHighest),
+        -Math.max(...othersToSecond),
+      );
     });
   };
 })();
