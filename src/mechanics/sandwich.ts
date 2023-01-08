@@ -18,8 +18,8 @@ import {
   rankFlavorBoosts,
 } from './taste';
 
-const CANDIDATE_SCORE_THRESHOLD = 0.1;
-const MAX_CANDIDATES = Math.ceil(Math.pow(1000, 0.1));
+const CANDIDATE_SCORE_THRESHOLD = 0.4;
+const MAX_CANDIDATES = 3;
 
 export interface Sandwich {
   fillings: Ingredient[];
@@ -235,9 +235,10 @@ const selectIngredientCandidates = ({
       levelProduct * levelScoreWeight;
 
     // if (
-    //   ing.name === 'Rice' ||
-    //   ing.name === 'Potato Salad' ||
-    //   ing.name === 'Curry Powder'
+    //   debug &&
+    //   (ing.name === 'Rice' ||
+    //     ing.name === 'Potato Salad' ||
+    //     ing.name === 'Curry Powder')
     // ) {
     //   console.debug(
     //     `${ing.name}: ${score}
@@ -247,7 +248,9 @@ const selectIngredientCandidates = ({
     //   n1: ${deltaMpNorm} * ${positiveBoostedMpNorm} = ${n1}`,
     //   );
     // }
+
     if (score > bestScore) {
+      bestScore = score;
       bestMealPowerProduct = mealPowerProduct;
       bestTypeProduct = typeProduct;
       bestLevelProduct = levelProduct;
@@ -269,8 +272,7 @@ const selectIngredientCandidates = ({
 
   // TODO: any herba mystica
   if (debug) {
-    console.debug(`Selecting candidates ${scoredIngredientsMeetingThreshold
-      .slice(0, MAX_CANDIDATES)
+    console.debug(`Selecting top ${MAX_CANDIDATES} candidates from ${scoredIngredientsMeetingThreshold
       .map(({ ing }) => ing?.name)
       .join(', ')}
     Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
@@ -370,17 +372,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     const selectedPower = powers[0];
 
-    // const numEggs = fillings.filter((i) => i.name === 'Egg').length;
-    // const numWasabi = fillings.filter((i) => i.name === 'Wasabi').length;
-    // if (numEggs >= 4 && fillings.length === 4)
-    //   console.debug(
-    //     `Got 4 eggs: ${fillings
-    //       .concat(condiments)
-    //       .map((f) => f.name)
-    //       .join(', ')}`,
-    //   );
     const newIngredientCandidates = selectIngredientCandidates({
-      // debug: numEggs >= 4 && numWasabi >= 1,
       targetPower,
       currentBoostedMealPowerVector,
       currentTypeVector: typeVector,
