@@ -1,6 +1,12 @@
 import { ReactElement, useState } from 'react';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerSelector';
+import {
+  makeSandwichForPower,
+  Power,
+  powersEqual,
+  Sandwich,
+} from './mechanics';
 import { allTypes, mealPowers } from './strings';
 
 const allowedMealPowers = mealPowers.reduce<Record<string, true>>(
@@ -14,6 +20,22 @@ const allowedTypes = allTypes.reduce<Record<string, true>>(
 );
 
 function App(): ReactElement {
+  const [resultSandwich, setResultSandwich] = useState<Sandwich | null>(null);
+  const [queryPower, setQueryPower] = useState<Power | null>(null);
+  const handleSetPower = (power: Power) => {
+    let samePower = false;
+    setQueryPower((prev) => {
+      if (prev && powersEqual(power, prev)) {
+        samePower = true;
+      }
+      return power;
+    });
+    if (!samePower) {
+      const sandwich = makeSandwichForPower(power);
+      setResultSandwich(sandwich);
+    }
+  };
+
   return (
     <StyledContainer>
       <main>
@@ -25,7 +47,7 @@ function App(): ReactElement {
             allowedTypes={allowedTypes}
             maxLevel={3}
           />
-          <PowerSelector
+          {/* <PowerSelector
             onRemove={() => {}}
             onSetPower={() => {}}
             allowedMealPowers={allowedMealPowers}
@@ -40,8 +62,12 @@ function App(): ReactElement {
             allowedTypes={allowedTypes}
             maxLevel={3}
             removable
-          />
+          /> */}
         </form>
+        {queryPower && !resultSandwich && (
+          <>Could not create a sandwich with the requested power.</>
+        )}
+        {resultSandwich && 'sandwich here'}
       </main>
     </StyledContainer>
   );
