@@ -176,8 +176,8 @@ export const getRelativeTasteVector = (() => {
 
         // When on the offense: detractors use the supporters' thresholds
 
-        const highestBoostForCurrentHighest = Math.max(
-          ...flavors
+        const highestBoostForCurrentNonprimaryHighest = Math.max(
+          ...nonPrimaryFlavors
             .filter((f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount)
             .map((f) => ingredientFlavorBoosts[f] || 0),
         );
@@ -191,7 +191,7 @@ export const getRelativeTasteVector = (() => {
             highestBoostAmount,
           );
           return (
-            (ingBoost - highestBoostForCurrentHighest) /
+            (ingBoost - highestBoostForCurrentNonprimaryHighest) /
             Math.max(targetHighestBoost - currentBoost, ingBoost, 1)
           );
         });
@@ -237,6 +237,12 @@ export const getRelativeTasteVector = (() => {
             ingBoost / Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
           );
         });
+
+        // if (i === 7)
+        //   console.debug({
+        //     primary: Math.max(...primaryComponents),
+        //     secondary: -Math.max(...otherToHighest),
+        //   });
 
         return avgScaleClamp(
           Math.max(...primaryComponents),

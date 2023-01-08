@@ -302,6 +302,21 @@ describe('getRelativeTasteVector', () => {
     expect(res[0]).toBeGreaterThan(0);
   });
 
+  it('Outputs a positive Humungo component when adding Curry Powder to chorizo', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: { Salty: 48, Bitter: 24, Hot: 48 },
+      ingredientFlavorBoosts: {
+        Hot: 30,
+        Bitter: 12,
+        Sweet: 4,
+        Salty: 4,
+        Sour: 4,
+      },
+    });
+
+    expect(res[7]).toBeGreaterThan(0);
+  });
+
   it('Outputs an Egg component for banana higher than that for fried fillet when adding to chorizo', () => {
     const bananaRes = getRelativeTasteVector({
       currentFlavorBoosts: { Salty: 48, Bitter: 24, Hot: 48 },
