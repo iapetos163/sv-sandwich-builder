@@ -14,6 +14,10 @@ const sortIngredientCounts = (counts: Record<string, number>) =>
 
 const StyledContainer = styled.div``;
 
+const StyledRecipeList = styled.div`
+  margin-bottom: 30px;
+`;
+
 interface RecipeProps {
   fillings: Ingredient[];
   condiments: Ingredient[];
@@ -43,20 +47,20 @@ const RecipeList = ({ fillings, condiments }: RecipeProps) => {
   }, [condiments]);
 
   return (
-    <div>
+    <StyledRecipeList>
       <h3>Fillings</h3>
       {fillingCounts.map(({ name, count, imagePath }) => (
         <div key={name}>
-          {count}x <img src={imagePath} /> {name}
+          {count}x <img src={`asset/${imagePath}`} /> {name}
         </div>
       ))}
       <h3>Condiments</h3>
       {condimentCounts.map(({ name, count, imagePath }) => (
         <div key={name}>
-          {count}x <img src={imagePath} /> {name}
+          {count}x <img src={`asset/${imagePath}`} /> {name}
         </div>
       ))}
-    </div>
+    </StyledRecipeList>
   );
 };
 

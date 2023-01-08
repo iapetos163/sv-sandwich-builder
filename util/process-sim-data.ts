@@ -139,7 +139,7 @@ const main = async () => {
     const res = await got(imageUrl, {
       responseType: 'buffer',
     });
-    const imgOutPath = joinPath('src/asset/dynamic', basename(imagePath));
+    const imgOutPath = joinPath('public/asset', basename(imagePath));
     await writeFile(imgOutPath, res.body);
     console.log(`Exported ${imgOutPath}`);
   }
