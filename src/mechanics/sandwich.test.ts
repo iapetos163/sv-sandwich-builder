@@ -498,7 +498,6 @@ describe('getTypeScoreWeight', () => {
       remainingCondiments: 4,
     });
 
-    console.debug({ levelWeight, mpWeight });
     expect(levelWeight).toBeGreaterThan(mpWeight);
   });
 });
