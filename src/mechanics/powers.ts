@@ -30,6 +30,18 @@ export const getTargetTypeVector = (power: Power, currentVector: number[]) => {
 };
 
 export const getTargetLevelVector = (power: Power, currentVector: number[]) => {
+  let minTarget = 1;
+  if (power.level === 2) minTarget = 180;
+  if (power.level === 3) minTarget = 380;
+
+  if (mealPowerHasType(power.mealPower)) {
+    return allTypes.map((t, i) =>
+      t === power.type
+        ? Math.max(currentVector[i] || 0, minTarget)
+        : currentVector[i] || 0,
+    );
+  }
+
   const [maxComponent, maxComponentIndex] = allTypes.reduce(
     (accum, t, i) => {
       const comp = currentVector[i] || 0;
@@ -40,9 +52,6 @@ export const getTargetLevelVector = (power: Power, currentVector: number[]) => {
     },
     [-Infinity, -1],
   );
-  let minTarget = 1;
-  if (power.level === 2) minTarget = 180;
-  if (power.level === 3) minTarget = 380;
   const target = Math.max(minTarget, maxComponent + 1);
   return allTypes.map((t, i) =>
     i === maxComponentIndex ? target : currentVector[i] || 0,
