@@ -166,7 +166,7 @@ export const getRelativeTasteVector = (() => {
       // If primary != secondary and two are tied
       // We think we're defending but we aren't
       if (!primaryFirstMatch) {
-        const secondaryFirstMatches = primaryFlavors.filter(
+        const secondaryFirstMatches = secondaryFlavors.filter(
           (f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount,
         );
 
@@ -195,7 +195,6 @@ export const getRelativeTasteVector = (() => {
             Math.max(targetHighestBoost - currentBoost, ingBoost, 1)
           );
         });
-
         if (secondaryFirstMatches.length === 0) {
           // offensive on primary, toward highestBoostAmount
           // offensive on secondary, toward highestBoostAmount
@@ -239,16 +238,9 @@ export const getRelativeTasteVector = (() => {
           );
         });
 
-        const secondaryToHighest = secondaryFlavors.map((f) => {
-          const ingBoost = ingredientFlavorBoosts[f] || 0;
-          const currentBoost = currentFlavorBoosts[f] || 0;
-          return (
-            ingBoost / Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
-          );
-        });
         return avgScaleClamp(
           Math.max(...primaryComponents),
-          Math.max(...secondaryToHighest) - Math.max(...otherToHighest),
+          -Math.max(...otherToHighest),
         );
       }
 

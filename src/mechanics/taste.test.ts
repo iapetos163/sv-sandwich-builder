@@ -302,6 +302,19 @@ describe('getRelativeTasteVector', () => {
     expect(res[0]).toBeGreaterThan(0);
   });
 
+  it('Outputs an Egg component for banana higher than that for fried fillet when adding to chorizo', () => {
+    const bananaRes = getRelativeTasteVector({
+      currentFlavorBoosts: { Salty: 48, Bitter: 24, Hot: 48 },
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 3 },
+    });
+    const friedRes = getRelativeTasteVector({
+      currentFlavorBoosts: { Salty: 48, Bitter: 24, Hot: 48 },
+      ingredientFlavorBoosts: { Salty: 3, Bitter: 3, Sweet: 2 },
+    });
+
+    expect(bananaRes[0] - friedRes[0]).toBeGreaterThan(0);
+  });
+
   it("Doesn't output a positive Exp component when adding banana to 4x chorizo + 1 potato salad", () => {
     const res = getRelativeTasteVector({
       currentFlavorBoosts: {
