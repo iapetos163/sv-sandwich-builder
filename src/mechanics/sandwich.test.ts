@@ -650,19 +650,56 @@ describe('makeSandwichForPower', () => {
     });
 
     // 4x Egg, 1x potato salad, 2x Wasabi, 1x yogurt
-    // Need to check if wasabi works and if so, our algorithm needs to change
-    // Otherwise adding potato salad and sub horseradish for wasabi definitely should work
     expect(sandwich).not.toBeNull();
-    // point of screwup: adding third horseradish or PB
 
     const numFillings = sandwich!.fillings.length;
 
-    console.debug(
-      `${sandwich!.fillings
-        .map((f) => f.name)
-        .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
-    );
     expect(numFillings).toBeLessThanOrEqual(5);
+  });
+
+  it('Produces a sandwich with Lv 2 Teensy Fighting', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Teensy',
+      type: 'Fighting',
+      level: 2,
+    });
+
+    // Herbed Sausage, Rice, Strawberry, Herbed Sausage, Herbed Sausage, Strawberry, Mayonnaise
+    expect(sandwich).not.toBeNull();
+  });
+
+  it('Produces a sandwich with Lv 2 Catch Flying', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Catch',
+      type: 'Flying',
+      level: 2,
+    });
+
+    // Egg, Rice, Rice, Rice, Rice, Egg, Yogurt
+    expect(sandwich).not.toBeNull();
+  });
+
+  it('Produces a sandwich with Lv 2 Encounter Ghost', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Encounter',
+      type: 'Ghost',
+      level: 2,
+    });
+
+    // 4x Herbed Sausage, 2x Strawberry, Wasabi
+    expect(sandwich).not.toBeNull();
+  });
+
+  it('Produces a sandwich with Lv 2 Exp Grass', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Exp',
+      type: 'Grass',
+      level: 2,
+    });
+
+    // 4x Egg, Rice, Jalapeno, Salt
+    // 4x Egg, Jalapeno, 4x Olive Oil
+    expect(sandwich).not.toBeNull();
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {
@@ -675,14 +712,11 @@ describe('makeSandwichForPower', () => {
   //   //
   //   expect(sandwich).not.toBeNull();
 
-  //   const numIngredients =
-  //     sandwich!.condiments.length + sandwich!.fillings.length;
-
   //   console.debug(
   //     `${sandwich!.fillings
-  //       .map((f) => f.name)
-  //       .join(', ')}, ${sandwich!.condiments.map((c) => c.name).join(', ')}`,
+  //       .concat(sandwich!.condiments)
+  //       .map((i) => i.name)
+  //       .join(', ')}`,
   //   );
-  //   expect(numIngredients).toBeLessThanOrEqual(7);
   // });
 });
