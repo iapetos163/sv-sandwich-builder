@@ -138,6 +138,7 @@ export const getRelativeTasteVector = (() => {
     const currentRankedFlavorBoosts = memoRankFlavorBoosts(currentFlavorBoosts);
 
     const highestBoostAmount = currentRankedFlavorBoosts[0]?.amount || 0;
+    const highestBoostFlavor = currentRankedFlavorBoosts[0]?.name;
     const secondHighestBoostAmount = currentRankedFlavorBoosts[1]?.amount || 0;
 
     if (highestBoostAmount === 0) {
@@ -157,10 +158,14 @@ export const getRelativeTasteVector = (() => {
         (f) => !secondaryFlavors.includes(f),
       );
 
-      const primaryFirstMatches = primaryFlavors.filter(
-        (f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount,
+      const primaryFirstMatch = primaryFlavors.find(
+        (f) => f === highestBoostFlavor,
       );
-      if (primaryFirstMatches.length === 0) {
+
+      // Delicate case to consider here:
+      // If primary != secondary and two are tied
+      // We think we're defending but we aren't
+      if (!primaryFirstMatch) {
         const secondaryFirstMatches = primaryFlavors.filter(
           (f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount,
         );
@@ -171,7 +176,7 @@ export const getRelativeTasteVector = (() => {
 
         // When on the offense: detractors use the supporters' thresholds
 
-        const highestBoost = Math.max(
+        const highestBoostForCurrentHighest = Math.max(
           ...flavors
             .filter((f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount)
             .map((f) => ingredientFlavorBoosts[f] || 0),
@@ -180,9 +185,14 @@ export const getRelativeTasteVector = (() => {
         const primaryComponents = primaryFlavors.map((f) => {
           const ingBoost = ingredientFlavorBoosts[f] || 0;
           const currentBoost = currentFlavorBoosts[f] || 0;
+
+          const targetHighestBoost = Math.max(
+            currentBoost + 1,
+            highestBoostAmount,
+          );
           return (
-            (ingBoost - highestBoost) /
-            Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
+            (ingBoost - highestBoostForCurrentHighest) /
+            Math.max(targetHighestBoost - currentBoost, ingBoost, 1)
           );
         });
 
