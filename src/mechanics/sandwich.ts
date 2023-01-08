@@ -41,6 +41,7 @@ interface SelectIngredientProps {
   allowHerbaMystica: boolean;
   skipIngredients: Record<string, boolean>;
   currentFlavorBoosts: Boosts<Flavor>;
+  debug?: boolean;
 }
 
 // TODO: change these for multiplayer
@@ -129,6 +130,7 @@ const selectIngredientCandidates = ({
   allowHerbaMystica,
   remainingCondiments,
   remainingFillings,
+  debug,
 }: SelectIngredientProps) => {
   const targetMealPowerVector = getTargetMealPowerVector(
     targetPower,
@@ -266,25 +268,29 @@ const selectIngredientCandidates = ({
   );
 
   // TODO: any herba mystica
+  if (debug) {
+    console.debug(`Selecting candidates ${scoredIngredientsMeetingThreshold
+      .slice(0, MAX_CANDIDATES)
+      .map(({ ing }) => ing?.name)
+      .join(', ')}
+    Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
+    Raw scores: ${bestMealPowerProduct}, ${bestTypeProduct}, ${bestLevelProduct}
+  
+    Target MP: ${targetMealPowerVector}
+    Delta MP: ${deltaMealPowerVector}
+    Current MP: ${currentBoostedMealPowerVector}
+    Target T: ${targetTypeVector}
+    Delta T: ${deltaTypeVector}
+    Target L: ${targetLevelVector}
+    Delta L: ${deltaLevelVector}
+    Current T: ${currentTypeVector}
+    Remaining fillings: ${remainingFillings}
+    Remaining condiments: ${remainingCondiments}`);
+  }
 
   return scoredIngredientsMeetingThreshold
     .slice(0, MAX_CANDIDATES)
     .map(({ ing }) => ing as Ingredient);
-
-  // console.debug(`Selecting ${bestIngredient.name}
-  // Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
-  // Raw scores: ${bestMealPowerProduct}, ${bestTypeProduct}, ${bestLevelProduct}
-
-  // Target MP: ${targetMealPowerVector}
-  // Delta MP: ${deltaMealPowerVector}
-  // Current MP: ${currentBoostedMealPowerVector}
-  // Target T: ${targetTypeVector}
-  // Delta T: ${deltaTypeVector}
-  // Target L: ${targetLevelVector}
-  // Delta L: ${deltaLevelVector}
-  // Current T: ${currentTypeVector}
-  // Remaining fillings: ${remainingFillings}
-  // Remaining condiments: ${remainingCondiments}`);
 };
 
 // TODO: target more than one power
@@ -349,7 +355,18 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       : baseMealPowerVector;
 
     const selectedPower = powers[0];
-    const sandwichCandidates = selectIngredientCandidates({
+
+    // const numEggs = fillings.filter((i) => i.name === 'Egg').length;
+    // const numWasabi = fillings.filter((i) => i.name === 'Wasabi').length;
+    // if (numEggs >= 4 && fillings.length === 4)
+    //   console.debug(
+    //     `Got 4 eggs: ${fillings
+    //       .concat(condiments)
+    //       .map((f) => f.name)
+    //       .join(', ')}`,
+    //   );
+    const newIngredientCandidates = selectIngredientCandidates({
+      // debug: numEggs >= 4 && numWasabi >= 1,
       targetPower,
       currentBoostedMealPowerVector,
       currentTypeVector: typeVector,
@@ -372,11 +389,20 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       currentFlavorBoosts: flavorBoosts,
       allowHerbaMystica,
       skipIngredients,
-    })
-      .map((newIngredient) => {
+    });
+    const sandwichCandidates = newIngredientCandidates
+      .map((newIngredient, i) => {
         let newFillings = fillings;
         let newCondiments = condiments;
-        let newSkipIngredients = skipIngredients;
+        // Skip previously-considered ingredient candidates
+        let newSkipIngredients = {
+          ...skipIngredients,
+          ...Object.fromEntries(
+            newIngredientCandidates
+              .slice(0, i)
+              .map((ing): [string, boolean] => [ing.name, true]),
+          ),
+        };
 
         if (newIngredient.ingredientType === 'filling') {
           newFillings = [...fillings, newIngredient];
@@ -387,7 +413,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
           const numPieces = numOfIngredient * newIngredient.pieces;
           if (numPieces + newIngredient.pieces > maxPieces) {
             newSkipIngredients = {
-              ...skipIngredients,
+              ...newSkipIngredients,
               [newIngredient.name]: true,
             };
           }
