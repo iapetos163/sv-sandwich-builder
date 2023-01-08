@@ -243,19 +243,19 @@ const selectIngredient = ({
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    // if (
-    //   ing.name === 'Whipped Cream' ||
-    //   ing.name === 'Butter' ||
-    //   ing.name === 'Cream Cheese'
-    // ) {
-    //   console.debug(
-    //     `${ing.name}: ${ingScore}
-    // Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
-    // Relative taste vector: ${relativeTasteVector}
-    // Boosted meal power vector: ${boostedMealPowerVector}
-    //   n1: ${deltaMpNorm} * ${positiveBoostedMpNorm} = ${n1}`,
-    //   );
-    // }
+    if (
+      ing.name === 'Rice' ||
+      ing.name === 'Potato Salad' ||
+      ing.name === 'Curry Powder'
+    ) {
+      console.debug(
+        `${ing.name}: ${ingScore}
+    Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
+    Relative taste vector: ${relativeTasteVector}
+    Boosted meal power vector: ${boostedMealPowerVector}
+      n1: ${deltaMpNorm} * ${positiveBoostedMpNorm} = ${n1}`,
+      );
+    }
     if (ingScore <= agg.score) {
       return agg;
     }
@@ -296,118 +296,164 @@ const selectIngredient = ({
 // TODO: target more than one power
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   console.debug('~~~HAZ SANDWICH~~~');
-  const fillings: Ingredient[] = [];
-  const condiments: Ingredient[] = [];
-  const skipIngredients: Record<string, boolean> = {};
-
-  let currentBaseMealPowerVector: number[] = [];
-  let currentTypeVector: number[] = [];
-  let currentMealPowerBoosts: Partial<Record<MealPower, number>> = {};
-  let currentFlavorBoosts: Partial<Record<Flavor, number>> = {};
-  let currentTypeBoosts: Partial<Record<TypeName, number>> = {};
-  let currentPowers: Power[] = [];
-  let targetPowerFound = false;
-  let boostedMealPower: MealPower | null = null;
-  let rankedFlavorBoosts: FlavorBoost[] = [];
-  let allowHerbaMystica =
-    targetPower.mealPower === 'Sparkling' || targetPower.mealPower === 'Title';
-
   const checkType = mealPowerHasType(targetPower.mealPower);
 
-  while (fillings.length < maxFillings || condiments.length < maxCondiments) {
-    const currentBoostedMealPowerVector = boostedMealPower
-      ? boostMealPowerVector(currentBaseMealPowerVector, boostedMealPower)
-      : currentBaseMealPowerVector;
+  type IngredientSelectionState = {
+    fillings: Ingredient[];
+    condiments: Ingredient[];
+    skipIngredients: Record<string, boolean>;
+    baseMealPowerVector: number[];
+    typeVector: number[];
+    mealPowerBoosts: Boosts<MealPower>;
+    flavorBoosts: Boosts<Flavor>;
+    typeBoosts: Boosts<TypeName>;
+    powers: Power[];
+    targetPowerFound: boolean;
+    boostedMealPower: MealPower | null;
+    allowHerbaMystica: boolean;
+  };
 
-    //     console.log(`Current MP (Boosted): ${currentBoostedMealPowerVector}
-    // Current T: ${currentTypeVector}`);
-    const selectedPower = currentPowers[0];
+  const initialState: IngredientSelectionState = {
+    fillings: [],
+    condiments: [],
+    skipIngredients: {},
+    baseMealPowerVector: [],
+    typeVector: [],
+    mealPowerBoosts: {},
+    flavorBoosts: {},
+    typeBoosts: {},
+    powers: [],
+    targetPowerFound: false,
+    boostedMealPower: null,
+    allowHerbaMystica:
+      targetPower.mealPower === 'Sparkling' ||
+      targetPower.mealPower === 'Title',
+  };
+
+  const recurse = (state: IngredientSelectionState): Sandwich | null => {
+    const {
+      fillings,
+      condiments,
+      skipIngredients,
+      flavorBoosts,
+      boostedMealPower,
+      baseMealPowerVector,
+      typeVector,
+      typeBoosts,
+      targetPowerFound: targetPowerAlreadyFound,
+      allowHerbaMystica,
+      powers,
+      mealPowerBoosts,
+    } = state;
+
+    if (fillings.length >= maxFillings && condiments.length >= maxCondiments) {
+      return null;
+    }
+
+    const currentBoostedMealPowerVector = boostedMealPower
+      ? boostMealPowerVector(baseMealPowerVector, boostedMealPower)
+      : baseMealPowerVector;
+
+    const selectedPower = powers[0];
     const newIngredient = selectIngredient({
       targetPower,
       currentBoostedMealPowerVector,
-      currentTypeVector,
+      currentTypeVector: typeVector,
       checkMealPower:
-        targetPowerFound || selectedPower?.mealPower !== targetPower.mealPower,
+        targetPowerAlreadyFound ||
+        selectedPower?.mealPower !== targetPower.mealPower,
       checkType:
-        targetPowerFound ||
+        targetPowerAlreadyFound ||
         (checkType && selectedPower?.type !== targetPower.type),
       checkLevel:
         !selectedPower?.level || selectedPower.level < targetPower.level,
       remainingFillings:
-        !targetPowerFound || fillings.length === 0
+        !targetPowerAlreadyFound || fillings.length === 0
           ? maxFillings - fillings.length
           : 0,
       remainingCondiments:
-        !targetPowerFound || condiments.length === 0
+        !targetPowerAlreadyFound || condiments.length === 0
           ? maxCondiments - condiments.length
           : 0,
-      currentFlavorBoosts,
+      currentFlavorBoosts: flavorBoosts,
       allowHerbaMystica,
       skipIngredients,
     });
 
-    if (newIngredient.ingredientType === 'filling') {
-      fillings.push(newIngredient);
+    let newFillings = fillings;
+    let newCondiments = condiments;
+    let newSkipIngredients = skipIngredients;
 
-      const numOfIngredient = fillings.filter(
+    if (newIngredient.ingredientType === 'filling') {
+      newFillings = [...fillings, newIngredient];
+
+      const numOfIngredient = newFillings.filter(
         (f) => f.name === newIngredient.name,
       ).length;
       const numPieces = numOfIngredient * newIngredient.pieces;
-      // console.log(newIngredient.name, numPieces);
       if (numPieces + newIngredient.pieces > maxPieces) {
-        // console.log('Skipping', newIngredient.name);
-        skipIngredients[newIngredient.name] = true;
+        newSkipIngredients = {
+          ...skipIngredients,
+          [newIngredient.name]: true,
+        };
       }
     } else {
-      condiments.push(newIngredient);
+      newCondiments = [...condiments, newIngredient];
     }
 
-    currentBaseMealPowerVector = add(
-      currentBaseMealPowerVector,
-      newIngredient.baseMealPowerVector,
-    );
-    currentTypeVector = add(currentTypeVector, newIngredient.typeVector);
-    currentMealPowerBoosts = addBoosts(
-      currentMealPowerBoosts,
+    const newMealPowerBoosts = addBoosts(
+      mealPowerBoosts,
       newIngredient.totalMealPowerBoosts,
     );
-    currentFlavorBoosts = addBoosts(
-      currentFlavorBoosts,
+    const newFlavorBoosts = addBoosts(
+      flavorBoosts,
       newIngredient.totalFlavorBoosts,
     );
-    currentTypeBoosts = addBoosts(
-      currentTypeBoosts,
-      newIngredient.totalTypeBoosts,
-    );
-    rankedFlavorBoosts = rankFlavorBoosts(currentFlavorBoosts);
-    boostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
+    const newTypeBoosts = addBoosts(typeBoosts, newIngredient.totalTypeBoosts);
+    const rankedFlavorBoosts = rankFlavorBoosts(newFlavorBoosts);
+    const newBoostedMealPower = getBoostedMealPower(rankedFlavorBoosts);
 
-    if (condiments.filter((c) => c.isHerbaMystica).length >= 2) {
-      allowHerbaMystica = false;
-    }
-
-    currentPowers = evaluateBoosts(
-      currentMealPowerBoosts,
-      boostedMealPower,
-      currentTypeBoosts,
+    const newPowers = evaluateBoosts(
+      newMealPowerBoosts,
+      newBoostedMealPower,
+      newTypeBoosts,
     );
-    console.log(
-      `Current powers:${['', ...currentPowers.map(powerToString)].join(
-        '\n  ',
-      )}`,
-    );
-    targetPowerFound = currentPowers.some((p) => powersMatch(p, targetPower));
+    const targetPowerFound = newPowers.some((p) => powersMatch(p, targetPower));
 
-    if (targetPowerFound && fillings.length > 0 && condiments.length > 0) {
+    if (
+      targetPowerFound &&
+      newFillings.length > 0 &&
+      newCondiments.length > 0
+    ) {
       return {
-        fillings,
-        condiments,
-        typeBoosts: currentTypeBoosts,
-        flavorBoosts: currentFlavorBoosts,
-        mealPowerBoosts: currentMealPowerBoosts,
+        fillings: newFillings,
+        condiments: newCondiments,
+        typeBoosts: newTypeBoosts,
+        flavorBoosts: newFlavorBoosts,
+        mealPowerBoosts: newMealPowerBoosts,
       };
     }
-  }
 
-  return null;
+    return recurse({
+      fillings: newFillings,
+      condiments: newCondiments,
+      typeBoosts: newTypeBoosts,
+      typeVector: add(typeVector, newIngredient.typeVector),
+      mealPowerBoosts: newMealPowerBoosts,
+      baseMealPowerVector: add(
+        baseMealPowerVector,
+        newIngredient.baseMealPowerVector,
+      ),
+      flavorBoosts: newFlavorBoosts,
+      powers: newPowers,
+      targetPowerFound: targetPowerFound,
+      boostedMealPower: newBoostedMealPower,
+      skipIngredients: newSkipIngredients,
+      allowHerbaMystica:
+        allowHerbaMystica &&
+        newCondiments.filter((c) => c.isHerbaMystica).length < 2,
+    });
+  };
+
+  return recurse(initialState);
 };
