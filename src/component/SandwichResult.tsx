@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { ingredients } from '../data';
+import { mealPowerHasType } from '../mechanics';
 import { Ingredient, Sandwich } from '../types';
 
 const ingredientNames = ingredients.map((i) => i.name);
@@ -78,7 +79,9 @@ const SandwichResult = ({ sandwich }: SandwichResultProps) => {
       <div>
         {powers.map((power) => (
           <div key={power.type + power.mealPower}>
-            Lv. {power.level} {power.type} {power.mealPower} Power
+            Lv. {power.level}{' '}
+            {mealPowerHasType(power.mealPower) && `${power.type} `}
+            {power.mealPower} Power
           </div>
         ))}
       </div>
