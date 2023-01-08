@@ -161,7 +161,10 @@ export const rankMealPowerBoosts = (
   boostedMealPower: MealPower | null,
 ) => {
   const boosts = boostedMealPower
-    ? { ...mealPowerBoosts, [boostedMealPower]: 0 }
+    ? {
+        ...mealPowerBoosts,
+        [boostedMealPower]: mealPowerBoosts[boostedMealPower] || 0,
+      }
     : mealPowerBoosts;
   return Object.entries(boosts)
     .map(([mp, v]) => ({
