@@ -1,8 +1,8 @@
-import { ReactElement, useCallback, useState } from 'react';
+import { FormEvent, ReactElement, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerSelector';
 import SandwichResult from './component/SandwichResult';
-import { makeSandwichForPower, powersEqual } from './mechanics';
+import { makeSandwichForPower } from './mechanics';
 import { allTypes, mealPowers } from './strings';
 import { Power, Sandwich } from './types';
 
@@ -19,21 +19,28 @@ const allowedTypes = allTypes.reduce<Record<string, true>>(
 function App(): ReactElement {
   const [resultSandwich, setResultSandwich] = useState<Sandwich | null>(null);
   const [queryPower, setQueryPower] = useState<Power | null>(null);
-  const handleSetPower = useCallback((power: Power) => {
-    setQueryPower((prev) => {
-      if (!prev || !powersEqual(power, prev)) {
-        const sandwich = makeSandwichForPower(power);
-        setResultSandwich(sandwich);
-      }
+  const [queryChanged, setQueryChanged] = useState(true);
 
-      return power;
-    });
+  const handleSetPower = useCallback((power: Power) => {
+    setQueryPower(power);
+    setQueryChanged(true);
   }, []);
+
+  const handleSubmit = useCallback(
+    (evt: FormEvent) => {
+      evt.preventDefault();
+      if (!queryPower) return;
+      const sandwich = makeSandwichForPower(queryPower);
+      setResultSandwich(sandwich);
+      setQueryChanged(false);
+    },
+    [queryPower],
+  );
 
   return (
     <StyledContainer>
       <main>
-        <form>
+        <form onSubmit={handleSubmit}>
           <PowerSelector
             onRemove={() => {}}
             onSetPower={handleSetPower}
@@ -57,8 +64,9 @@ function App(): ReactElement {
             maxLevel={3}
             removable
           /> */}
+          <button type="submit">Submit</button>
         </form>
-        {queryPower && !resultSandwich && (
+        {!queryChanged && !resultSandwich && (
           <>Could not create a sandwich with the requested power.</>
         )}
         {resultSandwich && <SandwichResult sandwich={resultSandwich} />}
