@@ -32,6 +32,16 @@ describe('getTargetLevelVector', () => {
     );
     expect(v[1]).toBe(380);
   });
+
+  it('Targets the target type', () => {
+    const v = getTargetLevelVector(
+      { mealPower: 'Humungo', type: 'Dragon', level: 2 },
+      [146, 2, 2, 146, 2, 2, 144, 0, 0, 144, 0, 0, 144, 0, 0, 144, 0, 0],
+    );
+
+    expect(v[15]).toBe(180);
+    expect(v[0]).toBe(146);
+  });
 });
 
 describe('rankMealPowerBoosts', () => {
