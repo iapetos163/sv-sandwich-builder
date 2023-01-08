@@ -45,28 +45,28 @@ const tasteMap: Record<Flavor, Record<Flavor, MealPower>> = {
   },
 };
 
-const primaryFlavorsForPower: Record<MealPower, Flavor | null> = {
-  Egg: 'Sweet',
-  Humungo: 'Hot',
-  Teensy: 'Sour',
-  Item: 'Bitter',
-  Encounter: 'Salty',
-  Exp: 'Bitter',
-  Catch: 'Sweet',
-  Raid: 'Sweet',
-  Title: null,
-  Sparkling: null,
+const primaryFlavorsForPower: Record<MealPower, Flavor[]> = {
+  Egg: ['Sweet'],
+  Humungo: ['Hot'],
+  Teensy: ['Sour'],
+  Item: ['Bitter'],
+  Encounter: ['Salty'],
+  Exp: ['Bitter', 'Salty'],
+  Catch: ['Sweet', 'Sour'],
+  Raid: ['Sweet', 'Hot'],
+  Title: [],
+  Sparkling: [],
 };
 
 const secondaryFlavorsForPower: Record<MealPower, Flavor[]> = {
   Egg: ['Salty', 'Bitter'],
-  Humungo: [],
-  Teensy: [],
+  Humungo: ['Salty', 'Bitter', 'Sour'],
+  Teensy: ['Salty', 'Bitter', 'Hot'],
   Item: ['Hot', 'Sour', 'Sweet'],
-  Encounter: [],
-  Exp: ['Salty'],
-  Catch: ['Sour'],
-  Raid: ['Hot'],
+  Encounter: ['Sweet', 'Hot', 'Sour'],
+  Exp: ['Salty', 'Bitter'],
+  Catch: ['Sour', 'Sweet'],
+  Raid: ['Hot', 'Sweet'],
   Title: [],
   Sparkling: [],
 };
@@ -135,55 +135,72 @@ export const getRelativeTasteVector = (() => {
     const thirdHighestBoostAmount = currentRankedFlavorBoosts[2]?.amount || 0;
 
     return mealPowers.map((mp, i) => {
-      const primaryFlavor = primaryFlavorsForPower[mp];
+      const primaryFlavors = primaryFlavorsForPower[mp];
       const secondaryFlavors = secondaryFlavorsForPower[mp];
-      if (!primaryFlavor) return 0;
+      if (primaryFlavors.length === 0) return 0;
+
+      const primaryMatches = primaryFlavors.filter(
+        (f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount,
+      );
+      const secondaryMatches = secondaryFlavors.filter(
+        (f) => (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount,
+      );
 
       const flavorsCompetingWithPrimary = flavors.filter(
         (f) =>
-          f !== primaryFlavor &&
-          (secondaryFlavors.length === 0 ||
-            (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount),
+          !primaryFlavors.includes(f) &&
+          (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount,
       );
       const flavorsCompetingWithSecondary = flavors.filter(
         (f) =>
-          f !== primaryFlavor &&
+          !primaryFlavors.includes(f) &&
           !secondaryFlavors.includes(f) &&
           (currentFlavorBoosts[f] || 0) < secondHighestBoostAmount,
       );
-
-      const ingPrimaryBoost = ingredientFlavorBoosts[primaryFlavor] || 0;
-      const currentPrimaryBoost = currentFlavorBoosts[primaryFlavor] || 0;
-
-      // TODO?: Deal with moving targets
-
-      // Assumption: >0
-      const primaryThreshold =
-        currentPrimaryBoost === 0 || currentPrimaryBoost !== highestBoostAmount
-          ? // Flavor needed to achieve desired power boost
-            highestBoostAmount - currentPrimaryBoost + 1
-          : // Difference between highest flavor and the runner up that threatens to change the boosted meal power
-            Math.max(highestBoostAmount - secondHighestBoostAmount, 1);
 
       const competingBoosts = flavorsCompetingWithPrimary.map(
         (f) => ingredientFlavorBoosts[f] || 0,
       );
       const maxDetractingBoost = Math.max(...competingBoosts, 0);
-      const relPrimaryComponent =
-        100 *
-        Math.max(
-          Math.min(
-            (ingPrimaryBoost - maxDetractingBoost) / primaryThreshold,
+      let primaryComponents: number[];
+
+      // TODO?: Deal with moving targets
+
+      if (highestBoostAmount === 0 || primaryMatches.length === 0) {
+        primaryComponents = primaryFlavors.map((flavor) => {
+          const ingBoost = ingredientFlavorBoosts[flavor] || 0;
+          const currentBoost = currentFlavorBoosts[flavor] || 0;
+          // Flavor needed to achieve desired power boost
+          const primaryThreshold = highestBoostAmount - currentBoost + 1;
+          // Difference between highest flavor and the runner up that threatens to change the boosted meal power
+          Math.max(highestBoostAmount - secondHighestBoostAmount, 1);
+          return (
+            50 *
+            Math.max(
+              Math.min((ingBoost - maxDetractingBoost) / primaryThreshold, 1),
+              -1,
+            )
+          );
+        });
+      } else {
+        primaryComponents = primaryFlavors.map((flavor) => {
+          const ingBoost = ingredientFlavorBoosts[flavor] || 0;
+          // Difference between highest flavor and the runner up that threatens to change the boosted meal power
+          // FIXME another primary is ok
+          const primaryThreshold = Math.max(
+            highestBoostAmount - secondHighestBoostAmount,
             1,
-          ),
-          -1,
-        );
-
-      if (secondaryFlavors.length === 0) return relPrimaryComponent;
-
-      const secondaryMatches = secondaryFlavors.filter(
-        (f) => (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount,
-      );
+          );
+          return (
+            50 *
+            Math.max(
+              Math.min((ingBoost - maxDetractingBoost) / primaryThreshold, 1),
+              -1,
+            )
+          );
+        });
+      }
+      const halfPrimaryComponent = Math.max(...primaryComponents);
       const competingBoostsSecondary = flavorsCompetingWithSecondary.map(
         (f) => ingredientFlavorBoosts[f] || 0,
       );
@@ -213,8 +230,6 @@ export const getRelativeTasteVector = (() => {
             )
           );
         });
-
-        // Need to consider here: other flavors going up
       } else {
         // Difference between highest flavor and the runner up that threatens to change the boosted meal power
         secondaryFlavorComponents = secondaryMatches.map((flavor) => {
@@ -223,8 +238,7 @@ export const getRelativeTasteVector = (() => {
           const oneTwo = highestBoostAmount - secondHighestBoostAmount;
           const twoThree = secondHighestBoostAmount - thirdHighestBoostAmount;
           const secondaryThreshold =
-            highestBoostAmount === currentFlavorBoosts[primaryFlavor] &&
-            oneTwo > twoThree
+            primaryMatches.length > 0 && oneTwo > twoThree
               ? Math.min(-oneTwo, -1)
               : Math.max(twoThree, 1);
           return (
@@ -239,10 +253,9 @@ export const getRelativeTasteVector = (() => {
           );
         });
       }
-      const halfRelSecondaryComponent =
-        Math.max(...secondaryFlavorComponents) / secondaryFlavors.length;
+      const halfRelSecondaryComponent = Math.max(...secondaryFlavorComponents);
 
-      return relPrimaryComponent / 2 + halfRelSecondaryComponent;
+      return halfPrimaryComponent + halfRelSecondaryComponent;
     });
   };
 })();
