@@ -298,6 +298,17 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   console.debug('~~~HAZ SANDWICH~~~');
   const checkType = mealPowerHasType(targetPower.mealPower);
 
+  const visited: Record<string, true> = {};
+  const hasBeenVisited = (ingredients: Ingredient[]) => {
+    const key = ingredients
+      .map((ing) => ing.name)
+      .sort()
+      .join(',');
+    const hasVisited = !!visited[key];
+    visited[key] = true;
+    return hasVisited;
+  };
+
   type IngredientSelectionState = {
     fillings: Ingredient[];
     condiments: Ingredient[];
@@ -349,6 +360,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     if (fillings.length >= maxFillings && condiments.length >= maxCondiments) {
       return null;
     }
+    if (hasBeenVisited(fillings.concat(condiments))) {
+      return null;
+    }
 
     const currentBoostedMealPowerVector = boostedMealPower
       ? boostMealPowerVector(baseMealPowerVector, boostedMealPower)
@@ -394,15 +408,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       .map((newIngredient, i) => {
         let newFillings = fillings;
         let newCondiments = condiments;
-        // Skip previously-considered ingredient candidates
-        let newSkipIngredients = {
-          ...skipIngredients,
-          ...Object.fromEntries(
-            newIngredientCandidates
-              .slice(0, i)
-              .map((ing): [string, boolean] => [ing.name, true]),
-          ),
-        };
+        let newSkipIngredients = skipIngredients;
 
         if (newIngredient.ingredientType === 'filling') {
           newFillings = [...fillings, newIngredient];
