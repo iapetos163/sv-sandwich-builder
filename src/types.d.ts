@@ -1,5 +1,7 @@
 import { Flavor, MealPower, TypeName } from './strings';
 
+export type Boosts<T extends string> = Partial<Record<T, number>>;
+
 export interface Power {
   mealPower: MealPower;
   type: TypeName;
@@ -9,17 +11,18 @@ export interface Power {
 export interface Sandwich {
   fillings: Ingredient[];
   condiments: Ingredient[];
-  mealPowerBoosts: Partial<Record<MealPower, number>>;
-  typeBoosts: Partial<Record<TypeName, number>>;
-  flavorBoosts: Partial<Record<Flavor, number>>;
+  mealPowerBoosts: Boosts<MealPower>;
+  typeBoosts: Boosts<TypeName>;
+  flavorBoosts: Boosts<Flavor>;
+  powers: Power[];
 }
 
 export interface Ingredient {
   name: string;
   isHerbaMystica: boolean;
-  totalMealPowerBoosts: Partial<Record<MealPower, number>>;
-  totalTypeBoosts: Partial<Record<TypeName, number>>;
-  totalFlavorBoosts: Partial<Record<Flavor, number>>;
+  totalMealPowerBoosts: Boosts<MealPower>;
+  totalTypeBoosts: Boosts<TypeName>;
+  totalFlavorBoosts: Boosts<Flavor>;
   baseMealPowerVector: number[];
   typeVector: number[];
   imagePath: string;

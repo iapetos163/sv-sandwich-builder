@@ -1,8 +1,8 @@
 import { ingredients } from '../data';
 import { Flavor, MealPower, mealPowers, TypeName } from '../strings';
-import { Ingredient, Power, Sandwich } from '../types';
+import { Ingredient, Power, Sandwich, Boosts } from '../types';
 import { add, diff, innerProduct, norm } from '../vector-math';
-import { Boosts, addBoosts } from './boost';
+import { addBoosts } from './boost';
 import {
   boostMealPowerVector,
   evaluateBoosts,
@@ -446,6 +446,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
             typeBoosts: newTypeBoosts,
             flavorBoosts: newFlavorBoosts,
             mealPowerBoosts: newMealPowerBoosts,
+            powers: newPowers,
           };
         }
 

@@ -1,8 +1,9 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, AlertCircle } from 'react-feather';
 import styled from 'styled-components';
-import { mealPowerHasType, Power } from '../mechanics';
+import { mealPowerHasType } from '../mechanics';
 import { allTypes, MealPower, mealPowers, TypeName } from '../strings';
+import { Power } from '../types';
 
 const StyledContainer = styled.div`
   display: flex;
