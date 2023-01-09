@@ -137,11 +137,12 @@ const selectIngredientCandidates = ({
   let targetConfig: TargetConfig;
   for (const candidateConfig of targetConfigs) {
     const candTargetTypeVector = checkType
-      ? getTargetTypeVector(targetPower, currentTypeVector)
+      ? getTargetTypeVector(targetPower, candidateConfig, currentTypeVector)
       : currentTypeVector;
 
     const candTargetLevelVector = getTargetLevelVector(
       targetPower,
+      candidateConfig,
       currentTypeVector,
     );
     const candDeltaTypeVector = diff(targetTypeVector, currentTypeVector);

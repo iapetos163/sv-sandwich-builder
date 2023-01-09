@@ -18,8 +18,35 @@ export const getTargetMealPowerVector = (
   );
 };
 
-export const getTargetTypeVector = (power: Power, currentVector: number[]) => {
-  const target = Math.max(0, ...currentVector) + 1;
+export const getTargetTypeVector = (
+  power: Power,
+  config: TargetConfig,
+  currentRankedTypes: TypeBoost[],
+  currentVector: number[],
+) => {
+  const currentPlaceIndex = currentRankedTypes.findIndex(
+    (t) => t.name === power.type,
+  );
+  if (currentPlaceIndex === config.typePlaceIndex) {
+    return currentVector;
+  }
+
+  const currentTargetTypeAmount =
+    currentPlaceIndex >= 0 ? currentRankedTypes[currentPlaceIndex] : 0;
+  const currentTargetPlaceAmount =
+    currentRankedTypes[config.typePlaceIndex] || 0;
+
+  if (
+    (currentPlaceIndex < 0 || currentPlaceIndex > config.typePlaceIndex) &&
+    currentTargetTypeAmount >= currentTargetPlaceAmount
+  ) {
+    const typesPlacingAhead = 
+    return allTypes.map((t, i) =>
+      t === power.type ? target : currentVector[i] || 0,
+    );
+  }
+
+  const target = highestComponent + 1;
   return allTypes.map((t, i) =>
     t === power.type ? target : currentVector[i] || 0,
   );
