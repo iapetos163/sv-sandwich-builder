@@ -277,6 +277,16 @@ describe('getRelativeTasteVector', () => {
     expect(res).not.toContain(-Infinity);
   });
 
+  it('Does not output any NaN components', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: { Bitter: 500 },
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 9, Bitter: 3 },
+    });
+
+    const nanIndex = res.findIndex(isNaN);
+    expect(nanIndex).toBe(-1);
+  });
+
   it('Does not output a vector where any component has abs value >100', () => {
     const res1 = getRelativeTasteVector({
       currentFlavorBoosts: { Salty: 48, Hot: 48, Bitter: 24 },

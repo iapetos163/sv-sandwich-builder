@@ -320,9 +320,10 @@ export const getRelativeTasteVector = (() => {
               Math.max(secondHighestBoostAmount - currentBoost, ingBoost, 1)
             );
           });
+
         return avgScaleClamp(
-          -Math.max(...nonPrimariesFromSecondToHighest),
-          Math.max(...secondariesToSecond) - Math.max(...othersToSecond),
+          -Math.max(...nonPrimariesFromSecondToHighest, 0),
+          Math.max(...secondariesToSecond, 0) - Math.max(...othersToSecond, 0),
         );
       }
 
@@ -340,8 +341,8 @@ export const getRelativeTasteVector = (() => {
       // secondary detractors: others < secondHighestBoostAmount
       // neutral: primaries, secondaries < secondHighestBoostAmount
       return avgScaleClamp(
-        -Math.max(...nonPrimariesFromSecondToHighest),
-        -Math.max(...othersToSecond),
+        -Math.max(...nonPrimariesFromSecondToHighest, 0),
+        -Math.max(...othersToSecond, 0),
       );
     });
   };
