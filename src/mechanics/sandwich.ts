@@ -256,20 +256,26 @@ const selectIngredientCandidates = ({
   const scoredIngredients = ingredients.map(ingredientMapper);
   scoredIngredients.sort((a, b) => b.score - a.score);
 
-  const scoredIngredientsMeetingThreshold = scoredIngredients.filter(
-    ({ ing, score }) =>
-      ing &&
-      score >= bestScore - CANDIDATE_SCORE_THRESHOLD * Math.abs(bestScore),
+  const minScore = bestScore - CANDIDATE_SCORE_THRESHOLD * Math.abs(bestScore);
+  const candidateScoredIngredients = scoredIngredients.filter(
+    ({ ing, score }) => ing && score >= minScore,
   );
 
   // TODO: any herba mystica
   if (debug) {
-    console.debug(`Selecting top ${MAX_CANDIDATES} candidates from ${scoredIngredientsMeetingThreshold
-      .map(({ ing }) => ing?.name)
-      .join(', ')}
+    console.debug(`
+    Selecting top ${MAX_CANDIDATES} candidates from:${[
+      '',
+      ...candidateScoredIngredients.map(
+        ({ ing, score }) => `${ing?.name}: ${score}`,
+      ),
+    ].join(`
+      `)}
+    Respective scores: 
     Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
-    Raw scores: ${bestMealPowerProduct}, ${bestTypeProduct}, ${bestLevelProduct}
-  
+    Raw score components of ${
+      candidateScoredIngredients[0]?.ing?.name
+    }: ${bestMealPowerProduct}, ${bestTypeProduct}, ${bestLevelProduct}
     Target MP: ${targetMealPowerVector}
     Delta MP: ${deltaMealPowerVector}
     Current MP: ${currentBoostedMealPowerVector}
@@ -282,7 +288,7 @@ const selectIngredientCandidates = ({
     Remaining condiments: ${remainingCondiments}`);
   }
 
-  return scoredIngredientsMeetingThreshold
+  return candidateScoredIngredients
     .slice(0, MAX_CANDIDATES)
     .map(({ ing }) => ing as Ingredient);
 };
@@ -331,6 +337,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     targetPowerFound: false,
     boostedMealPower: null,
     allowHerbaMystica:
+      targetPower.level >= 3 ||
       targetPower.mealPower === 'Sparkling' ||
       targetPower.mealPower === 'Title',
   };
@@ -362,9 +369,27 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       ? boostMealPowerVector(baseMealPowerVector, boostedMealPower)
       : baseMealPowerVector;
 
+    // This is the thing that breaks for level 3 powers
     const selectedPower = powers[0];
 
+    // const debugCondition =
+    //   flavorBoosts['Salty'] === 500 &&
+    //   flavorBoosts.Bitter === 500 &&
+    //   fillings.length === 0 &&
+    //   condiments.length === 2;
+    // if (debugCondition) {
+    //   console.debug(
+    //     `
+    // Sandwich so far: ${fillings
+    //   .concat(condiments)
+    //   .map((ing) => ing.name)
+    //   .join(', ')}
+    // Boosted meal power: ${boostedMealPower}
+    // Selected `,
+    //   );
+    // }
     const newIngredientCandidates = selectIngredientCandidates({
+      // debug: debugCondition,
       targetPower,
       currentBoostedMealPowerVector,
       currentTypeVector: typeVector,

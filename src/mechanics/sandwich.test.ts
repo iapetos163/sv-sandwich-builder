@@ -233,6 +233,27 @@ describe('makeSandwichForPower', () => {
     expect(numHerba).toBe(2);
   });
 
+  it('Produces a sandwich with Lv 3 Exp Ice', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Exp',
+      type: 'Ice',
+      level: 3,
+    });
+
+    // Klawf, Bitter Herba, Salty Herba
+    expect(sandwich).not.toBeNull();
+
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
+
+    const numFillings = sandwich!.fillings.length;
+    expect(numFillings).toBeLessThanOrEqual(1);
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', () => {
   //   const sandwich = makeSandwichForPower({
   //     mealPower: 'Catch',
