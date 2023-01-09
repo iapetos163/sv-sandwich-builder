@@ -128,27 +128,51 @@ const selectIngredientCandidates = ({
   remainingFillings,
   debug,
 }: SelectIngredientProps) => {
+  let targetTypeVector: number[] = [];
+  let targetLevelVector: number[] = [];
+  let deltaTypeVector: number[] = [];
+  let deltaLevelVector: number[] = [];
+  let deltaTypeNorm = Infinity;
+  let deltaLevelNorm = Infinity;
+  let targetConfig: TargetConfig;
+  for (const candidateConfig of targetConfigs) {
+    const candTargetTypeVector = checkType
+      ? getTargetTypeVector(targetPower, currentTypeVector)
+      : currentTypeVector;
+
+    const candTargetLevelVector = getTargetLevelVector(
+      targetPower,
+      currentTypeVector,
+    );
+    const candDeltaTypeVector = diff(targetTypeVector, currentTypeVector);
+    const candDeltaLevelVector = diff(targetLevelVector, currentTypeVector);
+    const candDeltaTypeNorm = norm(deltaTypeVector);
+    const candDeltaLevelNorm = norm(deltaLevelVector);
+    const candTargetConfig = candidateConfig;
+
+    if (
+      Math.max(candDeltaLevelNorm, candDeltaTypeNorm) <
+      Math.max(deltaLevelNorm, deltaTypeNorm)
+    ) {
+      targetTypeVector = candTargetTypeVector;
+      targetLevelVector = candTargetLevelVector;
+      deltaTypeVector = candDeltaTypeVector;
+      deltaLevelVector = candDeltaLevelVector;
+      deltaTypeNorm = candDeltaTypeNorm;
+      deltaLevelNorm = candDeltaLevelNorm;
+      targetConfig = candTargetConfig;
+    }
+  }
+
   const targetMealPowerVector = getTargetMealPowerVector(
     targetPower,
     currentBoostedMealPowerVector,
-  );
-  const targetTypeVector = checkType
-    ? getTargetTypeVector(targetPower, currentTypeVector)
-    : currentTypeVector;
-
-  const targetLevelVector = getTargetLevelVector(
-    targetPower,
-    currentTypeVector,
   );
   const deltaMealPowerVector = diff(
     targetMealPowerVector,
     currentBoostedMealPowerVector,
   );
-  const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
-  const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
   const deltaMpNorm = norm(deltaMealPowerVector);
-  const deltaTypeNorm = norm(deltaTypeVector);
-  const deltaLevelNorm = norm(deltaLevelVector);
 
   const typeScoreWeight = checkType
     ? getTypeScoreWeight({
