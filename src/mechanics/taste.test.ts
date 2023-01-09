@@ -344,4 +344,13 @@ describe('getRelativeTasteVector', () => {
 
     expect(res[2]).toBeLessThanOrEqual(0);
   });
+
+  it('Outputs nonzero components when choosing Herba Mystica at the start', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: {},
+      ingredientFlavorBoosts: { Sweet: 500 },
+    });
+
+    expect(res[0] || 0).toBeGreaterThan(0);
+  });
 });

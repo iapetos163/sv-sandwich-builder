@@ -141,11 +141,6 @@ export const getRelativeTasteVector = (() => {
     const highestBoostFlavor = currentRankedFlavorBoosts[0]?.name;
     const secondHighestBoostAmount = currentRankedFlavorBoosts[1]?.amount || 0;
 
-    if (highestBoostAmount === 0) {
-      // Return zero in this case for the sake of simplicity
-      return [];
-    }
-
     return mealPowers.map((mp, i) => {
       const primaryFlavors = primaryFlavorsForPower[mp];
       const secondaryFlavors = secondaryFlavorsForPower[mp];
@@ -162,6 +157,27 @@ export const getRelativeTasteVector = (() => {
         (f) => f === highestBoostFlavor,
       );
 
+      if (highestBoostAmount === 0) {
+        const highestBoostForOther = Math.max(
+          ...otherFlavors
+            .filter((f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount)
+            .map((f) => ingredientFlavorBoosts[f] || 0),
+        );
+        const primaryComponents = primaryFlavors.map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          return (ingBoost - highestBoostForOther / 2) / Math.max(ingBoost, 1);
+        });
+        const secondaryComponents = secondaryFlavors.map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          return (ingBoost - highestBoostForOther / 2) / Math.max(ingBoost, 1);
+        });
+
+        return avgScaleClamp(
+          Math.max(...primaryComponents),
+          Math.max(...secondaryComponents),
+        );
+      }
+
       // Delicate case to consider here:
       // If primary != secondary and two are tied
       // We think we're defending but we aren't
@@ -173,8 +189,6 @@ export const getRelativeTasteVector = (() => {
         const otherFlavorsBelowHighest = otherFlavors.filter(
           (f) => (currentFlavorBoosts[f] || 0) < highestBoostAmount,
         );
-
-        // When on the offense: detractors use the supporters' thresholds
 
         const highestBoostForCurrentNonprimaryHighest = Math.max(
           ...nonPrimaryFlavors
