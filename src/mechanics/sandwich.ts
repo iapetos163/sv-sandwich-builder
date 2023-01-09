@@ -146,6 +146,9 @@ const selectIngredientCandidates = ({
   );
   const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
   const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
+  const deltaMpNorm = norm(deltaMealPowerVector);
+  const deltaTypeNorm = norm(deltaTypeVector);
+  const deltaLevelNorm = norm(deltaLevelVector);
 
   const typeScoreWeight = checkType
     ? getTypeScoreWeight({
@@ -156,13 +159,6 @@ const selectIngredientCandidates = ({
         remainingCondiments,
       })
     : 0;
-  // console.debug({
-  //   targetVector: targetLevelVector,
-  //   deltaVector: deltaLevelVector,
-  //   currentVector: currentTypeVector,
-  //   remainingFillings,
-  //   remainingCondiments,
-  // });
   const levelScoreWeight = checkLevel
     ? getTypeScoreWeight({
         targetVector: targetLevelVector,
@@ -210,19 +206,18 @@ const selectIngredientCandidates = ({
     const positiveBoostedMpNorm = norm(
       boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
     );
-    const deltaMpNorm = norm(deltaMealPowerVector);
-    const n1 = deltaMpNorm * Math.sqrt(positiveBoostedMpNorm); // * norm(targetMealPowerVector);
+    const n1 = deltaMpNorm * Math.sqrt(positiveBoostedMpNorm);
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
     const postiveTypeNorm = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
-    const n2 = Math.sqrt(postiveTypeNorm) * norm(deltaTypeVector); // norm(targetTypeVector);
+    const n2 = Math.sqrt(postiveTypeNorm) * deltaTypeNorm;
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
         : 0;
-    const n3 = norm(deltaLevelVector); // * norm(targetLevelVector);
+    const n3 = deltaLevelNorm;
     const levelProduct =
       n3 !== 0 ? innerProduct(ing.typeVector, deltaLevelVector) / n3 : 0;
     const score =
