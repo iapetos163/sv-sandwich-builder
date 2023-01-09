@@ -70,6 +70,13 @@ export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>
   mealPowers.map((mp, i) => (mp === boostedPower ? (v[i] || 0) + 100 : v[i]));
 
 // Assumes 3+ star sandwich
+
+export type TypeArrangement =
+  | 'ONE_ONE_ONE'
+  | 'ONE_ONE_THREE'
+  | 'ONE_THREE_ONE'
+  | 'ONE_THREE_TWO';
+
 export const calculateTypes = (
   rankedTypes: TypeBoost[],
 ): [TypeBoost, TypeBoost, TypeBoost] => {
@@ -150,6 +157,47 @@ export const calculateLevels = (
   }
 
   return [1, 1, 1];
+};
+
+export interface TargetConfig {
+  config: TypeArrangement;
+  typePlaceIndex: number;
+  mpPlaceIndex: number;
+}
+
+export const getTargetConfigs = (
+  targetPower: Power,
+  targetNumHerba: number,
+): TargetConfig[] => {
+  if (targetNumHerba >= 2 && targetPower.mealPower === 'Sparkling') {
+    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
+  }
+  if (targetNumHerba >= 2 && targetPower.mealPower === 'Title') {
+    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 }];
+  }
+  if (targetNumHerba >= 2) {
+    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
+  }
+  if (targetNumHerba >= 1 && targetPower.mealPower === 'Title') {
+    return [
+      { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+    ];
+  }
+  if (targetNumHerba >= 1 && targetPower.level === 3) {
+    return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 }];
+  }
+  if (targetNumHerba >= 1) {
+    return [
+      { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+    ];
+  }
+  return [
+    { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+  ];
 };
 
 export const rankMealPowerBoosts = (

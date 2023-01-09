@@ -6,11 +6,13 @@ import { addBoosts } from './boost';
 import {
   boostMealPowerVector,
   evaluateBoosts,
+  getTargetConfigs,
   getTargetLevelVector,
   getTargetMealPowerVector,
   getTargetTypeVector,
   mealPowerHasType,
   powersMatch,
+  TargetConfig,
 } from './powers';
 import {
   getRelativeTasteVector,
@@ -23,6 +25,7 @@ const MAX_CANDIDATES = 3;
 
 interface SelectIngredientProps {
   targetPower: Power;
+  targetConfigs: TargetConfig[];
   currentBoostedMealPowerVector: number[];
   currentTypeVector: number[];
   checkMealPower: boolean;
@@ -112,6 +115,7 @@ type ScoredIngredient = {
 
 const selectIngredientCandidates = ({
   targetPower,
+  targetConfigs,
   currentBoostedMealPowerVector,
   currentTypeVector,
   currentFlavorBoosts,
@@ -295,8 +299,18 @@ const selectIngredientCandidates = ({
 
 // TODO: target more than one power
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
-  console.debug('~~~HAZ SANDWICH~~~');
   const checkType = mealPowerHasType(targetPower.mealPower);
+
+  let targetNumHerba = 0;
+  if (targetPower.mealPower === 'Sparkling') {
+    targetNumHerba = 2;
+  } else if (targetPower.mealPower === 'Title') {
+    targetNumHerba = 1;
+  } else if (targetPower.level === 3) {
+    targetNumHerba = 1;
+  }
+
+  const targetConfigs = getTargetConfigs(targetPower, targetNumHerba);
 
   const visited: Record<string, true> = {};
   const hasBeenVisited = (ingredients: Ingredient[]) => {
@@ -336,10 +350,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     powers: [],
     targetPowerFound: false,
     boostedMealPower: null,
-    allowHerbaMystica:
-      targetPower.level >= 3 ||
-      targetPower.mealPower === 'Sparkling' ||
-      targetPower.mealPower === 'Title',
+    allowHerbaMystica: targetNumHerba > 0,
   };
 
   const recurse = (state: IngredientSelectionState): Sandwich | null => {
@@ -391,6 +402,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     const newIngredientCandidates = selectIngredientCandidates({
       // debug: debugCondition,
       targetPower,
+      targetConfigs,
       currentBoostedMealPowerVector,
       currentTypeVector: typeVector,
       checkMealPower:
