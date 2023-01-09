@@ -82,10 +82,8 @@ describe('makeSandwichForPower', () => {
     const numHerba = sandwich!.condiments.filter(
       (s) => s.isHerbaMystica,
     ).length;
-    // const numFillings = sandwich!.fillings.length;
 
     expect(numHerba).toBe(0);
-    // expect(numIngredients).toBeLessThanOrEqual(7);
   });
 
   it('Produces a sandwich with Lv 2 Catch Bug', () => {
@@ -97,10 +95,6 @@ describe('makeSandwichForPower', () => {
 
     // One viable recipe: 4x chorizo, 1x cherry tomato, 1x banana, 3x jam
     expect(sandwich).not.toBeNull();
-
-    // const numFillings = sandwich!.fillings.length;
-
-    // expect(numIngredients).toBeLessThanOrEqual(9);
   });
 
   it('Produces a sandwich with Lv 2 Egg', () => {
@@ -112,10 +106,6 @@ describe('makeSandwichForPower', () => {
 
     // 4x Chorizo, 1x Banana, 1x (Banana OR potato salad OR fried fillet), 2x Whippped Cream
     expect(sandwich).not.toBeNull();
-
-    // const numFillings = sandwich!.fillings.length;
-
-    // expect(numIngredients).toBeLessThanOrEqual(8);
   });
 
   it('Produces a sandwich with Lv 2 Exp Dark', () => {
@@ -224,6 +214,23 @@ describe('makeSandwichForPower', () => {
     // 4x Egg, Rice, Jalapeno, Salt
     // 4x Egg, Jalapeno, 4x Olive Oil
     expect(sandwich).not.toBeNull();
+  });
+
+  it('Produces a valid recipe when Lv 1 Sparkling is requested', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Sparkling',
+      type: 'Ice',
+      level: 1,
+    });
+
+    // Klawf Stick, 2x herba mystica
+    expect(sandwich).not.toBeNull();
+
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBe(2);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {
