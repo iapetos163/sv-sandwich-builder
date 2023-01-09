@@ -1,4 +1,4 @@
-export type Boosts<T extends string> = Partial<Record<T, number>>;
+import { Boosts } from '../types';
 
 export const boostsEqual = <T extends string>(a: Boosts<T>, b: Boosts<T>) =>
   Object.entries(a).every(

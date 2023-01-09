@@ -1,6 +1,6 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
-import { add, scale } from '../vector-math';
-import { Boosts, boostsEqual } from './boost';
+import { Boosts } from '../types';
+import { boostsEqual } from './boost';
 
 export interface FlavorBoost {
   name: Flavor;

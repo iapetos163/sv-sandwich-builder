@@ -1,10 +1,6 @@
 import { allTypes, MealPower, mealPowers, TypeName } from '../strings';
+import { Power } from '../types';
 
-export interface Power {
-  mealPower: MealPower;
-  type: TypeName;
-  level: number;
-}
 interface TypeBoost {
   name: TypeName;
   amount: number;
@@ -161,7 +157,10 @@ export const rankMealPowerBoosts = (
   boostedMealPower: MealPower | null,
 ) => {
   const boosts = boostedMealPower
-    ? { ...mealPowerBoosts, [boostedMealPower]: 0 }
+    ? {
+        ...mealPowerBoosts,
+        [boostedMealPower]: mealPowerBoosts[boostedMealPower] || 0,
+      }
     : mealPowerBoosts;
   return Object.entries(boosts)
     .map(([mp, v]) => ({
@@ -220,6 +219,11 @@ export const powersMatch = (test: Power, target: Power) =>
   test.level >= target.level &&
   test.mealPower === target.mealPower &&
   (!mealPowerHasType(test.mealPower) || test.type === target.type);
+
+export const powersEqual = (a: Power, b: Power) =>
+  a.level === b.level &&
+  a.mealPower === b.mealPower &&
+  (!mealPowerHasType(a.mealPower) || a.type === b.type);
 
 export const powerToString = (p: Power) => {
   if (!mealPowerHasType(p.mealPower)) {
