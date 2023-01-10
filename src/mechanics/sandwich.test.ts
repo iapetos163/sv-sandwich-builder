@@ -216,6 +216,17 @@ describe('makeSandwichForPower', () => {
     expect(sandwich).not.toBeNull();
   });
 
+  it('Produces a sandwich with Lv 2 Exp Steel', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Exp',
+      type: 'Steel',
+      level: 2,
+    });
+
+    // 4x egg, 2x potato salad, 2x marmalade, salt
+    expect(sandwich).not.toBeNull();
+  });
+
   it('Produces a valid recipe when Lv 1 Sparkling is requested', () => {
     const sandwich = makeSandwichForPower({
       mealPower: 'Sparkling',
