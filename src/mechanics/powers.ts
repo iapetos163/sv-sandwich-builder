@@ -25,6 +25,39 @@ export const getTargetTypeVector = (
   currentRankedTypes: TypeBoost[],
   currentVector: number[],
 ) => {
+  let minFirstAmount = 0;
+  let maxFirstAmount = Infinity;
+  let maxSecondAmount = Infinity;
+  if (config.config === 'ONE_ONE_ONE') {
+    minFirstAmount = 481;
+  } else if (config.config === 'ONE_ONE_THREE') {
+    minFirstAmount = 106;
+    maxSecondAmount = targetFirstAmount - 106;
+    // also acceptable: minFirstAmount = 281;
+  } else if (config.config === 'ONE_THREE_ONE') {
+    maxFirstAmount = 105;
+    /*
+    
+    if (mainTypeAmount >= 100) {
+      if (oneTwoDiff >= 80 && secondTypeAmount <= 21) {
+        return [firstType, thirdType, firstType];
+      }
+    } else if (mainTypeAmount >= 90) {
+      if (oneTwoDiff >= 78 && secondTypeAmount <= 16) {
+        return [firstType, thirdType, firstType];
+      }
+    } else if (mainTypeAmount >= 80) {
+      if (oneTwoDiff >= 74 && secondTypeAmount <= 9) {
+        return [firstType, thirdType, firstType];
+      }
+    } else if (mainTypeAmount >= 74) {
+      if (oneTwoDiff >= 72 && secondTypeAmount <= 5) {
+        return [firstType, thirdType, firstType];
+      }
+    }
+    */
+  }
+
   const currentPlaceIndex = currentRankedTypes.findIndex(
     (t) => t.name === power.type,
   );
