@@ -1,7 +1,7 @@
 import { allTypes, MealPower, mealPowers, TypeName } from '../strings';
-import { Power } from '../types';
+import { Boosts, Power } from '../types';
 
-interface TypeBoost {
+export interface TypeBoost {
   name: TypeName;
   amount: number;
 }
@@ -18,6 +18,7 @@ export const getTargetMealPowerVector = (
   );
 };
 
+// TODO?: use config.config
 export const getTargetTypeVector = (
   power: Power,
   config: TargetConfig,
@@ -27,31 +28,61 @@ export const getTargetTypeVector = (
   const currentPlaceIndex = currentRankedTypes.findIndex(
     (t) => t.name === power.type,
   );
+
+  // Target type is at desired rank - no change
   if (currentPlaceIndex === config.typePlaceIndex) {
     return currentVector;
   }
 
-  const currentTargetTypeAmount =
-    currentPlaceIndex >= 0 ? currentRankedTypes[currentPlaceIndex] : 0;
   const currentTargetPlaceAmount =
-    currentRankedTypes[config.typePlaceIndex] || 0;
+    currentRankedTypes[config.typePlaceIndex]?.amount || 0;
 
-  if (
-    (currentPlaceIndex < 0 || currentPlaceIndex > config.typePlaceIndex) &&
-    currentTargetTypeAmount >= currentTargetPlaceAmount
-  ) {
-    const typesPlacingAhead = 
-    return allTypes.map((t, i) =>
-      t === power.type ? target : currentVector[i] || 0,
-    );
+  let typesAhead = currentRankedTypes
+    .slice(0, config.typePlaceIndex)
+    .map((rt) => rt.name);
+
+  if (typesAhead.length < config.typePlaceIndex) {
+    typesAhead = typesAhead
+      .concat(allTypes)
+      .filter((t) => t !== power.type)
+      .slice(0, config.typePlaceIndex);
   }
 
-  const target = highestComponent + 1;
-  return allTypes.map((t, i) =>
-    t === power.type ? target : currentVector[i] || 0,
-  );
+  // Target type is behind desired rank
+  if (currentPlaceIndex < 0 || currentPlaceIndex > config.typePlaceIndex) {
+    return allTypes.map((t, i) => {
+      if (typesAhead.includes(t)) {
+        return Math.max(currentVector[i] || 0, currentTargetPlaceAmount + 2);
+      }
+      if (t === power.type) {
+        return currentTargetPlaceAmount + 1;
+      }
+      return currentVector[i] || 0;
+    });
+  }
+
+  // Target type is ahead of desired rank
+  const currentTargetTypeAmount = currentRankedTypes[currentPlaceIndex].amount;
+
+  let typesBehind = currentRankedTypes
+    .slice(currentPlaceIndex + 1, config.typePlaceIndex + 1)
+    .map((rt) => rt.name);
+  if (typesBehind.length < config.typePlaceIndex - currentPlaceIndex) {
+    typesBehind = typesBehind
+      .concat(allTypes)
+      .filter((t) => t !== power.type)
+      .slice(0, config.typePlaceIndex - currentPlaceIndex);
+  }
+
+  return allTypes.map((t, i) => {
+    if (typesBehind.includes(t)) {
+      return Math.max(currentTargetTypeAmount + 1, currentVector[i] || 0);
+    }
+    return currentVector[i] || 0;
+  });
 };
 
+// TODO: revise
 export const getTargetLevelVector = (power: Power, currentVector: number[]) => {
   let minTarget = 1;
   if (power.level === 2) minTarget = 180;
@@ -228,7 +259,7 @@ export const getTargetConfigs = (
 };
 
 export const rankMealPowerBoosts = (
-  mealPowerBoosts: Partial<Record<MealPower, number>>,
+  mealPowerBoosts: Boosts<MealPower>,
   boostedMealPower: MealPower | null,
 ) => {
   const boosts = boostedMealPower
@@ -249,7 +280,7 @@ export const rankMealPowerBoosts = (
     );
 };
 
-const rankTypeBoosts = (typeBoosts: Partial<Record<TypeName, number>>) =>
+export const rankTypeBoosts = (typeBoosts: Boosts<TypeName>) =>
   Object.entries(typeBoosts)
     .map(([t, v]) => ({ name: t as TypeName, amount: v }))
     .sort(
@@ -259,9 +290,9 @@ const rankTypeBoosts = (typeBoosts: Partial<Record<TypeName, number>>) =>
     );
 
 export const evaluateBoosts = (
-  mealPowerBoosts: Partial<Record<MealPower, number>>,
+  mealPowerBoosts: Boosts<MealPower>,
   boostedMealPower: MealPower | null,
-  typeBoosts: Partial<Record<TypeName, number>>,
+  typeBoosts: Boosts<TypeName>,
 ) => {
   const rankedMealPowerBoosts = rankMealPowerBoosts(
     mealPowerBoosts,

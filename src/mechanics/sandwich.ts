@@ -12,7 +12,9 @@ import {
   getTargetTypeVector,
   mealPowerHasType,
   powersMatch,
+  rankTypeBoosts,
   TargetConfig,
+  TypeBoost,
 } from './powers';
 import {
   getRelativeTasteVector,
@@ -28,6 +30,7 @@ interface SelectIngredientProps {
   targetConfigs: TargetConfig[];
   currentBoostedMealPowerVector: number[];
   currentTypeVector: number[];
+  rankedTypeBoosts: TypeBoost[];
   checkMealPower: boolean;
   checkType: boolean;
   checkLevel: boolean;
@@ -118,6 +121,7 @@ const selectIngredientCandidates = ({
   targetConfigs,
   currentBoostedMealPowerVector,
   currentTypeVector,
+  rankedTypeBoosts,
   currentFlavorBoosts,
   checkMealPower,
   checkType,
@@ -137,12 +141,17 @@ const selectIngredientCandidates = ({
   let targetConfig: TargetConfig;
   for (const candidateConfig of targetConfigs) {
     const candTargetTypeVector = checkType
-      ? getTargetTypeVector(targetPower, candidateConfig, currentTypeVector)
+      ? getTargetTypeVector(
+          targetPower,
+          candidateConfig,
+          rankedTypeBoosts,
+          currentTypeVector,
+        )
       : currentTypeVector;
 
     const candTargetLevelVector = getTargetLevelVector(
       targetPower,
-      candidateConfig,
+      // candidateConfig,
       currentTypeVector,
     );
     const candDeltaTypeVector = diff(targetTypeVector, currentTypeVector);
@@ -425,6 +434,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       targetConfigs,
       currentBoostedMealPowerVector,
       currentTypeVector: typeVector,
+      rankedTypeBoosts: rankTypeBoosts(typeBoosts),
       checkMealPower:
         targetPowerAlreadyFound ||
         selectedPower?.mealPower !== targetPower.mealPower,

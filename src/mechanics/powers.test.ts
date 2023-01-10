@@ -11,9 +11,115 @@ describe('getTargetTypeVector', () => {
   it('Creates a vector with the correct components for Ground', () => {
     const v = getTargetTypeVector(
       { mealPower: 'Exp', type: 'Ground', level: 1 },
+      { config: 'ONE_THREE_TWO', mpPlaceIndex: 0, typePlaceIndex: 0 },
+      [],
       [],
     );
     expect(v[4]).toBeGreaterThan(0);
+    expect(v[0]).toBe(0);
+  });
+
+  it('Handles a zero vector and typePlaceIndex > 0', () => {
+    const v = getTargetTypeVector(
+      { mealPower: 'Exp', type: 'Ghost', level: 3 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      [],
+      [],
+    );
+    expect(v[0]).toBe(2);
+    expect(v[1]).toBe(2);
+    expect(v[2]).toBe(0);
+    expect(v[7]).toBe(1);
+  });
+
+  it('Handles a placing below desired rank (>0) in a tie', () => {
+    const v = getTargetTypeVector(
+      { mealPower: 'Exp', type: 'Grass', level: 3 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      [
+        { name: 'Flying', amount: 36 },
+        { name: 'Rock', amount: 36 },
+        { name: 'Steel', amount: 36 },
+        { name: 'Grass', amount: 36 },
+        { name: 'Ice', amount: 36 },
+        { name: 'Fairy', amount: 36 },
+      ],
+      [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
+    );
+    expect(v[2]).toBe(38);
+    expect(v[5]).toBe(38);
+    expect(v[8]).toBe(36);
+    expect(v[11]).toBe(37);
+    expect(v[14]).toBe(36);
+    expect(v[17]).toBe(36);
+  });
+
+  it('Handles a placing below desired rank 0 in a tie', () => {
+    const v = getTargetTypeVector(
+      { mealPower: 'Exp', type: 'Grass', level: 1 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+      [
+        { name: 'Flying', amount: 36 },
+        { name: 'Rock', amount: 36 },
+        { name: 'Steel', amount: 36 },
+        { name: 'Grass', amount: 36 },
+        { name: 'Ice', amount: 36 },
+        { name: 'Fairy', amount: 36 },
+      ],
+      [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
+    );
+    expect(v[2]).toBe(36);
+    expect(v[5]).toBe(36);
+    expect(v[8]).toBe(36);
+    expect(v[11]).toBe(37);
+    expect(v[14]).toBe(36);
+    expect(v[17]).toBe(36);
+  });
+
+  it('Handles a placing above desired rank (>0) in a tie', () => {
+    const v = getTargetTypeVector(
+      { mealPower: 'Exp', type: 'Flying', level: 3 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      [
+        { name: 'Flying', amount: 36 },
+        { name: 'Rock', amount: 36 },
+        { name: 'Steel', amount: 36 },
+        { name: 'Grass', amount: 36 },
+        { name: 'Ice', amount: 36 },
+        { name: 'Fairy', amount: 36 },
+      ],
+      [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
+    );
+    expect(v[2]).toBe(36);
+    expect(v[5]).toBe(37);
+    expect(v[8]).toBe(37);
+    expect(v[11]).toBe(36);
+    expect(v[14]).toBe(36);
+    expect(v[17]).toBe(36);
+  });
+
+  it('Handles a placing above desired rank (>0) in a tie with another ahead', () => {
+    const v = getTargetTypeVector(
+      { mealPower: 'Exp', type: 'Flying', level: 3 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      [
+        { name: 'Normal', amount: 40 },
+        { name: 'Flying', amount: 36 },
+        { name: 'Rock', amount: 36 },
+        { name: 'Steel', amount: 36 },
+        { name: 'Grass', amount: 36 },
+        { name: 'Ice', amount: 36 },
+        { name: 'Fairy', amount: 36 },
+      ],
+      [40, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
+    );
+    expect(v[0]).toBe(40);
+    expect(v[2]).toBe(36);
+    expect(v[5]).toBe(37);
+    expect(v[8]).toBe(36);
+    expect(v[11]).toBe(36);
+    expect(v[14]).toBe(36);
+    expect(v[17]).toBe(36);
   });
 });
 
