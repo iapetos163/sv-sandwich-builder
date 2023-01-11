@@ -121,13 +121,13 @@ const avgScaleClamp = (n1: number, n2: number) =>
   50 * Math.max(Math.min(n1 + n2, 2), -2);
 
 export const getRelativeTasteVector = (() => {
-  let memoRankFlavorBoosts = (
-    flavorBoosts: Partial<Record<Flavor, number>>,
-  ) => {
+  const flavorBoostsLookup: Partial<Record<string, FlavorBoost[]>> = {};
+  const memoRankFlavorBoosts = (flavorBoosts: Boosts<Flavor>) => {
+    const key = flavors.map((f) => flavorBoosts[f] || 0).join(',');
+    const memoized = flavorBoostsLookup[key];
+    if (memoized) return memoized;
     const res = rankFlavorBoosts(flavorBoosts);
-    const thisFn = memoRankFlavorBoosts;
-    memoRankFlavorBoosts = (b: Partial<Record<Flavor, number>>) =>
-      boostsEqual(flavorBoosts, b) ? res : thisFn(b);
+    flavorBoostsLookup[key] = res;
     return res;
   };
 
