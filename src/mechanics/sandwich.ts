@@ -529,9 +529,6 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         //   throw 'debug';
         // }
 
-        // problem one: we can't get a small type boost while herba mystica is allowed, without choosing the herba mystica
-        // problem two: we aren't choosing cheese;
-
         if (
           targetPowerFound &&
           newFillings.length > 0 &&
@@ -564,7 +561,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
           skipIngredients: newSkipIngredients,
           allowHerbaMystica:
             allowHerbaMystica &&
-            newCondiments.filter((c) => c.isHerbaMystica).length < 2,
+            newCondiments.filter((c) => c.isHerbaMystica).length <
+              targetNumHerba,
         });
       })
       .filter((s): s is Sandwich => !!s);
