@@ -87,6 +87,7 @@ export interface GetTargetTypeVectorProps {
   targetConfig: TargetConfig;
   rankedTypeBoosts: TypeBoost[];
   typeVector: number[];
+  forceDiff?: boolean;
 }
 
 export const getTargetTypeVector = ({
@@ -94,6 +95,7 @@ export const getTargetTypeVector = ({
   targetConfig: { typePlaceIndex: targetPlaceIndex, config },
   rankedTypeBoosts: currentRankedTypes,
   typeVector: currentVector,
+  forceDiff = false,
 }: GetTargetTypeVectorProps) => {
   const tentativeTargetVector = getTargetTypeVectorForPosition(
     targetType,
@@ -154,9 +156,13 @@ export const getTargetTypeVector = ({
       i === firstTargetIndex || i === secondTargetIndex ? Infinity : c,
     );
   }
-  return tentativeTargetVector.map((c, i) =>
-    i === firstTargetIndex ? Math.max(c, minFirstAmount) : c,
-  );
+  return tentativeTargetVector.map((c, i) => {
+    if (i === firstTargetIndex) {
+      const amount = Math.max(c, minFirstAmount);
+      return amount + (forceDiff && amount === (currentVector[i] || 0) ? 1 : 0);
+    }
+    return c;
+  });
 };
 
 // TODO: revise

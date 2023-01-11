@@ -138,7 +138,7 @@ const selectIngredientCandidates = ({
   let deltaLevelVector: number[] = [];
   let deltaTypeNorm = Infinity;
   let deltaLevelNorm = Infinity;
-  let targetConfig: TargetConfig;
+  let targetConfig = targetConfigs[0];
   for (const candidateConfig of targetConfigs) {
     const candTargetTypeVector = checkType
       ? getTargetTypeVector({
@@ -193,6 +193,20 @@ const selectIngredientCandidates = ({
     currentBoostedMealPowerVector,
   );
   const deltaMpNorm = norm(deltaMealPowerVector);
+
+  // In the case we are forced to pick an ingredient but we have what we need
+  // Force a nonzero deltaTypeVector
+  if (deltaMpNorm === 0 && deltaLevelNorm === 0 && deltaTypeNorm === 0) {
+    targetTypeVector = getTargetTypeVector({
+      targetPower,
+      targetConfig,
+      rankedTypeBoosts,
+      typeVector: currentTypeVector,
+      forceDiff: true,
+    });
+    deltaTypeVector = diff(targetTypeVector, currentTypeVector);
+    deltaTypeNorm = norm(deltaTypeVector);
+  }
 
   const typeScoreWeight = checkType
     ? getTypeScoreWeight({
@@ -269,17 +283,17 @@ const selectIngredientCandidates = ({
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    if (debug && ing.name === 'Ham') {
-      console.debug(
-        `${ing.name}: ${score}
-    Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
-    Relative taste vector: ${relativeTasteVector}
-    Boosted meal power vector: ${boostedMealPowerVector}
-      n1: ${deltaMpNorm} * ${Math.sqrt(positiveBoostedMpNorm)} = ${n1}
-    Type vector: ${ing.typeVector}
-      n2: ${deltaTypeNorm} * ${Math.sqrt(postiveTypeNorm)} = ${n2}`,
-      );
-    }
+    // if (debug && ing.name === 'Ham') {
+    //   console.debug(
+    //     `${ing.name}: ${score}
+    // Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
+    // Relative taste vector: ${relativeTasteVector}
+    // Boosted meal power vector: ${boostedMealPowerVector}
+    //   n1: ${deltaMpNorm} * ${Math.sqrt(positiveBoostedMpNorm)} = ${n1}
+    // Type vector: ${ing.typeVector}
+    //   n2: ${deltaTypeNorm} * ${Math.sqrt(postiveTypeNorm)} = ${n2}`,
+    //   );
+    // }
 
     if (score > bestScore) {
       bestScore = score;
@@ -419,7 +433,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     // This is the thing that breaks for level 3 powers
     const selectedPower = powers[0];
 
-    const debugCondition = condiments.length === 2 && fillings.length === 0;
+    const debugCondition = condiments.length === 1 && fillings.length === 0;
     if (debugCondition) {
       console.debug(
         `
@@ -504,7 +518,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         const targetPowerFound = newPowers.some((p) =>
           powersMatch(p, targetPower),
         );
-        // if (newCondiments.length === 2 && !targetPowerFound) {
+        // if (newCondiments.length < 1 && !targetPowerFound) {
         //   console.debug({
         //     newMealPowerBoosts,
         //     newBoostedMealPower,
@@ -514,6 +528,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         //   });
         //   throw 'debug';
         // }
+
+        // problem one: we can't get a small type boost while herba mystica is allowed, without choosing the herba mystica
+        // problem two: we aren't choosing cheese;
 
         if (
           targetPowerFound &&
