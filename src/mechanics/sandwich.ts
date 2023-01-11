@@ -13,6 +13,7 @@ import {
   mealPowerHasType,
   powersMatch,
   rankTypeBoosts,
+  selectPowerAtTargetPosition,
   TargetConfig,
   TypeBoost,
 } from './powers';
@@ -430,8 +431,21 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       ? boostMealPowerVector(baseMealPowerVector, boostedMealPower)
       : baseMealPowerVector;
 
-    // This is the thing that breaks for level 3 powers
-    const selectedPower = powers[0];
+    const selectedPowers = targetConfigs.map(
+      (targetConfig): Power | undefined =>
+        selectPowerAtTargetPosition(powers, targetConfig),
+    );
+
+    const selectedPower =
+      selectedPowers.length === 1
+        ? selectedPowers[0]
+        : selectedPowers.find(
+            (p) =>
+              p &&
+              (p.mealPower === targetPower.mealPower ||
+                p.type === targetPower.type ||
+                p.level >= targetPower.level),
+          ) ?? selectedPowers[0];
 
     const debugCondition = condiments.length === 1 && fillings.length === 0;
     if (debugCondition) {
@@ -441,8 +455,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       .concat(condiments)
       .map((ing) => ing.name)
       .join(', ')}
-    Boosted meal power: ${boostedMealPower}
-    Selected `,
+    Boosted meal power: ${boostedMealPower}`,
       );
     }
     const newIngredientCandidates = selectIngredientCandidates({
