@@ -196,21 +196,7 @@ const selectIngredientCandidates = ({
   );
   const deltaMpNorm = norm(deltaMealPowerVector);
 
-  // In the case we are forced to pick an ingredient but we have what we need
-  // Force a nonzero deltaTypeVector
-  if (deltaMpNorm === 0 && deltaLevelNorm === 0 && deltaTypeNorm === 0) {
-    targetTypeVector = getTargetTypeVector({
-      targetPower,
-      targetConfig,
-      rankedTypeBoosts,
-      typeVector: currentTypeVector,
-      forceDiff: true,
-    });
-    deltaTypeVector = diff(targetTypeVector, currentTypeVector);
-    deltaTypeNorm = norm(deltaTypeVector);
-  }
-
-  const typeScoreWeight = checkType
+  let typeScoreWeight = checkType
     ? getTypeScoreWeight({
         targetVector: targetTypeVector,
         deltaVector: deltaTypeVector,
@@ -237,6 +223,25 @@ const selectIngredientCandidates = ({
         remainingCondiments,
       })
     : 0;
+
+  // In the case we are forced to pick an ingredient but we have what we need
+  // Force a nonzero deltaTypeVector
+  if (
+    deltaTypeNorm === 0 &&
+    typeScoreWeight === 0 &&
+    mealPowerScoreWeight === 0
+  ) {
+    targetTypeVector = getTargetTypeVector({
+      targetPower,
+      targetConfig,
+      rankedTypeBoosts,
+      typeVector: currentTypeVector,
+      forceDiff: true,
+    });
+    deltaTypeVector = diff(targetTypeVector, currentTypeVector);
+    deltaTypeNorm = norm(deltaTypeVector);
+    typeScoreWeight = 1;
+  }
 
   let bestScore = -Infinity;
   let bestMealPowerProduct = -Infinity;

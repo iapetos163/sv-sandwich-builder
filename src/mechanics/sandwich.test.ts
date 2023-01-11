@@ -55,6 +55,7 @@ describe('makeSandwichForPower', () => {
       level: 2,
     });
 
+    // cheese, herba mystica
     expect(sandwich).not.toBeNull();
 
     const numHerba = sandwich!.condiments.filter(
