@@ -16,6 +16,7 @@ import {
   selectPowerAtTargetPosition,
   TargetConfig,
   TypeBoost,
+  powerToString,
 } from './powers';
 import {
   getRelativeTasteVector,
@@ -431,21 +432,23 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       ? boostMealPowerVector(baseMealPowerVector, boostedMealPower)
       : baseMealPowerVector;
 
-    const selectedPowers = targetConfigs.map(
+    const candidatePowers = targetConfigs.map(
       (targetConfig): Power | undefined =>
         selectPowerAtTargetPosition(powers, targetConfig),
     );
+    const condimentsAllowed =
+      !targetPowerAlreadyFound || condiments.length === 0;
 
     const selectedPower =
-      selectedPowers.length === 1
-        ? selectedPowers[0]
-        : selectedPowers.find(
+      candidatePowers.length === 1
+        ? candidatePowers[0]
+        : candidatePowers.find(
             (p) =>
               p &&
               (p.mealPower === targetPower.mealPower ||
                 p.type === targetPower.type ||
                 p.level >= targetPower.level),
-          ) ?? selectedPowers[0];
+          ) ?? candidatePowers[0];
 
     const debugCondition = condiments.length === 1 && fillings.length === 0;
     if (debugCondition) {
@@ -455,7 +458,14 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       .concat(condiments)
       .map((ing) => ing.name)
       .join(', ')}
-    Boosted meal power: ${boostedMealPower}`,
+    Boosted meal power: ${boostedMealPower}
+    Selected power: ${selectedPower && powerToString(selectedPower)}
+    targetPowerAlreadyFound: ${targetPowerAlreadyFound}
+    checkMealPower: ${
+      targetPowerAlreadyFound ||
+      selectedPower?.mealPower !== targetPower.mealPower
+    }
+    `,
       );
     }
     const newIngredientCandidates = selectIngredientCandidates({
@@ -466,7 +476,10 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       currentTypeVector: typeVector,
       rankedTypeBoosts: rankTypeBoosts(typeBoosts),
       checkMealPower:
-        targetPowerAlreadyFound ||
+        (targetPowerAlreadyFound && condimentsAllowed) ||
+        (targetPowerAlreadyFound &&
+          targetPower.mealPower !== 'Sparkling' &&
+          targetPower.mealPower !== 'Title') ||
         selectedPower?.mealPower !== targetPower.mealPower,
       checkType:
         targetPowerAlreadyFound ||
@@ -477,10 +490,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         !targetPowerAlreadyFound || fillings.length === 0
           ? maxFillings - fillings.length
           : 0,
-      remainingCondiments:
-        !targetPowerAlreadyFound || condiments.length === 0
-          ? maxCondiments - condiments.length
-          : 0,
+      remainingCondiments: condimentsAllowed
+        ? maxCondiments - condiments.length
+        : 0,
       currentFlavorBoosts: flavorBoosts,
       allowHerbaMystica,
       skipIngredients,
