@@ -154,10 +154,10 @@ const selectIngredientCandidates = ({
       // candidateConfig,
       currentTypeVector,
     );
-    const candDeltaTypeVector = diff(targetTypeVector, currentTypeVector);
-    const candDeltaLevelVector = diff(targetLevelVector, currentTypeVector);
-    const candDeltaTypeNorm = norm(deltaTypeVector);
-    const candDeltaLevelNorm = norm(deltaLevelVector);
+    const candDeltaTypeVector = diff(candTargetTypeVector, currentTypeVector);
+    const candDeltaLevelVector = diff(candTargetLevelVector, currentTypeVector);
+    const candDeltaTypeNorm = norm(candDeltaTypeVector);
+    const candDeltaLevelNorm = norm(candDeltaLevelVector);
     const candTargetConfig = candidateConfig;
 
     if (
@@ -269,20 +269,17 @@ const selectIngredientCandidates = ({
       typeProduct * typeScoreWeight +
       levelProduct * levelScoreWeight;
 
-    // if (
-    //   debug &&
-    //   (ing.name === 'Rice' ||
-    //     ing.name === 'Potato Salad' ||
-    //     ing.name === 'Curry Powder')
-    // ) {
-    //   console.debug(
-    //     `${ing.name}: ${score}
-    // Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
-    // Relative taste vector: ${relativeTasteVector}
-    // Boosted meal power vector: ${boostedMealPowerVector}
-    //   n1: ${deltaMpNorm} * ${positiveBoostedMpNorm} = ${n1}`,
-    //   );
-    // }
+    if (debug && ing.name === 'Ham') {
+      console.debug(
+        `${ing.name}: ${score}
+    Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
+    Relative taste vector: ${relativeTasteVector}
+    Boosted meal power vector: ${boostedMealPowerVector}
+      n1: ${deltaMpNorm} * ${Math.sqrt(positiveBoostedMpNorm)} = ${n1}
+    Type vector: ${ing.typeVector}
+      n2: ${deltaTypeNorm} * ${Math.sqrt(postiveTypeNorm)} = ${n2}`,
+      );
+    }
 
     if (score > bestScore) {
       bestScore = score;
@@ -422,24 +419,20 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     // This is the thing that breaks for level 3 powers
     const selectedPower = powers[0];
 
-    // const debugCondition =
-    //   flavorBoosts['Salty'] === 500 &&
-    //   flavorBoosts.Bitter === 500 &&
-    //   fillings.length === 0 &&
-    //   condiments.length === 2;
-    // if (debugCondition) {
-    //   console.debug(
-    //     `
-    // Sandwich so far: ${fillings
-    //   .concat(condiments)
-    //   .map((ing) => ing.name)
-    //   .join(', ')}
-    // Boosted meal power: ${boostedMealPower}
-    // Selected `,
-    //   );
-    // }
+    const debugCondition = condiments.length === 2 && fillings.length === 0;
+    if (debugCondition) {
+      console.debug(
+        `
+    Sandwich so far: ${fillings
+      .concat(condiments)
+      .map((ing) => ing.name)
+      .join(', ')}
+    Boosted meal power: ${boostedMealPower}
+    Selected `,
+      );
+    }
     const newIngredientCandidates = selectIngredientCandidates({
-      // debug: debugCondition,
+      debug: debugCondition,
       targetPower,
       targetConfigs,
       currentBoostedMealPowerVector,
@@ -511,6 +504,16 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         const targetPowerFound = newPowers.some((p) =>
           powersMatch(p, targetPower),
         );
+        // if (newCondiments.length === 2 && !targetPowerFound) {
+        //   console.debug({
+        //     newMealPowerBoosts,
+        //     newBoostedMealPower,
+        //     newTypeBoosts,
+        //     newPowers,
+        //     targetPowerFound,
+        //   });
+        //   throw 'debug';
+        // }
 
         if (
           targetPowerFound &&
