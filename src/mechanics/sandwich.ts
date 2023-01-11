@@ -141,12 +141,12 @@ const selectIngredientCandidates = ({
   let targetConfig: TargetConfig;
   for (const candidateConfig of targetConfigs) {
     const candTargetTypeVector = checkType
-      ? getTargetTypeVector(
+      ? getTargetTypeVector({
           targetPower,
-          candidateConfig,
+          targetConfig: candidateConfig,
           rankedTypeBoosts,
-          currentTypeVector,
-        )
+          typeVector: currentTypeVector,
+        })
       : currentTypeVector;
 
     const candTargetLevelVector = getTargetLevelVector(

@@ -82,12 +82,19 @@ const getTargetTypeVectorForPosition = (
   });
 };
 
-export const getTargetTypeVector = (
-  { type: targetType }: Power,
-  { typePlaceIndex: targetPlaceIndex, config }: TargetConfig,
-  currentRankedTypes: TypeBoost[],
-  currentVector: number[],
-) => {
+export interface GetTargetTypeVectorProps {
+  targetPower: Power;
+  targetConfig: TargetConfig;
+  rankedTypeBoosts: TypeBoost[];
+  typeVector: number[];
+}
+
+export const getTargetTypeVector = ({
+  targetPower: { type: targetType },
+  targetConfig: { typePlaceIndex: targetPlaceIndex, config },
+  rankedTypeBoosts: currentRankedTypes,
+  typeVector: currentVector,
+}: GetTargetTypeVectorProps) => {
   const tentativeTargetVector = getTargetTypeVectorForPosition(
     targetType,
     targetPlaceIndex,
