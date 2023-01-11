@@ -173,6 +173,16 @@ const selectIngredientCandidates = ({
       targetConfig = candTargetConfig;
     }
   }
+  if (deltaTypeNorm === Infinity || deltaLevelNorm === Infinity) {
+    if (debug) {
+      console.debug('Cannot satisfy constraints for target configs', {
+        targetConfigs,
+        currentTypeVector,
+        targetPower,
+      });
+    }
+    return [];
+  }
 
   const targetMealPowerVector = getTargetMealPowerVector(
     targetPower,

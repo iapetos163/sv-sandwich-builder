@@ -1,3 +1,4 @@
+import { allTypes } from '../strings';
 import {
   calculateTypes,
   evaluateBoosts,
@@ -37,12 +38,12 @@ describe('getTargetTypeVector', () => {
       { mealPower: 'Exp', type: 'Grass', level: 3 },
       { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
       [
-        { name: 'Flying', amount: 36 },
-        { name: 'Rock', amount: 36 },
-        { name: 'Steel', amount: 36 },
-        { name: 'Grass', amount: 36 },
-        { name: 'Ice', amount: 36 },
-        { name: 'Fairy', amount: 36 },
+        { name: 'Flying', typeIndex: 2, amount: 36 },
+        { name: 'Rock', typeIndex: 5, amount: 36 },
+        { name: 'Steel', typeIndex: 8, amount: 36 },
+        { name: 'Grass', typeIndex: 11, amount: 36 },
+        { name: 'Ice', typeIndex: 14, amount: 36 },
+        { name: 'Fairy', typeIndex: 17, amount: 36 },
       ],
       [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     );
@@ -59,12 +60,12 @@ describe('getTargetTypeVector', () => {
       { mealPower: 'Exp', type: 'Grass', level: 1 },
       { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
       [
-        { name: 'Flying', amount: 36 },
-        { name: 'Rock', amount: 36 },
-        { name: 'Steel', amount: 36 },
-        { name: 'Grass', amount: 36 },
-        { name: 'Ice', amount: 36 },
-        { name: 'Fairy', amount: 36 },
+        { name: 'Flying', typeIndex: 2, amount: 36 },
+        { name: 'Rock', typeIndex: 5, amount: 36 },
+        { name: 'Steel', typeIndex: 8, amount: 36 },
+        { name: 'Grass', typeIndex: 11, amount: 36 },
+        { name: 'Ice', typeIndex: 14, amount: 36 },
+        { name: 'Fairy', typeIndex: 17, amount: 36 },
       ],
       [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     );
@@ -81,12 +82,12 @@ describe('getTargetTypeVector', () => {
       { mealPower: 'Exp', type: 'Flying', level: 3 },
       { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
       [
-        { name: 'Flying', amount: 36 },
-        { name: 'Rock', amount: 36 },
-        { name: 'Steel', amount: 36 },
-        { name: 'Grass', amount: 36 },
-        { name: 'Ice', amount: 36 },
-        { name: 'Fairy', amount: 36 },
+        { name: 'Flying', typeIndex: 2, amount: 36 },
+        { name: 'Rock', typeIndex: 5, amount: 36 },
+        { name: 'Steel', typeIndex: 8, amount: 36 },
+        { name: 'Grass', typeIndex: 11, amount: 36 },
+        { name: 'Ice', typeIndex: 14, amount: 36 },
+        { name: 'Fairy', typeIndex: 17, amount: 36 },
       ],
       [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     );
@@ -103,13 +104,13 @@ describe('getTargetTypeVector', () => {
       { mealPower: 'Exp', type: 'Flying', level: 3 },
       { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
       [
-        { name: 'Normal', amount: 40 },
-        { name: 'Flying', amount: 36 },
-        { name: 'Rock', amount: 36 },
-        { name: 'Steel', amount: 36 },
-        { name: 'Grass', amount: 36 },
-        { name: 'Ice', amount: 36 },
-        { name: 'Fairy', amount: 36 },
+        { name: 'Normal', typeIndex: 0, amount: 40 },
+        { name: 'Flying', typeIndex: 2, amount: 36 },
+        { name: 'Rock', typeIndex: 5, amount: 36 },
+        { name: 'Steel', typeIndex: 8, amount: 36 },
+        { name: 'Grass', typeIndex: 11, amount: 36 },
+        { name: 'Ice', typeIndex: 14, amount: 36 },
+        { name: 'Fairy', typeIndex: 17, amount: 36 },
       ],
       [40, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     );
@@ -197,11 +198,11 @@ describe('powersMatch', () => {
 
 describe('calculateTypes', () => {
   it('Does not output holes', () => {
-    const levels = calculateTypes([
-      { name: 'Steel', amount: 2 },
-      { name: 'Fire', amount: 2 },
+    const types = calculateTypes([
+      { name: 'Steel', amount: 2, typeIndex: allTypes.indexOf('Steel') },
+      { name: 'Fire', amount: 2, typeIndex: allTypes.indexOf('Fire') },
     ]);
-    expect(levels[1]).toBeDefined();
+    expect(types[1]).toBeDefined();
   });
 });
 
