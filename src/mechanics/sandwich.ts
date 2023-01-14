@@ -153,11 +153,11 @@ const selectIngredientCandidates = ({
         })
       : currentTypeVector;
 
-    const candTargetLevelVector = getTargetLevelVector(
+    const candTargetLevelVector = getTargetLevelVector({
       targetPower,
-      // candidateConfig,
-      currentTypeVector,
-    );
+      targetConfig: candidateConfig,
+      typeVector: currentTypeVector,
+    });
     const candDeltaTypeVector = diff(candTargetTypeVector, currentTypeVector);
     const candDeltaLevelVector = diff(candTargetLevelVector, currentTypeVector);
     const candDeltaTypeNorm = norm(candDeltaTypeVector);

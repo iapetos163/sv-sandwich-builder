@@ -158,15 +158,25 @@ export const getTargetTypeVector = ({
   });
 };
 
-// TODO: revise
-export const getTargetLevelVector = (power: Power, currentVector: number[]) => {
-  let minTarget = 1;
-  if (power.level === 2) minTarget = 180;
-  if (power.level === 3) minTarget = 380;
+export interface GetTargetLevelVectorProps {
+  targetPower: Power;
+  targetConfig: TargetConfig;
+  typeVector: number[];
+}
 
-  if (mealPowerHasType(power.mealPower)) {
+// TODO: revise
+export const getTargetLevelVector = ({
+  targetPower,
+  targetConfig,
+  typeVector: currentVector,
+}: GetTargetLevelVectorProps) => {
+  let minTarget = 1;
+  if (targetPower.level === 2) minTarget = 180;
+  if (targetPower.level === 3) minTarget = 380;
+
+  if (mealPowerHasType(targetPower.mealPower)) {
     return allTypes.map((t, i) =>
-      t === power.type
+      t === targetPower.type
         ? Math.max(currentVector[i] || 0, minTarget)
         : currentVector[i] || 0,
     );
@@ -177,7 +187,7 @@ export const getTargetLevelVector = (power: Power, currentVector: number[]) => {
       const comp = currentVector[i] || 0;
       const [max] = accum;
       if (comp > max) return [comp, i];
-      if (comp === max && t === power.type) return [comp, i];
+      if (comp === max && t === targetPower.type) return [comp, i];
       return accum;
     },
     [-Infinity, -1],
