@@ -75,6 +75,41 @@ const getTargetTypeVectorForPosition = (
   });
 };
 
+const getTypeTargetIndices = (
+  targetType: TypeName,
+  targetPlaceIndex: number,
+  rankedTypeBoosts: TypeBoost[],
+): [number, number, number] => {
+  if (targetPlaceIndex === 0) {
+    const firstTargetIndex = allTypes.indexOf(targetType);
+    const secondTargetIndex =
+      rankedTypeBoosts[0]?.typeIndex ??
+      [0, 1].find((i) => i !== firstTargetIndex);
+    const thirdTargetIndex =
+      rankedTypeBoosts[1]?.typeIndex ??
+      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
+    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  } else if (targetPlaceIndex === 1) {
+    const secondTargetIndex = allTypes.indexOf(targetType);
+    const firstTargetIndex =
+      rankedTypeBoosts[0]?.typeIndex ??
+      [0, 1].find((i) => i !== secondTargetIndex);
+    const thirdTargetIndex =
+      rankedTypeBoosts[1]?.typeIndex ??
+      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
+
+    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  }
+  const thirdTargetIndex = allTypes.indexOf(targetType);
+  const firstTargetIndex =
+    rankedTypeBoosts[0]?.typeIndex ??
+    [0, 1].find((i) => i !== thirdTargetIndex);
+  const secondTargetIndex =
+    rankedTypeBoosts[1]?.typeIndex ??
+    [0, 1, 2].find((i) => i !== firstTargetIndex && i !== thirdTargetIndex);
+  return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+};
+
 export interface GetTargetTypeVectorProps {
   targetPower: Power;
   targetConfig: TargetConfig;
@@ -97,21 +132,11 @@ export const getTargetTypeVector = ({
     currentVector,
   );
 
-  let firstTargetIndex: number;
-  let secondTargetIndex: number;
-  if (targetPlaceIndex === 0) {
-    firstTargetIndex = allTypes.indexOf(targetType);
-    secondTargetIndex =
-      currentRankedTypes[0]?.typeIndex ?? 1 - Math.min(firstTargetIndex, 1);
-  } else if (targetPlaceIndex === 1) {
-    secondTargetIndex = allTypes.indexOf(targetType);
-    firstTargetIndex =
-      currentRankedTypes[0]?.typeIndex ?? 1 - Math.min(secondTargetIndex, 1);
-  } else {
-    firstTargetIndex = currentRankedTypes[0]?.typeIndex ?? 0;
-    secondTargetIndex =
-      currentRankedTypes[1]?.typeIndex ?? 1 - Math.min(firstTargetIndex, 1);
-  }
+  const [firstTargetIndex, secondTargetIndex] = getTypeTargetIndices(
+    targetType,
+    targetPlaceIndex,
+    currentRankedTypes,
+  );
 
   const targetFirstAmount = tentativeTargetVector[firstTargetIndex];
   const targetSecondAmount = tentativeTargetVector[secondTargetIndex];
