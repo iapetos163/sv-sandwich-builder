@@ -143,26 +143,43 @@ describe('getTargetTypeVector', () => {
 
 describe('getTargetLevelVector', () => {
   it('Returns a nonzero vector given level 1 power and zero vector', () => {
-    const v = getTargetLevelVector(
-      { mealPower: 'Exp', type: 'Fighting', level: 1 },
-      [],
-    );
+    const v = getTargetLevelVector({
+      targetPower: { mealPower: 'Exp', type: 'Fighting', level: 1 },
+      targetConfig: {
+        config: 'ONE_THREE_TWO',
+        typePlaceIndex: 0,
+        mpPlaceIndex: 0,
+      },
+      typeVector: [],
+    });
     expect(v[1]).toBe(1);
   });
 
   it('Returns a sufficiently high vector with level 3 power and zero vector', () => {
-    const v = getTargetLevelVector(
-      { mealPower: 'Exp', type: 'Fighting', level: 3 },
-      [],
-    );
+    const v = getTargetLevelVector({
+      targetPower: { mealPower: 'Exp', type: 'Fighting', level: 3 },
+      targetConfig: {
+        config: 'ONE_THREE_TWO',
+        typePlaceIndex: 2,
+        mpPlaceIndex: 2,
+      },
+      typeVector: [],
+    });
     expect(v[1]).toBe(380);
   });
 
   it('Targets the target type', () => {
-    const v = getTargetLevelVector(
-      { mealPower: 'Humungo', type: 'Dragon', level: 2 },
-      [146, 2, 2, 146, 2, 2, 144, 0, 0, 144, 0, 0, 144, 0, 0, 144, 0, 0],
-    );
+    const v = getTargetLevelVector({
+      targetPower: { mealPower: 'Humungo', type: 'Dragon', level: 2 },
+      targetConfig: {
+        config: 'ONE_THREE_TWO',
+        typePlaceIndex: 0,
+        mpPlaceIndex: 0,
+      },
+      typeVector: [
+        146, 2, 2, 146, 2, 2, 144, 0, 0, 144, 0, 0, 144, 0, 0, 144, 0, 0,
+      ],
+    });
 
     expect(v[15]).toBe(180);
     expect(v[0]).toBe(146);
