@@ -158,26 +158,68 @@ export const getTargetTypeVector = ({
   });
 };
 
+const getMinRankedTypeAmounts = (
+  targetPower: Power,
+  { mpPlaceIndex, typePlaceIndex }: TargetConfig,
+): [number, number, number] => {
+  if (targetPower.level === 3 && mpPlaceIndex >= 2) {
+    return [380, 380, 380];
+    // OR 460, 0, 0
+  }
+  if (targetPower.level === 3 && mpPlaceIndex <= 1 && typePlaceIndex >= 2) {
+    return [380, 1, 1];
+  }
+  if (targetPower.level === 3 && mpPlaceIndex <= 1 && typePlaceIndex === 1) {
+    return [380, 1, 0];
+  }
+  if (targetPower.level === 3 && mpPlaceIndex <= 1) {
+    return [380, 0, 0];
+  }
+  if (targetPower.level === 2 && mpPlaceIndex >= 2) {
+    return [281, 180, 180];
+    // OR 380, 0, 0
+  }
+  if (targetPower.level === 2 && mpPlaceIndex === 1) {
+    return [180, 180, 180];
+    // OR 281, 0, 0
+  }
+  if (targetPower.level === 2 && typePlaceIndex >= 2) {
+    return [180, 1, 1];
+  }
+  if (targetPower.level === 2 && typePlaceIndex === 1) {
+    return [180, 1, 0];
+  }
+  if (targetPower.level === 2) {
+    return [180, 0, 0];
+  }
+  if (typePlaceIndex >= 2) {
+    return [1, 1, 1];
+  }
+  if (typePlaceIndex === 1) {
+    return [1, 1, 0];
+  }
+  return [1, 0, 0];
+};
+
 export interface GetTargetLevelVectorProps {
   targetPower: Power;
   targetConfig: TargetConfig;
   typeVector: number[];
 }
 
-// TODO: revise
 export const getTargetLevelVector = ({
   targetPower,
   targetConfig,
   typeVector: currentVector,
 }: GetTargetLevelVectorProps) => {
-  let minTarget = 1;
-  if (targetPower.level === 2) minTarget = 180;
-  if (targetPower.level === 3) minTarget = 380;
+  const [minFirstTarget, minSecondTarget, minThirdTarget] =
+    getMinRankedTypeAmounts(targetPower, targetConfig);
 
+  // TODO; use second, third
   if (mealPowerHasType(targetPower.mealPower)) {
     return allTypes.map((t, i) =>
       t === targetPower.type
-        ? Math.max(currentVector[i] || 0, minTarget)
+        ? Math.max(currentVector[i] || 0, minFirstTarget)
         : currentVector[i] || 0,
     );
   }
@@ -192,7 +234,7 @@ export const getTargetLevelVector = ({
     },
     [-Infinity, -1],
   );
-  const target = Math.max(minTarget, maxComponent + 1);
+  const target = Math.max(minFirstTarget, maxComponent + 1);
   return allTypes.map((t, i) =>
     i === maxComponentIndex ? target : currentVector[i] || 0,
   );

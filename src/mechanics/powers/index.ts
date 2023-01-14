@@ -62,20 +62,20 @@ export const calculateTypes = (
 
 // returns array of levels
 export const calculateLevels = (
-  types: TypeBoost[],
+  rankedTypeBoosts: TypeBoost[],
 ): [number, number, number] => {
   const [
     { amount: firstTypeAmount } = { amount: 0 },
     { amount: secondTypeAmount } = { amount: 0 },
     { amount: thirdTypeAmount } = { amount: 0 },
-  ] = types;
+  ] = rankedTypeBoosts;
 
   if (firstTypeAmount >= 460) {
     return [3, 3, 3];
   }
 
   if (firstTypeAmount >= 380) {
-    if (secondTypeAmount >= 380 && thirdTypeAmount >= 380) {
+    if (thirdTypeAmount >= 380) {
       return [3, 3, 3];
     }
     return [3, 3, 2];
@@ -89,7 +89,7 @@ export const calculateLevels = (
   }
 
   if (firstTypeAmount >= 180) {
-    if (secondTypeAmount >= 180 && thirdTypeAmount >= 180) {
+    if (thirdTypeAmount >= 180) {
       return [2, 2, 1];
     }
     return [2, 1, 1];
