@@ -1,6 +1,5 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
 import { Boosts } from '../types';
-import { boostsEqual } from './boost';
 
 export interface FlavorBoost {
   name: Flavor;

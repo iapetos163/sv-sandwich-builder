@@ -4,12 +4,8 @@ import { Ingredient, Power, Sandwich, Boosts } from '../types';
 import { add, diff, innerProduct, norm } from '../vector-math';
 import { addBoosts } from './boost';
 import {
-  boostMealPowerVector,
   evaluateBoosts,
   getTargetConfigs,
-  getTargetLevelVector,
-  getTargetMealPowerVector,
-  getTargetTypeVector,
   mealPowerHasType,
   powersMatch,
   rankTypeBoosts,
@@ -18,6 +14,12 @@ import {
   TypeBoost,
   powerToString,
 } from './powers';
+import {
+  boostMealPowerVector,
+  getTargetLevelVector,
+  getTargetMealPowerVector,
+  getTargetTypeVector,
+} from './powers/vector';
 import {
   getRelativeTasteVector,
   getBoostedMealPower,
@@ -276,8 +278,8 @@ const selectIngredientCandidates = ({
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
-    const postiveTypeNorm = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
-    const n2 = Math.sqrt(postiveTypeNorm) * deltaTypeNorm;
+    const positiveTypeNorm = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
+    const n2 = Math.sqrt(positiveTypeNorm) * deltaTypeNorm;
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
@@ -298,7 +300,7 @@ const selectIngredientCandidates = ({
     // Boosted meal power vector: ${boostedMealPowerVector}
     //   n1: ${deltaMpNorm} * ${Math.sqrt(positiveBoostedMpNorm)} = ${n1}
     // Type vector: ${ing.typeVector}
-    //   n2: ${deltaTypeNorm} * ${Math.sqrt(postiveTypeNorm)} = ${n2}`,
+    //   n2: ${deltaTypeNorm} * ${Math.sqrt(positiveTypeNorm)} = ${n2}`,
     //   );
     // }
 
