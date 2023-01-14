@@ -1,14 +1,31 @@
 import { allTypes, MealPower, mealPowers, TypeName } from '../../strings';
 import { Power } from '../../types';
-import { mealPowerHasType, TargetConfig, TypeBoost } from './index';
+import { MealPowerBoost, TargetConfig, TypeBoost } from './index';
+
+export interface GetTargetMealPowerVectorProps {
+  targetPower: Power;
+  targetConfig: TargetConfig;
+  targetTypeIndices: [number, number, number];
+  rankedTypeBoosts: TypeBoost[];
+  typeVector: number[];
+}
 
 export const getTargetMealPowerVector = (
-  power: Power,
+  targetPower: Power,
+  targetConfig: TargetConfig,
+  rankedMealPowerBoosts: MealPowerBoost[],
   currentVector: number[],
 ) => {
-  const target = Math.max(0, ...currentVector) + 1;
+  rankedMealPowerBoosts;
+
+  const mpBoostAtTargetPlace = rankedMealPowerBoosts[targetConfig.mpPlaceIndex];
+
   return mealPowers.map((mp, i) =>
-    mp === power.mealPower ? target : currentVector[i] || 0,
+    mp === targetPower.mealPower
+      ? mpBoostAtTargetPlace.mpIndex <= i
+        ? mpBoostAtTargetPlace.amount
+        : mpBoostAtTargetPlace.amount + 1
+      : currentVector[i] || 0,
   );
 };
 
