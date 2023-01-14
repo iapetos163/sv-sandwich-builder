@@ -1,8 +1,9 @@
-import { allTypes } from '../../strings';
 import { getTargetLevelVector, getTargetTypeVector } from './vector';
+import { getTypeTargetIndices, TypeBoost } from './index';
 
 describe('getTargetTypeVector', () => {
   it('Creates a vector with the correct components for Ground', () => {
+    const rankedTypeBoosts: TypeBoost[] = [];
     const v = getTargetTypeVector({
       targetPower: { mealPower: 'Exp', type: 'Ground', level: 1 },
       targetConfig: {
@@ -10,7 +11,8 @@ describe('getTargetTypeVector', () => {
         mpPlaceIndex: 0,
         typePlaceIndex: 0,
       },
-      rankedTypeBoosts: [],
+      targetTypeIndices: getTypeTargetIndices('Ground', 0, rankedTypeBoosts),
+      rankedTypeBoosts,
       typeVector: [],
     });
     expect(v[4]).toBeGreaterThan(0);
@@ -18,6 +20,7 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a zero vector and typePlaceIndex > 0', () => {
+    const rankedTypeBoosts: TypeBoost[] = [];
     const v = getTargetTypeVector({
       targetPower: { mealPower: 'Exp', type: 'Ghost', level: 3 },
       targetConfig: {
@@ -25,7 +28,8 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
-      rankedTypeBoosts: [],
+      targetTypeIndices: getTypeTargetIndices('Ghost', 2, rankedTypeBoosts),
+      rankedTypeBoosts,
       typeVector: [],
     });
     expect(v[0]).toBe(2);
@@ -35,6 +39,14 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a placing below desired rank (>0) in a tie', () => {
+    const rankedTypeBoosts: TypeBoost[] = [
+      { name: 'Flying', typeIndex: 2, amount: 36 },
+      { name: 'Rock', typeIndex: 5, amount: 36 },
+      { name: 'Steel', typeIndex: 8, amount: 36 },
+      { name: 'Grass', typeIndex: 11, amount: 36 },
+      { name: 'Ice', typeIndex: 14, amount: 36 },
+      { name: 'Fairy', typeIndex: 17, amount: 36 },
+    ];
     const v = getTargetTypeVector({
       targetPower: { mealPower: 'Exp', type: 'Grass', level: 3 },
       targetConfig: {
@@ -42,14 +54,8 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
-      rankedTypeBoosts: [
-        { name: 'Flying', typeIndex: 2, amount: 36 },
-        { name: 'Rock', typeIndex: 5, amount: 36 },
-        { name: 'Steel', typeIndex: 8, amount: 36 },
-        { name: 'Grass', typeIndex: 11, amount: 36 },
-        { name: 'Ice', typeIndex: 14, amount: 36 },
-        { name: 'Fairy', typeIndex: 17, amount: 36 },
-      ],
+      targetTypeIndices: getTypeTargetIndices('Grass', 2, rankedTypeBoosts),
+      rankedTypeBoosts,
       typeVector: [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     });
     expect(v[2]).toBe(38);
@@ -61,6 +67,14 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a placing below desired rank 0 in a tie', () => {
+    const rankedTypeBoosts: TypeBoost[] = [
+      { name: 'Flying', typeIndex: 2, amount: 36 },
+      { name: 'Rock', typeIndex: 5, amount: 36 },
+      { name: 'Steel', typeIndex: 8, amount: 36 },
+      { name: 'Grass', typeIndex: 11, amount: 36 },
+      { name: 'Ice', typeIndex: 14, amount: 36 },
+      { name: 'Fairy', typeIndex: 17, amount: 36 },
+    ];
     const v = getTargetTypeVector({
       targetPower: { mealPower: 'Exp', type: 'Grass', level: 1 },
       targetConfig: {
@@ -68,14 +82,8 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 0,
         mpPlaceIndex: 0,
       },
-      rankedTypeBoosts: [
-        { name: 'Flying', typeIndex: 2, amount: 36 },
-        { name: 'Rock', typeIndex: 5, amount: 36 },
-        { name: 'Steel', typeIndex: 8, amount: 36 },
-        { name: 'Grass', typeIndex: 11, amount: 36 },
-        { name: 'Ice', typeIndex: 14, amount: 36 },
-        { name: 'Fairy', typeIndex: 17, amount: 36 },
-      ],
+      targetTypeIndices: getTypeTargetIndices('Grass', 0, rankedTypeBoosts),
+      rankedTypeBoosts,
       typeVector: [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     });
     expect(v[2]).toBe(36);
@@ -87,6 +95,14 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a placing above desired rank (>0) in a tie', () => {
+    const rankedTypeBoosts: TypeBoost[] = [
+      { name: 'Flying', typeIndex: 2, amount: 36 },
+      { name: 'Rock', typeIndex: 5, amount: 36 },
+      { name: 'Steel', typeIndex: 8, amount: 36 },
+      { name: 'Grass', typeIndex: 11, amount: 36 },
+      { name: 'Ice', typeIndex: 14, amount: 36 },
+      { name: 'Fairy', typeIndex: 17, amount: 36 },
+    ];
     const v = getTargetTypeVector({
       targetPower: { mealPower: 'Exp', type: 'Flying', level: 3 },
       targetConfig: {
@@ -94,14 +110,8 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
-      rankedTypeBoosts: [
-        { name: 'Flying', typeIndex: 2, amount: 36 },
-        { name: 'Rock', typeIndex: 5, amount: 36 },
-        { name: 'Steel', typeIndex: 8, amount: 36 },
-        { name: 'Grass', typeIndex: 11, amount: 36 },
-        { name: 'Ice', typeIndex: 14, amount: 36 },
-        { name: 'Fairy', typeIndex: 17, amount: 36 },
-      ],
+      targetTypeIndices: getTypeTargetIndices('Flying', 2, rankedTypeBoosts),
+      rankedTypeBoosts,
       typeVector: [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     });
     expect(v[2]).toBe(36);
@@ -113,6 +123,15 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a placing above desired rank (>0) in a tie with another ahead', () => {
+    const rankedTypeBoosts: TypeBoost[] = [
+      { name: 'Normal', typeIndex: 0, amount: 40 },
+      { name: 'Flying', typeIndex: 2, amount: 36 },
+      { name: 'Rock', typeIndex: 5, amount: 36 },
+      { name: 'Steel', typeIndex: 8, amount: 36 },
+      { name: 'Grass', typeIndex: 11, amount: 36 },
+      { name: 'Ice', typeIndex: 14, amount: 36 },
+      { name: 'Fairy', typeIndex: 17, amount: 36 },
+    ];
     const v = getTargetTypeVector({
       targetPower: { mealPower: 'Exp', type: 'Flying', level: 3 },
       targetConfig: {
@@ -120,15 +139,8 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
-      rankedTypeBoosts: [
-        { name: 'Normal', typeIndex: 0, amount: 40 },
-        { name: 'Flying', typeIndex: 2, amount: 36 },
-        { name: 'Rock', typeIndex: 5, amount: 36 },
-        { name: 'Steel', typeIndex: 8, amount: 36 },
-        { name: 'Grass', typeIndex: 11, amount: 36 },
-        { name: 'Ice', typeIndex: 14, amount: 36 },
-        { name: 'Fairy', typeIndex: 17, amount: 36 },
-      ],
+      targetTypeIndices: getTypeTargetIndices('Flying', 2, rankedTypeBoosts),
+      rankedTypeBoosts,
       typeVector: [40, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     });
     expect(v[0]).toBe(40);

@@ -170,6 +170,44 @@ export const selectPowerAtTargetPosition = (
   return powers[getIndex()];
 };
 
+/**
+ * @returns [index of first type, index of second type, index of third type]
+ */
+export const getTypeTargetIndices = (
+  targetType: TypeName,
+  targetPlaceIndex: number,
+  rankedTypeBoosts: TypeBoost[],
+): [number, number, number] => {
+  if (targetPlaceIndex === 0) {
+    const firstTargetIndex = allTypes.indexOf(targetType);
+    const secondTargetIndex =
+      rankedTypeBoosts[0]?.typeIndex ??
+      [0, 1].find((i) => i !== firstTargetIndex);
+    const thirdTargetIndex =
+      rankedTypeBoosts[1]?.typeIndex ??
+      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
+    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  } else if (targetPlaceIndex === 1) {
+    const secondTargetIndex = allTypes.indexOf(targetType);
+    const firstTargetIndex =
+      rankedTypeBoosts[0]?.typeIndex ??
+      [0, 1].find((i) => i !== secondTargetIndex);
+    const thirdTargetIndex =
+      rankedTypeBoosts[1]?.typeIndex ??
+      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
+
+    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  }
+  const thirdTargetIndex = allTypes.indexOf(targetType);
+  const firstTargetIndex =
+    rankedTypeBoosts[0]?.typeIndex ??
+    [0, 1].find((i) => i !== thirdTargetIndex);
+  const secondTargetIndex =
+    rankedTypeBoosts[1]?.typeIndex ??
+    [0, 1, 2].find((i) => i !== firstTargetIndex && i !== thirdTargetIndex);
+  return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+};
+
 export const rankMealPowerBoosts = (
   mealPowerBoosts: Boosts<MealPower>,
   boostedMealPower: MealPower | null,

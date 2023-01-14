@@ -13,6 +13,7 @@ import {
   TargetConfig,
   TypeBoost,
   powerToString,
+  getTypeTargetIndices,
 } from './powers';
 import {
   boostMealPowerVector,
@@ -144,11 +145,17 @@ const selectIngredientCandidates = ({
   let deltaLevelNorm = Infinity;
   let targetConfig = targetConfigs[0];
   for (const candidateConfig of targetConfigs) {
+    const targetTypeIndices = getTypeTargetIndices(
+      targetPower.type,
+      candidateConfig.typePlaceIndex,
+      rankedTypeBoosts,
+    );
     const candTargetTypeVector = checkType
       ? getTargetTypeVector({
           targetPower,
           targetConfig: candidateConfig,
           rankedTypeBoosts,
+          targetTypeIndices,
           typeVector: currentTypeVector,
         })
       : currentTypeVector;
@@ -233,9 +240,15 @@ const selectIngredientCandidates = ({
     typeScoreWeight === 0 &&
     mealPowerScoreWeight === 0
   ) {
+    const targetTypeIndices = getTypeTargetIndices(
+      targetPower.type,
+      targetConfig.typePlaceIndex,
+      rankedTypeBoosts,
+    );
     targetTypeVector = getTargetTypeVector({
       targetPower,
       targetConfig,
+      targetTypeIndices,
       rankedTypeBoosts,
       typeVector: currentTypeVector,
       forceDiff: true,
