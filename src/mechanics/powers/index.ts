@@ -7,6 +7,12 @@ export interface TypeBoost {
   typeIndex: number;
 }
 
+export interface MealPowerBoost {
+  name: MealPower;
+  amount: number;
+  mpIndex: number;
+}
+
 export const mealPowerHasType = (mealPower: MealPower) => mealPower !== 'Egg';
 
 export type TypeArrangement =
@@ -223,23 +229,17 @@ export const getTypeTargetIndices = (
 export const rankMealPowerBoosts = (
   mealPowerBoosts: Boosts<MealPower>,
   boostedMealPower: MealPower | null,
-) => {
-  const boosts = boostedMealPower
-    ? {
-        ...mealPowerBoosts,
-        [boostedMealPower]: mealPowerBoosts[boostedMealPower] || 0,
-      }
-    : mealPowerBoosts;
-  return Object.entries(boosts)
-    .map(([mp, v]) => ({
+): MealPowerBoost[] => {
+  return mealPowers
+    .map((mp, i) => ({
       name: mp as MealPower,
-      amount: mp === boostedMealPower ? v + 100 : v,
+      amount:
+        mp === boostedMealPower
+          ? (mealPowerBoosts[mp] || 0) + 100
+          : mealPowerBoosts[mp] || 0,
+      mpIndex: i,
     }))
-    .sort(
-      (a, b) =>
-        b.amount - a.amount ||
-        mealPowers.indexOf(a.name) - mealPowers.indexOf(b.name),
-    );
+    .sort((a, b) => b.amount - a.amount || a.mpIndex - b.mpIndex);
 };
 
 export const rankTypeBoosts = (typeBoosts: Boosts<TypeName>) =>
