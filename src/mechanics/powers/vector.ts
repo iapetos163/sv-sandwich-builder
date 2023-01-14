@@ -190,12 +190,14 @@ const getMinRankedTypeAmounts = (
 export interface GetTargetLevelVectorProps {
   targetPower: Power;
   targetConfig: TargetConfig;
+  // targetTypeIndices: [number, number, number];
   typeVector: number[];
 }
 
 export const getTargetLevelVector = ({
   targetPower,
   targetConfig,
+  // targetTypeIndices: [firstTargetIndex, secondTargetIndex, thirdTargetIndex],
   typeVector: currentVector,
 }: GetTargetLevelVectorProps) => {
   const [minFirstTarget, minSecondTarget, minThirdTarget] =
@@ -203,11 +205,11 @@ export const getTargetLevelVector = ({
 
   // TODO; use second, third
   if (mealPowerHasType(targetPower.mealPower)) {
-    return allTypes.map((t, i) =>
-      t === targetPower.type
+    return allTypes.map((t, i) => {
+      return t === targetPower.type
         ? Math.max(currentVector[i] || 0, minFirstTarget)
-        : currentVector[i] || 0,
-    );
+        : currentVector[i] || 0;
+    });
   }
 
   const [maxComponent, maxComponentIndex] = allTypes.reduce(

@@ -174,10 +174,22 @@ export const selectPowerAtTargetPosition = (
  * @returns [index of first type, index of second type, index of third type]
  */
 export const getTypeTargetIndices = (
-  targetType: TypeName,
+  targetPower: Power,
   targetPlaceIndex: number,
   rankedTypeBoosts: TypeBoost[],
 ): [number, number, number] => {
+  if (!mealPowerHasType(targetPower.mealPower)) {
+    const firstTargetIndex = rankedTypeBoosts[0]?.typeIndex ?? 0;
+    const secondTargetIndex =
+      rankedTypeBoosts[1]?.typeIndex ??
+      [0, 1].find((i) => i !== firstTargetIndex);
+    const thirdTargetIndex =
+      rankedTypeBoosts[2]?.typeIndex ??
+      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
+    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  }
+
+  const { type: targetType } = targetPower;
   if (targetPlaceIndex === 0) {
     const firstTargetIndex = allTypes.indexOf(targetType);
     const secondTargetIndex =
