@@ -190,42 +190,31 @@ const getMinRankedTypeAmounts = (
 export interface GetTargetLevelVectorProps {
   targetPower: Power;
   targetConfig: TargetConfig;
-  // targetTypeIndices: [number, number, number];
+  targetTypeIndices: [number, number, number];
   typeVector: number[];
 }
 
 export const getTargetLevelVector = ({
   targetPower,
   targetConfig,
-  // targetTypeIndices: [firstTargetIndex, secondTargetIndex, thirdTargetIndex],
+  targetTypeIndices: [firstTargetIndex, secondTargetIndex, thirdTargetIndex],
   typeVector: currentVector,
 }: GetTargetLevelVectorProps) => {
   const [minFirstTarget, minSecondTarget, minThirdTarget] =
     getMinRankedTypeAmounts(targetPower, targetConfig);
 
-  // TODO; use second, third
-  if (mealPowerHasType(targetPower.mealPower)) {
-    return allTypes.map((t, i) => {
-      return t === targetPower.type
-        ? Math.max(currentVector[i] || 0, minFirstTarget)
-        : currentVector[i] || 0;
-    });
-  }
-
-  const [maxComponent, maxComponentIndex] = allTypes.reduce(
-    (accum, t, i) => {
-      const comp = currentVector[i] || 0;
-      const [max] = accum;
-      if (comp > max) return [comp, i];
-      if (comp === max && t === targetPower.type) return [comp, i];
-      return accum;
-    },
-    [-Infinity, -1],
-  );
-  const target = Math.max(minFirstTarget, maxComponent + 1);
-  return allTypes.map((t, i) =>
-    i === maxComponentIndex ? target : currentVector[i] || 0,
-  );
+  return allTypes.map((t, i) => {
+    if (i === firstTargetIndex) {
+      return Math.max(minFirstTarget, currentVector[i] || 0);
+    }
+    if (i === secondTargetIndex) {
+      return Math.max(minSecondTarget, currentVector[i] || 0);
+    }
+    if (i === thirdTargetIndex) {
+      return Math.max(minThirdTarget, currentVector[i] || 0);
+    }
+    return currentVector[i] || 0;
+  });
 };
 
 export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>

@@ -1,6 +1,6 @@
 import { Power } from '../../types';
 import { getTargetLevelVector, getTargetTypeVector } from './vector';
-import { getTypeTargetIndices, TypeBoost } from './index';
+import { getTypeTargetIndices, rankTypeBoosts, TypeBoost } from './index';
 
 describe('getTargetTypeVector', () => {
   it('Creates a vector with the correct components for Ground', () => {
@@ -170,6 +170,7 @@ describe('getTargetLevelVector', () => {
         typePlaceIndex: 0,
         mpPlaceIndex: 0,
       },
+      targetTypeIndices: getTypeTargetIndices(targetPower, 0, []),
       typeVector: [],
     });
     expect(v[1]).toBe(1);
@@ -184,6 +185,7 @@ describe('getTargetLevelVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
+      targetTypeIndices: getTypeTargetIndices(targetPower, 2, []),
       typeVector: [],
     });
     expect(v[1]).toBe(380);
@@ -195,6 +197,18 @@ describe('getTargetLevelVector', () => {
       type: 'Dragon',
       level: 2,
     };
+    const rankedTypeBoosts = rankTypeBoosts({
+      Normal: 146,
+      Fighting: 2,
+      Flying: 2,
+      Poison: 146,
+      Ground: 2,
+      Rock: 2,
+      Bug: 144,
+      Fire: 144,
+      Electric: 144,
+      Dragon: 144,
+    });
     const v = getTargetLevelVector({
       targetPower,
       targetConfig: {
@@ -202,6 +216,7 @@ describe('getTargetLevelVector', () => {
         typePlaceIndex: 0,
         mpPlaceIndex: 0,
       },
+      targetTypeIndices: getTypeTargetIndices(targetPower, 0, rankedTypeBoosts),
       typeVector: [
         146, 2, 2, 146, 2, 2, 144, 0, 0, 144, 0, 0, 144, 0, 0, 144, 0, 0,
       ],

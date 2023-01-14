@@ -163,6 +163,7 @@ const selectIngredientCandidates = ({
     const candTargetLevelVector = getTargetLevelVector({
       targetPower,
       targetConfig: candidateConfig,
+      targetTypeIndices,
       typeVector: currentTypeVector,
     });
     const candDeltaTypeVector = diff(candTargetTypeVector, currentTypeVector);
