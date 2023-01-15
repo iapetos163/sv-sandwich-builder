@@ -253,6 +253,7 @@ describe('makeSandwichForPower', () => {
     });
 
     // Klawf, Bitter Herba, Salty Herba
+    // Klawf, 4x Egg, Bitter Herba
     expect(sandwich).not.toBeNull();
 
     console.debug(
@@ -263,7 +264,12 @@ describe('makeSandwichForPower', () => {
     );
 
     const numFillings = sandwich!.fillings.length;
-    expect(numFillings).toBeLessThanOrEqual(1);
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(5);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {

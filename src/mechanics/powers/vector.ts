@@ -160,13 +160,6 @@ export const getTargetTypeVector = ({
     }
   }
 
-  console.debug({
-    targetFirstAmount,
-    maxFirstAmount,
-    targetSecondAmount,
-    maxSecondAmount,
-  });
-
   if (
     targetFirstAmount > maxFirstAmount ||
     targetSecondAmount > maxSecondAmount

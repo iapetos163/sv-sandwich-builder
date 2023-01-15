@@ -194,6 +194,8 @@ const selectIngredientCandidates = ({
       console.debug('Cannot satisfy constraints for target configs', {
         targetConfigs,
         currentTypeVector,
+        targetTypeVector,
+        targetLevelVector,
         targetPower,
       });
     }
@@ -467,17 +469,17 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       !targetPowerAlreadyFound || condiments.length === 0;
 
     const selectedPower =
-      candidatePowers.length === 1
-        ? candidatePowers[0]
-        : candidatePowers.find(
-            (p) =>
-              p &&
-              (p.mealPower === targetPower.mealPower ||
-                p.type === targetPower.type ||
-                p.level >= targetPower.level),
-          ) ?? candidatePowers[0];
+      (candidatePowers.length > 1 &&
+        candidatePowers.find(
+          (p) =>
+            p &&
+            (p.mealPower === targetPower.mealPower ||
+              p.type === targetPower.type ||
+              p.level >= targetPower.level),
+        )) ||
+      candidatePowers[0];
 
-    const debugCondition = condiments.length === 1 && fillings.length === 0;
+    const debugCondition = false;
     if (debugCondition) {
       console.debug(
         `
