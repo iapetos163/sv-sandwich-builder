@@ -209,6 +209,15 @@ const selectIngredientCandidates = ({
     rankedMealPowerBoosts,
     mealPowerVector: currentBoostedMealPowerVector,
   });
+  // if (debug) {
+  //   console.debug({
+  //     targetPower,
+  //     targetConfig,
+  //     rankedMealPowerBoosts,
+  //     mealPowerVector: currentBoostedMealPowerVector,
+  //     targetMealPowerVector,
+  //   });
+  // }
   const deltaMealPowerVector = diff(
     targetMealPowerVector,
     currentBoostedMealPowerVector,
@@ -242,17 +251,6 @@ const selectIngredientCandidates = ({
         remainingCondiments,
       })
     : 0;
-  if (debug) {
-    // TODO: why zero?
-    console.debug({
-      mealPowerScoreWeight,
-      targetVector: targetMealPowerVector,
-      deltaVector: deltaMealPowerVector,
-      currentVector: currentBoostedMealPowerVector,
-      remainingFillings,
-      remainingCondiments,
-    });
-  }
 
   // In the case we are forced to pick an ingredient but we have what we need
   // Force a nonzero deltaTypeVector
@@ -330,7 +328,10 @@ const selectIngredientCandidates = ({
           ? CONDIMENT_BONUS
           : 0));
 
-    if (debug && (ing.name === 'Jam' || ing.name === 'Egg')) {
+    if (
+      debug &&
+      (ing.name === 'Bitter Herba Mystica' || ing.name === 'Sour Herba Mystica')
+    ) {
       console.debug(
         `${ing.name}: ${score}
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}

@@ -363,4 +363,17 @@ describe('getRelativeTasteVector', () => {
 
     expect(res[0] || 0).toBeGreaterThan(0);
   });
+
+  it('Outputs a higher Teensy component for Sour Herba Mystica than that for Bitter Herba Mystica', () => {
+    const sour = getRelativeTasteVector({
+      currentFlavorBoosts: {},
+      ingredientFlavorBoosts: { Sour: 500 },
+    });
+    const bitter = getRelativeTasteVector({
+      currentFlavorBoosts: {},
+      ingredientFlavorBoosts: { Bitter: 500 },
+    });
+
+    expect(sour[8]).toBeGreaterThan(bitter[8]);
+  });
 });
