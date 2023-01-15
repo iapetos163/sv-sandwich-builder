@@ -5,28 +5,41 @@ import { MealPowerBoost, TargetConfig, TypeBoost } from './index';
 export interface GetTargetMealPowerVectorProps {
   targetPower: Power;
   targetConfig: TargetConfig;
-  targetTypeIndices: [number, number, number];
-  rankedTypeBoosts: TypeBoost[];
-  typeVector: number[];
+  rankedMealPowerBoosts: MealPowerBoost[];
+  mealPowerVector: number[];
 }
 
-export const getTargetMealPowerVector = (
-  targetPower: Power,
-  targetConfig: TargetConfig,
-  rankedMealPowerBoosts: MealPowerBoost[],
-  currentVector: number[],
-) => {
+export const getTargetMealPowerVector = ({
+  targetPower,
+  targetConfig,
+  rankedMealPowerBoosts,
+  mealPowerVector: currentVector,
+}: GetTargetMealPowerVectorProps) => {
   rankedMealPowerBoosts;
 
   const mpBoostAtTargetPlace = rankedMealPowerBoosts[targetConfig.mpPlaceIndex];
+  const higherRankingIndices = rankedMealPowerBoosts
+    .slice(0, targetConfig.mpPlaceIndex)
+    .map((mpb) => mpb.mpIndex);
 
-  return mealPowers.map((mp, i) =>
-    mp === targetPower.mealPower
-      ? mpBoostAtTargetPlace.mpIndex <= i
+  const targetMpIndex = mealPowers.indexOf(targetPower.mealPower);
+
+  return mealPowers.map((mp, i) => {
+    if (i === targetMpIndex) {
+      return mpBoostAtTargetPlace.mpIndex <= targetMpIndex
         ? mpBoostAtTargetPlace.amount
-        : mpBoostAtTargetPlace.amount + 1
-      : currentVector[i] || 0,
-  );
+        : mpBoostAtTargetPlace.amount + 1;
+    }
+    if (higherRankingIndices.includes(i)) {
+      return Math.max(
+        currentVector[i] || 0,
+        i <= targetMpIndex
+          ? mpBoostAtTargetPlace.amount
+          : mpBoostAtTargetPlace.amount + 1,
+      );
+    }
+    return currentVector[i] || 0;
+  });
 };
 
 const getTargetTypeVectorForPosition = (

@@ -14,6 +14,8 @@ import {
   TypeBoost,
   powerToString,
   getTypeTargetIndices,
+  MealPowerBoost,
+  rankMealPowerBoosts,
 } from './powers';
 import {
   boostMealPowerVector,
@@ -36,6 +38,7 @@ interface SelectIngredientProps {
   currentBoostedMealPowerVector: number[];
   currentTypeVector: number[];
   rankedTypeBoosts: TypeBoost[];
+  rankedMealPowerBoosts: MealPowerBoost[];
   checkMealPower: boolean;
   checkType: boolean;
   checkLevel: boolean;
@@ -127,6 +130,7 @@ const selectIngredientCandidates = ({
   currentBoostedMealPowerVector,
   currentTypeVector,
   rankedTypeBoosts,
+  rankedMealPowerBoosts,
   currentFlavorBoosts,
   checkMealPower,
   checkType,
@@ -196,10 +200,12 @@ const selectIngredientCandidates = ({
     return [];
   }
 
-  const targetMealPowerVector = getTargetMealPowerVector(
+  const targetMealPowerVector = getTargetMealPowerVector({
     targetPower,
-    currentBoostedMealPowerVector,
-  );
+    targetConfig,
+    rankedMealPowerBoosts,
+    mealPowerVector: currentBoostedMealPowerVector,
+  });
   const deltaMealPowerVector = diff(
     targetMealPowerVector,
     currentBoostedMealPowerVector,
@@ -496,6 +502,10 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       currentBoostedMealPowerVector,
       currentTypeVector: typeVector,
       rankedTypeBoosts: rankTypeBoosts(typeBoosts),
+      rankedMealPowerBoosts: rankMealPowerBoosts(
+        mealPowerBoosts,
+        boostedMealPower,
+      ),
       checkMealPower:
         (targetPowerAlreadyFound && condimentsAllowed) ||
         (targetPowerAlreadyFound &&
