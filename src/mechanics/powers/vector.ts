@@ -17,29 +17,45 @@ export const getTargetMealPowerVector = ({
 }: GetTargetMealPowerVectorProps) => {
   rankedMealPowerBoosts;
 
-  const mpBoostAtTargetPlace = rankedMealPowerBoosts[targetConfig.mpPlaceIndex];
-  const higherRankingIndices = rankedMealPowerBoosts
-    .slice(0, targetConfig.mpPlaceIndex)
-    .map((mpb) => mpb.mpIndex);
+  const mpBoostAtTargetPlace = rankedMealPowerBoosts[
+    targetConfig.mpPlaceIndex
+  ] ?? { mpIndex: targetConfig.mpPlaceIndex, amount: 0 };
 
   const targetMpIndex = mealPowers.indexOf(targetPower.mealPower);
+  const targetAmount =
+    mpBoostAtTargetPlace.mpIndex > targetMpIndex
+      ? mpBoostAtTargetPlace.amount
+      : mpBoostAtTargetPlace.amount + 1;
 
-  return mealPowers.map((mp, i) => {
-    if (i === targetMpIndex) {
-      return mpBoostAtTargetPlace.mpIndex <= targetMpIndex
-        ? mpBoostAtTargetPlace.amount
-        : mpBoostAtTargetPlace.amount + 1;
-    }
-    if (higherRankingIndices.includes(i)) {
-      return Math.max(
-        currentVector[i] || 0,
-        i <= targetMpIndex
-          ? mpBoostAtTargetPlace.amount
-          : mpBoostAtTargetPlace.amount + 1,
-      );
-    }
-    return currentVector[i] || 0;
-  });
+  return mealPowers.map((mp, i) =>
+    i === targetMpIndex ? targetAmount : currentVector[i] || 0,
+  );
+  // if (targetConfig.mpPlaceIndex === 0) {
+  //   return mealPowers.map((mp, i) =>
+  //     i === targetMpIndex ? targetAmount : currentVector[i] || 0,
+  //   );
+  // }
+  // const tieAmount =
+  //   rankedMealPowerBoosts[targetConfig.mpPlaceIndex - 1]?.amount ?? 0;
+
+  // if (tieAmount > targetAmount) {
+  //   return mealPowers.map((mp, i) =>
+  //     i === targetMpIndex ? targetAmount : currentVector[i] || 0,
+  //   );
+  // }
+  // return mealPowers.map((mp, i) => {
+  //   if (i === targetMpIndex) {
+  //     return targetAmount;
+  //   }
+  //   if (
+  //     (currentVector[i] ?? 0) === tieAmount &&
+  //     mp !== 'Sparkling' &&
+  //     mp !== 'Title'
+  //   ) {
+  //     return targetAmount;
+  //   }
+  //   return currentVector[i] || 0;
+  // });
 };
 
 const getTargetTypeVectorForPosition = (

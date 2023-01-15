@@ -1,6 +1,10 @@
 import { Power } from '../../types';
 import { norm } from '../../vector-math';
-import { getTargetLevelVector, getTargetTypeVector } from './vector';
+import {
+  getTargetLevelVector,
+  getTargetMealPowerVector,
+  getTargetTypeVector,
+} from './vector';
 import { getTypeTargetIndices, rankTypeBoosts, TypeBoost } from './index';
 
 describe('getTargetTypeVector', () => {
@@ -242,7 +246,6 @@ describe('getTargetLevelVector', () => {
       targetTypeIndices,
       typeVector: [],
     });
-    console.debug(v);
     expect(v[1]).toBe(380);
   });
 
@@ -297,5 +300,34 @@ describe('getTargetLevelVector', () => {
     });
 
     expect(v[0]).toBe(250);
+  });
+});
+
+describe('getTargetMealPowerVector', () => {
+  it('Does not output zero when given a zero vector', () => {
+    const v = getTargetMealPowerVector({
+      targetPower: { mealPower: 'Teensy', type: 'Steel', level: 3 },
+      targetConfig: {
+        config: 'ONE_ONE_THREE',
+        typePlaceIndex: 0,
+        mpPlaceIndex: 2,
+      },
+      rankedMealPowerBoosts: [],
+      mealPowerVector: [],
+    });
+    expect(v[8]).toBeGreaterThan(0);
+  });
+  it('Does not attempt to force positioning', () => {
+    const v = getTargetMealPowerVector({
+      targetPower: { mealPower: 'Teensy', type: 'Steel', level: 3 },
+      targetConfig: {
+        config: 'ONE_ONE_THREE',
+        typePlaceIndex: 0,
+        mpPlaceIndex: 2,
+      },
+      rankedMealPowerBoosts: [],
+      mealPowerVector: [],
+    });
+    expect(v[0]).toBe(0);
   });
 });
