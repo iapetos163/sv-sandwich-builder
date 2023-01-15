@@ -29,9 +29,9 @@ import {
   rankFlavorBoosts,
 } from './taste';
 
-const CANDIDATE_SCORE_THRESHOLD = 0.2;
+const CANDIDATE_SCORE_THRESHOLD = 0.4;
 const MAX_CANDIDATES = 2;
-const CONDIMENT_BONUS = 0.6;
+const CONDIMENT_BONUS = 1.7;
 
 interface SelectIngredientProps {
   targetPower: Power;

@@ -263,6 +263,8 @@ describe('makeSandwichForPower', () => {
         .join(', ')}`,
     );
 
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
     const numFillings = sandwich!.fillings.length;
     const numHerba = sandwich!.condiments.filter(
       (s) => s.isHerbaMystica,
@@ -270,6 +272,7 @@ describe('makeSandwichForPower', () => {
 
     expect(numHerba).toBeLessThanOrEqual(1);
     expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(6);
   });
 
   it('Produces a sandwich with Lv 3 Humungo Poison', () => {
@@ -279,8 +282,26 @@ describe('makeSandwichForPower', () => {
       level: 3,
     });
 
-    // Klawf, Bitter Herba, Salty Herba
     // 4x Chorizo, Ketchup, Spicy/Salty Herba
+    expect(sandwich).not.toBeNull();
+
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+  });
+
+  it('Produces a sandwich with Lv 3 Item Psychic', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Item',
+      type: 'Psychic',
+      level: 3,
+    });
+
+    // 2x Herbed Sausage, 3x Onion, 1x Vinegar, Bitter herba
     expect(sandwich).not.toBeNull();
 
     console.debug(
@@ -296,7 +317,7 @@ describe('makeSandwichForPower', () => {
     ).length;
 
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numFillings).toBeLessThanOrEqual(5);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {
