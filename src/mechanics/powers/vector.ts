@@ -179,19 +179,19 @@ export const getTargetTypeVector = ({
 
 const getMinRankedTypeAmounts = (
   targetPower: Power,
-  { mpPlaceIndex, typePlaceIndex }: TargetConfig,
+  { mpPlaceIndex, typePlaceIndex, config }: TargetConfig,
 ): [number, number, number] => {
-  if (targetPower.level === 3 && mpPlaceIndex >= 2) {
+  if (config === 'ONE_ONE_ONE') {
     return [380, 380, 380];
     // OR 460, 0, 0
   }
-  if (targetPower.level === 3 && mpPlaceIndex <= 1 && typePlaceIndex >= 2) {
+  if (targetPower.level === 3 && typePlaceIndex >= 2) {
     return [380, 1, 1];
   }
-  if (targetPower.level === 3 && mpPlaceIndex <= 1 && typePlaceIndex === 1) {
+  if (targetPower.level === 3 && typePlaceIndex === 1) {
     return [380, 1, 0];
   }
-  if (targetPower.level === 3 && mpPlaceIndex <= 1) {
+  if (targetPower.level === 3) {
     return [380, 0, 0];
   }
   if (targetPower.level === 2 && mpPlaceIndex >= 2) {

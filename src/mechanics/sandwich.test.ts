@@ -253,7 +253,7 @@ describe('makeSandwichForPower', () => {
     });
 
     // Klawf, Bitter Herba, Salty Herba
-    // Klawf, 4x Egg, Bitter Herba
+    // 4x Egg, Pepper, Salty/Bitter Herba
     expect(sandwich).not.toBeNull();
 
     console.debug(
@@ -269,7 +269,34 @@ describe('makeSandwichForPower', () => {
     ).length;
 
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numFillings).toBeLessThanOrEqual(5);
+    expect(numFillings).toBeLessThanOrEqual(4);
+  });
+
+  it('Produces a sandwich with Lv 3 Humungo Poison', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Humungo',
+      type: 'Poison',
+      level: 3,
+    });
+
+    // Klawf, Bitter Herba, Salty Herba
+    // 4x Chorizo, Ketchup, Spicy/Salty Herba
+    expect(sandwich).not.toBeNull();
+
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
+
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {

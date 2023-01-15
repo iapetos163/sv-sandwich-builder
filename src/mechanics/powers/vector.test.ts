@@ -231,16 +231,18 @@ describe('getTargetLevelVector', () => {
 
   it('Returns a sufficiently high vector with level 3 power and zero vector', () => {
     const targetPower: Power = { mealPower: 'Exp', type: 'Fighting', level: 3 };
+    const targetTypeIndices = getTypeTargetIndices(targetPower, 0, []);
     const v = getTargetLevelVector({
       targetPower,
       targetConfig: {
-        config: 'ONE_THREE_TWO',
-        typePlaceIndex: 2,
+        config: 'ONE_ONE_THREE',
+        typePlaceIndex: 0,
         mpPlaceIndex: 2,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 2, []),
+      targetTypeIndices,
       typeVector: [],
     });
+    console.debug(v);
     expect(v[1]).toBe(380);
   });
 
@@ -277,5 +279,23 @@ describe('getTargetLevelVector', () => {
 
     expect(v[15]).toBe(180);
     expect(v[0]).toBe(146);
+  });
+
+  it('Takes Sparkling power into consideration', () => {
+    const v = getTargetLevelVector({
+      targetPower: { mealPower: 'Exp', type: 'Ice', level: 3 },
+      targetConfig: {
+        config: 'ONE_ONE_THREE',
+        typePlaceIndex: 0,
+        mpPlaceIndex: 2,
+      },
+      targetTypeIndices: [14, 0, 1],
+      typeVector: [
+        250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250,
+        250, 250, 250, 250,
+      ],
+    });
+
+    expect(v[0]).toBe(250);
   });
 });
