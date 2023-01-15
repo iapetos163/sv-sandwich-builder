@@ -31,6 +31,7 @@ import {
 
 const CANDIDATE_SCORE_THRESHOLD = 0.4;
 const MAX_CANDIDATES = 3;
+const CONDIMENT_BONUS = 1;
 
 interface SelectIngredientProps {
   targetPower: Power;
@@ -310,21 +311,26 @@ const selectIngredientCandidates = ({
     const levelProduct =
       n3 !== 0 ? innerProduct(ing.typeVector, deltaLevelVector) / n3 : 0;
     const score =
-      mealPowerProduct * mealPowerScoreWeight +
-      typeProduct * typeScoreWeight +
-      levelProduct * levelScoreWeight;
+      (mealPowerProduct * mealPowerScoreWeight +
+        typeProduct * typeScoreWeight +
+        levelProduct * levelScoreWeight) *
+      (1 +
+        (ing.ingredientType === 'condiment' && !ing.isHerbaMystica
+          ? CONDIMENT_BONUS
+          : 0));
 
-    // if (debug && ing.name === 'Ham') {
-    //   console.debug(
-    //     `${ing.name}: ${score}
-    // Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
-    // Relative taste vector: ${relativeTasteVector}
-    // Boosted meal power vector: ${boostedMealPowerVector}
-    //   n1: ${deltaMpNorm} * ${Math.sqrt(positiveBoostedMpNorm)} = ${n1}
-    // Type vector: ${ing.typeVector}
-    //   n2: ${deltaTypeNorm} * ${Math.sqrt(positiveTypeNorm)} = ${n2}`,
-    //   );
-    // }
+    if (debug && ing.name === 'Pepper') {
+      console.debug(
+        `${ing.name}: ${score}
+    Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
+    Relative taste vector: ${relativeTasteVector}
+    Boosted meal power vector: ${boostedMealPowerVector}
+      n1: ${deltaMpNorm} * ${Math.sqrt(positiveBoostedMpNorm)} = ${n1}
+    Type vector: ${ing.typeVector}
+      n2: ${deltaTypeNorm} * ${Math.sqrt(positiveTypeNorm)} = ${n2}
+    `,
+      );
+    }
 
     if (score > bestScore) {
       bestScore = score;
@@ -479,6 +485,9 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         )) ||
       candidatePowers[0];
 
+    // const numEgg = fillings.filter((f) => f.name === 'Egg').length;
+    // const numFillings = fillings.length;
+    // const numCondiments = condiments.length;
     const debugCondition = false;
     if (debugCondition) {
       console.debug(
