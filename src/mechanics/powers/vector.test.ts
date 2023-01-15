@@ -1,4 +1,5 @@
 import { Power } from '../../types';
+import { norm } from '../../vector-math';
 import { getTargetLevelVector, getTargetTypeVector } from './vector';
 import { getTypeTargetIndices, rankTypeBoosts, TypeBoost } from './index';
 
@@ -157,6 +158,21 @@ describe('getTargetTypeVector', () => {
     expect(v[11]).toBe(36);
     expect(v[14]).toBe(36);
     expect(v[17]).toBe(36);
+  });
+
+  it('Does not return infinity when given a zero vector', () => {
+    const v = getTargetTypeVector({
+      targetPower: { mealPower: 'Exp', type: 'Ice', level: 3 },
+      targetConfig: {
+        config: 'ONE_ONE_THREE',
+        typePlaceIndex: 0,
+        mpPlaceIndex: 2,
+      },
+      rankedTypeBoosts: [],
+      targetTypeIndices: [14, 0, 1],
+      typeVector: [],
+    });
+    expect(norm(v)).toBeLessThan(Infinity);
   });
 });
 

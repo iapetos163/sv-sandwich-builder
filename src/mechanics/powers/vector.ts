@@ -138,7 +138,7 @@ export const getTargetTypeVector = ({
     minFirstAmount = 481;
   } else if (config === 'ONE_ONE_THREE') {
     minFirstAmount = 106;
-    maxSecondAmount = targetFirstAmount - 106;
+    maxSecondAmount = Math.max(targetFirstAmount, minFirstAmount) - 106;
     // also acceptable: minFirstAmount = 281;
   } else if (config === 'ONE_THREE_ONE') {
     maxFirstAmount = 105;
@@ -156,6 +156,13 @@ export const getTargetTypeVector = ({
       minFirstAmount = targetSecondAmount + 72;
     }
   }
+
+  console.debug({
+    targetFirstAmount,
+    maxFirstAmount,
+    targetSecondAmount,
+    maxSecondAmount,
+  });
 
   if (
     targetFirstAmount > maxFirstAmount ||
