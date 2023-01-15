@@ -302,6 +302,7 @@ describe('makeSandwichForPower', () => {
     });
 
     // 2x Herbed Sausage, 3x Onion, 1x Vinegar, Bitter herba
+    // 3x Herbed Sausage, 1x Noodles, 2x Vinegar, Bitter Herba
     expect(sandwich).not.toBeNull();
 
     console.debug(
@@ -318,6 +319,65 @@ describe('makeSandwichForPower', () => {
 
     expect(numHerba).toBeLessThanOrEqual(1);
     expect(numFillings).toBeLessThanOrEqual(5);
+  });
+
+  it('Produces a sandwich with Lv 3 Raid Rock', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Raid',
+      type: 'Rock',
+      level: 3,
+    });
+
+    // 4x Egg, Jam or PB, Marmalade, Spicy Herba
+    expect(sandwich).not.toBeNull();
+
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    // You can do it in 7 but the algo has a hard time so i'll give it leeway
+    expect(numIngredients).toBeLessThanOrEqual(8);
+  });
+
+  it('Produces a sandwich with Lv 3 Teensy Steel', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Teensy',
+      type: 'Steel',
+      level: 3,
+    });
+
+    // 4x Egg, 1x PB, Sour Herba
+    expect(sandwich).not.toBeNull();
+
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(6);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {

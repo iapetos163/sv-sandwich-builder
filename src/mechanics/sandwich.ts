@@ -33,28 +33,15 @@ const CANDIDATE_SCORE_THRESHOLD = 0.4;
 const MAX_CANDIDATES = 2;
 const CONDIMENT_BONUS = 1.7;
 
-interface SelectIngredientProps {
-  targetPower: Power;
-  targetConfigs: TargetConfig[];
-  currentBoostedMealPowerVector: number[];
-  currentTypeVector: number[];
-  rankedTypeBoosts: TypeBoost[];
-  rankedMealPowerBoosts: MealPowerBoost[];
-  checkMealPower: boolean;
-  checkType: boolean;
-  checkLevel: boolean;
-  remainingFillings: number;
-  remainingCondiments: number;
-  allowHerbaMystica: boolean;
-  skipIngredients: Record<string, boolean>;
-  currentFlavorBoosts: Boosts<Flavor>;
-  debug?: boolean;
-}
-
 // TODO: change these for multiplayer
 const maxFillings = 6;
 const maxCondiments = 4;
 const maxPieces = 12;
+
+const MP_FILLING = 21;
+const MP_CONDIMENT = 21;
+const TYPE_FILLING = 36;
+const TYPE_CONDIMENT = 4;
 
 export const emptySandwich = {
   fillings: [],
@@ -73,11 +60,6 @@ const getBaseDelta = (target: number[], current: number[]) => {
   const base = getBaseVector(current);
   return norm(diff(target, base));
 };
-
-const MP_FILLING = 21;
-const MP_CONDIMENT = 21;
-const TYPE_FILLING = 36;
-const TYPE_CONDIMENT = 4;
 
 export interface ScoreWeightProps {
   targetVector: number[];
@@ -124,6 +106,24 @@ type ScoredIngredient = {
   ing: Ingredient | null;
   score: number;
 };
+
+interface SelectIngredientProps {
+  targetPower: Power;
+  targetConfigs: TargetConfig[];
+  currentBoostedMealPowerVector: number[];
+  currentTypeVector: number[];
+  rankedTypeBoosts: TypeBoost[];
+  rankedMealPowerBoosts: MealPowerBoost[];
+  checkMealPower: boolean;
+  checkType: boolean;
+  checkLevel: boolean;
+  remainingFillings: number;
+  remainingCondiments: number;
+  allowHerbaMystica: boolean;
+  skipIngredients: Record<string, boolean>;
+  currentFlavorBoosts: Boosts<Flavor>;
+  debug?: boolean;
+}
 
 const selectIngredientCandidates = ({
   targetPower,
@@ -242,6 +242,17 @@ const selectIngredientCandidates = ({
         remainingCondiments,
       })
     : 0;
+  if (debug) {
+    // TODO: why zero?
+    console.debug({
+      mealPowerScoreWeight,
+      targetVector: targetMealPowerVector,
+      deltaVector: deltaMealPowerVector,
+      currentVector: currentBoostedMealPowerVector,
+      remainingFillings,
+      remainingCondiments,
+    });
+  }
 
   // In the case we are forced to pick an ingredient but we have what we need
   // Force a nonzero deltaTypeVector
@@ -319,7 +330,7 @@ const selectIngredientCandidates = ({
           ? CONDIMENT_BONUS
           : 0));
 
-    if (debug && ing.name === 'Pepper') {
+    if (debug && (ing.name === 'Jam' || ing.name === 'Egg')) {
       console.debug(
         `${ing.name}: ${score}
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
@@ -485,10 +496,10 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         )) ||
       candidatePowers[0];
 
-    // const numEgg = fillings.filter((f) => f.name === 'Egg').length;
-    // const numFillings = fillings.length;
-    // const numCondiments = condiments.length;
-    const debugCondition = false;
+    const numEgg = fillings.filter((f) => f.name === 'Egg').length;
+    const numFillings = fillings.length;
+    const numCondiments = condiments.length;
+    const debugCondition = numFillings === 0 && numCondiments === 0;
     if (debugCondition) {
       console.debug(
         `
