@@ -174,6 +174,43 @@ describe('getTargetTypeVector', () => {
     });
     expect(norm(v)).toBeLessThan(Infinity);
   });
+
+  it('Does not return infinity when targeting ONE_ONE_THREE and having added one herba mystica', () => {
+    const v = getTargetTypeVector({
+      targetPower: { mealPower: 'Exp', type: 'Ice', level: 3 },
+      targetConfig: {
+        config: 'ONE_ONE_THREE',
+        typePlaceIndex: 0,
+        mpPlaceIndex: 2,
+      },
+      rankedTypeBoosts: [
+        { name: 'Normal', amount: 250, typeIndex: 0 },
+        { name: 'Fighting', amount: 250, typeIndex: 1 },
+        { name: 'Flying', amount: 250, typeIndex: 2 },
+        { name: 'Poison', amount: 250, typeIndex: 3 },
+        { name: 'Ground', amount: 250, typeIndex: 4 },
+        { name: 'Rock', amount: 250, typeIndex: 5 },
+        { name: 'Bug', amount: 250, typeIndex: 6 },
+        { name: 'Ghost', amount: 250, typeIndex: 7 },
+        { name: 'Steel', amount: 250, typeIndex: 8 },
+        { name: 'Fire', amount: 250, typeIndex: 9 },
+        { name: 'Water', amount: 250, typeIndex: 10 },
+        { name: 'Grass', amount: 250, typeIndex: 11 },
+        { name: 'Electric', amount: 250, typeIndex: 12 },
+        { name: 'Psychic', amount: 250, typeIndex: 13 },
+        { name: 'Ice', amount: 250, typeIndex: 14 },
+        { name: 'Dragon', amount: 250, typeIndex: 15 },
+        { name: 'Dark', amount: 250, typeIndex: 16 },
+        { name: 'Fairy', amount: 250, typeIndex: 17 },
+      ],
+      targetTypeIndices: [14, 0, 1],
+      typeVector: [
+        250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250,
+        250, 250, 250, 250,
+      ],
+    });
+    expect(norm(v)).toBeLessThan(Infinity);
+  });
 });
 
 describe('getTargetLevelVector', () => {
