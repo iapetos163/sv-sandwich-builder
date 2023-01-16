@@ -414,7 +414,7 @@ describe('makeSandwichForPower', () => {
 
     expect(numHerba).toBeLessThanOrEqual(1);
     expect(numFillings).toBeLessThanOrEqual(4);
-    expect(numIngredients).toBeLessThanOrEqual(6);
+    expect(numIngredients).toBeLessThanOrEqual(7);
   });
   it('Produces a sandwich with Lv 3 Encounter Bug', () => {
     const sandwich = makeSandwichForPower({
@@ -442,7 +442,7 @@ describe('makeSandwichForPower', () => {
 
     expect(numHerba).toBeLessThanOrEqual(1);
     expect(numFillings).toBeLessThanOrEqual(4);
-    expect(numIngredients).toBeLessThanOrEqual(7);
+    expect(numIngredients).toBeLessThanOrEqual(6);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {
