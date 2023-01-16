@@ -1,6 +1,5 @@
 import { Flavor, flavors, MealPower, mealPowers } from '../strings';
 import { Boosts } from '../types';
-import { boostsEqual } from './boost';
 
 export interface FlavorBoost {
   name: Flavor;
@@ -115,19 +114,21 @@ export interface RelativeTasteVectorProps {
 }
 
 /**
- * Takes the average of two numbers, scales that by 100, and clamps that between -100 and 100.
+ * Takes the sum of two numbers,
+ * scales that by 100,
+ * and clamps that between -100 and 100.
  */
-const avgScaleClamp = (n1: number, n2: number) =>
-  50 * Math.max(Math.min(n1 + n2, 2), -2);
+const sumScaleClamp = (n1: number, n2: number) =>
+  100 * Math.max(Math.min(n1 + n2, 1), -1);
 
 export const getRelativeTasteVector = (() => {
-  let memoRankFlavorBoosts = (
-    flavorBoosts: Partial<Record<Flavor, number>>,
-  ) => {
+  const flavorBoostsLookup: Partial<Record<string, FlavorBoost[]>> = {};
+  const memoRankFlavorBoosts = (flavorBoosts: Boosts<Flavor>) => {
+    const key = flavors.map((f) => flavorBoosts[f] || 0).join(',');
+    const memoized = flavorBoostsLookup[key];
+    if (memoized) return memoized;
     const res = rankFlavorBoosts(flavorBoosts);
-    const thisFn = memoRankFlavorBoosts;
-    memoRankFlavorBoosts = (b: Partial<Record<Flavor, number>>) =>
-      boostsEqual(flavorBoosts, b) ? res : thisFn(b);
+    flavorBoostsLookup[key] = res;
     return res;
   };
 
@@ -141,15 +142,13 @@ export const getRelativeTasteVector = (() => {
     const highestBoostFlavor = currentRankedFlavorBoosts[0]?.name;
     const secondHighestBoostAmount = currentRankedFlavorBoosts[1]?.amount || 0;
 
-    if (highestBoostAmount === 0) {
-      // Return zero in this case for the sake of simplicity
-      return [];
-    }
-
     return mealPowers.map((mp, i) => {
       const primaryFlavors = primaryFlavorsForPower[mp];
       const secondaryFlavors = secondaryFlavorsForPower[mp];
-      if (primaryFlavors.length === 0) return 0;
+      const numPrimary = primaryFlavors.length;
+      const numSecondary = secondaryFlavors.length;
+      const numTotal = numPrimary + numSecondary;
+      if (numPrimary === 0) return 0;
 
       const nonPrimaryFlavors = flavors.filter(
         (f) => !primaryFlavors.includes(f),
@@ -162,6 +161,27 @@ export const getRelativeTasteVector = (() => {
         (f) => f === highestBoostFlavor,
       );
 
+      if (highestBoostAmount === 0) {
+        const highestBoostForOther = Math.max(
+          ...otherFlavors
+            .filter((f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount)
+            .map((f) => ingredientFlavorBoosts[f] || 0),
+        );
+        const primaryComponents = primaryFlavors.map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          return (ingBoost - highestBoostForOther / 2) / Math.max(ingBoost, 1);
+        });
+        const secondaryComponents = secondaryFlavors.map((f) => {
+          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          return (ingBoost - highestBoostForOther / 2) / Math.max(ingBoost, 1);
+        });
+
+        return sumScaleClamp(
+          (numSecondary * Math.max(...primaryComponents)) / numTotal,
+          (numPrimary * Math.max(...secondaryComponents)) / numTotal,
+        );
+      }
+
       // Delicate case to consider here:
       // If primary != secondary and two are tied
       // We think we're defending but we aren't
@@ -173,8 +193,6 @@ export const getRelativeTasteVector = (() => {
         const otherFlavorsBelowHighest = otherFlavors.filter(
           (f) => (currentFlavorBoosts[f] || 0) < highestBoostAmount,
         );
-
-        // When on the offense: detractors use the supporters' thresholds
 
         const highestBoostForCurrentNonprimaryHighest = Math.max(
           ...nonPrimaryFlavors
@@ -218,9 +236,9 @@ export const getRelativeTasteVector = (() => {
             );
           });
 
-          return avgScaleClamp(
-            Math.max(...primaryComponents),
-            Math.max(...secondaryComponents),
+          return sumScaleClamp(
+            (numSecondary * Math.max(...primaryComponents)) / numTotal,
+            (numPrimary * Math.max(...secondaryComponents)) / numTotal,
           );
         }
         // offensive on primary, toward highestBoostAmount
@@ -244,9 +262,9 @@ export const getRelativeTasteVector = (() => {
         //     secondary: -Math.max(...otherToHighest),
         //   });
 
-        return avgScaleClamp(
-          Math.max(...primaryComponents),
-          -Math.max(...otherToHighest),
+        return sumScaleClamp(
+          (numSecondary * Math.max(...primaryComponents)) / numTotal,
+          (numPrimary * -Math.max(...otherToHighest)) / numTotal,
         );
       }
 
@@ -306,9 +324,12 @@ export const getRelativeTasteVector = (() => {
               Math.max(secondHighestBoostAmount - currentBoost, ingBoost, 1)
             );
           });
-        return avgScaleClamp(
-          -Math.max(...nonPrimariesFromSecondToHighest),
-          Math.max(...secondariesToSecond) - Math.max(...othersToSecond),
+
+        return sumScaleClamp(
+          (numSecondary * -Math.max(...nonPrimariesFromSecondToHighest, 0)) /
+            numTotal,
+          numPrimary * Math.max(...secondariesToSecond, 0) -
+            Math.max(...othersToSecond, 0) / numTotal,
         );
       }
 
@@ -325,9 +346,10 @@ export const getRelativeTasteVector = (() => {
       // primary detractors: nonprimaries >= secondHighestBoostAmount
       // secondary detractors: others < secondHighestBoostAmount
       // neutral: primaries, secondaries < secondHighestBoostAmount
-      return avgScaleClamp(
-        -Math.max(...nonPrimariesFromSecondToHighest),
-        -Math.max(...othersToSecond),
+      return sumScaleClamp(
+        (numSecondary * -Math.max(...nonPrimariesFromSecondToHighest, 0)) /
+          numTotal,
+        (numPrimary * -Math.max(...othersToSecond, 0)) / numTotal,
       );
     });
   };

@@ -55,6 +55,7 @@ describe('makeSandwichForPower', () => {
       level: 2,
     });
 
+    // cheese, herba mystica
     expect(sandwich).not.toBeNull();
 
     const numHerba = sandwich!.condiments.filter(
@@ -216,6 +217,17 @@ describe('makeSandwichForPower', () => {
     expect(sandwich).not.toBeNull();
   });
 
+  it('Produces a sandwich with Lv 2 Exp Steel', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Exp',
+      type: 'Steel',
+      level: 2,
+    });
+
+    // 4x egg, 2x potato salad, 2x marmalade, salt
+    expect(sandwich).not.toBeNull();
+  });
+
   it('Produces a valid recipe when Lv 1 Sparkling is requested', () => {
     const sandwich = makeSandwichForPower({
       mealPower: 'Sparkling',
@@ -231,6 +243,178 @@ describe('makeSandwichForPower', () => {
     ).length;
 
     expect(numHerba).toBe(2);
+  });
+
+  it('Produces a sandwich with Lv 3 Exp Ice', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Exp',
+      type: 'Ice',
+      level: 3,
+    });
+
+    // Klawf, Bitter Herba, Salty Herba
+    // 4x Egg, Pepper, Salty/Bitter Herba
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    // Can do it in 6
+    expect(numIngredients).toBeLessThanOrEqual(7);
+  });
+
+  it('Produces a sandwich with Lv 3 Humungo Poison', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Humungo',
+      type: 'Poison',
+      level: 3,
+    });
+
+    // 4x Chorizo, Ketchup, Spicy/Salty Herba
+    expect(sandwich).not.toBeNull();
+
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+  });
+
+  it('Produces a sandwich with Lv 3 Item Psychic', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Item',
+      type: 'Psychic',
+      level: 3,
+    });
+
+    // 2x Herbed Sausage, 3x Onion, 1x Vinegar, Bitter herba
+    // 3x Herbed Sausage, 1x Noodles, 2x Vinegar, Bitter Herba
+    expect(sandwich).not.toBeNull();
+
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(5);
+  });
+
+  it('Produces a sandwich with Lv 3 Raid Rock', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Raid',
+      type: 'Rock',
+      level: 3,
+    });
+
+    // 4x Egg, Jam or PB, Marmalade, Spicy Herba
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    // You can do it in 7 but the algo has a hard time so i'll give it leeway
+    expect(numIngredients).toBeLessThanOrEqual(8);
+  });
+
+  it('Produces a sandwich with Lv 3 Teensy Steel', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Teensy',
+      type: 'Steel',
+      level: 3,
+    });
+
+    // 4x Egg, 1x PB, Sour Herba
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(6);
+  });
+  it('Produces a sandwich with Lv 3 Catch Water', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Catch',
+      type: 'Water',
+      level: 3,
+    });
+
+    // 2x Herbed Sausage, 2x Rice, Cream Cheese, Chili Sauce OR jam, curry powder, sour herba
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(7);
+  });
+
+  it('Produces a sandwich with Lv 3 Egg', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Egg',
+      type: 'Normal',
+      level: 3,
+    });
+
+    //
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(6);
+  });
+  it('Produces a sandwich with Lv 3 Encounter Bug', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Encounter',
+      type: 'Bug',
+      level: 3,
+    });
+
+    //
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(6);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {

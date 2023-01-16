@@ -277,6 +277,16 @@ describe('getRelativeTasteVector', () => {
     expect(res).not.toContain(-Infinity);
   });
 
+  it('Does not output any NaN components', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: { Bitter: 500 },
+      ingredientFlavorBoosts: { Sweet: 12, Sour: 9, Bitter: 3 },
+    });
+
+    const nanIndex = res.findIndex(isNaN);
+    expect(nanIndex).toBe(-1);
+  });
+
   it('Does not output a vector where any component has abs value >100', () => {
     const res1 = getRelativeTasteVector({
       currentFlavorBoosts: { Salty: 48, Hot: 48, Bitter: 24 },
@@ -343,5 +353,27 @@ describe('getRelativeTasteVector', () => {
     });
 
     expect(res[2]).toBeLessThanOrEqual(0);
+  });
+
+  it('Outputs nonzero components when choosing Herba Mystica at the start', () => {
+    const res = getRelativeTasteVector({
+      currentFlavorBoosts: {},
+      ingredientFlavorBoosts: { Sweet: 500 },
+    });
+
+    expect(res[0] || 0).toBeGreaterThan(0);
+  });
+
+  it('Outputs a higher Teensy component for Sour Herba Mystica than that for Bitter Herba Mystica', () => {
+    const sour = getRelativeTasteVector({
+      currentFlavorBoosts: {},
+      ingredientFlavorBoosts: { Sour: 500 },
+    });
+    const bitter = getRelativeTasteVector({
+      currentFlavorBoosts: {},
+      ingredientFlavorBoosts: { Bitter: 500 },
+    });
+
+    expect(sour[8]).toBeGreaterThan(bitter[8]);
   });
 });

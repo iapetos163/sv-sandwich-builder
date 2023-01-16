@@ -1,49 +1,10 @@
+import { allTypes } from '../../strings';
 import {
   calculateTypes,
   evaluateBoosts,
-  getTargetLevelVector,
-  getTargetTypeVector,
   powersMatch,
   rankMealPowerBoosts,
-} from './powers';
-
-describe('getTargetTypeVector', () => {
-  it('Creates a vector with the correct components for Ground', () => {
-    const v = getTargetTypeVector(
-      { mealPower: 'Exp', type: 'Ground', level: 1 },
-      [],
-    );
-    expect(v[4]).toBeGreaterThan(0);
-  });
-});
-
-describe('getTargetLevelVector', () => {
-  it('Returns a nonzero vector given level 1 power and zero vector', () => {
-    const v = getTargetLevelVector(
-      { mealPower: 'Exp', type: 'Fighting', level: 1 },
-      [],
-    );
-    expect(v[1]).toBe(1);
-  });
-
-  it('Returns a sufficiently high vector with level 3 power and zero vector', () => {
-    const v = getTargetLevelVector(
-      { mealPower: 'Exp', type: 'Fighting', level: 3 },
-      [],
-    );
-    expect(v[1]).toBe(380);
-  });
-
-  it('Targets the target type', () => {
-    const v = getTargetLevelVector(
-      { mealPower: 'Humungo', type: 'Dragon', level: 2 },
-      [146, 2, 2, 146, 2, 2, 144, 0, 0, 144, 0, 0, 144, 0, 0, 144, 0, 0],
-    );
-
-    expect(v[15]).toBe(180);
-    expect(v[0]).toBe(146);
-  });
-});
+} from './index';
 
 describe('rankMealPowerBoosts', () => {
   it('Considers an unboosted meal power when applying flavor boost', () => {
@@ -91,11 +52,11 @@ describe('powersMatch', () => {
 
 describe('calculateTypes', () => {
   it('Does not output holes', () => {
-    const levels = calculateTypes([
-      { name: 'Steel', amount: 2 },
-      { name: 'Fire', amount: 2 },
+    const types = calculateTypes([
+      { name: 'Steel', amount: 2, typeIndex: allTypes.indexOf('Steel') },
+      { name: 'Fire', amount: 2, typeIndex: allTypes.indexOf('Fire') },
     ]);
-    expect(levels[1]).toBeDefined();
+    expect(types[1]).toBeDefined();
   });
 });
 
