@@ -1,8 +1,9 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, AlertCircle } from 'react-feather';
 import styled from 'styled-components';
+import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../enum';
 import { mealPowerHasType } from '../mechanics';
-import { allTypes, MealPower, mealPowers, TypeName } from '../strings';
+import { allTypes, mealPowerCopy } from '../strings';
 import { Power } from '../types';
 
 const StyledContainer = styled.div`
@@ -31,8 +32,8 @@ const StyledLevelDisplay = styled.div`
 export interface PowerSelectorProps {
   onRemove: () => void;
   onChange: (power: Power | null) => void;
-  allowedTypes: Record<string, true>;
-  allowedMealPowers: Record<string, true>;
+  allowedTypes: boolean[];
+  allowedMealPowers: boolean[];
   removable?: boolean;
   maxLevel: number;
 }
@@ -45,10 +46,10 @@ const PowerSelector = ({
   allowedMealPowers,
   maxLevel,
 }: PowerSelectorProps) => {
-  const [selectedMealPower, setSelectedMealPower] = useState<MealPower | ''>(
-    '',
+  const [selectedMealPower, setSelectedMealPower] = useState<MealPower | null>(
+    null,
   );
-  const [selectedType, setSelectedType] = useState<TypeName | ''>('');
+  const [selectedType, setSelectedType] = useState<TypeIndex | null>(null);
   const [selectedLevel, setSelectedLevel] = useState(1);
 
   useEffect(() => {
@@ -56,11 +57,15 @@ const PowerSelector = ({
   }, [maxLevel]);
 
   const handleChangeMealPower = (evt: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMealPower(evt.target.value as MealPower | '');
+    setSelectedMealPower(
+      evt.target.value ? (parseInt(evt.target.value) as MealPower) : null,
+    );
   };
 
   const handleChangeType = (evt: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedType(evt.target.value as TypeName | '');
+    setSelectedType(
+      evt.target.value ? (parseInt(evt.target.value) as TypeIndex) : null,
+    );
   };
 
   const decrementLevel = () => {
@@ -89,7 +94,7 @@ const PowerSelector = ({
     }
     onChange({
       mealPower: selectedMealPower,
-      type: selectedType as TypeName,
+      type: selectedType!,
       level: selectedLevel,
     });
   }, [selectedMealPower, selectedType, onChange, selectedLevel, maxLevel]);
@@ -101,11 +106,18 @@ const PowerSelector = ({
       </div>
       <label style={{ flexShrink: 1, flexBasis: 300 }}>
         Meal Power:
-        <select value={selectedMealPower} onChange={handleChangeMealPower}>
+        <select
+          value={selectedMealPower ?? ''}
+          onChange={handleChangeMealPower}
+        >
           <option></option>
-          {mealPowers.map((power) => (
-            <option key={power} disabled={!allowedMealPowers[power]}>
-              {power}
+          {rangeMealPowers.map((powerIndex) => (
+            <option
+              key={powerIndex}
+              value={powerIndex}
+              disabled={!allowedMealPowers[powerIndex]}
+            >
+              {mealPowerCopy[powerIndex]}
             </option>
           ))}
         </select>
@@ -115,11 +127,11 @@ const PowerSelector = ({
           (mealPowerHasType(selectedMealPower) && (
             <label>
               Type:
-              <select value={selectedType} onChange={handleChangeType}>
+              <select value={selectedType ?? ''} onChange={handleChangeType}>
                 <option></option>
-                {allTypes.map((t) => (
-                  <option key={t} disabled={!allowedTypes[t]}>
-                    {t}
+                {rangeTypes.map((t) => (
+                  <option key={t} value={t} disabled={!allowedTypes[t]}>
+                    {allTypes[t]}
                   </option>
                 ))}
               </select>

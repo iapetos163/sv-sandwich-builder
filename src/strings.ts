@@ -18,3 +18,16 @@ export const allTypes = [
   'Dark',
   'Fairy',
 ];
+
+export const mealPowerCopy = [
+  'Egg',
+  'Catching',
+  'Exp. Point',
+  'Item',
+  'Raid',
+  'Sparkling',
+  'Title',
+  'Humungo',
+  'Teensy',
+  'Encounter',
+];
