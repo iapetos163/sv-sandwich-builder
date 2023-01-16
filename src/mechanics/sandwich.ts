@@ -494,9 +494,11 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
 
     const numEgg = fillings.filter((f) => f.name === 'Egg').length;
     const numChorizo = fillings.filter((f) => f.name === 'Chorizo').length;
+    const numPepper = condiments.filter((f) => f.name === 'Pepper').length;
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
-    const debugCondition = false;
+    // TODO: figure out where we lose bitter/salty
+    const debugCondition = numCondiments === 0;
     if (debugCondition) {
       console.debug(
         `
