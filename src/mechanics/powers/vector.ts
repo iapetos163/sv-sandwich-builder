@@ -24,7 +24,7 @@ export const getTargetMealPowerVector = ({
   const targetMpIndex = mealPowers.indexOf(targetPower.mealPower);
   const targetAmount =
     mpBoostAtTargetPlace.mpIndex > targetMpIndex
-      ? mpBoostAtTargetPlace.amount
+      ? Math.max(mpBoostAtTargetPlace.amount, 1)
       : mpBoostAtTargetPlace.amount + 1;
 
   return mealPowers.map((mp, i) =>

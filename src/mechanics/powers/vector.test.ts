@@ -330,4 +330,17 @@ describe('getTargetMealPowerVector', () => {
     });
     expect(v[0]).toBe(0);
   });
+  it('Does not output zero when given Egg power and zero', () => {
+    const v = getTargetMealPowerVector({
+      targetPower: { mealPower: 'Egg', type: 'Steel', level: 3 },
+      targetConfig: {
+        config: 'ONE_ONE_THREE',
+        typePlaceIndex: 0,
+        mpPlaceIndex: 2,
+      },
+      rankedMealPowerBoosts: [],
+      mealPowerVector: [],
+    });
+    expect(v[0]).toBeGreaterThan(0);
+  });
 });
