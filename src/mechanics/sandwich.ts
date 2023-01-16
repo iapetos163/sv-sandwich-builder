@@ -498,8 +498,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
     // TODO: figure out where we lose bitter/salty
-    const debugCondition =
-      numEgg === 4 && numFillings === 4 && numCondiments === 1;
+    const debugCondition = false;
     if (debugCondition) {
       console.debug(
         `
@@ -574,7 +573,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         }
 
         const newMealPowerVector = add(
-          currentBoostedMealPowerVector,
+          baseMealPowerVector,
           newIngredient.baseMealPowerVector,
         );
         const newFlavorVector = add(flavorVector, newIngredient.flavorVector);
@@ -590,18 +589,18 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         const targetPowerFound = newPowers.some((p) =>
           powersMatch(p, targetPower),
         );
-        // if (debugCondition) {
-        //   console.debug({
-        //     newMealPowerVector,
-        //     newBoostedMealPower,
-        //     newTypeVector,
-        //     newFlavorVector,
-        //     newPowers,
-        //     newFillings,
-        //     newCondiments,
-        //     targetPowerFound,
-        //   });
-        // }
+        if (debugCondition && newIngredient.name === 'Salt') {
+          console.debug({
+            newMealPowerVector,
+            newBoostedMealPower,
+            newTypeVector,
+            newFlavorVector,
+            newPowers,
+            newFillings,
+            newCondiments,
+            targetPowerFound,
+          });
+        }
 
         if (
           targetPowerFound &&

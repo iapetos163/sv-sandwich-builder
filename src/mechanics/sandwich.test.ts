@@ -255,6 +255,7 @@ describe('makeSandwichForPower', () => {
 
     // Klawf, Bitter Herba, Salty Herba
     // 4x Egg, Pepper, Salty/Bitter Herba
+    // 4x Egg, Pepper, Salt, Spicy Herba Mystica
     expect(sandwich).not.toBeNull();
 
     const numIngredients =
