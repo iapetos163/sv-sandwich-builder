@@ -208,15 +208,15 @@ const selectIngredientCandidates = ({
     rankedMealPowerBoosts,
     mealPowerVector: currentBoostedMealPowerVector,
   });
-  if (debug) {
-    console.debug({
-      targetPower,
-      targetConfig,
-      rankedMealPowerBoosts,
-      mealPowerVector: currentBoostedMealPowerVector,
-      targetMealPowerVector,
-    });
-  }
+  // if (debug) {
+  //   console.debug({
+  //     targetPower,
+  //     targetConfig,
+  //     rankedMealPowerBoosts,
+  //     mealPowerVector: currentBoostedMealPowerVector,
+  //     targetMealPowerVector,
+  //   });
+  // }
   const deltaMealPowerVector = diff(
     targetMealPowerVector,
     currentBoostedMealPowerVector,
@@ -498,7 +498,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
     // TODO: figure out where we lose bitter/salty
-    const debugCondition = numCondiments === 0;
+    const debugCondition =
+      numEgg === 4 && numFillings === 4 && numCondiments === 1;
     if (debugCondition) {
       console.debug(
         `
@@ -589,18 +590,18 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
         const targetPowerFound = newPowers.some((p) =>
           powersMatch(p, targetPower),
         );
-        if (debugCondition) {
-          console.debug({
-            newMealPowerVector,
-            newBoostedMealPower,
-            newTypeVector,
-            newFlavorVector,
-            newPowers,
-            newFillings,
-            newCondiments,
-            targetPowerFound,
-          });
-        }
+        // if (debugCondition) {
+        //   console.debug({
+        //     newMealPowerVector,
+        //     newBoostedMealPower,
+        //     newTypeVector,
+        //     newFlavorVector,
+        //     newPowers,
+        //     newFillings,
+        //     newCondiments,
+        //     targetPowerFound,
+        //   });
+        // }
 
         if (
           targetPowerFound &&
