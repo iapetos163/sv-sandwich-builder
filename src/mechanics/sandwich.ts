@@ -29,9 +29,9 @@ import {
   rankFlavorBoosts,
 } from './taste';
 
-const CANDIDATE_SCORE_THRESHOLD = 0.4;
-const MAX_CANDIDATES = 2;
-const CONDIMENT_BONUS = 1.7;
+const CANDIDATE_SCORE_THRESHOLD = 0.2;
+const MAX_CANDIDATES = 3;
+const CONDIMENT_BONUS = 0.4;
 
 // TODO: change these for multiplayer
 const maxFillings = 6;
@@ -328,10 +328,7 @@ const selectIngredientCandidates = ({
           ? CONDIMENT_BONUS
           : 0));
 
-    if (
-      debug &&
-      (ing.name === 'Bitter Herba Mystica' || ing.name === 'Sour Herba Mystica')
-    ) {
+    if (debug && (ing.name === 'Salt' || ing.name === 'Pepper')) {
       console.debug(
         `${ing.name}: ${score}
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
@@ -500,7 +497,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     const numEgg = fillings.filter((f) => f.name === 'Egg').length;
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
-    const debugCondition = numFillings === 0 && numCondiments === 0;
+    const debugCondition = false;
     if (debugCondition) {
       console.debug(
         `
