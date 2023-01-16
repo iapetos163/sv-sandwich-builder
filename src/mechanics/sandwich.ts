@@ -498,7 +498,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     const numChorizo = fillings.filter((f) => f.name === 'Chorizo').length;
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
-    const debugCondition = numFillings === 0 && numCondiments === 0;
+    const debugCondition = false;
     if (debugCondition) {
       console.debug(
         `

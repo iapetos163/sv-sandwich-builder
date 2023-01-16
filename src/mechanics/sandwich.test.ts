@@ -299,13 +299,6 @@ describe('makeSandwichForPower', () => {
     // 3x Herbed Sausage, 1x Noodles, 2x Vinegar, Bitter Herba
     expect(sandwich).not.toBeNull();
 
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
-
     const numFillings = sandwich!.fillings.length;
     const numHerba = sandwich!.condiments.filter(
       (s) => s.isHerbaMystica,
@@ -366,15 +359,8 @@ describe('makeSandwichForPower', () => {
       level: 3,
     });
 
-    //
+    // 2x Herbed Sausage, 2x Rice, Cream Cheese, Chili Sauce OR jam, curry powder, sour herba
     expect(sandwich).not.toBeNull();
-
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
 
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
@@ -398,13 +384,6 @@ describe('makeSandwichForPower', () => {
     //
     expect(sandwich).not.toBeNull();
 
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
-
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
     const numFillings = sandwich!.fillings.length;
@@ -425,13 +404,6 @@ describe('makeSandwichForPower', () => {
 
     //
     expect(sandwich).not.toBeNull();
-
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
 
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
