@@ -256,13 +256,6 @@ describe('makeSandwichForPower', () => {
     // 4x Egg, Pepper, Salty/Bitter Herba
     expect(sandwich).not.toBeNull();
 
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
-
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
     const numFillings = sandwich!.fillings.length;
@@ -332,13 +325,6 @@ describe('makeSandwichForPower', () => {
     // 4x Egg, Jam or PB, Marmalade, Spicy Herba
     expect(sandwich).not.toBeNull();
 
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
-
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
     const numFillings = sandwich!.fillings.length;
@@ -362,6 +348,27 @@ describe('makeSandwichForPower', () => {
     // 4x Egg, 1x PB, Sour Herba
     expect(sandwich).not.toBeNull();
 
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(6);
+  });
+  it('Produces a sandwich with Lv 3 Catch Water', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Catch',
+      type: 'Water',
+      level: 3,
+    });
+
+    //
+    expect(sandwich).not.toBeNull();
+
     console.debug(
       `${sandwich!.fillings
         .concat(sandwich!.condiments)
@@ -379,6 +386,63 @@ describe('makeSandwichForPower', () => {
     expect(numHerba).toBeLessThanOrEqual(1);
     expect(numFillings).toBeLessThanOrEqual(4);
     expect(numIngredients).toBeLessThanOrEqual(6);
+  });
+
+  it('Produces a sandwich with Lv 3 Egg', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Egg',
+      type: 'Normal',
+      level: 3,
+    });
+
+    //
+    expect(sandwich).not.toBeNull();
+
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(6);
+  });
+  it('Produces a sandwich with Lv 3 Encounter Bug', () => {
+    const sandwich = makeSandwichForPower({
+      mealPower: 'Encounter',
+      type: 'Bug',
+      level: 3,
+    });
+
+    //
+    expect(sandwich).not.toBeNull();
+
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numFillings = sandwich!.fillings.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBeLessThanOrEqual(1);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(7);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {

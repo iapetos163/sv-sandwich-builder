@@ -209,15 +209,15 @@ const selectIngredientCandidates = ({
     rankedMealPowerBoosts,
     mealPowerVector: currentBoostedMealPowerVector,
   });
-  // if (debug) {
-  //   console.debug({
-  //     targetPower,
-  //     targetConfig,
-  //     rankedMealPowerBoosts,
-  //     mealPowerVector: currentBoostedMealPowerVector,
-  //     targetMealPowerVector,
-  //   });
-  // }
+  if (debug) {
+    console.debug({
+      targetPower,
+      targetConfig,
+      rankedMealPowerBoosts,
+      mealPowerVector: currentBoostedMealPowerVector,
+      targetMealPowerVector,
+    });
+  }
   const deltaMealPowerVector = diff(
     targetMealPowerVector,
     currentBoostedMealPowerVector,
@@ -495,9 +495,10 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       candidatePowers[0];
 
     const numEgg = fillings.filter((f) => f.name === 'Egg').length;
+    const numChorizo = fillings.filter((f) => f.name === 'Chorizo').length;
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
-    const debugCondition = false;
+    const debugCondition = numFillings === 0 && numCondiments === 0;
     if (debugCondition) {
       console.debug(
         `
