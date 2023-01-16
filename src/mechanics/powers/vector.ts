@@ -1,4 +1,3 @@
-import { allTypes, MealPower, mealPowers, TypeName } from '../../strings';
 import { Power } from '../../types';
 import { MealPowerBoost, TargetConfig, TypeBoost } from './index';
 
