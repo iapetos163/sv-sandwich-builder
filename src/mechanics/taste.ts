@@ -1,75 +1,81 @@
-import { Flavor, flavors, MealPower, mealPowers } from '../strings';
-import { Boosts } from '../types';
+import { Flavor, MealPower, rangeMealPowers, rangeFlavors } from '../enum';
 
 export interface FlavorBoost {
-  name: Flavor;
+  flavor: Flavor;
   amount: number;
 }
 
-const tasteMap: Record<Flavor, Record<Flavor, MealPower>> = {
-  Sweet: {
-    Sweet: 'Egg',
-    Salty: 'Egg',
-    Sour: 'Catch',
-    Bitter: 'Egg',
-    Hot: 'Raid',
-  },
-  Salty: {
-    Salty: 'Encounter',
-    Sweet: 'Encounter',
-    Sour: 'Encounter',
-    Bitter: 'Exp',
-    Hot: 'Encounter',
-  },
-  Sour: {
-    Sour: 'Teensy',
-    Sweet: 'Catch',
-    Salty: 'Teensy',
-    Bitter: 'Teensy',
-    Hot: 'Teensy',
-  },
-  Bitter: {
-    Bitter: 'Item',
-    Sweet: 'Item',
-    Salty: 'Exp',
-    Sour: 'Item',
-    Hot: 'Item',
-  },
-  Hot: {
-    Hot: 'Humungo',
-    Sweet: 'Raid',
-    Salty: 'Humungo',
-    Sour: 'Humungo',
-    Bitter: 'Humungo',
-  },
-};
+const tasteMap: MealPower[][] = rangeMealPowers.map(() => []);
+tasteMap[Flavor.SWEET][Flavor.SWEET] = MealPower.EGG;
+tasteMap[Flavor.SWEET][Flavor.SALTY] = MealPower.EGG;
+tasteMap[Flavor.SWEET][Flavor.SOUR] = MealPower.CATCH;
+tasteMap[Flavor.SWEET][Flavor.BITTER] = MealPower.EGG;
+tasteMap[Flavor.SWEET][Flavor.SPICY] = MealPower.RAID;
+
+tasteMap[Flavor.SALTY][Flavor.SALTY] = MealPower.ENCOUNTER;
+tasteMap[Flavor.SALTY][Flavor.SWEET] = MealPower.ENCOUNTER;
+tasteMap[Flavor.SALTY][Flavor.SOUR] = MealPower.ENCOUNTER;
+tasteMap[Flavor.SALTY][Flavor.BITTER] = MealPower.EXP;
+tasteMap[Flavor.SALTY][Flavor.SPICY] = MealPower.ENCOUNTER;
+
+tasteMap[Flavor.SOUR][Flavor.SALTY] = MealPower.TEENSY;
+tasteMap[Flavor.SOUR][Flavor.SWEET] = MealPower.CATCH;
+tasteMap[Flavor.SOUR][Flavor.SOUR] = MealPower.TEENSY;
+tasteMap[Flavor.SOUR][Flavor.BITTER] = MealPower.TEENSY;
+tasteMap[Flavor.SOUR][Flavor.SPICY] = MealPower.TEENSY;
+
+tasteMap[Flavor.BITTER][Flavor.SALTY] = MealPower.EXP;
+tasteMap[Flavor.BITTER][Flavor.SWEET] = MealPower.ITEM;
+tasteMap[Flavor.BITTER][Flavor.SOUR] = MealPower.ITEM;
+tasteMap[Flavor.BITTER][Flavor.BITTER] = MealPower.ITEM;
+tasteMap[Flavor.BITTER][Flavor.SPICY] = MealPower.ITEM;
+
+tasteMap[Flavor.SPICY][Flavor.SALTY] = MealPower.HUMUNGO;
+tasteMap[Flavor.SPICY][Flavor.SWEET] = MealPower.RAID;
+tasteMap[Flavor.SPICY][Flavor.SOUR] = MealPower.HUMUNGO;
+tasteMap[Flavor.SPICY][Flavor.BITTER] = MealPower.HUMUNGO;
+tasteMap[Flavor.SPICY][Flavor.SPICY] = MealPower.HUMUNGO;
 
 /** If has more than one element, then it is a subset of secondaryFlavorsForPower[power] */
-const primaryFlavorsForPower: Record<MealPower, Flavor[]> = {
-  Egg: ['Sweet'],
-  Humungo: ['Hot'],
-  Teensy: ['Sour'],
-  Item: ['Bitter'],
-  Encounter: ['Salty'],
-  Exp: ['Bitter', 'Salty'],
-  Catch: ['Sweet', 'Sour'],
-  Raid: ['Sweet', 'Hot'],
-  Title: [],
-  Sparkling: [],
-};
+const primaryFlavorsForPower: Flavor[][] = [];
+primaryFlavorsForPower[MealPower.EGG] = [Flavor.SWEET];
+primaryFlavorsForPower[MealPower.HUMUNGO] = [Flavor.SPICY];
+primaryFlavorsForPower[MealPower.TEENSY] = [Flavor.SOUR];
+primaryFlavorsForPower[MealPower.ITEM] = [Flavor.BITTER];
+primaryFlavorsForPower[MealPower.ENCOUNTER] = [Flavor.SALTY];
+primaryFlavorsForPower[MealPower.EXP] = [Flavor.BITTER, Flavor.SALTY];
+primaryFlavorsForPower[MealPower.CATCH] = [Flavor.SWEET, Flavor.SOUR];
+primaryFlavorsForPower[MealPower.RAID] = [Flavor.SWEET, Flavor.SPICY];
+primaryFlavorsForPower[MealPower.TITLE] = [];
+primaryFlavorsForPower[MealPower.SPARKLING] = [];
 
-const secondaryFlavorsForPower: Record<MealPower, Flavor[]> = {
-  Egg: ['Salty', 'Bitter'],
-  Humungo: ['Salty', 'Bitter', 'Sour'],
-  Teensy: ['Salty', 'Bitter', 'Hot'],
-  Item: ['Hot', 'Sour', 'Sweet'],
-  Encounter: ['Sweet', 'Hot', 'Sour'],
-  Exp: ['Salty', 'Bitter'],
-  Catch: ['Sour', 'Sweet'],
-  Raid: ['Hot', 'Sweet'],
-  Title: [],
-  Sparkling: [],
-};
+const secondaryFlavorsForPower: Flavor[][] = [];
+secondaryFlavorsForPower[MealPower.EGG] = [Flavor.SALTY, Flavor.BITTER];
+secondaryFlavorsForPower[MealPower.HUMUNGO] = [
+  Flavor.SALTY,
+  Flavor.BITTER,
+  Flavor.SOUR,
+];
+secondaryFlavorsForPower[MealPower.TEENSY] = [
+  Flavor.SALTY,
+  Flavor.BITTER,
+  Flavor.SPICY,
+];
+secondaryFlavorsForPower[MealPower.ITEM] = [
+  Flavor.SPICY,
+  Flavor.SOUR,
+  Flavor.SWEET,
+];
+secondaryFlavorsForPower[MealPower.ENCOUNTER] = [
+  Flavor.SWEET,
+  Flavor.SPICY,
+  Flavor.SOUR,
+];
+secondaryFlavorsForPower[MealPower.EXP] = [Flavor.BITTER, Flavor.SALTY];
+secondaryFlavorsForPower[MealPower.CATCH] = [Flavor.SWEET, Flavor.SOUR];
+secondaryFlavorsForPower[MealPower.RAID] = [Flavor.SWEET, Flavor.SPICY];
+secondaryFlavorsForPower[MealPower.TITLE] = [];
+secondaryFlavorsForPower[MealPower.SPARKLING] = [];
 
 /*
   const componentFlavors: Record<MealPower, Flavor[]> = {
@@ -91,26 +97,23 @@ export const getBoostedMealPower = (rankedFlavorBoosts: FlavorBoost[]) => {
     return null;
   }
 
-  const firstFlavor = rankedFlavorBoosts[0].name;
-  const secondFlavor = rankedFlavorBoosts[1]?.name || firstFlavor;
+  const firstFlavor = rankedFlavorBoosts[0].flavor;
+  const secondFlavor =
+    rankedFlavorBoosts[1] && rankedFlavorBoosts[1].amount > 0
+      ? rankedFlavorBoosts[1].flavor
+      : firstFlavor;
 
   return tasteMap[firstFlavor][secondFlavor];
 };
 
-export const rankFlavorBoosts = (
-  flavorBoosts: Partial<Record<Flavor, number>>,
-) =>
-  Object.entries(flavorBoosts)
-    .sort(
-      ([fa, va], [fb, vb]) =>
-        vb - va ||
-        flavors.indexOf(fa as Flavor) - flavors.indexOf(fb as Flavor),
-    )
-    .map(([f, v]) => ({ name: f as Flavor, amount: v }));
+export const rankFlavorBoosts = (flavorVector: number[]) =>
+  flavorVector
+    .map((amount, flavor) => ({ flavor, amount }))
+    .sort((a, b) => b.amount - a.amount || a.flavor - b.flavor);
 
 export interface RelativeTasteVectorProps {
-  currentFlavorBoosts: Boosts<Flavor>;
-  ingredientFlavorBoosts: Boosts<Flavor>;
+  currentFlavorVector: number[];
+  ingredientFlavorVector: number[];
 }
 
 /**
@@ -122,27 +125,30 @@ const sumScaleClamp = (n1: number, n2: number) =>
   100 * Math.max(Math.min(n1 + n2, 1), -1);
 
 export const getRelativeTasteVector = (() => {
-  const flavorBoostsLookup: Partial<Record<string, FlavorBoost[]>> = {};
-  const memoRankFlavorBoosts = (flavorBoosts: Boosts<Flavor>) => {
-    const key = flavors.map((f) => flavorBoosts[f] || 0).join(',');
+  const flavorBoostsLookup: (FlavorBoost[] | undefined)[] = [];
+  const memoRankFlavorBoosts = (flavorVector: number[]) => {
+    const key = rangeFlavors.reduce(
+      (sum, f) => (flavorVector[f] ?? 0) * Math.pow(5, f) + sum,
+      0,
+    );
     const memoized = flavorBoostsLookup[key];
     if (memoized) return memoized;
-    const res = rankFlavorBoosts(flavorBoosts);
+    const res = rankFlavorBoosts(flavorVector);
     flavorBoostsLookup[key] = res;
     return res;
   };
 
   return ({
-    currentFlavorBoosts,
-    ingredientFlavorBoosts,
+    currentFlavorVector,
+    ingredientFlavorVector,
   }: RelativeTasteVectorProps) => {
-    const currentRankedFlavorBoosts = memoRankFlavorBoosts(currentFlavorBoosts);
+    const currentRankedFlavorBoosts = memoRankFlavorBoosts(currentFlavorVector);
 
     const highestBoostAmount = currentRankedFlavorBoosts[0]?.amount || 0;
-    const highestBoostFlavor = currentRankedFlavorBoosts[0]?.name;
+    const highestBoostFlavor = currentRankedFlavorBoosts[0]?.flavor;
     const secondHighestBoostAmount = currentRankedFlavorBoosts[1]?.amount || 0;
 
-    return mealPowers.map((mp, i) => {
+    return rangeMealPowers.map((mp) => {
       const primaryFlavors = primaryFlavorsForPower[mp];
       const secondaryFlavors = secondaryFlavorsForPower[mp];
       const numPrimary = primaryFlavors.length;
@@ -150,7 +156,7 @@ export const getRelativeTasteVector = (() => {
       const numTotal = numPrimary + numSecondary;
       if (numPrimary === 0) return 0;
 
-      const nonPrimaryFlavors = flavors.filter(
+      const nonPrimaryFlavors = rangeFlavors.filter(
         (f) => !primaryFlavors.includes(f),
       );
       const otherFlavors = nonPrimaryFlavors.filter(
@@ -164,15 +170,15 @@ export const getRelativeTasteVector = (() => {
       if (highestBoostAmount === 0) {
         const highestBoostForOther = Math.max(
           ...otherFlavors
-            .filter((f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount)
-            .map((f) => ingredientFlavorBoosts[f] || 0),
+            .filter((f) => (currentFlavorVector[f] || 0) >= highestBoostAmount)
+            .map((f) => ingredientFlavorVector[f] || 0),
         );
         const primaryComponents = primaryFlavors.map((f) => {
-          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          const ingBoost = ingredientFlavorVector[f] || 0;
           return (ingBoost - highestBoostForOther / 2) / Math.max(ingBoost, 1);
         });
         const secondaryComponents = secondaryFlavors.map((f) => {
-          const ingBoost = ingredientFlavorBoosts[f] || 0;
+          const ingBoost = ingredientFlavorVector[f] || 0;
           return (ingBoost - highestBoostForOther / 2) / Math.max(ingBoost, 1);
         });
 
@@ -187,22 +193,22 @@ export const getRelativeTasteVector = (() => {
       // We think we're defending but we aren't
       if (!primaryFirstMatch) {
         const secondaryFirstMatches = secondaryFlavors.filter(
-          (f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount,
+          (f) => (currentFlavorVector[f] || 0) >= highestBoostAmount,
         );
 
         const otherFlavorsBelowHighest = otherFlavors.filter(
-          (f) => (currentFlavorBoosts[f] || 0) < highestBoostAmount,
+          (f) => (currentFlavorVector[f] || 0) < highestBoostAmount,
         );
 
         const highestBoostForCurrentNonprimaryHighest = Math.max(
           ...nonPrimaryFlavors
-            .filter((f) => (currentFlavorBoosts[f] || 0) >= highestBoostAmount)
-            .map((f) => ingredientFlavorBoosts[f] || 0),
+            .filter((f) => (currentFlavorVector[f] || 0) >= highestBoostAmount)
+            .map((f) => ingredientFlavorVector[f] || 0),
         );
 
         const primaryComponents = primaryFlavors.map((f) => {
-          const ingBoost = ingredientFlavorBoosts[f] || 0;
-          const currentBoost = currentFlavorBoosts[f] || 0;
+          const ingBoost = ingredientFlavorVector[f] || 0;
+          const currentBoost = currentFlavorVector[f] || 0;
 
           const targetHighestBoost = Math.max(
             currentBoost + 1,
@@ -223,13 +229,13 @@ export const getRelativeTasteVector = (() => {
 
           const others2 = Math.max(
             ...otherFlavorsBelowHighest.map(
-              (f) => ingredientFlavorBoosts[f] || 0,
+              (f) => ingredientFlavorVector[f] || 0,
             ),
           );
 
           const secondaryComponents = secondaryFlavors.map((f) => {
-            const ingBoost = ingredientFlavorBoosts[f] || 0;
-            const currentBoost = currentFlavorBoosts[f] || 0;
+            const ingBoost = ingredientFlavorVector[f] || 0;
+            const currentBoost = currentFlavorVector[f] || 0;
             return (
               (ingBoost - others2) /
               Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
@@ -249,8 +255,8 @@ export const getRelativeTasteVector = (() => {
         // neutral: secondary < highestBoostAmount
 
         const otherToHighest = otherFlavorsBelowHighest.map((f) => {
-          const ingBoost = ingredientFlavorBoosts[f] || 0;
-          const currentBoost = currentFlavorBoosts[f] || 0;
+          const ingBoost = ingredientFlavorVector[f] || 0;
+          const currentBoost = currentFlavorVector[f] || 0;
           return (
             ingBoost / Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
           );
@@ -274,26 +280,26 @@ export const getRelativeTasteVector = (() => {
       * primaryFirstMatches.length > 0
       */
       const secondarySecondMatches = secondaryFlavors.filter(
-        (f) => (currentFlavorBoosts[f] || 0) === secondHighestBoostAmount,
+        (f) => (currentFlavorVector[f] || 0) === secondHighestBoostAmount,
       );
 
       const nonPrimariesFromSecondToHighest = nonPrimaryFlavors
         .filter(
-          (f) => (currentFlavorBoosts[f] || 0) >= secondHighestBoostAmount,
+          (f) => (currentFlavorVector[f] || 0) >= secondHighestBoostAmount,
         )
         .map((f) => {
-          const ingBoost = ingredientFlavorBoosts[f] || 0;
-          const currentBoost = currentFlavorBoosts[f] || 0;
+          const ingBoost = ingredientFlavorVector[f] || 0;
+          const currentBoost = currentFlavorVector[f] || 0;
           return (
             ingBoost / Math.max(highestBoostAmount - currentBoost, ingBoost, 1)
           );
         });
 
       const othersToSecond = otherFlavors
-        .filter((f) => (currentFlavorBoosts[f] || 0) < secondHighestBoostAmount)
+        .filter((f) => (currentFlavorVector[f] || 0) < secondHighestBoostAmount)
         .map((f) => {
-          const ingBoost = ingredientFlavorBoosts[f] || 0;
-          const currentBoost = currentFlavorBoosts[f] || 0;
+          const ingBoost = ingredientFlavorVector[f] || 0;
+          const currentBoost = currentFlavorVector[f] || 0;
           return (
             ingBoost /
             Math.max(secondHighestBoostAmount - currentBoost, ingBoost, 1)
@@ -314,11 +320,11 @@ export const getRelativeTasteVector = (() => {
 
         const secondariesToSecond = secondaryFlavors
           .filter(
-            (f) => (currentFlavorBoosts[f] || 0) < secondHighestBoostAmount,
+            (f) => (currentFlavorVector[f] || 0) < secondHighestBoostAmount,
           )
           .map((f) => {
-            const ingBoost = ingredientFlavorBoosts[f] || 0;
-            const currentBoost = currentFlavorBoosts[f] || 0;
+            const ingBoost = ingredientFlavorVector[f] || 0;
+            const currentBoost = currentFlavorVector[f] || 0;
             return (
               ingBoost /
               Math.max(secondHighestBoostAmount - currentBoost, ingBoost, 1)
