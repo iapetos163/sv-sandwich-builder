@@ -1,3 +1,4 @@
+import { MealPower, TypeIndex } from '../enum';
 import {
   getMpScoreWeight,
   getTypeScoreWeight,
@@ -29,8 +30,8 @@ describe('getTypeScoreWeight', () => {
 describe('makeSandwichForPower', () => {
   it('Produces a sandwich with Lv 3 Sparkling Ground', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Sparkling',
-      type: 'Ground',
+      mealPower: MealPower.SPARKLING,
+      type: TypeIndex.GROUND,
       level: 3,
     });
 
@@ -50,8 +51,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Title Normal', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Title',
-      type: 'Normal',
+      mealPower: MealPower.TITLE,
+      type: TypeIndex.NORMAL,
       level: 2,
     });
 
@@ -72,8 +73,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Encounter Fire', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Encounter',
-      type: 'Fire',
+      mealPower: MealPower.ENCOUNTER,
+      type: TypeIndex.FIRE,
       level: 2,
     });
 
@@ -89,8 +90,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Catch Bug', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Catch',
-      type: 'Bug',
+      mealPower: MealPower.CATCH,
+      type: TypeIndex.BUG,
       level: 2,
     });
 
@@ -100,8 +101,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Egg', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Egg',
-      type: 'Bug',
+      mealPower: MealPower.EGG,
+      type: TypeIndex.BUG,
       level: 2,
     });
 
@@ -111,8 +112,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Exp Dark', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Exp',
-      type: 'Dark',
+      mealPower: MealPower.EXP,
+      type: TypeIndex.DARK,
       level: 2,
     });
 
@@ -126,8 +127,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Humungo Dragon', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Humungo',
-      type: 'Dragon',
+      mealPower: MealPower.HUMUNGO,
+      type: TypeIndex.DRAGON,
       level: 2,
     });
 
@@ -141,8 +142,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Item Electric', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Item',
-      type: 'Electric',
+      mealPower: MealPower.ITEM,
+      type: TypeIndex.ELECTRIC,
       level: 2,
     });
 
@@ -159,8 +160,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Raid Fairy', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Raid',
-      type: 'Fairy',
+      mealPower: MealPower.RAID,
+      type: TypeIndex.FAIRY,
       level: 2,
     });
 
@@ -174,8 +175,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Teensy Fighting', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Teensy',
-      type: 'Fighting',
+      mealPower: MealPower.TEENSY,
+      type: TypeIndex.FIGHTING,
       level: 2,
     });
 
@@ -185,8 +186,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Catch Flying', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Catch',
-      type: 'Flying',
+      mealPower: MealPower.CATCH,
+      type: TypeIndex.FLYING,
       level: 2,
     });
 
@@ -196,8 +197,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Encounter Ghost', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Encounter',
-      type: 'Ghost',
+      mealPower: MealPower.ENCOUNTER,
+      type: TypeIndex.GHOST,
       level: 2,
     });
 
@@ -207,8 +208,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Exp Grass', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Exp',
-      type: 'Grass',
+      mealPower: MealPower.EXP,
+      type: TypeIndex.GRASS,
       level: 2,
     });
 
@@ -219,8 +220,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 2 Exp Steel', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Exp',
-      type: 'Steel',
+      mealPower: MealPower.EXP,
+      type: TypeIndex.STEEL,
       level: 2,
     });
 
@@ -230,8 +231,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a valid recipe when Lv 1 Sparkling is requested', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Sparkling',
-      type: 'Ice',
+      mealPower: MealPower.SPARKLING,
+      type: TypeIndex.ICE,
       level: 1,
     });
 
@@ -247,8 +248,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 3 Exp Ice', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Exp',
-      type: 'Ice',
+      mealPower: MealPower.EXP,
+      type: TypeIndex.ICE,
       level: 3,
     });
 
@@ -271,8 +272,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 3 Humungo Poison', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Humungo',
-      type: 'Poison',
+      mealPower: MealPower.HUMUNGO,
+      type: TypeIndex.POISON,
       level: 3,
     });
 
@@ -290,8 +291,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 3 Item Psychic', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Item',
-      type: 'Psychic',
+      mealPower: MealPower.ITEM,
+      type: TypeIndex.PSYCHIC,
       level: 3,
     });
 
@@ -310,8 +311,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 3 Raid Rock', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Raid',
-      type: 'Rock',
+      mealPower: MealPower.RAID,
+      type: TypeIndex.ROCK,
       level: 3,
     });
 
@@ -333,8 +334,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 3 Teensy Steel', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Teensy',
-      type: 'Steel',
+      mealPower: MealPower.TEENSY,
+      type: TypeIndex.STEEL,
       level: 3,
     });
 
@@ -354,8 +355,8 @@ describe('makeSandwichForPower', () => {
   });
   it('Produces a sandwich with Lv 3 Catch Water', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Catch',
-      type: 'Water',
+      mealPower: MealPower.CATCH,
+      type: TypeIndex.WATER,
       level: 3,
     });
 
@@ -376,8 +377,8 @@ describe('makeSandwichForPower', () => {
 
   it('Produces a sandwich with Lv 3 Egg', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Egg',
-      type: 'Normal',
+      mealPower: MealPower.EGG,
+      type: TypeIndex.NORMAL,
       level: 3,
     });
 
@@ -397,8 +398,8 @@ describe('makeSandwichForPower', () => {
   });
   it('Produces a sandwich with Lv 3 Encounter Bug', () => {
     const sandwich = makeSandwichForPower({
-      mealPower: 'Encounter',
-      type: 'Bug',
+      mealPower: MealPower.ENCOUNTER,
+      type: TypeIndex.BUG,
       level: 3,
     });
 
@@ -419,8 +420,8 @@ describe('makeSandwichForPower', () => {
 
   // it('Produces a sandwich with Lv 2 mp t', () => {
   //   const sandwich = makeSandwichForPower({
-  //     mealPower: 'Catch',
-  //     type: 'Bug',
+  //     mealPower: MealPower.CATCH,
+  //     type: TypeIndex.BUG,
   //     level: 2,
   //   });
 

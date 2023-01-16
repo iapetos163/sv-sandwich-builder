@@ -46,7 +46,6 @@ describe('getBoostedMealPower', () => {
     flavorVector[Flavor.SPICY] = -5;
     flavorVector[Flavor.SALTY] = -5;
     const rankedFlavorBoosts = rankFlavorBoosts(flavorVector);
-    console.debug({ rankedFlavorBoosts });
     const boosted = getBoostedMealPower(rankedFlavorBoosts);
     expect(boosted).toBe(MealPower.EGG);
   });

@@ -104,13 +104,13 @@ const main = async () => {
     ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => ({
       pieces,
       name,
-      isHerbaMystica: name.endsWith('Herba Mystica'),
+      isHerbaMystica: false,
       imagePath: basename(imageUrl),
       imageUrl,
       flavorVector: getFlavorVector(tastes, pieces),
       typeVector: getTypeVector(types, pieces),
       baseMealPowerVector: getMealPowerVector(powers, pieces),
-      ingredientType: 'condiment',
+      ingredientType: 'filling',
     }),
   );
 
