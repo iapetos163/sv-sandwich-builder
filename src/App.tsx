@@ -15,6 +15,10 @@ const StyledContainer = styled.div`
     margin-top: 0;
   }
 
+  h3 {
+    font-size: 1em;
+  }
+
   > header {
     text-align: center;
 
