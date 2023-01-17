@@ -78,15 +78,16 @@ const PowerSelector = ({
 
   const isInvalid = useMemo(
     () =>
-      (selectedMealPower && !allowedMealPowers[selectedMealPower]) ||
-      (selectedType && !allowedTypes[selectedType]),
+      (selectedMealPower !== null && !allowedMealPowers[selectedMealPower]) ||
+      (selectedType !== null && !allowedTypes[selectedType]),
     [allowedTypes, allowedMealPowers, selectedMealPower, selectedType],
   );
 
   useEffect(() => {
+    console.log({ selectedMealPower });
     if (
-      !selectedMealPower ||
-      (!selectedType && mealPowerHasType(selectedMealPower)) ||
+      selectedMealPower === null ||
+      (selectedType === null && mealPowerHasType(selectedMealPower)) ||
       selectedLevel > maxLevel
     ) {
       onChange(null);
