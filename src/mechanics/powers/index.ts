@@ -1,19 +1,18 @@
-import { allTypes, MealPower, mealPowers, TypeName } from '../../strings';
-import { Boosts, Power } from '../../types';
+import { MealPower, rangeMealPowers, TypeIndex } from '../../enum';
+import { Power } from '../../types';
 
 export interface TypeBoost {
-  name: TypeName;
+  type: TypeIndex;
   amount: number;
-  typeIndex: number;
 }
 
 export interface MealPowerBoost {
-  name: MealPower;
+  mealPower: MealPower;
   amount: number;
-  mpIndex: number;
 }
 
-export const mealPowerHasType = (mealPower: MealPower) => mealPower !== 'Egg';
+export const mealPowerHasType = (mealPower: MealPower) =>
+  mealPower !== MealPower.EGG;
 
 export type TypeArrangement =
   | 'ONE_ONE_ONE'
@@ -26,9 +25,9 @@ export const calculateTypes = (
   rankedTypes: TypeBoost[],
 ): [TypeBoost, TypeBoost, TypeBoost] => {
   const [
-    firstType = { name: allTypes[0], typeIndex: 0, amount: 0 },
-    secondType = { name: allTypes[1], typeIndex: 1, amount: 0 },
-    thirdType = { name: allTypes[2], typeIndex: 2, amount: 0 },
+    firstType = { type: 0, amount: 0 },
+    secondType = { type: 1, amount: 0 },
+    thirdType = { type: 2, amount: 0 },
   ] = rankedTypes;
   const { amount: mainTypeAmount } = firstType;
   const { amount: secondTypeAmount } = secondType;
@@ -114,16 +113,16 @@ export const getTargetConfigs = (
   targetPower: Power,
   targetNumHerba: number,
 ): TargetConfig[] => {
-  if (targetNumHerba >= 2 && targetPower.mealPower === 'Sparkling') {
+  if (targetNumHerba >= 2 && targetPower.mealPower === MealPower.SPARKLING) {
     return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
   }
-  if (targetNumHerba >= 2 && targetPower.mealPower === 'Title') {
+  if (targetNumHerba >= 2 && targetPower.mealPower === MealPower.TITLE) {
     return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 }];
   }
   if (targetNumHerba >= 2) {
     return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
   }
-  if (targetNumHerba >= 1 && targetPower.mealPower === 'Title') {
+  if (targetNumHerba >= 1 && targetPower.mealPower === MealPower.TITLE) {
     return [
       { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
       { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
@@ -185,84 +184,75 @@ export const getTypeTargetIndices = (
   rankedTypeBoosts: TypeBoost[],
 ): [number, number, number] => {
   if (!mealPowerHasType(targetPower.mealPower)) {
-    const firstTargetIndex = rankedTypeBoosts[0]?.typeIndex ?? 0;
+    const firstTargetIndex = rankedTypeBoosts[0]?.type ?? 0;
     const secondTargetIndex =
-      rankedTypeBoosts[1]?.typeIndex ??
-      [0, 1].find((i) => i !== firstTargetIndex);
+      rankedTypeBoosts[1]?.type ?? [0, 1].find((i) => i !== firstTargetIndex);
     const thirdTargetIndex =
-      rankedTypeBoosts[2]?.typeIndex ??
+      rankedTypeBoosts[2]?.type ??
       [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
     return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
   }
 
   const { type: targetType } = targetPower;
   if (targetPlaceIndex === 0) {
-    const firstTargetIndex = allTypes.indexOf(targetType);
+    const firstTargetIndex = targetType;
     const secondTargetIndex =
-      rankedTypeBoosts[0]?.typeIndex ??
-      [0, 1].find((i) => i !== firstTargetIndex);
+      rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== firstTargetIndex);
     const thirdTargetIndex =
-      rankedTypeBoosts[1]?.typeIndex ??
+      rankedTypeBoosts[1]?.type ??
       [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
     return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
   } else if (targetPlaceIndex === 1) {
-    const secondTargetIndex = allTypes.indexOf(targetType);
+    const secondTargetIndex = targetType;
     const firstTargetIndex =
-      rankedTypeBoosts[0]?.typeIndex ??
-      [0, 1].find((i) => i !== secondTargetIndex);
+      rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== secondTargetIndex);
     const thirdTargetIndex =
-      rankedTypeBoosts[1]?.typeIndex ??
+      rankedTypeBoosts[1]?.type ??
       [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
 
     return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
   }
-  const thirdTargetIndex = allTypes.indexOf(targetType);
+  const thirdTargetIndex = targetType;
   const firstTargetIndex =
-    rankedTypeBoosts[0]?.typeIndex ??
-    [0, 1].find((i) => i !== thirdTargetIndex);
+    rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== thirdTargetIndex);
   const secondTargetIndex =
-    rankedTypeBoosts[1]?.typeIndex ??
+    rankedTypeBoosts[1]?.type ??
     [0, 1, 2].find((i) => i !== firstTargetIndex && i !== thirdTargetIndex);
   return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
 };
 
 export const rankMealPowerBoosts = (
-  mealPowerBoosts: Boosts<MealPower>,
+  mealPowerVector: number[],
   boostedMealPower: MealPower | null,
 ): MealPowerBoost[] => {
-  return mealPowers
-    .map((mp, i) => ({
-      name: mp as MealPower,
-      amount:
-        mp === boostedMealPower
-          ? (mealPowerBoosts[mp] || 0) + 100
-          : mealPowerBoosts[mp] || 0,
-      mpIndex: i,
+  return mealPowerVector
+    .map((c, i) => ({
+      mealPower: i,
+      amount: i === boostedMealPower ? c + 100 : c,
     }))
-    .sort((a, b) => b.amount - a.amount || a.mpIndex - b.mpIndex);
+    .sort((a, b) => b.amount - a.amount || a.mealPower - b.mealPower);
 };
 
-export const rankTypeBoosts = (typeBoosts: Boosts<TypeName>) =>
-  Object.entries(typeBoosts)
+export const rankTypeBoosts = (typeVector: number[]) =>
+  typeVector
     .map(
-      ([t, v]): TypeBoost => ({
-        name: t as TypeName,
-        amount: v,
-        typeIndex: allTypes.indexOf(t as TypeName),
+      (c, i): TypeBoost => ({
+        type: i,
+        amount: c,
       }),
     )
-    .sort((a, b) => b.amount - a.amount || a.typeIndex - b.typeIndex);
+    .sort((a, b) => b.amount - a.amount || a.type - b.type);
 
 export const evaluateBoosts = (
-  mealPowerBoosts: Boosts<MealPower>,
+  mealPowerVector: number[],
   boostedMealPower: MealPower | null,
-  typeBoosts: Boosts<TypeName>,
+  typeVector: number[],
 ) => {
   const rankedMealPowerBoosts = rankMealPowerBoosts(
-    mealPowerBoosts,
+    mealPowerVector,
     boostedMealPower,
   );
-  const rankedTypeBoosts = rankTypeBoosts(typeBoosts);
+  const rankedTypeBoosts = rankTypeBoosts(typeVector);
 
   const assignedTypes = calculateTypes(rankedTypeBoosts);
 
@@ -270,7 +260,10 @@ export const evaluateBoosts = (
   const assignedLevels = calculateLevels(rankedTypeBoosts);
 
   return rankedMealPowerBoosts
-    .filter((mpBoost) => mpBoost.name !== 'Sparkling' || mpBoost.amount > 1000)
+    .filter(
+      (mpBoost) =>
+        mpBoost.mealPower !== MealPower.SPARKLING || mpBoost.amount > 1000,
+    )
     .slice(0, 3)
     .filter(
       (mpBoost, i) =>
@@ -278,8 +271,8 @@ export const evaluateBoosts = (
     )
     .map(
       (mpBoost, i): Power => ({
-        mealPower: mpBoost.name,
-        type: assignedTypes[i].name,
+        mealPower: mpBoost.mealPower,
+        type: assignedTypes[i].type,
         level: assignedLevels[i],
       }),
     );

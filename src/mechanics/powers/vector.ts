@@ -1,4 +1,4 @@
-import { allTypes, MealPower, mealPowers, TypeName } from '../../strings';
+import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
 import { Power } from '../../types';
 import { MealPowerBoost, TargetConfig, TypeBoost } from './index';
 
@@ -19,16 +19,15 @@ export const getTargetMealPowerVector = ({
 
   const mpBoostAtTargetPlace = rankedMealPowerBoosts[
     targetConfig.mpPlaceIndex
-  ] ?? { mpIndex: targetConfig.mpPlaceIndex, amount: 0 };
+  ] ?? { mealPower: targetConfig.mpPlaceIndex, amount: 0 };
 
-  const targetMpIndex = mealPowers.indexOf(targetPower.mealPower);
   const targetAmount =
-    mpBoostAtTargetPlace.mpIndex > targetMpIndex
+    mpBoostAtTargetPlace.mealPower > targetPower.mealPower
       ? Math.max(mpBoostAtTargetPlace.amount, 1)
       : mpBoostAtTargetPlace.amount + 1;
 
-  return mealPowers.map((mp, i) =>
-    i === targetMpIndex ? targetAmount : currentVector[i] || 0,
+  return rangeMealPowers.map((mp) =>
+    mp === targetPower.mealPower ? targetAmount : currentVector[mp] ?? 0,
   );
   // if (targetConfig.mpPlaceIndex === 0) {
   //   return mealPowers.map((mp, i) =>
@@ -59,13 +58,13 @@ export const getTargetMealPowerVector = ({
 };
 
 const getTargetTypeVectorForPosition = (
-  targetType: TypeName,
+  targetType: TypeIndex,
   targetPlaceIndex: number,
   currentRankedTypes: TypeBoost[],
   currentVector: number[],
 ) => {
   const currentPlaceIndex = currentRankedTypes.findIndex(
-    (t) => t.name === targetType,
+    (t) => t.type === targetType,
   );
 
   // Target type is at desired rank
@@ -78,25 +77,25 @@ const getTargetTypeVectorForPosition = (
 
   let typesAhead = currentRankedTypes
     .slice(0, targetPlaceIndex)
-    .map((rt) => rt.name);
+    .map((rt) => rt.type);
 
   if (typesAhead.length < targetPlaceIndex) {
     typesAhead = typesAhead
-      .concat(allTypes)
+      .concat(rangeTypes)
       .filter((t) => t !== targetType)
       .slice(0, targetPlaceIndex);
   }
 
   // Target type is behind desired rank
   if (currentPlaceIndex < 0 || currentPlaceIndex > targetPlaceIndex) {
-    return allTypes.map((t, i) => {
+    return rangeTypes.map((t) => {
       if (typesAhead.includes(t)) {
-        return Math.max(currentVector[i] || 0, currentTargetPlaceAmount + 2);
+        return Math.max(currentVector[t] ?? 0, currentTargetPlaceAmount + 2);
       }
       if (t === targetType) {
         return currentTargetPlaceAmount + 1;
       }
-      return currentVector[i] || 0;
+      return currentVector[t] ?? 0;
     });
   }
 
@@ -105,19 +104,19 @@ const getTargetTypeVectorForPosition = (
 
   let typesBehind = currentRankedTypes
     .slice(currentPlaceIndex + 1, targetPlaceIndex + 1)
-    .map((rt) => rt.name);
+    .map((rt) => rt.type);
   if (typesBehind.length < targetPlaceIndex - currentPlaceIndex) {
     typesBehind = typesBehind
-      .concat(allTypes)
+      .concat(rangeTypes)
       .filter((t) => t !== targetType)
       .slice(0, targetPlaceIndex - currentPlaceIndex);
   }
 
-  return allTypes.map((t, i) => {
+  return rangeTypes.map((t) => {
     if (typesBehind.includes(t)) {
-      return Math.max(currentTargetTypeAmount + 1, currentVector[i] || 0);
+      return Math.max(currentTargetTypeAmount + 1, currentVector[t] ?? 0);
     }
-    return currentVector[i] || 0;
+    return currentVector[t] ?? 0;
   });
 };
 
@@ -252,19 +251,21 @@ export const getTargetLevelVector = ({
   const [minFirstTarget, minSecondTarget, minThirdTarget] =
     getMinRankedTypeAmounts(targetPower, targetConfig);
 
-  return allTypes.map((t, i) => {
-    if (i === firstTargetIndex) {
-      return Math.max(minFirstTarget, currentVector[i] || 0);
+  return rangeTypes.map((t) => {
+    if (t === firstTargetIndex) {
+      return Math.max(minFirstTarget, currentVector[t] || 0);
     }
-    if (i === secondTargetIndex) {
-      return Math.max(minSecondTarget, currentVector[i] || 0);
+    if (t === secondTargetIndex) {
+      return Math.max(minSecondTarget, currentVector[t] || 0);
     }
-    if (i === thirdTargetIndex) {
-      return Math.max(minThirdTarget, currentVector[i] || 0);
+    if (t === thirdTargetIndex) {
+      return Math.max(minThirdTarget, currentVector[t] || 0);
     }
-    return currentVector[i] || 0;
+    return currentVector[t] || 0;
   });
 };
 
 export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>
-  mealPowers.map((mp, i) => (mp === boostedPower ? (v[i] || 0) + 100 : v[i]));
+  rangeMealPowers.map((mp) =>
+    mp === boostedPower ? (v[mp] ?? 0) + 100 : v[mp],
+  );

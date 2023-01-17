@@ -2,19 +2,13 @@ import { FormEvent, ReactElement, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerSelector';
 import SandwichResult from './component/SandwichResult';
+import { rangeMealPowers, rangeTypes } from './enum';
 import { makeSandwichForPower } from './mechanics';
-import { allTypes, mealPowers } from './strings';
 import { Power, Sandwich } from './types';
 
-const allowedMealPowers = mealPowers.reduce<Record<string, true>>(
-  (allowed, p) => ({ [p]: true, ...allowed }),
-  {},
-);
+const allowedMealPowers = rangeMealPowers.map(() => true);
 
-const allowedTypes = allTypes.reduce<Record<string, true>>(
-  (allowed, m) => ({ [m]: true, ...allowed }),
-  {},
-);
+const allowedTypes = rangeTypes.map(() => true);
 
 function App(): ReactElement {
   const [resultSandwich, setResultSandwich] = useState<Sandwich | null>(null);

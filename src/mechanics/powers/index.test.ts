@@ -1,4 +1,4 @@
-import { allTypes } from '../../strings';
+import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
 import {
   calculateTypes,
   evaluateBoosts,
@@ -8,26 +8,28 @@ import {
 
 describe('rankMealPowerBoosts', () => {
   it('Considers an unboosted meal power when applying flavor boost', () => {
-    const ranked = rankMealPowerBoosts(
-      { Exp: 60, Item: 18, Encounter: 24, Egg: 4 },
-      'Catch',
-    );
-    expect(ranked[0].name).toBe('Catch');
+    const mealPowerVector = rangeMealPowers.map(() => 0);
+
+    mealPowerVector[MealPower.EXP] = 60;
+    mealPowerVector[MealPower.ITEM] = 18;
+    mealPowerVector[MealPower.ENCOUNTER] = 24;
+    mealPowerVector[MealPower.EGG] = 4;
+
+    const ranked = rankMealPowerBoosts(mealPowerVector, MealPower.CATCH);
+    expect(ranked[0].mealPower).toBe(MealPower.CATCH);
   });
 
   it('Puts Exp=(100+84) over Encounter=102', () => {
-    const ranked = rankMealPowerBoosts(
-      {
-        Encounter: 102,
-        Exp: 84,
-        Catch: 24,
-        Teensy: 21,
-      },
-      'Exp',
-    );
+    const mealPowerVector = rangeMealPowers.map(() => 0);
 
-    expect(ranked[0].name).toBe('Exp');
-    expect(ranked[1].name).toBe('Encounter');
+    mealPowerVector[MealPower.EXP] = 84;
+    mealPowerVector[MealPower.CATCH] = 24;
+    mealPowerVector[MealPower.ENCOUNTER] = 102;
+    mealPowerVector[MealPower.TEENSY] = 21;
+    const ranked = rankMealPowerBoosts(mealPowerVector, MealPower.EXP);
+
+    expect(ranked[0].mealPower).toBe(MealPower.EXP);
+    expect(ranked[1].mealPower).toBe(MealPower.ENCOUNTER);
   });
 });
 
@@ -35,13 +37,13 @@ describe('powersMatch', () => {
   it('Handles typeless powers', () => {
     const match = powersMatch(
       {
-        mealPower: 'Egg',
-        type: 'Fighting',
+        mealPower: MealPower.EGG,
+        type: TypeIndex.FIGHTING,
         level: 2,
       },
       {
-        mealPower: 'Egg',
-        type: 'Bug',
+        mealPower: MealPower.EGG,
+        type: TypeIndex.BUG,
         level: 2,
       },
     );
@@ -53,8 +55,8 @@ describe('powersMatch', () => {
 describe('calculateTypes', () => {
   it('Does not output holes', () => {
     const types = calculateTypes([
-      { name: 'Steel', amount: 2, typeIndex: allTypes.indexOf('Steel') },
-      { name: 'Fire', amount: 2, typeIndex: allTypes.indexOf('Fire') },
+      { amount: 2, type: TypeIndex.STEEL },
+      { amount: 2, type: TypeIndex.FIRE },
     ]);
     expect(types[1]).toBeDefined();
   });
@@ -62,21 +64,19 @@ describe('calculateTypes', () => {
 
 describe('evaluateBoosts', () => {
   it('Decides Exp Ghost to be the top power for a herbed sausage and red onion sandwich', () => {
-    const boosts = evaluateBoosts(
-      {
-        Encounter: 102,
-        Exp: 84,
-        Catch: 24,
-        Teensy: 21,
-      },
-      'Exp',
-      {
-        Ghost: 182,
-        Water: 146,
-      },
-    );
+    const mealPowerVector = rangeMealPowers.map(() => 0);
+    mealPowerVector[MealPower.EXP] = 84;
+    mealPowerVector[MealPower.CATCH] = 24;
+    mealPowerVector[MealPower.ENCOUNTER] = 102;
+    mealPowerVector[MealPower.TEENSY] = 21;
 
-    expect(boosts[0].mealPower).toBe('Exp');
-    expect(boosts[0].type).toBe('Ghost');
+    const typeVector = rangeTypes.map(() => 0);
+    typeVector[TypeIndex.GHOST] = 182;
+    typeVector[TypeIndex.WATER] = 146;
+
+    const boosts = evaluateBoosts(mealPowerVector, MealPower.EXP, typeVector);
+
+    expect(boosts[0].mealPower).toBe(MealPower.EXP);
+    expect(boosts[0].type).toBe(TypeIndex.GHOST);
   });
 });

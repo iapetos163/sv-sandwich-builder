@@ -1,36 +1,4 @@
-export type TypeName =
-  | 'Normal'
-  | 'Fighting'
-  | 'Flying'
-  | 'Poison'
-  | 'Ground'
-  | 'Rock'
-  | 'Bug'
-  | 'Ghost'
-  | 'Steel'
-  | 'Fire'
-  | 'Water'
-  | 'Grass'
-  | 'Electric'
-  | 'Psychic'
-  | 'Ice'
-  | 'Dragon'
-  | 'Dark'
-  | 'Fairy';
-
-export type MealPower =
-  | 'Egg'
-  | 'Catch'
-  | 'Item'
-  | 'Humungo'
-  | 'Teensy'
-  | 'Raid'
-  | 'Encounter'
-  | 'Exp'
-  | 'Title'
-  | 'Sparkling';
-
-export const allTypes: TypeName[] = [
+export const allTypes = [
   'Normal',
   'Fighting',
   'Flying',
@@ -51,10 +19,10 @@ export const allTypes: TypeName[] = [
   'Fairy',
 ];
 
-export const mealPowers: MealPower[] = [
+export const mealPowerCopy = [
   'Egg',
-  'Catch',
-  'Exp',
+  'Catching',
+  'Exp. Point',
   'Item',
   'Raid',
   'Sparkling',
@@ -63,14 +31,3 @@ export const mealPowers: MealPower[] = [
   'Teensy',
   'Encounter',
 ];
-
-export type Flavor = 'Sweet' | 'Sour' | 'Salty' | 'Bitter' | 'Hot';
-
-export const flavors: Flavor[] = ['Sweet', 'Sour', 'Salty', 'Bitter', 'Hot'];
-
-export const isFlavor = (s: string): s is Flavor =>
-  flavors.some((f) => f === s);
-export const isMealPower = (s: string): s is MealPower =>
-  mealPowers.some((mp) => mp === s);
-export const isType = (s: string): s is TypeName =>
-  allTypes.some((t) => t === s);
