@@ -1,10 +1,10 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, AlertCircle } from 'react-feather';
 import styled from 'styled-components';
-import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../enum';
-import { mealPowerHasType } from '../mechanics';
-import { allTypes, mealPowerCopy } from '../strings';
-import { Power } from '../types';
+import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
+import { mealPowerHasType } from '../../mechanics';
+import { allTypes, mealPowerCopy } from '../../strings';
+import { Power } from '../../types';
 
 const StyledContainer = styled.div`
   display: flex;
