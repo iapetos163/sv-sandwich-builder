@@ -52,6 +52,20 @@ const StyledSectionHeader = styled.div`
   }
 `;
 
+const StyledTitle = styled.h1`
+  position: relative;
+  display: inline-block;
+`;
+
+const StyledTitleTag = styled.span`
+  color: #db280b;
+  text-transform: uppercase;
+  position: absolute;
+  bottom: -0.6em;
+  right: -0.5em;
+  font-size: 0.5em;
+`;
+
 function App(): ReactElement {
   const [resultSandwich, setResultSandwich] = useState<Sandwich | null>(null);
   const [queryPower, setQueryPower] = useState<Power | null>(null);
@@ -82,7 +96,9 @@ function App(): ReactElement {
     <StyledContainer>
       <header>
         <h2>Pokémon Scarlet/Violet</h2>
-        <h1>Sandwich Calculator</h1>
+        <StyledTitle>
+          Sandwich Calculator <StyledTitleTag>Alpha</StyledTitleTag>
+        </StyledTitle>
       </header>
       <main>
         <StyledSection>
