@@ -56,7 +56,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
       removable
     /> */}
         <button type="submit" disabled={!queryPower || !enableSubmit}>
-          Submit
+          Calculate!
         </button>
       </form>
     </StyledContainer>

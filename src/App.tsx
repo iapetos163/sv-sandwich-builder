@@ -1,4 +1,5 @@
 import { FormEvent, ReactElement, useCallback, useState } from 'react';
+import { GitHub } from 'react-feather';
 import styled from 'styled-components';
 import PowerSelector from './component/PowerQuery/PowerSelector';
 import PowerQuery from './component/PowerQuery/index';
@@ -91,7 +92,8 @@ function App(): ReactElement {
           <p>
             {/* Input one or more meal powers, and this tool will attempt to find a
             meal or a sandwich recipe that yields those powers. */}
-            Input a meal power, and this tool will attempt to find a a sandwich
+            {/* Also update in README */}
+            Input a meal power, and this tool will attempt to find a sandwich
             recipe that yields that power.
           </p>
         </StyledSection>
@@ -105,19 +107,52 @@ function App(): ReactElement {
           <StyledSectionHeader>
             <h2>Results</h2>
           </StyledSectionHeader>
+          {calculating && <>Calculating...</>}
+          {!calculating && !queryChanged && !resultSandwich && (
+            <>Could not create a sandwich with the requested power.</>
+          )}
+          {!calculating && queryChanged && !resultSandwich && (
+            <>Input a Meal Power query above and press Calculate!.</>
+          )}
+          {!calculating && resultSandwich && (
+            <SandwichResult sandwich={resultSandwich} />
+          )}
         </StyledSection>
         <StyledSection>
           <StyledSectionHeader>
             <h2>Links</h2>
           </StyledSectionHeader>
+          <div>
+            <a
+              href="https://github.com/iapetos163/sv-sandwich-builder/issues"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <GitHub /> Report a bug on GitHub
+            </a>
+          </div>
+          <div>
+            <a
+              href="https://github.com/iapetos163/sv-sandwich-builder"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <GitHub /> View project source on GitHub
+            </a>
+          </div>
+          <div>
+            This project would not have been possible without data and code from
+            the{' '}
+            <a
+              href="https://cecilbowen.github.io/pokemon-sandwich-simulator/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Pokémon Sandwich Simulator
+            </a>
+            .
+          </div>
         </StyledSection>
-        {calculating && <>Calculating...</>}
-        {!calculating && !queryChanged && !resultSandwich && (
-          <>Could not create a sandwich with the requested power.</>
-        )}
-        {!calculating && resultSandwich && (
-          <SandwichResult sandwich={resultSandwich} />
-        )}
       </main>
     </StyledContainer>
   );
