@@ -1,4 +1,4 @@
-# sv-sandwich-builder
+# Pokémon S/V Sandwich Calculator
 
 A tool to calculate sandwich recipes for Pokémon Scarlet/Violet.
 Input a meal power, and this tool will attempt to find a
