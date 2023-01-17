@@ -50,13 +50,11 @@ const RecipeList = ({ fillings, condiments }: RecipeProps) => {
 
   return (
     <StyledRecipeList>
-      <h3>Fillings</h3>
       {fillingCounts.map(({ name, count, imagePath }) => (
         <div key={name}>
           {count}x <img src={`asset/${imagePath}`} /> {name}
         </div>
       ))}
-      <h3>Condiments</h3>
       {condimentCounts.map(({ name, count, imagePath }) => (
         <div key={name}>
           {count}x <img src={`asset/${imagePath}`} /> {name}
@@ -76,13 +74,14 @@ const SandwichResult = ({ sandwich }: SandwichResultProps) => {
   return (
     <StyledContainer>
       <RecipeIcons fillings={fillings} condiments={condiments} />
+      <h3>Recipe</h3>
       <RecipeList fillings={fillings} condiments={condiments} />
+      <h3>Meal Powers</h3>
       <div>
         {powers.map((power) => (
           <div key={power.type + power.mealPower}>
-            Lv. {power.level}{' '}
-            {mealPowerHasType(power.mealPower) && `${allTypes[power.type]} `}
-            {mealPowerCopy[power.mealPower]} Power
+            Lv. {power.level} {mealPowerCopy[power.mealPower]} Power
+            {mealPowerHasType(power.mealPower) && `: ${allTypes[power.type]}`}
           </div>
         ))}
       </div>
