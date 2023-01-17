@@ -52,12 +52,12 @@ const RecipeList = ({ fillings, condiments }: RecipeProps) => {
     <StyledRecipeList>
       {fillingCounts.map(({ name, count, imagePath }) => (
         <div key={name}>
-          {count}x <img src={`asset/${imagePath}`} /> {name}
+          {count}x <img src={`assets/${imagePath}`} /> {name}
         </div>
       ))}
       {condimentCounts.map(({ name, count, imagePath }) => (
         <div key={name}>
-          {count}x <img src={`asset/${imagePath}`} /> {name}
+          {count}x <img src={`assets/${imagePath}`} /> {name}
         </div>
       ))}
     </StyledRecipeList>
