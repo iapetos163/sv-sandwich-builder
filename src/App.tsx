@@ -38,16 +38,30 @@ function App(): ReactElement {
 
   return (
     <StyledContainer>
+      <header>
+        <h2>Pokémon Scarlet/Violet</h2>
+        <h1>Sandwich Calculator</h1>
+      </header>
       <main>
-        <form onSubmit={handleSubmit}>
-          <PowerSelector
-            onRemove={() => {}}
-            onChange={handleSetPower}
-            allowedMealPowers={allowedMealPowers}
-            allowedTypes={allowedTypes}
-            maxLevel={3}
-          />
-          {/* <PowerSelector
+        <section>
+          <StyledSectionHeader>
+            <h2>About</h2>
+          </StyledSectionHeader>
+          <p>Lorem ipsum</p>
+        </section>
+        <section>
+          <StyledSectionHeader>
+            <h2>Query</h2>
+          </StyledSectionHeader>
+          <form onSubmit={handleSubmit}>
+            <PowerSelector
+              onRemove={() => {}}
+              onChange={handleSetPower}
+              allowedMealPowers={allowedMealPowers}
+              allowedTypes={allowedTypes}
+              maxLevel={3}
+            />
+            {/* <PowerSelector
             onRemove={() => {}}
             onChange={() => {}}
             allowedMealPowers={allowedMealPowers}
@@ -63,10 +77,21 @@ function App(): ReactElement {
             maxLevel={3}
             removable
           /> */}
-          <button type="submit" disabled={!queryPower}>
-            Submit
-          </button>
-        </form>
+            <button type="submit" disabled={!queryPower}>
+              Submit
+            </button>
+          </form>
+        </section>
+        <section>
+          <StyledSectionHeader>
+            <h2>Results</h2>
+          </StyledSectionHeader>
+        </section>
+        <section>
+          <StyledSectionHeader>
+            <h2>Links</h2>
+          </StyledSectionHeader>
+        </section>
         {calculating && <>Calculating...</>}
         {!calculating && !queryChanged && !resultSandwich && (
           <>Could not create a sandwich with the requested power.</>
@@ -80,12 +105,40 @@ function App(): ReactElement {
 }
 
 const StyledContainer = styled.div`
-  margin: 20px;
-  display: flex;
-  justify-content: center;
+  margin: 15px 10px;
+  color: #1d261a;
+
+  h1 {
+    margin-top: 0;
+  }
+
+  > header {
+    text-align: center;
+
+    h2 {
+      margin-bottom: 0;
+    }
+  }
 
   > main {
     width: 600px;
+    h2 {
+      color: #262517;
+      font-size: 1em;
+      font-style: italic;
+    }
+  }
+`;
+
+const StyledSectionHeader = styled.div`
+  border-bottom: 2px solid #262517;
+  height: 0.5em;
+
+  h2 {
+    display: inline-block;
+    margin: 0 0 0.5em 1em;
+    background-color: #f3f1e0;
+    padding: 0 1em;
   }
 `;
 
