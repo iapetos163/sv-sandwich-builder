@@ -11,6 +11,9 @@ import { Power, Sandwich } from './types';
 const StyledContainer = styled.div`
   margin: 15px 10px;
   color: #1d261a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   h1 {
     margin-top: 0;
@@ -37,7 +40,9 @@ const StyledContainer = styled.div`
   }
 `;
 
-const StyledSection = styled.div``;
+const StyledSection = styled.div`
+  margin-bottom: 15px;
+`;
 
 const StyledSectionHeader = styled.div`
   border-bottom: 2px solid #888653;

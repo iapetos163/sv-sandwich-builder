@@ -1,32 +1,46 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import { X, ChevronLeft, ChevronRight, AlertCircle } from 'react-feather';
+import { X, ChevronLeft, ChevronRight } from 'react-feather';
 import styled from 'styled-components';
 import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
 import { mealPowerHasType } from '../../mechanics';
 import { allTypes, mealPowerCopy } from '../../strings';
 import { Power } from '../../types';
 
-const StyledContainer = styled.div`
+const StyledLevelController = styled.div`
   display: flex;
+  align-items: center;
 
   button {
     background: none;
     border: none;
     outline: inherit;
     padding: 0;
-  }
+    color: #7ba06e;
+    height: 2rem;
+    width: 2rem;
 
-  button:not(:disabled):hover {
-    cursor: pointer;
-  }
-`;
+    > svg {
+      height: 60%;
+    }
 
-const StyledLevelController = styled.div`
-  display: flex;
+    &:disabled {
+      color: #bcbcbc;
+    }
+
+    &:not(:disabled) {
+      > svg {
+        stroke-width: 3px;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
 `;
 
 const StyledLevelDisplay = styled.div`
-  margin: 0 5px;
+  font-size: 1.3rem;
 `;
 
 export interface PowerSelectorProps {
@@ -101,12 +115,9 @@ const PowerSelector = ({
   }, [selectedMealPower, selectedType, onChange, selectedLevel, maxLevel]);
 
   return (
-    <StyledContainer>
-      <div style={{ flexShrink: 0, flexBasis: 30 }}>
-        {isInvalid && <AlertCircle />}
-      </div>
-      <label style={{ flexShrink: 1, flexBasis: 300 }}>
-        Meal Power:
+    <>
+      {/* <div>{isInvalid && <AlertCircle />}</div> */}
+      <div>
         <select
           value={selectedMealPower ?? ''}
           onChange={handleChangeMealPower}
@@ -122,24 +133,21 @@ const PowerSelector = ({
             </option>
           ))}
         </select>
-      </label>
-      <div style={{ flexShrink: 1, flexBasis: 300 }}>
+      </div>
+      <div>
         {!selectedMealPower ||
           (mealPowerHasType(selectedMealPower) && (
-            <label>
-              Type:
-              <select value={selectedType ?? ''} onChange={handleChangeType}>
-                <option></option>
-                {rangeTypes.map((t) => (
-                  <option key={t} value={t} disabled={!allowedTypes[t]}>
-                    {allTypes[t]}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <select value={selectedType ?? ''} onChange={handleChangeType}>
+              <option></option>
+              {rangeTypes.map((t) => (
+                <option key={t} value={t} disabled={!allowedTypes[t]}>
+                  {allTypes[t]}
+                </option>
+              ))}
+            </select>
           ))}
       </div>
-      <StyledLevelController style={{ flexShrink: 0, flexBasis: 70 }}>
+      <StyledLevelController>
         <button
           type="button"
           onClick={decrementLevel}
@@ -165,7 +173,7 @@ const PowerSelector = ({
           </button>
         )}
       </div>
-    </StyledContainer>
+    </>
   );
 };
 export default PowerSelector;
