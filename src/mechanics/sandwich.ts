@@ -392,7 +392,6 @@ const selectIngredientCandidates = ({
     .map(({ ing }) => ing as Ingredient);
 };
 
-// TODO: target more than one power
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   const checkType = mealPowerHasType(targetPower.mealPower);
 
@@ -404,8 +403,15 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   } else if (targetPower.level === 3) {
     targetNumHerba = 1;
   }
+  // if (targetPowers.some((p) => p.mealPower === MealPower.SPARKLING)) {
+  //   targetNumHerba = 2;
+  // } else if (targetPowers.some((p) => p.mealPower === MealPower.TITLE)) {
+  //   targetNumHerba = 1;
+  // } else if (targetPowers.some((p) => p.level === 3)) {
+  //   targetNumHerba = 1;
+  // }
 
-  const targetConfigs = getTargetConfigs(targetPower, targetNumHerba);
+  const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
 
   const visited: Record<string, true> = {};
   const hasBeenVisited = (ingredients: Ingredient[]) => {

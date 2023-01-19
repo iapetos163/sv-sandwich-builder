@@ -109,19 +109,31 @@ export interface TargetConfig {
   mpPlaceIndex: number;
 }
 
+// TODO: more than one power
 export const getTargetConfigs = (
-  targetPower: Power,
+  targetPowers: Power[],
   targetNumHerba: number,
-): TargetConfig[] => {
-  if (targetNumHerba >= 2 && targetPower.mealPower === MealPower.SPARKLING) {
-    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
-  }
-  if (targetNumHerba >= 2 && targetPower.mealPower === MealPower.TITLE) {
-    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 }];
-  }
+): TargetConfig[][] => {
   if (targetNumHerba >= 2) {
-    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
+    return targetPowers.map((tp) => {
+      if (tp.mealPower === MealPower.SPARKLING) {
+        return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
+      }
+      if (tp.mealPower === MealPower.TITLE) {
+        return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 }];
+      }
+      return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 }];
+    });
   }
+
+  const titlePower = targetPowers.find((p) => p.mealPower === MealPower.TITLE);
+  const hasSameTypes =
+    Object.keys(
+      targetPowers.reduce((agg, tp) => ({ [tp.type]: true, ...agg }), {}),
+    ).length < targetPowers.length;
+
+  // ONE_THREE_TWO is not possible if hasSameTypes
+
   if (targetNumHerba >= 1 && targetPower.mealPower === MealPower.TITLE) {
     return [
       { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
