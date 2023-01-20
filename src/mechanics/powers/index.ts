@@ -265,7 +265,7 @@ export const getTypeTargetIndices = (
   targetPower: Power,
   targetPlaceIndex: number,
   rankedTypeBoosts: TypeBoost[],
-): [number, number, number] => {
+): [TypeIndex, TypeIndex, TypeIndex] => {
   if (!mealPowerHasType(targetPower.mealPower)) {
     const firstTargetIndex = rankedTypeBoosts[0]?.type ?? 0;
     const secondTargetIndex =
