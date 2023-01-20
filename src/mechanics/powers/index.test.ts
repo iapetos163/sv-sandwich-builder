@@ -2,6 +2,7 @@ import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
 import {
   calculateTypes,
   evaluateBoosts,
+  getTargetConfigs,
   powersMatch,
   rankMealPowerBoosts,
 } from './index';
@@ -78,5 +79,20 @@ describe('evaluateBoosts', () => {
 
     expect(boosts[0].mealPower).toBe(MealPower.EXP);
     expect(boosts[0].type).toBe(TypeIndex.GHOST);
+  });
+});
+
+describe('getTargetConfigs', () => {
+  it('Returns no more than 4 for any target config when numHerbaMystica is 1', () => {
+    const res = getTargetConfigs(
+      [
+        { mealPower: MealPower.HUMUNGO, level: 3, type: TypeIndex.STEEL },
+        { mealPower: MealPower.CATCH, level: 2, type: TypeIndex.PSYCHIC },
+      ],
+      1,
+    );
+
+    expect(res[0].length).toBeLessThanOrEqual(4);
+    expect(res[1].length).toBeLessThanOrEqual(4);
   });
 });

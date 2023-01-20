@@ -403,6 +403,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   } else if (targetPower.level === 3) {
     targetNumHerba = 1;
   }
+  // TODO: OR depending on num matching types maybe
   // if (targetPowers.some((p) => p.mealPower === MealPower.SPARKLING)) {
   //   targetNumHerba = 2;
   // } else if (targetPowers.some((p) => p.mealPower === MealPower.TITLE)) {
@@ -411,7 +412,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   //   targetNumHerba = 1;
   // }
 
-  const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
+  const targetConfigs = getTargetConfigs([targetPower], targetNumHerba)[0];
 
   const visited: Record<string, true> = {};
   const hasBeenVisited = (ingredients: Ingredient[]) => {
