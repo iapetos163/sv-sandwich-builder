@@ -112,6 +112,11 @@ export interface TargetConfig {
   mpPlaceIndex: number;
 }
 
+export const configsEqual = (a: TargetConfig, b: TargetConfig) =>
+  a.config === b.config &&
+  a.typePlaceIndex === b.typePlaceIndex &&
+  a.mpPlaceIndex === b.mpPlaceIndex;
+
 export const getTargetConfigs = (
   targetPowers: Power[],
   targetNumHerba: number,
@@ -359,6 +364,28 @@ export const evaluateBoosts = (
         level: assignedLevels[i],
       }),
     );
+};
+
+/**
+ * Transforms an array of configs for each power
+ * to an array config combinations
+ */
+export const permutePowerConfigs = (
+  arr: TargetConfig[][],
+): TargetConfig[][] => {
+  const recurse = (
+    powerSelections: TargetConfig[],
+    remainingPowers: TargetConfig[][],
+  ): TargetConfig[][] =>
+    remainingPowers.length === 0
+      ? [powerSelections]
+      : remainingPowers[0]
+          .filter((c) => !powerSelections.some((d) => configsEqual(c, d)))
+          .flatMap((c) =>
+            recurse([...powerSelections, c], remainingPowers.slice(1)),
+          );
+
+  return recurse([], arr);
 };
 
 export const powersMatch = (test: Power, target: Power) =>
