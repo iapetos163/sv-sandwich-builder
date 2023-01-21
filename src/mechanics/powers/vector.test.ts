@@ -23,7 +23,11 @@ describe('getTargetTypeVector', () => {
         mpPlaceIndex: 0,
         typePlaceIndex: 0,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 0, rankedTypeBoosts),
+      targetTypeIndices: getTypeTargetIndices(
+        [targetPower],
+        [0],
+        rankedTypeBoosts,
+      ),
       rankedTypeBoosts,
       typeVector: [],
     });
@@ -45,7 +49,11 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 2, rankedTypeBoosts),
+      targetTypeIndices: getTypeTargetIndices(
+        [targetPower],
+        [2],
+        rankedTypeBoosts,
+      ),
       rankedTypeBoosts,
       typeVector: [],
     });
@@ -76,7 +84,11 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 2, rankedTypeBoosts),
+      targetTypeIndices: getTypeTargetIndices(
+        [targetPower],
+        [2],
+        rankedTypeBoosts,
+      ),
       rankedTypeBoosts,
       typeVector: [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     });
@@ -109,7 +121,11 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 0,
         mpPlaceIndex: 0,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 0, rankedTypeBoosts),
+      targetTypeIndices: getTypeTargetIndices(
+        [targetPower],
+        [0],
+        rankedTypeBoosts,
+      ),
       rankedTypeBoosts,
       typeVector: [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     });
@@ -142,7 +158,11 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 2, rankedTypeBoosts),
+      targetTypeIndices: getTypeTargetIndices(
+        [targetPower],
+        [2],
+        rankedTypeBoosts,
+      ),
       rankedTypeBoosts,
       typeVector: [0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     });
@@ -176,7 +196,11 @@ describe('getTargetTypeVector', () => {
         typePlaceIndex: 2,
         mpPlaceIndex: 2,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 2, rankedTypeBoosts),
+      targetTypeIndices: getTypeTargetIndices(
+        [targetPower],
+        [2],
+        rankedTypeBoosts,
+      ),
       rankedTypeBoosts,
       typeVector: [40, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36],
     });
@@ -234,7 +258,7 @@ describe('getTargetLevelVector', () => {
         typePlaceIndex: 0,
         mpPlaceIndex: 0,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 0, []),
+      targetTypeIndices: getTypeTargetIndices([targetPower], [0], []),
       typeVector: [],
     });
     expect(v[1]).toBe(1);
@@ -246,7 +270,7 @@ describe('getTargetLevelVector', () => {
       type: TypeIndex.FIGHTING,
       level: 3,
     };
-    const targetTypeIndices = getTypeTargetIndices(targetPower, 0, []);
+    const targetTypeIndices = getTypeTargetIndices([targetPower], [0], []);
     const v = getTargetLevelVector({
       targetPower,
       targetConfig: {
@@ -286,7 +310,11 @@ describe('getTargetLevelVector', () => {
         typePlaceIndex: 0,
         mpPlaceIndex: 0,
       },
-      targetTypeIndices: getTypeTargetIndices(targetPower, 0, rankedTypeBoosts),
+      targetTypeIndices: getTypeTargetIndices(
+        [targetPower],
+        [0],
+        rankedTypeBoosts,
+      ),
       typeVector,
     });
 

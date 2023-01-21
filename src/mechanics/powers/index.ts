@@ -1,4 +1,4 @@
-import { MealPower, rangeMealPowers, TypeIndex } from '../../enum';
+import { MealPower, TypeIndex } from '../../enum';
 import { Power } from '../../types';
 
 export interface TypeBoost {
@@ -267,46 +267,84 @@ export const selectPowerAtTargetPosition = (
  * @returns [index of first type, index of second type, index of third type]
  */
 export const getTypeTargetIndices = (
-  targetPower: Power,
-  targetPlaceIndex: number,
+  targetPowers: Power[],
+  targetPlaceIndices: number[],
   rankedTypeBoosts: TypeBoost[],
 ): [TypeIndex, TypeIndex, TypeIndex] => {
-  if (!mealPowerHasType(targetPower.mealPower)) {
-    const firstTargetIndex = rankedTypeBoosts[0]?.type ?? 0;
-    const secondTargetIndex =
-      rankedTypeBoosts[1]?.type ?? [0, 1].find((i) => i !== firstTargetIndex);
-    const thirdTargetIndex =
-      rankedTypeBoosts[2]?.type ??
-      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
-    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  let firstTargetType: TypeIndex | null = null;
+  let secondTargetType: TypeIndex | null = null;
+  let thirdTargetType: TypeIndex | null = null;
+
+  const targetFirstPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === 0,
+  );
+  const targetSecondPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === 1,
+  );
+  const targetThirdPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === 2,
+  );
+
+  const targetFirstPlacePower =
+    targetFirstPlacePowerIndex !== undefined
+      ? targetPowers[targetFirstPlacePowerIndex]
+      : null;
+  const targetSecondPlacePower =
+    targetSecondPlacePowerIndex !== undefined
+      ? targetPowers[targetSecondPlacePowerIndex]
+      : null;
+  const targetThirdPlacePower =
+    targetThirdPlacePowerIndex !== undefined
+      ? targetPowers[targetThirdPlacePowerIndex]
+      : null;
+
+  if (
+    targetFirstPlacePower &&
+    mealPowerHasType(targetFirstPlacePower.mealPower)
+  ) {
+    firstTargetType = targetFirstPlacePower.type;
+  }
+  if (
+    targetSecondPlacePower &&
+    mealPowerHasType(targetSecondPlacePower.mealPower)
+  ) {
+    secondTargetType = targetSecondPlacePower.type;
+  }
+  if (
+    targetThirdPlacePower &&
+    mealPowerHasType(targetThirdPlacePower.mealPower)
+  ) {
+    thirdTargetType = targetThirdPlacePower.type;
   }
 
-  const { type: targetType } = targetPower;
-  if (targetPlaceIndex === 0) {
-    const firstTargetIndex = targetType;
-    const secondTargetIndex =
-      rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== firstTargetIndex);
-    const thirdTargetIndex =
-      rankedTypeBoosts[1]?.type ??
-      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
-    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
-  } else if (targetPlaceIndex === 1) {
-    const secondTargetIndex = targetType;
-    const firstTargetIndex =
-      rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== secondTargetIndex);
-    const thirdTargetIndex =
-      rankedTypeBoosts[1]?.type ??
-      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
+  const typeSelection = rankedTypeBoosts.map((tb) => tb.type).concat([0, 1, 2]);
 
-    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  if (!firstTargetType) {
+    firstTargetType = typeSelection.find(
+      (t) =>
+        t !== firstTargetType &&
+        t !== secondTargetType &&
+        t !== thirdTargetType,
+    )!;
   }
-  const thirdTargetIndex = targetType;
-  const firstTargetIndex =
-    rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== thirdTargetIndex);
-  const secondTargetIndex =
-    rankedTypeBoosts[1]?.type ??
-    [0, 1, 2].find((i) => i !== firstTargetIndex && i !== thirdTargetIndex);
-  return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  if (!secondTargetType) {
+    secondTargetType = typeSelection.find(
+      (t) =>
+        t !== firstTargetType &&
+        t !== secondTargetType &&
+        t !== thirdTargetType,
+    )!;
+  }
+  if (!thirdTargetType) {
+    thirdTargetType = typeSelection.find(
+      (t) =>
+        t !== thirdTargetType &&
+        t !== secondTargetType &&
+        t !== thirdTargetType,
+    )!;
+  }
+
+  return [firstTargetType, secondTargetType, thirdTargetType];
 };
 
 export const rankMealPowerBoosts = (

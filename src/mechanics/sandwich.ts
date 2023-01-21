@@ -150,8 +150,8 @@ const selectIngredientCandidates = ({
   let targetConfig = targetConfigs[0];
   for (const candidateConfig of targetConfigs) {
     const targetTypeIndices = getTypeTargetIndices(
-      targetPower,
-      candidateConfig.typePlaceIndex,
+      [targetPower],
+      [candidateConfig.typePlaceIndex],
       rankedTypeBoosts,
     );
     const candTargetTypeVector = checkType
@@ -259,8 +259,8 @@ const selectIngredientCandidates = ({
     mealPowerScoreWeight === 0
   ) {
     const targetTypeIndices = getTypeTargetIndices(
-      targetPower,
-      targetConfig.typePlaceIndex,
+      [targetPower],
+      [targetConfig.typePlaceIndex],
       rankedTypeBoosts,
     );
     targetTypeVector = getTargetTypeVector({
