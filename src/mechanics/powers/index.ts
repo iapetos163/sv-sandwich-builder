@@ -380,7 +380,12 @@ export const permutePowerConfigs = (
     remainingPowers.length === 0
       ? [powerSelections]
       : remainingPowers[0]
-          .filter((c) => !powerSelections.some((d) => configsEqual(c, d)))
+          .filter(
+            (c) =>
+              (powerSelections.length === 0 ||
+                c.config === powerSelections[0].config) &&
+              !powerSelections.some((d) => configsEqual(c, d)),
+          )
           .flatMap((c) =>
             recurse([...powerSelections, c], remainingPowers.slice(1)),
           );
