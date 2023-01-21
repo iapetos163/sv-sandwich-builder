@@ -11,21 +11,25 @@ import { getTypeTargetIndices, rankTypeBoosts, TypeBoost } from './index';
 
 describe('getTargetTypeVector', () => {
   it('Creates a vector with the correct components for Ground', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.EXP,
-      type: TypeIndex.GROUND,
-      level: 1,
-    };
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.GROUND,
+        level: 1,
+      },
+    ];
     const rankedTypeBoosts: TypeBoost[] = [];
     const v = getTargetTypeVector({
-      targetPower,
-      targetConfig: {
-        config: 'ONE_THREE_TWO',
-        mpPlaceIndex: 0,
-        typePlaceIndex: 0,
-      },
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_THREE_TWO',
+          mpPlaceIndex: 0,
+          typePlaceIndex: 0,
+        },
+      ],
       targetTypeIndices: getTypeTargetIndices(
-        [targetPower],
+        targetPowers,
         [0],
         rankedTypeBoosts,
       ),
@@ -37,21 +41,25 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a zero vector and typePlaceIndex > 0', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.EXP,
-      type: TypeIndex.GHOST,
-      level: 3,
-    };
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.GHOST,
+        level: 3,
+      },
+    ];
     const rankedTypeBoosts: TypeBoost[] = [];
     const v = getTargetTypeVector({
-      targetPower,
-      targetConfig: {
-        config: 'ONE_THREE_TWO',
-        typePlaceIndex: 2,
-        mpPlaceIndex: 2,
-      },
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 2,
+        },
+      ],
       targetTypeIndices: getTypeTargetIndices(
-        [targetPower],
+        targetPowers,
         [2],
         rankedTypeBoosts,
       ),
@@ -65,11 +73,13 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a placing below desired rank (>0) in a tie', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.EXP,
-      type: TypeIndex.GRASS,
-      level: 3,
-    };
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.GRASS,
+        level: 3,
+      },
+    ];
     const rankedTypeBoosts: TypeBoost[] = [
       { type: TypeIndex.FLYING, amount: 36 },
       { type: TypeIndex.ROCK, amount: 36 },
@@ -79,14 +89,16 @@ describe('getTargetTypeVector', () => {
       { type: TypeIndex.FAIRY, amount: 36 },
     ];
     const v = getTargetTypeVector({
-      targetPower,
-      targetConfig: {
-        config: 'ONE_THREE_TWO',
-        typePlaceIndex: 2,
-        mpPlaceIndex: 2,
-      },
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 2,
+        },
+      ],
       targetTypeIndices: getTypeTargetIndices(
-        [targetPower],
+        targetPowers,
         [2],
         rankedTypeBoosts,
       ),
@@ -102,11 +114,13 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a placing below desired rank 0 in a tie', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.EXP,
-      type: TypeIndex.GRASS,
-      level: 1,
-    };
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.GRASS,
+        level: 1,
+      },
+    ];
     const rankedTypeBoosts: TypeBoost[] = [
       { type: TypeIndex.FLYING, amount: 36 },
       { type: TypeIndex.ROCK, amount: 36 },
@@ -116,14 +130,16 @@ describe('getTargetTypeVector', () => {
       { type: TypeIndex.FAIRY, amount: 36 },
     ];
     const v = getTargetTypeVector({
-      targetPower,
-      targetConfig: {
-        config: 'ONE_THREE_TWO',
-        typePlaceIndex: 0,
-        mpPlaceIndex: 0,
-      },
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 0,
+        },
+      ],
       targetTypeIndices: getTypeTargetIndices(
-        [targetPower],
+        targetPowers,
         [0],
         rankedTypeBoosts,
       ),
@@ -139,11 +155,13 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a placing above desired rank (>0) in a tie', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.EXP,
-      type: TypeIndex.FLYING,
-      level: 3,
-    };
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.FLYING,
+        level: 3,
+      },
+    ];
     const rankedTypeBoosts: TypeBoost[] = [
       { type: TypeIndex.FLYING, amount: 36 },
       { type: TypeIndex.ROCK, amount: 36 },
@@ -153,14 +171,16 @@ describe('getTargetTypeVector', () => {
       { type: TypeIndex.FAIRY, amount: 36 },
     ];
     const v = getTargetTypeVector({
-      targetPower,
-      targetConfig: {
-        config: 'ONE_THREE_TWO',
-        typePlaceIndex: 2,
-        mpPlaceIndex: 2,
-      },
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 2,
+        },
+      ],
       targetTypeIndices: getTypeTargetIndices(
-        [targetPower],
+        targetPowers,
         [2],
         rankedTypeBoosts,
       ),
@@ -176,11 +196,13 @@ describe('getTargetTypeVector', () => {
   });
 
   it('Handles a placing above desired rank (>0) in a tie with another ahead', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.EXP,
-      type: TypeIndex.FLYING,
-      level: 3,
-    };
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.FLYING,
+        level: 3,
+      },
+    ];
     const rankedTypeBoosts: TypeBoost[] = [
       { type: TypeIndex.NORMAL, amount: 40 },
       { type: TypeIndex.FLYING, amount: 36 },
@@ -191,14 +213,16 @@ describe('getTargetTypeVector', () => {
       { type: TypeIndex.FAIRY, amount: 36 },
     ];
     const v = getTargetTypeVector({
-      targetPower,
-      targetConfig: {
-        config: 'ONE_THREE_TWO',
-        typePlaceIndex: 2,
-        mpPlaceIndex: 2,
-      },
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 2,
+        },
+      ],
       targetTypeIndices: getTypeTargetIndices(
-        [targetPower],
+        targetPowers,
         [2],
         rankedTypeBoosts,
       ),
@@ -216,12 +240,16 @@ describe('getTargetTypeVector', () => {
 
   it('Does not return infinity when given a zero vector', () => {
     const v = getTargetTypeVector({
-      targetPower: { mealPower: MealPower.EXP, type: TypeIndex.ICE, level: 3 },
-      targetConfig: {
-        config: 'ONE_ONE_THREE',
-        typePlaceIndex: 0,
-        mpPlaceIndex: 2,
-      },
+      targetPowers: [
+        { mealPower: MealPower.EXP, type: TypeIndex.ICE, level: 3 },
+      ],
+      targetConfigSet: [
+        {
+          config: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+      ],
       rankedTypeBoosts: [],
       targetTypeIndices: [14, 0, 1],
       typeVector: [],
@@ -231,12 +259,16 @@ describe('getTargetTypeVector', () => {
 
   it('Does not return infinity when targeting ONE_ONE_THREE and having added one herba mystica', () => {
     const v = getTargetTypeVector({
-      targetPower: { mealPower: MealPower.EXP, type: TypeIndex.ICE, level: 3 },
-      targetConfig: {
-        config: 'ONE_ONE_THREE',
-        typePlaceIndex: 0,
-        mpPlaceIndex: 2,
-      },
+      targetPowers: [
+        { mealPower: MealPower.EXP, type: TypeIndex.ICE, level: 3 },
+      ],
+      targetConfigSet: [
+        {
+          config: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+      ],
       rankedTypeBoosts: rangeTypes.map((t) => ({ type: t, amount: 250 })),
       targetTypeIndices: [14, 0, 1],
       typeVector: rangeTypes.map(() => 250),
@@ -247,33 +279,37 @@ describe('getTargetTypeVector', () => {
 
 describe('getTargetLevelVector', () => {
   it('Returns a nonzero vector given level 1 power and zero vector', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.EXP,
-      type: TypeIndex.FIGHTING,
-      level: 1,
-    };
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.FIGHTING,
+        level: 1,
+      },
+    ];
     const v = getTargetLevelVector({
-      targetPower,
+      targetPower: targetPowers[0],
       targetConfig: {
         config: 'ONE_THREE_TWO',
         typePlaceIndex: 0,
         mpPlaceIndex: 0,
       },
-      targetTypeIndices: getTypeTargetIndices([targetPower], [0], []),
+      targetTypeIndices: getTypeTargetIndices(targetPowers, [0], []),
       typeVector: [],
     });
     expect(v[1]).toBe(1);
   });
 
   it('Returns a sufficiently high vector with level 3 power and zero vector', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.EXP,
-      type: TypeIndex.FIGHTING,
-      level: 3,
-    };
-    const targetTypeIndices = getTypeTargetIndices([targetPower], [0], []);
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.FIGHTING,
+        level: 3,
+      },
+    ];
+    const targetTypeIndices = getTypeTargetIndices(targetPowers, [0], []);
     const v = getTargetLevelVector({
-      targetPower,
+      targetPower: targetPowers[0],
       targetConfig: {
         config: 'ONE_ONE_THREE',
         typePlaceIndex: 0,
@@ -286,11 +322,13 @@ describe('getTargetLevelVector', () => {
   });
 
   it('Targets the target type', () => {
-    const targetPower: Power = {
-      mealPower: MealPower.HUMUNGO,
-      type: TypeIndex.DRAGON,
-      level: 2,
-    };
+    const targetPowers: Power[] = [
+      {
+        mealPower: MealPower.HUMUNGO,
+        type: TypeIndex.DRAGON,
+        level: 2,
+      },
+    ];
     const typeVector = rangeTypes.map(() => 0);
     typeVector[TypeIndex.NORMAL] = 146;
     typeVector[TypeIndex.POISON] = 146;
@@ -305,14 +343,14 @@ describe('getTargetLevelVector', () => {
 
     const rankedTypeBoosts = rankTypeBoosts(typeVector);
     const v = getTargetLevelVector({
-      targetPower,
+      targetPower: targetPowers[0],
       targetConfig: {
         config: 'ONE_THREE_TWO',
         typePlaceIndex: 0,
         mpPlaceIndex: 0,
       },
       targetTypeIndices: getTypeTargetIndices(
-        [targetPower],
+        targetPowers,
         [0],
         rankedTypeBoosts,
       ),

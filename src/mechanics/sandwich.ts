@@ -156,8 +156,8 @@ const selectIngredientCandidates = ({
     );
     const candTargetTypeVector = checkType
       ? getTargetTypeVector({
-          targetPower,
-          targetConfig: candidateConfig,
+          targetPowers: [targetPower],
+          targetConfigSet: [candidateConfig],
           rankedTypeBoosts,
           targetTypeIndices,
           typeVector: currentTypeVector,
@@ -264,8 +264,8 @@ const selectIngredientCandidates = ({
       rankedTypeBoosts,
     );
     targetTypeVector = getTargetTypeVector({
-      targetPower,
-      targetConfig,
+      targetPowers: [targetPower],
+      targetConfigSet: [targetConfig],
       targetTypeIndices,
       rankedTypeBoosts,
       typeVector: currentTypeVector,

@@ -166,28 +166,30 @@ const getTargetTypeVectorForPosition = (
 };
 
 export interface GetTargetTypeVectorProps {
-  targetPower: Power;
-  targetConfig: TargetConfig;
-  targetTypeIndices: [number, number, number];
+  targetPowers: Power[];
+  targetConfigSet: TargetConfig[];
+  targetTypeIndices: [TypeIndex, TypeIndex, TypeIndex];
   rankedTypeBoosts: TypeBoost[];
   typeVector: number[];
   forceDiff?: boolean;
 }
 
 export const getTargetTypeVector = ({
-  targetPower: { type: targetType },
-  targetConfig: { typePlaceIndex: targetPlaceIndex, config },
+  targetPowers,
+  targetConfigSet,
   targetTypeIndices: [firstTargetIndex, secondTargetIndex],
   rankedTypeBoosts: currentRankedTypes,
   typeVector: currentVector,
   forceDiff = false,
 }: GetTargetTypeVectorProps) => {
   const tentativeTargetVector = getTargetTypeVectorForPosition(
-    [targetType],
-    [targetPlaceIndex],
+    targetPowers.map((p) => p.type),
+    targetConfigSet.map((c) => c.typePlaceIndex),
     currentRankedTypes,
     currentVector,
   );
+
+  const config = targetConfigSet[0].config;
 
   const targetFirstAmount = tentativeTargetVector[firstTargetIndex];
   const targetSecondAmount = tentativeTargetVector[secondTargetIndex];
