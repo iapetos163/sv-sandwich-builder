@@ -287,13 +287,15 @@ describe('getTargetLevelVector', () => {
       },
     ];
     const v = getTargetLevelVector({
-      targetPower: targetPowers[0],
-      targetConfig: {
-        config: 'ONE_THREE_TWO',
-        typePlaceIndex: 0,
-        mpPlaceIndex: 0,
-      },
-      targetTypeIndices: getTypeTargetIndices(targetPowers, [0], []),
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 0,
+        },
+      ],
+      targetTypes: getTypeTargetIndices(targetPowers, [0], []),
       typeVector: [],
     });
     expect(v[1]).toBe(1);
@@ -307,15 +309,17 @@ describe('getTargetLevelVector', () => {
         level: 3,
       },
     ];
-    const targetTypeIndices = getTypeTargetIndices(targetPowers, [0], []);
+    const targetTypes = getTypeTargetIndices(targetPowers, [0], []);
     const v = getTargetLevelVector({
-      targetPower: targetPowers[0],
-      targetConfig: {
-        config: 'ONE_ONE_THREE',
-        typePlaceIndex: 0,
-        mpPlaceIndex: 2,
-      },
-      targetTypeIndices,
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+      ],
+      targetTypes,
       typeVector: [],
     });
     expect(v[1]).toBe(380);
@@ -343,17 +347,15 @@ describe('getTargetLevelVector', () => {
 
     const rankedTypeBoosts = rankTypeBoosts(typeVector);
     const v = getTargetLevelVector({
-      targetPower: targetPowers[0],
-      targetConfig: {
-        config: 'ONE_THREE_TWO',
-        typePlaceIndex: 0,
-        mpPlaceIndex: 0,
-      },
-      targetTypeIndices: getTypeTargetIndices(
-        targetPowers,
-        [0],
-        rankedTypeBoosts,
-      ),
+      targetPowers,
+      targetConfigSet: [
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 0,
+        },
+      ],
+      targetTypes: getTypeTargetIndices(targetPowers, [0], rankedTypeBoosts),
       typeVector,
     });
 
@@ -363,13 +365,17 @@ describe('getTargetLevelVector', () => {
 
   it('Takes Sparkling power into consideration', () => {
     const v = getTargetLevelVector({
-      targetPower: { mealPower: MealPower.EXP, type: TypeIndex.ICE, level: 3 },
-      targetConfig: {
-        config: 'ONE_ONE_THREE',
-        typePlaceIndex: 0,
-        mpPlaceIndex: 2,
-      },
-      targetTypeIndices: [14, 0, 1],
+      targetPowers: [
+        { mealPower: MealPower.EXP, type: TypeIndex.ICE, level: 3 },
+      ],
+      targetConfigSet: [
+        {
+          config: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+      ],
+      targetTypes: [14, 0, 1],
       typeVector: [
         250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250,
         250, 250, 250, 250,

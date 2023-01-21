@@ -147,9 +147,9 @@ const selectIngredientCandidates = ({
   let deltaLevelVector: number[] = [];
   let deltaTypeNorm = Infinity;
   let deltaLevelNorm = Infinity;
-  let targetConfig = targetConfigs[0];
+  let targetConfigSet = [targetConfigs[0]];
   for (const candidateConfig of targetConfigs) {
-    const targetTypeIndices = getTypeTargetIndices(
+    const targetTypes = getTypeTargetIndices(
       [targetPower],
       [candidateConfig.typePlaceIndex],
       rankedTypeBoosts,
@@ -159,22 +159,22 @@ const selectIngredientCandidates = ({
           targetPowers: [targetPower],
           targetConfigSet: [candidateConfig],
           rankedTypeBoosts,
-          targetTypeIndices,
+          targetTypeIndices: targetTypes,
           typeVector: currentTypeVector,
         })
       : currentTypeVector;
 
     const candTargetLevelVector = getTargetLevelVector({
-      targetPower,
-      targetConfig: candidateConfig,
-      targetTypeIndices,
+      targetPowers: [targetPower],
+      targetConfigSet: [candidateConfig],
+      targetTypes,
       typeVector: currentTypeVector,
     });
     const candDeltaTypeVector = diff(candTargetTypeVector, currentTypeVector);
     const candDeltaLevelVector = diff(candTargetLevelVector, currentTypeVector);
     const candDeltaTypeNorm = norm(candDeltaTypeVector);
     const candDeltaLevelNorm = norm(candDeltaLevelVector);
-    const candTargetConfig = candidateConfig;
+    const candTargetConfigSet = [candidateConfig];
 
     if (
       Math.max(candDeltaLevelNorm, candDeltaTypeNorm) <
@@ -186,7 +186,7 @@ const selectIngredientCandidates = ({
       deltaLevelVector = candDeltaLevelVector;
       deltaTypeNorm = candDeltaTypeNorm;
       deltaLevelNorm = candDeltaLevelNorm;
-      targetConfig = candTargetConfig;
+      targetConfigSet = candTargetConfigSet;
     }
   }
   if (deltaTypeNorm === Infinity || deltaLevelNorm === Infinity) {
@@ -204,7 +204,7 @@ const selectIngredientCandidates = ({
 
   const targetMealPowerVector = getTargetMealPowerVector({
     targetPowers: [targetPower],
-    targetConfigSet: [targetConfig],
+    targetConfigSet,
     rankedMealPowerBoosts,
     mealPowerVector: currentBoostedMealPowerVector,
   });
@@ -260,12 +260,12 @@ const selectIngredientCandidates = ({
   ) {
     const targetTypeIndices = getTypeTargetIndices(
       [targetPower],
-      [targetConfig.typePlaceIndex],
+      targetConfigSet.map((c) => c.typePlaceIndex),
       rankedTypeBoosts,
     );
     targetTypeVector = getTargetTypeVector({
       targetPowers: [targetPower],
-      targetConfigSet: [targetConfig],
+      targetConfigSet,
       targetTypeIndices,
       rankedTypeBoosts,
       typeVector: currentTypeVector,

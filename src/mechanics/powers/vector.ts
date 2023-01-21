@@ -283,20 +283,24 @@ const getMinRankedTypeAmounts = (
 };
 
 export interface GetTargetLevelVectorProps {
-  targetPower: Power;
-  targetConfig: TargetConfig;
-  targetTypeIndices: [number, number, number];
+  targetPowers: Power[];
+  targetConfigSet: TargetConfig[];
+  targetTypes: [TypeIndex, TypeIndex, TypeIndex];
   typeVector: number[];
 }
 
 export const getTargetLevelVector = ({
-  targetPower,
-  targetConfig,
-  targetTypeIndices: [firstTargetIndex, secondTargetIndex, thirdTargetIndex],
+  targetPowers,
+  targetConfigSet,
+  targetTypes: [firstTargetIndex, secondTargetIndex, thirdTargetIndex],
   typeVector: currentVector,
 }: GetTargetLevelVectorProps) => {
-  const [minFirstTarget, minSecondTarget, minThirdTarget] =
-    getMinRankedTypeAmounts(targetPower, targetConfig);
+  const mins = targetConfigSet.map((c, i) =>
+    getMinRankedTypeAmounts(targetPowers[i], c),
+  );
+  const minFirstTarget = Math.max(...mins.map((m) => m[0]));
+  const minSecondTarget = Math.max(...mins.map((m) => m[1]));
+  const minThirdTarget = Math.max(...mins.map((m) => m[2]));
 
   return rangeTypes.map((t) => {
     if (t === firstTargetIndex) {
