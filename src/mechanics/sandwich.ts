@@ -203,8 +203,8 @@ const selectIngredientCandidates = ({
   }
 
   const targetMealPowerVector = getTargetMealPowerVector({
-    targetPower,
-    targetConfig,
+    targetPowers: [targetPower],
+    targetConfigSet: [targetConfig],
     rankedMealPowerBoosts,
     mealPowerVector: currentBoostedMealPowerVector,
   });

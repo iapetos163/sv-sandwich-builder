@@ -3,21 +3,21 @@ import { Power } from '../../types';
 import { MealPowerBoost, TargetConfig, TypeBoost } from './index';
 
 /**
- * @returns Array of [power, mpPlaceIndex] by ascending mpPlaceIndex
+ * @returns Array of [power, mpPlaceIndex] by descending mpPlaceIndex
  */
-const sortTargetPowersByMpPlace = (
+export const sortTargetPowersByMpPlace = (
   targetPowers: Power[],
   targetConfigSet: TargetConfig[],
 ): [Power, number][] => {
   const indices = targetConfigSet.map((c, i) => i);
   indices.sort(
-    (a, b) => targetConfigSet[a].mpPlaceIndex - targetConfigSet[b].mpPlaceIndex,
+    (a, b) => targetConfigSet[b].mpPlaceIndex - targetConfigSet[a].mpPlaceIndex,
   );
   return indices.map((i) => [targetPowers[i], targetConfigSet[i].mpPlaceIndex]);
 };
 
 /**
- * @returns Array of [power, typePlaceIndex] by ascending typePlaceIndex
+ * @returns Array of [power, typePlaceIndex] by descending typePlaceIndex
  */
 const sortTargetPowersByTypePlace = (
   targetPowers: Power[],
@@ -26,7 +26,7 @@ const sortTargetPowersByTypePlace = (
   const indices = targetConfigSet.map((c, i) => i);
   indices.sort(
     (a, b) =>
-      targetConfigSet[a].typePlaceIndex - targetConfigSet[b].typePlaceIndex,
+      targetConfigSet[b].typePlaceIndex - targetConfigSet[a].typePlaceIndex,
   );
   return indices.map((i) => [
     targetPowers[i],
@@ -35,32 +35,52 @@ const sortTargetPowersByTypePlace = (
 };
 
 export interface GetTargetMealPowerVectorProps {
-  targetPower: Power;
-  targetConfig: TargetConfig;
+  targetPowers: Power[];
+  targetConfigSet: TargetConfig[];
   rankedMealPowerBoosts: MealPowerBoost[];
   mealPowerVector: number[];
 }
 
 export const getTargetMealPowerVector = ({
-  targetPower,
-  targetConfig,
+  targetPowers,
+  targetConfigSet,
   rankedMealPowerBoosts,
   mealPowerVector: currentVector,
 }: GetTargetMealPowerVectorProps) => {
-  rankedMealPowerBoosts;
-
-  const mpBoostAtTargetPlace = rankedMealPowerBoosts[
-    targetConfig.mpPlaceIndex
-  ] ?? { mealPower: targetConfig.mpPlaceIndex, amount: 0 };
-
-  const targetAmount =
-    mpBoostAtTargetPlace.mealPower > targetPower.mealPower
-      ? Math.max(mpBoostAtTargetPlace.amount, 1)
-      : mpBoostAtTargetPlace.amount + 1;
-
-  return rangeMealPowers.map((mp) =>
-    mp === targetPower.mealPower ? targetAmount : currentVector[mp] ?? 0,
+  const sortedPowerPlaceIndexes = sortTargetPowersByMpPlace(
+    targetPowers,
+    targetConfigSet,
   );
+
+  const targetMpAmounts = sortedPowerPlaceIndexes.reduce<[MealPower, number][]>(
+    (mpAmounts, [targetPower, placeIndex], i) => {
+      const lastMpAmount = mpAmounts[i - 1];
+      const lastAmount = lastMpAmount ? lastMpAmount[1] : 0;
+      const currentBoostAtTargetPlace = rankedMealPowerBoosts[placeIndex];
+      const mpToBeat = currentBoostAtTargetPlace?.mealPower ?? placeIndex;
+      const amountToBeat = currentBoostAtTargetPlace?.amount ?? 0;
+      return [
+        ...mpAmounts,
+        [
+          targetPower.mealPower,
+          Math.max(
+            lastAmount + 1,
+            mpToBeat > targetPower.mealPower
+              ? Math.max(amountToBeat, 1)
+              : amountToBeat + 1,
+          ),
+        ],
+      ];
+    },
+    [],
+  );
+
+  return rangeMealPowers.map((mp) => {
+    const targetMatch = targetMpAmounts.find(([tmp]) => tmp === mp);
+    if (!targetMatch) return currentVector[mp] ?? 0;
+    const [, targetAmount] = targetMatch;
+    return targetAmount;
+  });
   // if (targetConfig.mpPlaceIndex === 0) {
   //   return mealPowers.map((mp, i) =>
   //     i === targetMpIndex ? targetAmount : currentVector[i] || 0,
