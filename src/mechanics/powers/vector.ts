@@ -2,6 +2,38 @@ import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
 import { Power } from '../../types';
 import { MealPowerBoost, TargetConfig, TypeBoost } from './index';
 
+/**
+ * @returns Array of [power, mpPlaceIndex] by ascending mpPlaceIndex
+ */
+const sortTargetPowersByMpPlace = (
+  targetPowers: Power[],
+  targetConfigSet: TargetConfig[],
+): [Power, number][] => {
+  const indices = targetConfigSet.map((c, i) => i);
+  indices.sort(
+    (a, b) => targetConfigSet[a].mpPlaceIndex - targetConfigSet[b].mpPlaceIndex,
+  );
+  return indices.map((i) => [targetPowers[i], targetConfigSet[i].mpPlaceIndex]);
+};
+
+/**
+ * @returns Array of [power, typePlaceIndex] by ascending typePlaceIndex
+ */
+const sortTargetPowersByTypePlace = (
+  targetPowers: Power[],
+  targetConfigSet: TargetConfig[],
+): [Power, number][] => {
+  const indices = targetConfigSet.map((c, i) => i);
+  indices.sort(
+    (a, b) =>
+      targetConfigSet[a].typePlaceIndex - targetConfigSet[b].typePlaceIndex,
+  );
+  return indices.map((i) => [
+    targetPowers[i],
+    targetConfigSet[i].typePlaceIndex,
+  ]);
+};
+
 export interface GetTargetMealPowerVectorProps {
   targetPower: Power;
   targetConfig: TargetConfig;
