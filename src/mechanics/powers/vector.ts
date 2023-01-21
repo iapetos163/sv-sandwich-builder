@@ -81,32 +81,6 @@ export const getTargetMealPowerVector = ({
     const [, targetAmount] = targetMatch;
     return targetAmount;
   });
-  // if (targetConfig.mpPlaceIndex === 0) {
-  //   return mealPowers.map((mp, i) =>
-  //     i === targetMpIndex ? targetAmount : currentVector[i] || 0,
-  //   );
-  // }
-  // const tieAmount =
-  //   rankedMealPowerBoosts[targetConfig.mpPlaceIndex - 1]?.amount ?? 0;
-
-  // if (tieAmount > targetAmount) {
-  //   return mealPowers.map((mp, i) =>
-  //     i === targetMpIndex ? targetAmount : currentVector[i] || 0,
-  //   );
-  // }
-  // return mealPowers.map((mp, i) => {
-  //   if (i === targetMpIndex) {
-  //     return targetAmount;
-  //   }
-  //   if (
-  //     (currentVector[i] ?? 0) === tieAmount &&
-  //     mp !== 'Sparkling' &&
-  //     mp !== 'Title'
-  //   ) {
-  //     return targetAmount;
-  //   }
-  //   return currentVector[i] || 0;
-  // });
 };
 
 const getTargetTypeVectorForPosition = (
