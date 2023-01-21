@@ -1,6 +1,11 @@
 import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
 import { Power } from '../../types';
-import { MealPowerBoost, TargetConfig, TypeBoost } from './index';
+import {
+  MealPowerBoost,
+  rankTypeBoosts,
+  TargetConfig,
+  TypeBoost,
+} from './index';
 
 /**
  * @returns Array of [power, mpPlaceIndex] by descending mpPlaceIndex
@@ -17,21 +22,15 @@ export const sortTargetPowersByMpPlace = (
 };
 
 /**
- * @returns Array of [power, typePlaceIndex] by descending typePlaceIndex
+ * @returns Array of [type, typePlaceIndex] by descending typePlaceIndex
  */
-const sortTargetPowersByTypePlace = (
-  targetPowers: Power[],
-  targetConfigSet: TargetConfig[],
-): [Power, number][] => {
-  const indices = targetConfigSet.map((c, i) => i);
-  indices.sort(
-    (a, b) =>
-      targetConfigSet[b].typePlaceIndex - targetConfigSet[a].typePlaceIndex,
-  );
-  return indices.map((i) => [
-    targetPowers[i],
-    targetConfigSet[i].typePlaceIndex,
-  ]);
+const sortTargetTypesByPlace = (
+  targetTypes: TypeIndex[],
+  typePlaceIndices: number[],
+): [TypeIndex, number][] => {
+  const indices = typePlaceIndices.map((c, i) => i);
+  indices.sort((a, b) => typePlaceIndices[b] - typePlaceIndices[a]);
+  return indices.map((i) => [targetTypes[i], typePlaceIndices[i]]);
 };
 
 export interface GetTargetMealPowerVectorProps {
@@ -84,66 +83,86 @@ export const getTargetMealPowerVector = ({
 };
 
 const getTargetTypeVectorForPosition = (
-  targetType: TypeIndex,
-  targetPlaceIndex: number,
+  targetTypes: TypeIndex[],
+  targetPlaceIndexSet: number[],
   currentRankedTypes: TypeBoost[],
   currentVector: number[],
 ) => {
-  const currentPlaceIndex = currentRankedTypes.findIndex(
-    (t) => t.type === targetType,
+  const sortedPowerPlaceIndexes = sortTargetTypesByPlace(
+    targetTypes,
+    targetPlaceIndexSet,
   );
 
-  // Target type is at desired rank
-  if (currentPlaceIndex === targetPlaceIndex) {
-    return currentVector;
-  }
+  const [targetVector] = sortedPowerPlaceIndexes.reduce<
+    [number[], TypeBoost[]]
+  >(
+    ([currentVector, currentRankedTypes], [targetType, targetPlaceIndex]) => {
+      const currentPlaceIndex = currentRankedTypes.findIndex(
+        (t) => t.type === targetType,
+      );
 
-  const currentTargetPlaceAmount =
-    currentRankedTypes[targetPlaceIndex]?.amount || 0;
-
-  let typesAhead = currentRankedTypes
-    .slice(0, targetPlaceIndex)
-    .map((rt) => rt.type);
-
-  if (typesAhead.length < targetPlaceIndex) {
-    typesAhead = typesAhead
-      .concat(rangeTypes)
-      .filter((t) => t !== targetType)
-      .slice(0, targetPlaceIndex);
-  }
-
-  // Target type is behind desired rank
-  if (currentPlaceIndex < 0 || currentPlaceIndex > targetPlaceIndex) {
-    return rangeTypes.map((t) => {
-      if (typesAhead.includes(t)) {
-        return Math.max(currentVector[t] ?? 0, currentTargetPlaceAmount + 2);
+      // Target type is at desired rank
+      if (currentPlaceIndex === targetPlaceIndex) {
+        return [currentVector, currentRankedTypes];
       }
-      if (t === targetType) {
-        return currentTargetPlaceAmount + 1;
+
+      const currentTargetPlaceAmount =
+        currentRankedTypes[targetPlaceIndex]?.amount || 0;
+
+      let typesAhead = currentRankedTypes
+        .slice(0, targetPlaceIndex)
+        .map((rt) => rt.type);
+
+      if (typesAhead.length < targetPlaceIndex) {
+        typesAhead = typesAhead
+          .concat(rangeTypes)
+          .filter((t) => t !== targetType)
+          .slice(0, targetPlaceIndex);
       }
-      return currentVector[t] ?? 0;
-    });
-  }
 
-  // Target type is ahead of desired rank
-  const currentTargetTypeAmount = currentRankedTypes[currentPlaceIndex].amount;
+      // Target type is behind desired rank
+      if (currentPlaceIndex < 0 || currentPlaceIndex > targetPlaceIndex) {
+        const newTargetVector = rangeTypes.map((t) => {
+          if (typesAhead.includes(t)) {
+            return Math.max(
+              currentVector[t] ?? 0,
+              currentTargetPlaceAmount + 2,
+            );
+          }
+          if (t === targetType) {
+            return currentTargetPlaceAmount + 1;
+          }
+          return currentVector[t] ?? 0;
+        });
+        return [newTargetVector, rankTypeBoosts(newTargetVector)];
+      }
 
-  let typesBehind = currentRankedTypes
-    .slice(currentPlaceIndex + 1, targetPlaceIndex + 1)
-    .map((rt) => rt.type);
-  if (typesBehind.length < targetPlaceIndex - currentPlaceIndex) {
-    typesBehind = typesBehind
-      .concat(rangeTypes)
-      .filter((t) => t !== targetType)
-      .slice(0, targetPlaceIndex - currentPlaceIndex);
-  }
+      // Target type is ahead of desired rank
+      const currentTargetTypeAmount =
+        currentRankedTypes[currentPlaceIndex].amount;
 
-  return rangeTypes.map((t) => {
-    if (typesBehind.includes(t)) {
-      return Math.max(currentTargetTypeAmount + 1, currentVector[t] ?? 0);
-    }
-    return currentVector[t] ?? 0;
-  });
+      let typesBehind = currentRankedTypes
+        .slice(currentPlaceIndex + 1, targetPlaceIndex + 1)
+        .map((rt) => rt.type);
+      if (typesBehind.length < targetPlaceIndex - currentPlaceIndex) {
+        typesBehind = typesBehind
+          .concat(rangeTypes)
+          .filter((t) => t !== targetType)
+          .slice(0, targetPlaceIndex - currentPlaceIndex);
+      }
+
+      const newTargetVector = rangeTypes.map((t) => {
+        if (typesBehind.includes(t)) {
+          return Math.max(currentTargetTypeAmount + 1, currentVector[t] ?? 0);
+        }
+        return currentVector[t] ?? 0;
+      });
+      return [newTargetVector, rankTypeBoosts(newTargetVector)];
+    },
+    [currentVector, currentRankedTypes],
+  );
+
+  return targetVector;
 };
 
 export interface GetTargetTypeVectorProps {
@@ -164,8 +183,8 @@ export const getTargetTypeVector = ({
   forceDiff = false,
 }: GetTargetTypeVectorProps) => {
   const tentativeTargetVector = getTargetTypeVectorForPosition(
-    targetType,
-    targetPlaceIndex,
+    [targetType],
+    [targetPlaceIndex],
     currentRankedTypes,
     currentVector,
   );
