@@ -22,7 +22,7 @@ const allowedMealPowers = rangeMealPowers.map(() => true);
 const allowedTypes = rangeTypes.map(() => true);
 
 export interface PowerQueryProps {
-  onSubmit: (queryPower: Power) => void;
+  onSubmit: (queryPower: Power[]) => void;
   enableSubmit: boolean;
 }
 
@@ -36,7 +36,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
       evt.preventDefault();
-      if (queryPower) onSubmit(queryPower);
+      if (queryPower) onSubmit([queryPower]);
     },
     [queryPower, onSubmit],
   );
