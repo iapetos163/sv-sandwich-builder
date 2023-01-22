@@ -8,7 +8,7 @@ const StyledContainer = styled.div``;
 const StyledGrid = styled.div`
   display: grid;
   align-items: center;
-  grid-template: auto auto auto auto / 55fr 45fr auto;
+  grid-template: auto auto auto auto / 55fr 45fr auto auto;
   /* gap: 5px 0; */
 `;
 
@@ -34,6 +34,9 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const [firstQueryPower, setFirstQueryPower] = useState<Power | null>(null);
   const [secondQueryPower, setSecondQueryPower] = useState<Power | null>(null);
   const [thirdQueryPower, setThirdQueryPower] = useState<Power | null>(null);
+  const [firstQueryOverride, setFirstQueryOverride] = useState<Power | null>(
+    null,
+  );
   const [secondQueryOverride, setSecondQueryOverride] = useState<Power | null>(
     null,
   );
@@ -55,6 +58,16 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     if (showSecond) setShowThird(true);
     else setShowSecond(true);
   }, [showSecond]);
+
+  const handleRemoveFirst = useCallback(() => {
+    setFirstQueryOverride(secondQueryPower);
+    setSecondQueryOverride(thirdQueryPower);
+    setFirstQueryPower(secondQueryPower);
+    setSecondQueryPower(thirdQueryPower);
+    setThirdQueryPower(null);
+    if (showThird) setShowThird(false);
+    else setShowSecond(false);
+  }, [secondQueryPower, thirdQueryPower, showThird]);
 
   const handleRemoveSecond = useCallback(() => {
     if (!showThird) {
@@ -93,12 +106,15 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
           <StyledHeading>Power</StyledHeading>
           <StyledHeading>Type</StyledHeading>
           <StyledHeading style={{ paddingLeft: '0.5rem' }}>Level</StyledHeading>
+          <div />
           <PowerSelector
-            onRemove={() => {}}
+            onRemove={handleRemoveFirst}
             onChange={handleSetFirstPower}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
+            override={firstQueryOverride}
             maxLevel={3}
+            removable={showSecond}
           />
           {showSecond && (
             <PowerSelector
