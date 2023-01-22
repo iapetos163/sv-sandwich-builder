@@ -103,6 +103,11 @@ export const calculateLevels = (
   return [1, 1, 1];
 };
 
+const requestedPowerValid = (powers: Power[]) => {
+  // 3 lv2s => one must be title
+  // noTitle && hasSameTypes && lv2s.length >=2   => impossible
+};
+
 const uniqueTypes = (powers: Power[]) =>
   Object.keys(powers.reduce((agg, tp) => ({ [tp.type]: true, ...agg }), {}));
 
@@ -133,12 +138,16 @@ export const getTargetConfigs = (
     });
   }
 
-  const unique = uniqueTypes(targetPowers);
-  const hasSameTypes = unique.length < targetPowers.length;
+  const typedTargetPowers = targetPowers.filter((tp) =>
+    mealPowerHasType(tp.mealPower),
+  );
+  const hasSameTypes =
+    uniqueTypes(typedTargetPowers).length < typedTargetPowers.length;
   const repeatedType =
-    targetPowers[0].type === (targetPowers[1] ?? targetPowers[2])?.type
-      ? targetPowers[0].type
-      : targetPowers[1]?.type;
+    typedTargetPowers[0]?.type ===
+    (typedTargetPowers[1] ?? typedTargetPowers[2])?.type
+      ? typedTargetPowers[0]?.type
+      : typedTargetPowers[1]?.type;
 
   if (targetNumHerba >= 1 && hasSameTypes) {
     return targetPowers.map((tp): TargetConfig[] => {
@@ -193,6 +202,40 @@ export const getTargetConfigs = (
     });
   }
 
+  // Level should not exceed 2 at this point
+  const lv2s = targetPowers.filter((tp) => tp.level >= 2);
+
+  // ONE_THREE_ONE can only be done if there are no level 2s
+  if (hasSameTypes && lv2s.length === 1 && lv2s[0].type === repeatedType) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 2) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+        ];
+      }
+      if (tp.type === repeatedType) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+      return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 }];
+    });
+  }
+
+  // ONE_THREE_ONE can only be done if there are no level 2s
+  // ONE_ONE_THREE can only be done with at most one level 2
+  if (hasSameTypes && lv2s.length > 0) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.type === repeatedType) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+      return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 }];
+    });
+  }
+
   if (hasSameTypes) {
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.type === repeatedType) {
@@ -209,13 +252,73 @@ export const getTargetConfigs = (
       ];
     });
   }
-  // TODO discriminate on level (max 2)
+
+  if (targetPowers.length >= 3 && lv2s.length >= 2) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level === 2) {
+        return [
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        ];
+      }
+      return [{ config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 }];
+    });
+  }
+
+  if (targetPowers.length >= 3 && lv2s.length === 1) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 2) {
+        return [
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+        ];
+      }
+      return [
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+      ];
+    });
+  }
+
   if (targetPowers.length >= 3) {
     return targetPowers.map((): TargetConfig[] => [
       { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
       { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
       { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
     ]);
+  }
+
+  // ONE_THREE_ONE can only be done if there are no level 2s
+  // ONE_ONE_THREE can only be done with at most one level 2
+  if (lv2s.length >= 2) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 2) {
+        return [
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        ];
+      }
+      return [{ config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 }];
+    });
+  }
+
+  // ONE_THREE_ONE can only be done if there are no level 2s
+  // ONE_ONE_THREE can only be done with at most one level 2
+  if (lv2s.length === 1) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 2) {
+        return [
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+        ];
+      }
+      return [
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+
+        { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      ];
+    });
   }
 
   return targetPowers.map((): TargetConfig[] => [
@@ -228,7 +331,7 @@ export const getTargetConfigs = (
     { config: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
     { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
     { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-    { config: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 0 },
+    { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
   ]);
 };
 
