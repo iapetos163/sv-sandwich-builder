@@ -425,6 +425,21 @@ export const makeSandwichForPowers = (
     targetNumHerba = 1;
   }
 
+  const sandwich = makeSandwichGivenNumHerba(targetPowers, targetNumHerba);
+  if (
+    !sandwich &&
+    targetNumHerba === 0 &&
+    targetPowers.some((tp) => tp.level >= 2)
+  ) {
+    return makeSandwichGivenNumHerba(targetPowers, 1);
+  }
+  return sandwich;
+};
+
+const makeSandwichGivenNumHerba = (
+  targetPowers: Power[],
+  targetNumHerba: number,
+) => {
   const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
   const targetConfigSets = permutePowerConfigs(targetConfigs);
 

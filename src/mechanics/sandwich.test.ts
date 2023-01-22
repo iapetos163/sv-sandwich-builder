@@ -465,6 +465,36 @@ describe('makeSandwichForPower', () => {
     expect(numIngredients).toBeLessThanOrEqual(6);
   });
 
+  it('Produces a sandwich with Lv 1 Egg and Lv 2 Catch Dark', () => {
+    const sandwich = makeSandwichForPowers([
+      {
+        mealPower: MealPower.EGG,
+        type: 0,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.CATCH,
+        type: TypeIndex.DARK,
+        level: 2,
+      },
+    ]);
+
+    // 2x Smoked Fillet, 4x Watercress, 3x vinegar, Sweet Herba
+    expect(sandwich).not.toBeNull();
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
+
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+    expect(sandwich!.condiments.length).toBeGreaterThan(0);
+    expect(numHerba).toBeLessThanOrEqual(1);
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', () => {
   //   const sandwich = makeSandwichForPowers([{
   //     mealPower: MealPower.CATCH,
