@@ -31,7 +31,6 @@ import {
 
 const CANDIDATE_SCORE_THRESHOLD = 0.2;
 const MAX_CANDIDATES = 3;
-const CONDIMENT_BONUS = 0.4;
 
 // TODO: change these for multiplayer
 const maxFillings = 6;
@@ -167,6 +166,8 @@ const selectIngredientCandidates = ({
   remainingFillings,
   debug,
 }: SelectIngredientProps) => {
+  const CONDIMENT_BONUS = targetPowers.length < 2 ? 0.4 : 0;
+
   let targetTypeVector: number[] = [];
   let targetLevelVector: number[] = [];
   let deltaTypeVector: number[] = [];
@@ -387,7 +388,9 @@ const selectIngredientCandidates = ({
       ),
     ].join(`
       `)}
-    Respective scores: 
+    Target config set:${['', ...targetConfigSet.map((c) => JSON.stringify(c))]
+      .join(`
+    `)}
     Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
     Raw score components of ${
       candidateScoredIngredients[0]?.ing?.name
@@ -425,6 +428,21 @@ export const makeSandwichForPowers = (
     targetNumHerba = 1;
   }
 
+  const sandwich = makeSandwichGivenNumHerba(targetPowers, targetNumHerba);
+  if (
+    !sandwich &&
+    targetNumHerba === 0 &&
+    targetPowers.some((tp) => tp.level >= 2)
+  ) {
+    return makeSandwichGivenNumHerba(targetPowers, 1);
+  }
+  return sandwich;
+};
+
+const makeSandwichGivenNumHerba = (
+  targetPowers: Power[],
+  targetNumHerba: number,
+) => {
   const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
   const targetConfigSets = permutePowerConfigs(targetConfigs);
 
@@ -496,6 +514,9 @@ export const makeSandwichForPowers = (
     const numEgg = fillings.filter((f) => f.name === 'Egg').length;
     const numChorizo = fillings.filter((f) => f.name === 'Chorizo').length;
     const numPepper = condiments.filter((f) => f.name === 'Pepper').length;
+    const numMarmalade = condiments.filter(
+      (f) => f.name === 'Marmalade',
+    ).length;
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
     const debugCondition = false;
@@ -537,6 +558,9 @@ export const makeSandwichForPowers = (
       .concat(condiments)
       .map((ing) => ing.name)
       .join(', ')}
+    Target config sets:${['', ...targetConfigSets.map((c) => JSON.stringify(c))]
+      .join(`
+      `)}
     Boosted meal power: ${boostedMealPower}
     alreadyReachedAllTargets: ${alreadyReachedAllTargets}
     checkMealPower: ${checkMealPower}

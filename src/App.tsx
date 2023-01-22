@@ -73,28 +73,31 @@ const StyledTitleTag = styled.span`
 
 function App(): ReactElement {
   const [resultSandwich, setResultSandwich] = useState<Sandwich | null>(null);
-  const [queryPower, setQueryPower] = useState<Power | null>(null);
+  const [queryPowers, setQueryPowers] = useState<Power[] | null>(null);
   const [queryChanged, setQueryChanged] = useState(true);
   const [calculating, setCalculating] = useState(false);
 
   const handleQuery = useCallback(
-    (newQuery: Power) => {
+    (newQuery: Power[]) => {
       if (calculating) return;
 
-      if (!queryPower || !powersEqual(queryPower, newQuery)) {
+      if (
+        !queryPowers ||
+        queryPowers.some((qp, i) => !powersEqual(qp, newQuery[i]))
+      ) {
         setQueryChanged(true);
       }
-      setQueryPower(newQuery);
+      setQueryPowers(newQuery);
 
       setCalculating(true);
       setTimeout(() => {
-        const sandwich = makeSandwichForPowers([newQuery]);
+        const sandwich = makeSandwichForPowers(newQuery);
         setResultSandwich(sandwich);
         setQueryChanged(false);
         setCalculating(false);
       }, 10);
     },
-    [calculating, queryPower],
+    [calculating, queryPowers],
   );
 
   return (

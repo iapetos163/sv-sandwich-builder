@@ -5,6 +5,7 @@ import {
   getTargetConfigs,
   powersMatch,
   rankMealPowerBoosts,
+  requestedPowersValid,
 } from './index';
 
 describe('rankMealPowerBoosts', () => {
@@ -94,5 +95,28 @@ describe('getTargetConfigs', () => {
 
     expect(res[0].length).toBeLessThanOrEqual(4);
     expect(res[1].length).toBeLessThanOrEqual(4);
+  });
+});
+
+describe('requestedPowersValid', () => {
+  it('Returns true for Lv 1 Exp Dragon, Lv 1 Item Fighting, and Lv 1 Encounter Electric', () => {
+    const res = requestedPowersValid([
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.DRAGON,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ITEM,
+        type: TypeIndex.FIGHTING,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.ELECTRIC,
+        level: 1,
+      },
+    ]);
+    expect(res).toBe(true);
   });
 });
