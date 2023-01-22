@@ -8,7 +8,7 @@ import {
   mealPowerHasType,
   powersMatch,
   rankTypeBoosts,
-  selectPowerAtTargetPosition,
+  selectPowersAtTargetPositions,
   TargetConfig,
   TypeBoost,
   powerToString,
@@ -488,8 +488,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
       : baseMealPowerVector;
 
     const candidatePowers = targetConfigs.map(
-      (targetConfig): Power | undefined =>
-        selectPowerAtTargetPosition(powers, targetConfig),
+      (targetConfig) =>
+        selectPowersAtTargetPositions(powers, [targetConfig])[0],
     );
     const condimentsAllowed =
       !targetPowerAlreadyFound || condiments.length === 0;
@@ -500,50 +500,7 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
     // TODO: figure out where we lose bitter/salty
-    const debugCondition = numFillings === 0 && numCondiments === 1;
-
-    if (debugCondition) {
-      console.debug({
-        powers,
-        targetConfigs,
-        candidatePowers,
-      });
-
-      /*
-      bug:
-            {
-        powers: [
-          { mealPower: 6, type: 0, level: 2 },
-          { mealPower: 3, type: 2, level: 2 }
-        ],
-        targetConfigs: [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 1 }
-        ],
-        candidatePowers: [
-          { mealPower: 3, type: 2, level: 2 },
-          { mealPower: 3, type: 2, level: 2 }
-        ]
-      }
-
-
-      desired:
-      {
-        powers: [
-          { mealPower: 6, type: 0, level: 2 },
-          { mealPower: 3, type: 2, level: 2 }
-        ],
-        targetConfigs: [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 1 }
-        ],
-        candidatePowers: [
-          { mealPower: 6, type: 0, level: 2 },
-          { mealPower: 6, type: 0, level: 2 }
-        ]
-      }
-      */
-    }
+    const debugCondition = false;
 
     const selectedPower =
       (candidatePowers.length > 1 &&

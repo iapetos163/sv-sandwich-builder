@@ -378,35 +378,14 @@ export const getTargetConfigs = (
   ]);
 };
 
-export const selectPowerAtTargetPosition = (
+export const selectPowersAtTargetPositions = (
   powers: Power[],
-  config: TargetConfig,
-) => {
-  const getIndex = () => {
-    switch (config.config) {
-      case 'ONE_ONE_ONE':
-        return 0;
-      case 'ONE_ONE_THREE':
-        if (config.typePlaceIndex === 2) {
-          return 2;
-        }
-        return 0;
-      case 'ONE_THREE_ONE':
-        if (config.typePlaceIndex === 2) {
-          return 1;
-        }
-        return 0;
-      case 'ONE_THREE_TWO':
-        if (config.typePlaceIndex === 2) {
-          return 1;
-        }
-        if (config.typePlaceIndex === 1) {
-          return 2;
-        }
-        return 0;
-    }
-  };
-  return powers[getIndex()];
+  configSet: TargetConfig[],
+): (Power | undefined)[] => {
+  const leadingTitle = powers[0]?.mealPower === MealPower.TITLE;
+  return configSet.map(
+    (c) => powers[leadingTitle ? c.mpPlaceIndex - 1 : c.mpPlaceIndex],
+  );
 };
 
 /**
