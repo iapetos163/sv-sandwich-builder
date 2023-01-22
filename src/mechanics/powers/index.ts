@@ -118,9 +118,7 @@ export const requestedPowersValid = (powers: Power[]) => {
 
   const typedPowers = powers.filter((p) => mealPowerHasType(p.mealPower));
   const uniqueTypes = getUniqueTypes(typedPowers);
-  const sparkling = powers.findIndex(
-    (p) => p.mealPower === MealPower.SPARKLING,
-  );
+  const sparkling = powers.find((p) => p.mealPower === MealPower.SPARKLING);
 
   if (sparkling && uniqueTypes.length > 1) {
     return false;
@@ -130,7 +128,7 @@ export const requestedPowersValid = (powers: Power[]) => {
     return false;
   }
 
-  const title = powers.findIndex((p) => p.mealPower === MealPower.TITLE);
+  const title = powers.find((p) => p.mealPower === MealPower.TITLE);
 
   if (sparkling && !title && powers.length >= 3) {
     return false;
