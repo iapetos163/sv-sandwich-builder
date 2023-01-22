@@ -491,6 +491,7 @@ describe('makeSandwichForPower', () => {
 
   // Non-constructible:
   // Lv 1 Exp Dragon, Lv 1 Item Fighting, and Lv 1 Humungo Electric
+  // Lv 1 Item Fire, Lv 1 Raid Fairy, and Lv 1 Teensy Flying
 
   it('Produces a sandwich with Lv 1 Exp Dragon, Lv 1 Item Fighting, and Lv 1 Encounter Electric', () => {
     const sandwich = makeSandwichForPowers([
@@ -514,6 +515,38 @@ describe('makeSandwichForPower', () => {
     // Chorizo, Herbed Sausage, pickle, yellow bell pepper, Avocado, marmalade, pepper
     // 2x Chorizo, Strawberry, Ham, Pickle, Herbed Sausage, Pepper, 2x Jam
     expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBe(0);
+    expect(numIngredients).toBeLessThanOrEqual(9);
+  });
+
+  it('Produces a sandwich with Lv 1 Item Fire, Lv 1 Raid Fairy, and Lv 1 Catch Ghost', () => {
+    const sandwich = makeSandwichForPowers([
+      {
+        mealPower: MealPower.ITEM,
+        type: TypeIndex.FIRE,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.RAID,
+        type: TypeIndex.FAIRY,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.CATCH,
+        type: TypeIndex.GHOST,
+        level: 1,
+      },
+    ]);
+
+    // 3x Potato Tortilla, Banana, Tomato, Red Bell Pepper, Olive Oil, Salt, Curry Powder, Pepper
+    expect(sandwich).not.toBeNull();
     console.debug(
       `${sandwich!.fillings
         .concat(sandwich!.condiments)
@@ -528,7 +561,6 @@ describe('makeSandwichForPower', () => {
     ).length;
 
     expect(numHerba).toBe(0);
-    expect(numIngredients).toBeLessThanOrEqual(9);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {
