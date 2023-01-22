@@ -480,6 +480,39 @@ describe('makeSandwichForPower', () => {
     ]);
 
     // 2x Smoked Fillet, 4x Watercress, 3x vinegar, Sweet Herba
+    // 2x Fried Fillet, Herbed Sausage, Rice, Sweet Herba
+    expect(sandwich).not.toBeNull();
+
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+    expect(numHerba).toBeLessThanOrEqual(1);
+  });
+
+  // Non-constructible:
+  // Lv 1 Exp Dragon, Lv 1 Item Fighting, and Lv 1 Humungo Electric
+
+  it('Produces a sandwich with Lv 1 Exp Dragon, Lv 1 Item Fighting, and Lv 1 Encounter Electric', () => {
+    const sandwich = makeSandwichForPowers([
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.DRAGON,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ITEM,
+        type: TypeIndex.FIGHTING,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.ELECTRIC,
+        level: 1,
+      },
+    ]);
+
+    // Chorizo, Herbed Sausage, pickle, yellow bell pepper, Avocado, marmalade, pepper
+    // 2x Chorizo, Strawberry, Ham, Pickle, Herbed Sausage, Pepper, 2x Jam
     expect(sandwich).not.toBeNull();
     console.debug(
       `${sandwich!.fillings
@@ -488,11 +521,14 @@ describe('makeSandwichForPower', () => {
         .join(', ')}`,
     );
 
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
     const numHerba = sandwich!.condiments.filter(
       (s) => s.isHerbaMystica,
     ).length;
-    expect(sandwich!.condiments.length).toBeGreaterThan(0);
-    expect(numHerba).toBeLessThanOrEqual(1);
+
+    expect(numHerba).toBe(0);
+    expect(numIngredients).toBeLessThanOrEqual(9);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {

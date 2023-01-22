@@ -31,7 +31,6 @@ import {
 
 const CANDIDATE_SCORE_THRESHOLD = 0.2;
 const MAX_CANDIDATES = 3;
-const CONDIMENT_BONUS = 0.4;
 
 // TODO: change these for multiplayer
 const maxFillings = 6;
@@ -167,6 +166,8 @@ const selectIngredientCandidates = ({
   remainingFillings,
   debug,
 }: SelectIngredientProps) => {
+  const CONDIMENT_BONUS = targetPowers.length < 2 ? 0.4 : 0;
+
   let targetTypeVector: number[] = [];
   let targetLevelVector: number[] = [];
   let deltaTypeVector: number[] = [];
@@ -387,7 +388,9 @@ const selectIngredientCandidates = ({
       ),
     ].join(`
       `)}
-    Respective scores: 
+    Target config set:${['', ...targetConfigSet.map((c) => JSON.stringify(c))]
+      .join(`
+    `)}
     Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
     Raw score components of ${
       candidateScoredIngredients[0]?.ing?.name
@@ -511,6 +514,9 @@ const makeSandwichGivenNumHerba = (
     const numEgg = fillings.filter((f) => f.name === 'Egg').length;
     const numChorizo = fillings.filter((f) => f.name === 'Chorizo').length;
     const numPepper = condiments.filter((f) => f.name === 'Pepper').length;
+    const numMarmalade = condiments.filter(
+      (f) => f.name === 'Marmalade',
+    ).length;
     const numFillings = fillings.length;
     const numCondiments = condiments.length;
     const debugCondition = false;
@@ -552,6 +558,9 @@ const makeSandwichGivenNumHerba = (
       .concat(condiments)
       .map((ing) => ing.name)
       .join(', ')}
+    Target config sets:${['', ...targetConfigSets.map((c) => JSON.stringify(c))]
+      .join(`
+      `)}
     Boosted meal power: ${boostedMealPower}
     alreadyReachedAllTargets: ${alreadyReachedAllTargets}
     checkMealPower: ${checkMealPower}
