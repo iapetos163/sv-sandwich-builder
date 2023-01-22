@@ -15,6 +15,7 @@ import {
   getTypeTargetIndices,
   MealPowerBoost,
   rankMealPowerBoosts,
+  permutePowerConfigs,
 } from './powers';
 import {
   boostMealPowerVector,
@@ -107,8 +108,8 @@ type ScoredIngredient = {
 };
 
 interface SelectIngredientProps {
-  targetPower: Power;
-  targetConfigs: TargetConfig[];
+  targetPowers: Power[];
+  targetConfigs: TargetConfig[][];
   currentBoostedMealPowerVector: number[];
   currentTypeVector: number[];
   rankedTypeBoosts: TypeBoost[];
@@ -125,7 +126,7 @@ interface SelectIngredientProps {
 }
 
 const selectIngredientCandidates = ({
-  targetPower,
+  targetPowers,
   targetConfigs,
   currentBoostedMealPowerVector,
   currentTypeVector,
@@ -141,23 +142,25 @@ const selectIngredientCandidates = ({
   remainingFillings,
   debug,
 }: SelectIngredientProps) => {
+  const targetConfigSets = permutePowerConfigs(targetConfigs);
+
   let targetTypeVector: number[] = [];
   let targetLevelVector: number[] = [];
   let deltaTypeVector: number[] = [];
   let deltaLevelVector: number[] = [];
   let deltaTypeNorm = Infinity;
   let deltaLevelNorm = Infinity;
-  let targetConfigSet = [targetConfigs[0]];
-  for (const candidateConfig of targetConfigs) {
+  let targetConfigSet = targetConfigSets[0];
+  for (const candidateConfigSet of targetConfigSets) {
     const targetTypes = getTypeTargetIndices(
-      [targetPower],
-      [candidateConfig.typePlaceIndex],
+      targetPowers,
+      candidateConfigSet.map((c) => c.typePlaceIndex),
       rankedTypeBoosts,
     );
     const candTargetTypeVector = checkType
       ? getTargetTypeVector({
-          targetPowers: [targetPower],
-          targetConfigSet: [candidateConfig],
+          targetPowers,
+          targetConfigSet: candidateConfigSet,
           rankedTypeBoosts,
           targetTypeIndices: targetTypes,
           typeVector: currentTypeVector,
@@ -165,8 +168,8 @@ const selectIngredientCandidates = ({
       : currentTypeVector;
 
     const candTargetLevelVector = getTargetLevelVector({
-      targetPowers: [targetPower],
-      targetConfigSet: [candidateConfig],
+      targetPowers,
+      targetConfigSet: candidateConfigSet,
       targetTypes,
       typeVector: currentTypeVector,
     });
@@ -174,7 +177,6 @@ const selectIngredientCandidates = ({
     const candDeltaLevelVector = diff(candTargetLevelVector, currentTypeVector);
     const candDeltaTypeNorm = norm(candDeltaTypeVector);
     const candDeltaLevelNorm = norm(candDeltaLevelVector);
-    const candTargetConfigSet = [candidateConfig];
 
     if (
       Math.max(candDeltaLevelNorm, candDeltaTypeNorm) <
@@ -186,24 +188,24 @@ const selectIngredientCandidates = ({
       deltaLevelVector = candDeltaLevelVector;
       deltaTypeNorm = candDeltaTypeNorm;
       deltaLevelNorm = candDeltaLevelNorm;
-      targetConfigSet = candTargetConfigSet;
+      targetConfigSet = candidateConfigSet;
     }
   }
   if (deltaTypeNorm === Infinity || deltaLevelNorm === Infinity) {
     if (debug) {
       console.debug('Cannot satisfy constraints for target configs', {
-        targetConfigs,
+        targetConfigSets,
         currentTypeVector,
         targetTypeVector,
         targetLevelVector,
-        targetPower,
+        targetPowers,
       });
     }
     return [];
   }
 
   const targetMealPowerVector = getTargetMealPowerVector({
-    targetPowers: [targetPower],
+    targetPowers,
     targetConfigSet,
     rankedMealPowerBoosts,
     mealPowerVector: currentBoostedMealPowerVector,
@@ -259,12 +261,12 @@ const selectIngredientCandidates = ({
     mealPowerScoreWeight === 0
   ) {
     const targetTypeIndices = getTypeTargetIndices(
-      [targetPower],
+      targetPowers,
       targetConfigSet.map((c) => c.typePlaceIndex),
       rankedTypeBoosts,
     );
     targetTypeVector = getTargetTypeVector({
-      targetPowers: [targetPower],
+      targetPowers,
       targetConfigSet,
       targetTypeIndices,
       rankedTypeBoosts,
@@ -297,7 +299,7 @@ const selectIngredientCandidates = ({
     });
 
     const relevantTaste = relativeTasteVector.map((c, mp) =>
-      mp === targetPower.mealPower || c < 0 ? c : 0,
+      targetPowers.some((tp) => tp.mealPower === mp) || c < 0 ? c : 0,
     );
     const boostedMealPowerVector = add(ing.baseMealPowerVector, relevantTaste);
 
@@ -525,8 +527,8 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
     }
     const newIngredientCandidates = selectIngredientCandidates({
       debug: debugCondition,
-      targetPower,
-      targetConfigs,
+      targetPowers: [targetPower],
+      targetConfigs: [targetConfigs],
       currentBoostedMealPowerVector,
       currentTypeVector: typeVector,
       rankedTypeBoosts: rankTypeBoosts(typeVector),
