@@ -27,18 +27,50 @@ export interface PowerQueryProps {
 }
 
 const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
-  const [queryPower, setQueryPower] = useState<Power | null>(null);
+  const [firstQueryPower, setFirstQueryPower] = useState<Power | null>(null);
+  const [secondQueryPower, setSecondQueryPower] = useState<Power | null>(null);
+  const [thirdQueryPower, setThirdQueryPower] = useState<Power | null>(null);
+  const [secondQueryOverride, setSecondQueryOverride] = useState<Power | null>(
+    null,
+  );
 
-  const handleSetPower = useCallback((power: Power | null) => {
-    setQueryPower(power);
+  const [showSecond, setShowSecond] = useState(false);
+  const [showThird, setShowThird] = useState(false);
+
+  const handleSetFirstPower = useCallback((power: Power | null) => {
+    setFirstQueryPower(power);
   }, []);
+  const handleSetSecondPower = useCallback((power: Power | null) => {
+    setSecondQueryPower(power);
+  }, []);
+  const handleSetThirdPower = useCallback((power: Power | null) => {
+    setThirdQueryPower(power);
+  }, []);
+
+  const handleRemoveSecond = useCallback(() => {
+    if (!showThird) {
+      setSecondQueryOverride(null);
+      setSecondQueryPower(null);
+      setShowSecond(false);
+      return;
+    }
+    setSecondQueryOverride(thirdQueryPower);
+    setSecondQueryPower(thirdQueryPower);
+    setThirdQueryPower(null);
+    setShowThird(false);
+  }, [showThird, thirdQueryPower]);
 
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
       evt.preventDefault();
-      if (queryPower) onSubmit([queryPower]);
+      const powers = [
+        firstQueryPower,
+        secondQueryPower,
+        thirdQueryPower,
+      ].filter((p): p is Power => !!p);
+      if (powers.length > 0) onSubmit(powers);
     },
-    [queryPower, onSubmit],
+    [firstQueryPower, secondQueryPower, thirdQueryPower, onSubmit],
   );
   return (
     <StyledContainer>
@@ -49,11 +81,12 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
           <StyledHeading style={{ paddingLeft: '0.5rem' }}>Level</StyledHeading>
           <PowerSelector
             onRemove={() => {}}
-            onChange={handleSetPower}
+            onChange={handleSetFirstPower}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
             maxLevel={3}
           />
+
           {/* <PowerSelector
             onRemove={() => {}}
             onChange={() => {}}
@@ -71,7 +104,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
             removable
           /> */}
         </StyledGrid>
-        <button type="submit" disabled={!queryPower || !enableSubmit}>
+        <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
         </button>
       </form>
