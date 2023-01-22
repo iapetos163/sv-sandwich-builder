@@ -5,7 +5,7 @@ import PowerSelector from './component/PowerQuery/PowerSelector';
 import PowerQuery from './component/PowerQuery/index';
 import SandwichResult from './component/SandwichResult';
 import { rangeMealPowers, rangeTypes } from './enum';
-import { makeSandwichForPower, powersEqual } from './mechanics';
+import { makeSandwichForPowers, powersEqual } from './mechanics';
 import { Power, Sandwich } from './types';
 
 const StyledContainer = styled.div`
@@ -88,7 +88,7 @@ function App(): ReactElement {
 
       setCalculating(true);
       setTimeout(() => {
-        const sandwich = makeSandwichForPower(newQuery);
+        const sandwich = makeSandwichForPowers([newQuery]);
         setResultSandwich(sandwich);
         setQueryChanged(false);
         setCalculating(false);

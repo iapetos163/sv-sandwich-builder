@@ -1,4 +1,4 @@
-import { MealPower, rangeMealPowers, TypeIndex } from '../../enum';
+import { MealPower, TypeIndex } from '../../enum';
 import { Power } from '../../types';
 
 export interface TypeBoost {
@@ -103,122 +103,373 @@ export const calculateLevels = (
   return [1, 1, 1];
 };
 
+const getUniqueMealPowers = (powers: Power[]) =>
+  Object.keys(
+    powers.reduce((agg, tp) => ({ [tp.mealPower]: true, ...agg }), {}),
+  );
+
+const getUniqueTypes = (powers: Power[]) =>
+  Object.keys(powers.reduce((agg, tp) => ({ [tp.type]: true, ...agg }), {}));
+
+export const requestedPowersValid = (powers: Power[]) => {
+  if (getUniqueMealPowers(powers).length < powers.length) {
+    return false;
+  }
+
+  const typedPowers = powers.filter((p) => mealPowerHasType(p.mealPower));
+  const uniqueTypes = getUniqueTypes(typedPowers);
+  const sparkling = powers.findIndex(
+    (p) => p.mealPower === MealPower.SPARKLING,
+  );
+
+  if (sparkling && uniqueTypes.length > 1) {
+    return false;
+  }
+
+  if (!sparkling && uniqueTypes.length === 1 && typedPowers.length >= 3) {
+    return false;
+  }
+
+  const title = powers.findIndex((p) => p.mealPower === MealPower.TITLE);
+
+  if (sparkling && !title && powers.length >= 3) {
+    return false;
+  }
+
+  const lv3s = powers.filter((p) => p.level >= 3);
+  if (!title && lv3s.length > 0 && powers.length >= 3) {
+    return false;
+  }
+
+  const lv2Or3s = powers.filter((p) => p.level >= 2);
+  if (!title && lv2Or3s.length > 2) {
+    return false;
+  }
+
+  const hasSameTypes = uniqueTypes.length < typedPowers.length;
+  if (!title && lv2Or3s.length >= 2 && hasSameTypes) {
+    return false;
+  }
+
+  return true;
+};
+
 export interface TargetConfig {
   config: TypeArrangement;
   typePlaceIndex: number;
   mpPlaceIndex: number;
 }
 
+export const configsEqual = (a: TargetConfig, b: TargetConfig) =>
+  a.config === b.config &&
+  a.typePlaceIndex === b.typePlaceIndex &&
+  a.mpPlaceIndex === b.mpPlaceIndex;
+
 export const getTargetConfigs = (
-  targetPower: Power,
+  targetPowers: Power[],
   targetNumHerba: number,
-): TargetConfig[] => {
-  if (targetNumHerba >= 2 && targetPower.mealPower === MealPower.SPARKLING) {
-    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
-  }
-  if (targetNumHerba >= 2 && targetPower.mealPower === MealPower.TITLE) {
-    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 }];
-  }
+): TargetConfig[][] => {
   if (targetNumHerba >= 2) {
-    return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
+    return targetPowers.map((tp) => {
+      if (tp.mealPower === MealPower.SPARKLING) {
+        return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
+      }
+      if (tp.mealPower === MealPower.TITLE) {
+        return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 }];
+      }
+      return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 }];
+    });
   }
-  if (targetNumHerba >= 1 && targetPower.mealPower === MealPower.TITLE) {
-    return [
-      { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-      { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
-    ];
+
+  const typedTargetPowers = targetPowers.filter((tp) =>
+    mealPowerHasType(tp.mealPower),
+  );
+  const hasSameTypes =
+    getUniqueTypes(typedTargetPowers).length < typedTargetPowers.length;
+  const repeatedType =
+    typedTargetPowers[0]?.type ===
+    (typedTargetPowers[1] ?? typedTargetPowers[2])?.type
+      ? typedTargetPowers[0]?.type
+      : typedTargetPowers[1]?.type;
+
+  if (targetNumHerba >= 1 && hasSameTypes) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+      if (tp.type === repeatedType) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+        ];
+      }
+      return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 }];
+    });
   }
-  if (targetNumHerba >= 1 && targetPower.level === 3) {
-    return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 }];
+
+  const titlePower = targetPowers.find(
+    (tp) => tp.mealPower === MealPower.TITLE,
+  );
+
+  if (targetNumHerba >= 1 && titlePower) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+      return [
+        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      ];
+    });
   }
+
   if (targetNumHerba >= 1) {
-    return [
-      { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
-      { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
-    ];
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+      return [
+        { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      ];
+    });
   }
-  return [
-    { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-    { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+
+  // Level should not exceed 2 at this point
+  const lv2s = targetPowers.filter((tp) => tp.level >= 2);
+
+  // ONE_THREE_ONE can only be done if there are no level 2s
+  if (hasSameTypes && lv2s.length === 1 && lv2s[0].type === repeatedType) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 2) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+        ];
+      }
+      if (tp.type === repeatedType) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+      return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 }];
+    });
+  }
+
+  // ONE_THREE_ONE can only be done if there are no level 2s
+  // ONE_ONE_THREE can only be done with at most one level 2
+  if (hasSameTypes && lv2s.length > 0) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.type === repeatedType) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+      return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 }];
+    });
+  }
+
+  if (hasSameTypes) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.type === repeatedType) {
+        return [
+          { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+      return [
+        { config: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      ];
+    });
+  }
+
+  if (targetPowers.length >= 3 && lv2s.length >= 2) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level === 2) {
+        return [
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        ];
+      }
+      return [{ config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 }];
+    });
+  }
+
+  if (targetPowers.length >= 3 && lv2s.length === 1) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 2) {
+        return [
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+        ];
+      }
+      return [
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+      ];
+    });
+  }
+
+  if (targetPowers.length >= 3) {
+    return targetPowers.map((): TargetConfig[] => [
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+      { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+    ]);
+  }
+
+  // ONE_THREE_ONE can only be done if there are no level 2s
+  // ONE_ONE_THREE can only be done with at most one level 2
+  if (lv2s.length >= 2) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 2) {
+        return [
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        ];
+      }
+      return [{ config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 }];
+    });
+  }
+
+  // ONE_THREE_ONE can only be done if there are no level 2s
+  // ONE_ONE_THREE can only be done with at most one level 2
+  if (lv2s.length === 1) {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 2) {
+        return [
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+        ];
+      }
+      return [
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+
+        { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      ];
+    });
+  }
+
+  return targetPowers.map((): TargetConfig[] => [
     { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
-  ];
+    { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+    { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+
+    { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+    { config: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
+    { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+    { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+  ]);
 };
 
-export const selectPowerAtTargetPosition = (
+export const selectPowersAtTargetPositions = (
   powers: Power[],
-  config: TargetConfig,
-) => {
-  const getIndex = () => {
-    switch (config.config) {
-      case 'ONE_ONE_ONE':
-        return 0;
-      case 'ONE_ONE_THREE':
-        if (config.typePlaceIndex === 2) {
-          return 2;
-        }
-        return 0;
-      case 'ONE_THREE_ONE':
-        if (config.typePlaceIndex === 2) {
-          return 1;
-        }
-        return 0;
-      case 'ONE_THREE_TWO':
-        if (config.typePlaceIndex === 2) {
-          return 1;
-        }
-        if (config.typePlaceIndex === 1) {
-          return 2;
-        }
-        return 0;
-    }
-  };
-  return powers[getIndex()];
+  configSet: TargetConfig[],
+): (Power | undefined)[] => {
+  const leadingTitle = powers[0]?.mealPower === MealPower.TITLE;
+  return configSet.map(
+    (c) => powers[leadingTitle ? c.mpPlaceIndex - 1 : c.mpPlaceIndex],
+  );
 };
 
 /**
  * @returns [index of first type, index of second type, index of third type]
  */
 export const getTypeTargetIndices = (
-  targetPower: Power,
-  targetPlaceIndex: number,
+  targetPowers: Power[],
+  targetPlaceIndices: number[],
   rankedTypeBoosts: TypeBoost[],
-): [number, number, number] => {
-  if (!mealPowerHasType(targetPower.mealPower)) {
-    const firstTargetIndex = rankedTypeBoosts[0]?.type ?? 0;
-    const secondTargetIndex =
-      rankedTypeBoosts[1]?.type ?? [0, 1].find((i) => i !== firstTargetIndex);
-    const thirdTargetIndex =
-      rankedTypeBoosts[2]?.type ??
-      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
-    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+): [TypeIndex, TypeIndex, TypeIndex] => {
+  let firstTargetType: TypeIndex | null = null;
+  let secondTargetType: TypeIndex | null = null;
+  let thirdTargetType: TypeIndex | null = null;
+
+  const targetFirstPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === 0,
+  );
+  const targetSecondPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === 1,
+  );
+  const targetThirdPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === 2,
+  );
+
+  const targetFirstPlacePower =
+    targetFirstPlacePowerIndex !== undefined
+      ? targetPowers[targetFirstPlacePowerIndex]
+      : null;
+  const targetSecondPlacePower =
+    targetSecondPlacePowerIndex !== undefined
+      ? targetPowers[targetSecondPlacePowerIndex]
+      : null;
+  const targetThirdPlacePower =
+    targetThirdPlacePowerIndex !== undefined
+      ? targetPowers[targetThirdPlacePowerIndex]
+      : null;
+
+  if (
+    targetFirstPlacePower &&
+    mealPowerHasType(targetFirstPlacePower.mealPower)
+  ) {
+    firstTargetType = targetFirstPlacePower.type;
+  }
+  if (
+    targetSecondPlacePower &&
+    mealPowerHasType(targetSecondPlacePower.mealPower)
+  ) {
+    secondTargetType = targetSecondPlacePower.type;
+  }
+  if (
+    targetThirdPlacePower &&
+    mealPowerHasType(targetThirdPlacePower.mealPower)
+  ) {
+    thirdTargetType = targetThirdPlacePower.type;
   }
 
-  const { type: targetType } = targetPower;
-  if (targetPlaceIndex === 0) {
-    const firstTargetIndex = targetType;
-    const secondTargetIndex =
-      rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== firstTargetIndex);
-    const thirdTargetIndex =
-      rankedTypeBoosts[1]?.type ??
-      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
-    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
-  } else if (targetPlaceIndex === 1) {
-    const secondTargetIndex = targetType;
-    const firstTargetIndex =
-      rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== secondTargetIndex);
-    const thirdTargetIndex =
-      rankedTypeBoosts[1]?.type ??
-      [0, 1, 2].find((i) => i !== firstTargetIndex && i !== secondTargetIndex);
+  const typeSelection = rankedTypeBoosts.map((tb) => tb.type).concat([0, 1, 2]);
 
-    return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  if (!firstTargetType) {
+    firstTargetType = typeSelection.find(
+      (t) =>
+        t !== firstTargetType &&
+        t !== secondTargetType &&
+        t !== thirdTargetType,
+    )!;
   }
-  const thirdTargetIndex = targetType;
-  const firstTargetIndex =
-    rankedTypeBoosts[0]?.type ?? [0, 1].find((i) => i !== thirdTargetIndex);
-  const secondTargetIndex =
-    rankedTypeBoosts[1]?.type ??
-    [0, 1, 2].find((i) => i !== firstTargetIndex && i !== thirdTargetIndex);
-  return [firstTargetIndex, secondTargetIndex, thirdTargetIndex];
+  if (!secondTargetType) {
+    secondTargetType = typeSelection.find(
+      (t) =>
+        t !== firstTargetType &&
+        t !== secondTargetType &&
+        t !== thirdTargetType,
+    )!;
+  }
+  if (!thirdTargetType) {
+    thirdTargetType = typeSelection.find(
+      (t) =>
+        t !== thirdTargetType &&
+        t !== secondTargetType &&
+        t !== thirdTargetType,
+    )!;
+  }
+
+  return [firstTargetType, secondTargetType, thirdTargetType];
 };
 
 export const rankMealPowerBoosts = (
@@ -276,6 +527,33 @@ export const evaluateBoosts = (
         level: assignedLevels[i],
       }),
     );
+};
+
+/**
+ * Transforms an array of configs for each power
+ * to an array config combinations
+ */
+export const permutePowerConfigs = (
+  arr: TargetConfig[][],
+): TargetConfig[][] => {
+  const recurse = (
+    powerSelections: TargetConfig[],
+    remainingPowers: TargetConfig[][],
+  ): TargetConfig[][] =>
+    remainingPowers.length === 0
+      ? [powerSelections]
+      : remainingPowers[0]
+          .filter(
+            (c) =>
+              (powerSelections.length === 0 ||
+                c.config === powerSelections[0].config) &&
+              !powerSelections.some((d) => configsEqual(c, d)),
+          )
+          .flatMap((c) =>
+            recurse([...powerSelections, c], remainingPowers.slice(1)),
+          );
+
+  return recurse([], arr);
 };
 
 export const powersMatch = (test: Power, target: Power) =>

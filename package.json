@@ -8,7 +8,8 @@
     "serve": "vite preview --port 3000",
     "lint": "eslint . --ext .ts,.tsx,.js",
     "data": "ts-node util/process-sim-data.ts",
-    "test": "jest"
+    "test": "jest",
+    "type-check": "tsc"
   },
   "dependencies": {
     "react": "^18.2.0",
