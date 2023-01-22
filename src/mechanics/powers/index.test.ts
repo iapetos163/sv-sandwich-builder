@@ -119,4 +119,21 @@ describe('requestedPowersValid', () => {
     ]);
     expect(res).toBe(true);
   });
+
+  it('Returns true for Lv 3 Sparkling Ice and Lv 3 Exp Ice', () => {
+    const res = requestedPowersValid([
+      {
+        mealPower: MealPower.SPARKLING,
+        type: TypeIndex.ICE,
+        level: 3,
+      },
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.ICE,
+        level: 3,
+      },
+    ]);
+
+    expect(res).toBe(true);
+  });
 });

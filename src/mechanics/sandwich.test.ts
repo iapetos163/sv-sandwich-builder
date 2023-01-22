@@ -547,15 +547,7 @@ describe('makeSandwichForPower', () => {
 
     // 3x Potato Tortilla, Banana, Tomato, Red Bell Pepper, Olive Oil, Salt, Curry Powder, Pepper
     expect(sandwich).not.toBeNull();
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
 
-    const numIngredients =
-      sandwich!.fillings.length + sandwich!.condiments.length;
     const numHerba = sandwich!.condiments.filter(
       (s) => s.isHerbaMystica,
     ).length;
@@ -563,6 +555,64 @@ describe('makeSandwichForPower', () => {
     expect(numHerba).toBe(0);
   });
 
+  it('Produces a sandwich with Lv 1 Title Flying, Lv 1 Encounter Grass, and Lv 1 Egg', () => {
+    const sandwich = makeSandwichForPowers([
+      {
+        mealPower: MealPower.TITLE,
+        type: TypeIndex.FLYING,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.GRASS,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.EGG,
+        type: 0,
+        level: 1,
+      },
+    ]);
+
+    // Jalapeno, Tofu, 2x Prosciutto, Sweet Herba Mystica
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBe(1);
+    expect(numIngredients).toBeLessThanOrEqual(6);
+  });
+
+  it('Produces a sandwich with Lv 3 Sparkling Ice and Lv 3 Exp Ice', () => {
+    const sandwich = makeSandwichForPowers([
+      {
+        mealPower: MealPower.SPARKLING,
+        type: TypeIndex.ICE,
+        level: 3,
+      },
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.ICE,
+        level: 3,
+      },
+    ]);
+
+    // Klawf, bitter herba, salty herba
+    expect(sandwich).not.toBeNull();
+
+    const numIngredients =
+      sandwich!.fillings.length + sandwich!.condiments.length;
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBe(2);
+    expect(numIngredients).toBeLessThanOrEqual(3);
+  });
   // it('Produces a sandwich with Lv 2 mp t', () => {
   //   const sandwich = makeSandwichForPowers([{
   //     mealPower: MealPower.CATCH,

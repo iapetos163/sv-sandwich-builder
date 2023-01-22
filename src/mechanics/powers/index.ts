@@ -145,7 +145,7 @@ export const requestedPowersValid = (powers: Power[]) => {
   }
 
   const hasSameTypes = uniqueTypes.length < typedPowers.length;
-  if (!title && lv2Or3s.length >= 2 && hasSameTypes) {
+  if (!title && lv2Or3s.length >= 2 && hasSameTypes && powers.length >= 3) {
     return false;
   }
 
