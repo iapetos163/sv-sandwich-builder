@@ -60,6 +60,11 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     setShowThird(false);
   }, [showThird, thirdQueryPower]);
 
+  const handleRemoveThird = useCallback(() => {
+    setThirdQueryPower(null);
+    setShowThird(false);
+  }, []);
+
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
       evt.preventDefault();
@@ -86,23 +91,28 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
             allowedTypes={allowedTypes}
             maxLevel={3}
           />
+          {showSecond && (
+            <PowerSelector
+              onRemove={handleRemoveSecond}
+              onChange={handleSetSecondPower}
+              allowedMealPowers={allowedMealPowers}
+              allowedTypes={allowedTypes}
+              override={secondQueryOverride}
+              maxLevel={3}
+              // removable
+            />
+          )}
 
-          {/* <PowerSelector
-            onRemove={() => {}}
-            onChange={() => {}}
-            allowedMealPowers={allowedMealPowers}
-            allowedTypes={allowedTypes}
-            maxLevel={3}
-            removable
-          />
-          <PowerSelector
-            onRemove={() => {}}
-            onChange={() => {}}
-            allowedMealPowers={allowedMealPowers}
-            allowedTypes={allowedTypes}
-            maxLevel={3}
-            removable
-          /> */}
+          {showThird && (
+            <PowerSelector
+              onRemove={handleRemoveThird}
+              onChange={handleSetThirdPower}
+              allowedMealPowers={allowedMealPowers}
+              allowedTypes={allowedTypes}
+              maxLevel={3}
+              // removable
+            />
+          )}
         </StyledGrid>
         <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
