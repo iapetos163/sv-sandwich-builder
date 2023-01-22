@@ -16,6 +16,7 @@ import {
   MealPowerBoost,
   rankMealPowerBoosts,
   permutePowerConfigs,
+  requestedPowersValid,
 } from './powers';
 import {
   boostMealPowerVector,
@@ -395,6 +396,10 @@ const selectIngredientCandidates = ({
 };
 
 export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
+  if (!requestedPowersValid([targetPower])) {
+    return null;
+  }
+
   const checkType = mealPowerHasType(targetPower.mealPower);
 
   let targetNumHerba = 0;
@@ -405,7 +410,6 @@ export const makeSandwichForPower = (targetPower: Power): Sandwich | null => {
   } else if (targetPower.level === 3) {
     targetNumHerba = 1;
   }
-  // TODO: OR depending on num matching types maybe
   // if (targetPowers.some((p) => p.mealPower === MealPower.SPARKLING)) {
   //   targetNumHerba = 2;
   // } else if (targetPowers.some((p) => p.mealPower === MealPower.TITLE)) {

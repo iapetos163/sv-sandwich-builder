@@ -103,13 +103,56 @@ export const calculateLevels = (
   return [1, 1, 1];
 };
 
-const requestedPowerValid = (powers: Power[]) => {
-  // 3 lv2s => one must be title
-  // noTitle && hasSameTypes && lv2s.length >=2   => impossible
-};
+const getUniqueMealPowers = (powers: Power[]) =>
+  Object.keys(
+    powers.reduce((agg, tp) => ({ [tp.mealPower]: true, ...agg }), {}),
+  );
 
-const uniqueTypes = (powers: Power[]) =>
+const getUniqueTypes = (powers: Power[]) =>
   Object.keys(powers.reduce((agg, tp) => ({ [tp.type]: true, ...agg }), {}));
+
+export const requestedPowersValid = (powers: Power[]) => {
+  if (getUniqueMealPowers(powers).length < powers.length) {
+    return false;
+  }
+
+  const typedPowers = powers.filter((p) => mealPowerHasType(p.mealPower));
+  const uniqueTypes = getUniqueTypes(typedPowers);
+  const sparkling = powers.findIndex(
+    (p) => p.mealPower === MealPower.SPARKLING,
+  );
+
+  if (sparkling && uniqueTypes.length > 1) {
+    return false;
+  }
+
+  if (!sparkling && uniqueTypes.length === 1 && typedPowers.length >= 3) {
+    return false;
+  }
+
+  const title = powers.findIndex((p) => p.mealPower === MealPower.TITLE);
+
+  if (sparkling && !title && powers.length >= 3) {
+    return false;
+  }
+
+  const lv3s = powers.filter((p) => p.level >= 3);
+  if (!title && lv3s.length > 0 && powers.length >= 3) {
+    return false;
+  }
+
+  const lv2Or3s = powers.filter((p) => p.level >= 2);
+  if (!title && lv2Or3s.length > 2) {
+    return false;
+  }
+
+  const hasSameTypes = uniqueTypes.length < typedPowers.length;
+  if (!title && lv2Or3s.length >= 2 && hasSameTypes) {
+    return false;
+  }
+
+  return true;
+};
 
 export interface TargetConfig {
   config: TypeArrangement;
@@ -142,7 +185,7 @@ export const getTargetConfigs = (
     mealPowerHasType(tp.mealPower),
   );
   const hasSameTypes =
-    uniqueTypes(typedTargetPowers).length < typedTargetPowers.length;
+    getUniqueTypes(typedTargetPowers).length < typedTargetPowers.length;
   const repeatedType =
     typedTargetPowers[0]?.type ===
     (typedTargetPowers[1] ?? typedTargetPowers[2])?.type
