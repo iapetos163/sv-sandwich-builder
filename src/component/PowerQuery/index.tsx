@@ -17,6 +17,10 @@ const StyledHeading = styled.div`
   font-size: 0.9em;
 `;
 
+const StyledAdd = styled.div`
+  grid-column: 1 4;
+`;
+
 const allowedMealPowers = rangeMealPowers.map(() => true);
 
 const allowedTypes = rangeTypes.map(() => true);
@@ -46,6 +50,11 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const handleSetThirdPower = useCallback((power: Power | null) => {
     setThirdQueryPower(power);
   }, []);
+
+  const handleAddPower = useCallback(() => {
+    if (showSecond) setShowThird(true);
+    else setShowSecond(true);
+  }, [showSecond]);
 
   const handleRemoveSecond = useCallback(() => {
     if (!showThird) {
@@ -99,7 +108,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               allowedTypes={allowedTypes}
               override={secondQueryOverride}
               maxLevel={3}
-              // removable
+              removable
             />
           )}
 
@@ -110,8 +119,13 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               allowedMealPowers={allowedMealPowers}
               allowedTypes={allowedTypes}
               maxLevel={3}
-              // removable
+              removable
             />
+          )}
+          {!showThird && (
+            <StyledAdd>
+              <button onClick={handleAddPower}>Add another power</button>
+            </StyledAdd>
           )}
         </StyledGrid>
         <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
