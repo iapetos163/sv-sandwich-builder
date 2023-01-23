@@ -1,12 +1,14 @@
-import { FormEvent, ReactElement, useCallback, useState } from 'react';
+import { ReactElement, useCallback, useState } from 'react';
 import { GitHub } from 'react-feather';
 import styled from 'styled-components';
-import PowerSelector from './component/PowerQuery/PowerSelector';
-import PowerQuery from './component/PowerQuery/index';
+import PowerQuery from './component/PowerQuery';
 import SandwichResult from './component/SandwichResult';
-import { rangeMealPowers, rangeTypes } from './enum';
-import { makeSandwichForPowers, powersEqual } from './mechanics';
-import { Power, Sandwich } from './types';
+import {
+  getRecipeForPowers,
+  makeSandwichForPowers,
+  powersEqual,
+} from './mechanics';
+import { Power, Sandwich, SandwichRecipe } from './types';
 
 const StyledContainer = styled.div`
   margin: 15px 10px;
@@ -72,7 +74,9 @@ const StyledTitleTag = styled.span`
 `;
 
 function App(): ReactElement {
-  const [resultSandwich, setResultSandwich] = useState<Sandwich | null>(null);
+  const [resultCreativeSandwich, setResultCreativeSandwich] =
+    useState<Sandwich | null>(null);
+  const [resultRecipe, setResultRecipe] = useState<SandwichRecipe | null>(null);
   const [queryPowers, setQueryPowers] = useState<Power[]>([]);
   const [queryChanged, setQueryChanged] = useState(true);
   const [calculating, setCalculating] = useState(false);
@@ -92,8 +96,15 @@ function App(): ReactElement {
 
       setCalculating(true);
       setTimeout(() => {
-        const sandwich = makeSandwichForPowers(newQuery);
-        setResultSandwich(sandwich);
+        const recipe = getRecipeForPowers(newQuery);
+        if (recipe) {
+          setResultCreativeSandwich(null);
+          setResultRecipe(recipe);
+        } else {
+          const creativeSandwich = makeSandwichForPowers(newQuery);
+          setResultCreativeSandwich(creativeSandwich);
+          setResultRecipe(null);
+        }
         setQueryChanged(false);
         setCalculating(false);
       }, 10);
@@ -133,14 +144,24 @@ function App(): ReactElement {
             <h2>Results</h2>
           </StyledSectionHeader>
           {calculating && <>Calculating...</>}
-          {!calculating && !queryChanged && !resultSandwich && (
-            <>Could not create a sandwich with the requested power.</>
-          )}
-          {!calculating && queryChanged && !resultSandwich && (
-            <>Input a Meal Power query above and press Calculate!.</>
-          )}
-          {!calculating && resultSandwich && (
-            <SandwichResult sandwich={resultSandwich} />
+          {!calculating &&
+            queryChanged &&
+            !resultCreativeSandwich &&
+            !resultRecipe && (
+              <>Input a Meal Power query above and press Calculate!.</>
+            )}
+          {!calculating &&
+            !queryChanged &&
+            !resultCreativeSandwich &&
+            !resultRecipe && (
+              <>Could not create a sandwich with the requested power.</>
+            )}
+          {
+            !calculating && resultRecipe && 'You got a recipe :)'
+            // <SandwichResult recipe={resultRecipe} />
+          }
+          {!calculating && resultCreativeSandwich && (
+            <SandwichResult sandwich={resultCreativeSandwich} />
           )}
         </StyledSection>
         <StyledSection>
