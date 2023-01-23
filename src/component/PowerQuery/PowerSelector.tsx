@@ -46,6 +46,7 @@ const StyledLevelDisplay = styled.div`
 export interface PowerSelectorProps {
   onRemove: () => void;
   onChange: (power: Power | null) => void;
+  override?: Power | null;
   allowedTypes: boolean[];
   allowedMealPowers: boolean[];
   removable?: boolean;
@@ -55,6 +56,7 @@ export interface PowerSelectorProps {
 const PowerSelector = ({
   onRemove,
   onChange,
+  override = null,
   removable,
   allowedTypes,
   allowedMealPowers,
@@ -113,6 +115,14 @@ const PowerSelector = ({
       level: selectedLevel,
     });
   }, [selectedMealPower, selectedType, onChange, selectedLevel, maxLevel]);
+
+  useEffect(() => {
+    if (!override) return;
+
+    setSelectedLevel(override.level);
+    setSelectedMealPower(override.mealPower);
+    if (mealPowerHasType(override.mealPower)) setSelectedType(override.type);
+  }, [override]);
 
   return (
     <>

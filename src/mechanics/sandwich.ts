@@ -1,7 +1,7 @@
 import { ingredients } from '../data';
 import { MealPower } from '../enum';
 import { Ingredient, Power, Sandwich } from '../types';
-import { add, diff, innerProduct, norm } from '../vector-math';
+import { add, diff, innerProduct, norm, scale } from '../vector-math';
 import {
   evaluateBoosts,
   getTargetConfigs,
@@ -11,11 +11,12 @@ import {
   selectPowersAtTargetPositions,
   TargetConfig,
   TypeBoost,
-  getTypeTargetIndices,
+  getTypeTargetsByPlace,
   MealPowerBoost,
   rankMealPowerBoosts,
   permutePowerConfigs,
   requestedPowersValid,
+  getRepeatedType,
 } from './powers';
 import {
   boostMealPowerVector,
@@ -166,7 +167,11 @@ const selectIngredientCandidates = ({
   remainingFillings,
   debug,
 }: SelectIngredientProps) => {
-  const CONDIMENT_BONUS = targetPowers.length < 2 ? 0.4 : 0;
+  const repeatedType = getRepeatedType(targetPowers);
+  const condimentBonus = targetPowers.length === 1 ? 0.4 : 0;
+  const capTypeProducts = targetPowers.length === 1;
+  const capLevelProducts =
+    targetPowers.every((tp) => tp.level === 1) && repeatedType;
 
   let targetTypeVector: number[] = [];
   let targetLevelVector: number[] = [];
@@ -176,7 +181,7 @@ const selectIngredientCandidates = ({
   let deltaLevelNorm = Infinity;
   let targetConfigSet = targetConfigSets[0];
   for (const candidateConfigSet of targetConfigSets) {
-    const targetTypes = getTypeTargetIndices(
+    const targetTypes = getTypeTargetsByPlace(
       targetPowers,
       candidateConfigSet.map((c) => c.typePlaceIndex),
       rankedTypeBoosts,
@@ -276,7 +281,7 @@ const selectIngredientCandidates = ({
     typeScoreWeight === 0 &&
     mealPowerScoreWeight === 0
   ) {
-    const targetTypeIndices = getTypeTargetIndices(
+    const targetTypeIndices = getTypeTargetsByPlace(
       targetPowers,
       targetConfigSet.map((c) => c.typePlaceIndex),
       rankedTypeBoosts,
@@ -327,25 +332,40 @@ const selectIngredientCandidates = ({
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
-    const positiveTypeNorm = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
+
+    const adjustedIngTypeVector = capTypeProducts
+      ? scale(ing.typeVector, Math.min(1, deltaTypeNorm / norm(ing.typeVector)))
+      : ing.typeVector;
+    const positiveTypeNorm = norm(
+      adjustedIngTypeVector.map((c) => (c > 0 ? c : 0)),
+    );
     const n2 = Math.sqrt(positiveTypeNorm) * deltaTypeNorm;
     const typeProduct =
       checkType && n2 !== 0
-        ? innerProduct(ing.typeVector, deltaTypeVector) / n2
+        ? innerProduct(adjustedIngTypeVector, deltaTypeVector) / n2
         : 0;
+
+    const adjustedIngLevelVector = capLevelProducts
+      ? scale(
+          ing.typeVector,
+          Math.min(1, deltaLevelNorm / norm(ing.typeVector)),
+        )
+      : ing.typeVector;
     const n3 = deltaLevelNorm;
     const levelProduct =
-      n3 !== 0 ? innerProduct(ing.typeVector, deltaLevelVector) / n3 : 0;
+      n3 !== 0
+        ? innerProduct(adjustedIngLevelVector, deltaLevelVector) / n3
+        : 0;
     const score =
       (mealPowerProduct * mealPowerScoreWeight +
         typeProduct * typeScoreWeight +
         levelProduct * levelScoreWeight) *
       (1 +
         (ing.ingredientType === 'condiment' && !ing.isHerbaMystica
-          ? CONDIMENT_BONUS
+          ? condimentBonus
           : 0));
 
-    if (debug && (ing.name === 'Salt' || ing.name === 'Pepper')) {
+    if (debug && (ing.name === 'Pickle' || ing.name === 'Tofu')) {
       console.debug(
         `${ing.name}: ${score}
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}

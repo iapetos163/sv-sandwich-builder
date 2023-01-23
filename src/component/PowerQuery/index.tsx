@@ -8,13 +8,17 @@ const StyledContainer = styled.div``;
 const StyledGrid = styled.div`
   display: grid;
   align-items: center;
-  grid-template: auto auto auto auto / 55fr 45fr auto;
+  grid-template: auto auto auto auto / 55fr 45fr auto auto;
   /* gap: 5px 0; */
 `;
 
 const StyledHeading = styled.div`
   font-weight: bold;
   font-size: 0.9em;
+`;
+
+const StyledAdd = styled.div`
+  grid-column: 1 4;
 `;
 
 const allowedMealPowers = rangeMealPowers.map(() => true);
@@ -27,18 +31,73 @@ export interface PowerQueryProps {
 }
 
 const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
-  const [queryPower, setQueryPower] = useState<Power | null>(null);
+  const [firstQueryPower, setFirstQueryPower] = useState<Power | null>(null);
+  const [secondQueryPower, setSecondQueryPower] = useState<Power | null>(null);
+  const [thirdQueryPower, setThirdQueryPower] = useState<Power | null>(null);
+  const [firstQueryOverride, setFirstQueryOverride] = useState<Power | null>(
+    null,
+  );
+  const [secondQueryOverride, setSecondQueryOverride] = useState<Power | null>(
+    null,
+  );
 
-  const handleSetPower = useCallback((power: Power | null) => {
-    setQueryPower(power);
+  const [showSecond, setShowSecond] = useState(false);
+  const [showThird, setShowThird] = useState(false);
+
+  const handleSetFirstPower = useCallback((power: Power | null) => {
+    setFirstQueryPower(power);
+  }, []);
+  const handleSetSecondPower = useCallback((power: Power | null) => {
+    setSecondQueryPower(power);
+  }, []);
+  const handleSetThirdPower = useCallback((power: Power | null) => {
+    setThirdQueryPower(power);
+  }, []);
+
+  const handleAddPower = useCallback(() => {
+    if (showSecond) setShowThird(true);
+    else setShowSecond(true);
+  }, [showSecond]);
+
+  const handleRemoveFirst = useCallback(() => {
+    setFirstQueryOverride(secondQueryPower);
+    setSecondQueryOverride(thirdQueryPower);
+    setFirstQueryPower(secondQueryPower);
+    setSecondQueryPower(thirdQueryPower);
+    setThirdQueryPower(null);
+    if (showThird) setShowThird(false);
+    else setShowSecond(false);
+  }, [secondQueryPower, thirdQueryPower, showThird]);
+
+  const handleRemoveSecond = useCallback(() => {
+    if (!showThird) {
+      setSecondQueryOverride(null);
+      setSecondQueryPower(null);
+      setShowSecond(false);
+      return;
+    }
+    setSecondQueryOverride(thirdQueryPower);
+    setSecondQueryPower(thirdQueryPower);
+    setThirdQueryPower(null);
+    setShowThird(false);
+  }, [showThird, thirdQueryPower]);
+
+  const handleRemoveThird = useCallback(() => {
+    setThirdQueryPower(null);
+    setShowThird(false);
   }, []);
 
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
       evt.preventDefault();
-      if (queryPower) onSubmit([queryPower]);
+      const powers = [
+        firstQueryPower,
+        secondQueryPower,
+        thirdQueryPower,
+      ].filter((p): p is Power => !!p);
+      if (powers.length > 0) onSubmit(powers);
     },
-    [queryPower, onSubmit],
+    [firstQueryPower, secondQueryPower, thirdQueryPower, onSubmit],
   );
   return (
     <StyledContainer>
@@ -47,31 +106,45 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
           <StyledHeading>Power</StyledHeading>
           <StyledHeading>Type</StyledHeading>
           <StyledHeading style={{ paddingLeft: '0.5rem' }}>Level</StyledHeading>
+          <div />
           <PowerSelector
-            onRemove={() => {}}
-            onChange={handleSetPower}
+            onRemove={handleRemoveFirst}
+            onChange={handleSetFirstPower}
             allowedMealPowers={allowedMealPowers}
             allowedTypes={allowedTypes}
+            override={firstQueryOverride}
             maxLevel={3}
+            removable={showSecond}
           />
-          {/* <PowerSelector
-            onRemove={() => {}}
-            onChange={() => {}}
-            allowedMealPowers={allowedMealPowers}
-            allowedTypes={allowedTypes}
-            maxLevel={3}
-            removable
-          />
-          <PowerSelector
-            onRemove={() => {}}
-            onChange={() => {}}
-            allowedMealPowers={allowedMealPowers}
-            allowedTypes={allowedTypes}
-            maxLevel={3}
-            removable
-          /> */}
+          {showSecond && (
+            <PowerSelector
+              onRemove={handleRemoveSecond}
+              onChange={handleSetSecondPower}
+              allowedMealPowers={allowedMealPowers}
+              allowedTypes={allowedTypes}
+              override={secondQueryOverride}
+              maxLevel={3}
+              removable
+            />
+          )}
+
+          {showThird && (
+            <PowerSelector
+              onRemove={handleRemoveThird}
+              onChange={handleSetThirdPower}
+              allowedMealPowers={allowedMealPowers}
+              allowedTypes={allowedTypes}
+              maxLevel={3}
+              removable
+            />
+          )}
+          {!showThird && (
+            <StyledAdd>
+              <button onClick={handleAddPower}>Add another power</button>
+            </StyledAdd>
+          )}
         </StyledGrid>
-        <button type="submit" disabled={!queryPower || !enableSubmit}>
+        <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
         </button>
       </form>

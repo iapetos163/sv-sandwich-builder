@@ -7,7 +7,7 @@ import {
   getTargetTypeVector,
   sortTargetPowersByMpPlace,
 } from './vector';
-import { getTypeTargetIndices, rankTypeBoosts, TypeBoost } from './index';
+import { getTypeTargetsByPlace, rankTypeBoosts, TypeBoost } from './index';
 
 describe('getTargetTypeVector', () => {
   it('Creates a vector with the correct components for Ground', () => {
@@ -28,7 +28,7 @@ describe('getTargetTypeVector', () => {
           typePlaceIndex: 0,
         },
       ],
-      targetTypeIndices: getTypeTargetIndices(
+      targetTypeIndices: getTypeTargetsByPlace(
         targetPowers,
         [0],
         rankedTypeBoosts,
@@ -58,7 +58,7 @@ describe('getTargetTypeVector', () => {
           mpPlaceIndex: 2,
         },
       ],
-      targetTypeIndices: getTypeTargetIndices(
+      targetTypeIndices: getTypeTargetsByPlace(
         targetPowers,
         [2],
         rankedTypeBoosts,
@@ -97,7 +97,7 @@ describe('getTargetTypeVector', () => {
           mpPlaceIndex: 2,
         },
       ],
-      targetTypeIndices: getTypeTargetIndices(
+      targetTypeIndices: getTypeTargetsByPlace(
         targetPowers,
         [2],
         rankedTypeBoosts,
@@ -138,7 +138,7 @@ describe('getTargetTypeVector', () => {
           mpPlaceIndex: 0,
         },
       ],
-      targetTypeIndices: getTypeTargetIndices(
+      targetTypeIndices: getTypeTargetsByPlace(
         targetPowers,
         [0],
         rankedTypeBoosts,
@@ -179,7 +179,7 @@ describe('getTargetTypeVector', () => {
           mpPlaceIndex: 2,
         },
       ],
-      targetTypeIndices: getTypeTargetIndices(
+      targetTypeIndices: getTypeTargetsByPlace(
         targetPowers,
         [2],
         rankedTypeBoosts,
@@ -221,7 +221,7 @@ describe('getTargetTypeVector', () => {
           mpPlaceIndex: 2,
         },
       ],
-      targetTypeIndices: getTypeTargetIndices(
+      targetTypeIndices: getTypeTargetsByPlace(
         targetPowers,
         [2],
         rankedTypeBoosts,
@@ -295,7 +295,7 @@ describe('getTargetLevelVector', () => {
           mpPlaceIndex: 0,
         },
       ],
-      targetTypes: getTypeTargetIndices(targetPowers, [0], []),
+      targetTypes: getTypeTargetsByPlace(targetPowers, [0], []),
       typeVector: [],
     });
     expect(v[1]).toBe(1);
@@ -309,7 +309,7 @@ describe('getTargetLevelVector', () => {
         level: 3,
       },
     ];
-    const targetTypes = getTypeTargetIndices(targetPowers, [0], []);
+    const targetTypes = getTypeTargetsByPlace(targetPowers, [0], []);
     const v = getTargetLevelVector({
       targetPowers,
       targetConfigSet: [
@@ -355,7 +355,7 @@ describe('getTargetLevelVector', () => {
           mpPlaceIndex: 0,
         },
       ],
-      targetTypes: getTypeTargetIndices(targetPowers, [0], rankedTypeBoosts),
+      targetTypes: getTypeTargetsByPlace(targetPowers, [0], rankedTypeBoosts),
       typeVector,
     });
 
