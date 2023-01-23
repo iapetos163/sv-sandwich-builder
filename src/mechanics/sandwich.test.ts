@@ -63,12 +63,6 @@ describe('makeSandwichForPower', () => {
 
     // cheese OR rice OR tofu, herba mystica
     expect(sandwich).not.toBeNull();
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
 
     const numHerba = sandwich!.condiments.filter(
       (s) => s.isHerbaMystica,

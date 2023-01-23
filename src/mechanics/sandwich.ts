@@ -340,20 +340,21 @@ const selectIngredientCandidates = ({
       adjustedIngTypeVector.map((c) => (c > 0 ? c : 0)),
     );
     const n2 = Math.sqrt(positiveTypeNorm) * deltaTypeNorm;
-
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(adjustedIngTypeVector, deltaTypeVector) / n2
         : 0;
+
+    const adjustedIngLevelVector = capLevelProducts
+      ? scale(
+          ing.typeVector,
+          Math.min(1, deltaLevelNorm / norm(ing.typeVector)),
+        )
+      : ing.typeVector;
     const n3 = deltaLevelNorm;
     const levelProduct =
       n3 !== 0
-        ? (capLevelProducts
-            ? Math.min(
-                deltaLevelNorm,
-                innerProduct(ing.typeVector, deltaLevelVector),
-              )
-            : innerProduct(ing.typeVector, deltaLevelVector)) / n3
+        ? innerProduct(adjustedIngLevelVector, deltaLevelVector) / n3
         : 0;
     const score =
       (mealPowerProduct * mealPowerScoreWeight +
