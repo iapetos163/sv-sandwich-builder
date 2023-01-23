@@ -25,7 +25,7 @@ type RecipeEntry = {
   name: string;
   fillings: string[];
   condiments: string[];
-  effects: Power[];
+  powers: Power[];
   imagePath: string;
   imageUrl: string;
   gameLocation: string;
@@ -139,32 +139,34 @@ const main = async () => {
     'Teensy Power',
     'Encounter Power',
   ];
-  const parsedRecipes = sandwiches.map(
-    ({
-      name,
-      number,
-      fillings,
-      condiments,
-      effects,
-      imageUrl,
-      location,
-    }): RecipeEntry => ({
-      name,
-      number,
-      fillings,
-      condiments,
-      gameLocation: location,
-      imageUrl,
-      imagePath: basename(imageUrl),
-      effects: effects.map(
-        (effect: { name: string; type: string; level: string }): Power => ({
-          mealPower: recipeMealPowerNames.indexOf(effect.name),
-          type: effect.type ? allTypes.indexOf(effect.type) : 0,
-          level: parseInt(effect.level),
-        }),
-      ),
-    }),
-  );
+  const parsedRecipes = sandwiches
+    .filter((s) => s.number !== '-1' && s.number !== '0')
+    .map(
+      ({
+        name,
+        number,
+        fillings,
+        condiments,
+        effects,
+        imageUrl,
+        location,
+      }): RecipeEntry => ({
+        name,
+        number,
+        fillings,
+        condiments,
+        gameLocation: location,
+        imageUrl,
+        imagePath: basename(imageUrl),
+        powers: effects.map(
+          (effect: { name: string; type: string; level: string }): Power => ({
+            mealPower: recipeMealPowerNames.indexOf(effect.name),
+            type: effect.type ? allTypes.indexOf(effect.type) : 0,
+            level: parseInt(effect.level),
+          }),
+        ),
+      }),
+    );
 
   const ingredientsData = parsedFillings.concat(parsedCondiments);
   const recipeData = parsedRecipes;
