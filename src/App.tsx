@@ -2,6 +2,7 @@ import { ReactElement, useCallback, useState } from 'react';
 import { GitHub } from 'react-feather';
 import styled from 'styled-components';
 import PowerQuery from './component/PowerQuery';
+import RecipeResult from './component/RecipeResult';
 import SandwichResult from './component/SandwichResult';
 import {
   getRecipeForPowers,
@@ -156,10 +157,9 @@ function App(): ReactElement {
             !resultRecipe && (
               <>Could not create a sandwich with the requested power.</>
             )}
-          {
-            !calculating && resultRecipe && 'You got a recipe :)'
-            // <SandwichResult recipe={resultRecipe} />
-          }
+          {!calculating && resultRecipe && (
+            <RecipeResult recipe={resultRecipe} />
+          )}
           {!calculating && resultCreativeSandwich && (
             <SandwichResult sandwich={resultCreativeSandwich} />
           )}

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { mealPowerHasType } from '../mechanics';
 import { allTypes, mealPowerCopy } from '../strings';
-import { Ingredient, Sandwich } from '../types';
+import { SandwichRecipe } from '../types';
 import RecipeList from './RecipeList';
 
 const StyledContainer = styled.div``;
@@ -10,25 +10,18 @@ const StyledRecipeList = styled(RecipeList)`
   margin-bottom: 30px;
 `;
 
-interface RecipeProps {
-  fillings: Ingredient[];
-  condiments: Ingredient[];
-}
-
-const RecipeIcons = ({ fillings, condiments }: RecipeProps) => null;
-
-export interface SandwichResultProps {
-  sandwich: Sandwich;
+export interface RecipeResultProps {
+  recipe: SandwichRecipe;
   className?: string;
 }
 
-const SandwichResult = ({ sandwich, className }: SandwichResultProps) => {
-  const { fillings, condiments, powers } = sandwich;
+const RecipeResult = ({ recipe, className }: RecipeResultProps) => {
+  const { fillings, condiments, powers } = recipe;
 
+  // TODO: name, number, image
   return (
     <StyledContainer className={className}>
-      <RecipeIcons fillings={fillings} condiments={condiments} />
-      <h3>Recipe</h3>
+      <h3>Ingredients</h3>
       <StyledRecipeList fillings={fillings} condiments={condiments} />
       <h3>Meal Powers</h3>
       <div>
@@ -42,4 +35,4 @@ const SandwichResult = ({ sandwich, className }: SandwichResultProps) => {
     </StyledContainer>
   );
 };
-export default SandwichResult;
+export default RecipeResult;
