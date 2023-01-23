@@ -111,6 +111,17 @@ const getUniqueMealPowers = (powers: Power[]) =>
 const getUniqueTypes = (powers: Power[]) =>
   Object.keys(powers.reduce((agg, tp) => ({ [tp.type]: true, ...agg }), {}));
 
+export const getRepeatedType = (powers: Power[]): TypeIndex | null => {
+  const typedPowers = powers.filter((p) => mealPowerHasType(p.mealPower));
+  if (getUniqueTypes(typedPowers).length === typedPowers.length) {
+    return null;
+  }
+
+  return typedPowers[0].type === typedPowers[1].type
+    ? typedPowers[0].type
+    : typedPowers[1].type;
+};
+
 export const requestedPowersValid = (powers: Power[]) => {
   if (getUniqueMealPowers(powers).length < powers.length) {
     return false;
@@ -179,16 +190,8 @@ export const getTargetConfigs = (
     });
   }
 
-  const typedTargetPowers = targetPowers.filter((tp) =>
-    mealPowerHasType(tp.mealPower),
-  );
-  const hasSameTypes =
-    getUniqueTypes(typedTargetPowers).length < typedTargetPowers.length;
-  const repeatedType =
-    typedTargetPowers[0]?.type ===
-    (typedTargetPowers[1] ?? typedTargetPowers[2])?.type
-      ? typedTargetPowers[0]?.type
-      : typedTargetPowers[1]?.type;
+  const repeatedType = getRepeatedType(targetPowers);
+  const hasSameTypes = !!repeatedType;
 
   if (targetNumHerba >= 1 && hasSameTypes) {
     return targetPowers.map((tp): TargetConfig[] => {

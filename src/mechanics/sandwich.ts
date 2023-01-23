@@ -16,6 +16,7 @@ import {
   rankMealPowerBoosts,
   permutePowerConfigs,
   requestedPowersValid,
+  getRepeatedType,
 } from './powers';
 import {
   boostMealPowerVector,
@@ -166,7 +167,10 @@ const selectIngredientCandidates = ({
   remainingFillings,
   debug,
 }: SelectIngredientProps) => {
+  const repeatedType = getRepeatedType(targetPowers);
   const CONDIMENT_BONUS = targetPowers.length < 2 ? 0.4 : 0;
+  const CAP_LEVEL_PRODUCTS =
+    targetPowers.every((tp) => tp.level === 1) && repeatedType;
 
   let targetTypeVector: number[] = [];
   let targetLevelVector: number[] = [];
@@ -332,10 +336,21 @@ const selectIngredientCandidates = ({
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(ing.typeVector, deltaTypeVector) / n2
-        : 0;
+        : // ? Math.min(
+          //   deltaTypeNorm,
+          //   innerProduct(ing.typeVector, deltaTypeVector),
+          // ) / n2
+          0;
     const n3 = deltaLevelNorm;
     const levelProduct =
-      n3 !== 0 ? innerProduct(ing.typeVector, deltaLevelVector) / n3 : 0;
+      n3 !== 0
+        ? (CAP_LEVEL_PRODUCTS
+            ? Math.min(
+                deltaLevelNorm,
+                innerProduct(ing.typeVector, deltaLevelVector),
+              )
+            : innerProduct(ing.typeVector, deltaLevelVector)) / n3
+        : 0;
     const score =
       (mealPowerProduct * mealPowerScoreWeight +
         typeProduct * typeScoreWeight +
@@ -345,7 +360,7 @@ const selectIngredientCandidates = ({
           ? CONDIMENT_BONUS
           : 0));
 
-    if (debug && (ing.name === 'Salt' || ing.name === 'Pepper')) {
+    if (debug && (ing.name === 'Egg' || ing.name === 'Bacon')) {
       console.debug(
         `${ing.name}: ${score}
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
