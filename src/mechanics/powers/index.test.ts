@@ -3,8 +3,10 @@ import {
   calculateTypes,
   evaluateBoosts,
   getTargetConfigs,
+  getTypeTargetsByPlace,
   powersMatch,
   rankMealPowerBoosts,
+  rankTypeBoosts,
   requestedPowersValid,
 } from './index';
 
@@ -135,5 +137,19 @@ describe('requestedPowersValid', () => {
     ]);
 
     expect(res).toBe(true);
+  });
+});
+
+describe('getTypeTargetsByPlace', () => {
+  it('Returns a valid result', () => {
+    const res = getTypeTargetsByPlace(
+      [{ mealPower: 6, type: 0, level: 2 }],
+      [0],
+      rankTypeBoosts(rangeTypes.map(() => 0)),
+    );
+
+    expect(res[0]).toBe(0);
+    expect(res[1]).toBe(1);
+    expect(res[2]).toBe(2);
   });
 });

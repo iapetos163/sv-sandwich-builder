@@ -392,15 +392,11 @@ export const selectPowersAtTargetPositions = (
 /**
  * @returns [index of first type, index of second type, index of third type]
  */
-export const getTypeTargetIndices = (
+export const getTypeTargetsByPlace = (
   targetPowers: Power[],
   targetPlaceIndices: number[],
   rankedTypeBoosts: TypeBoost[],
 ): [TypeIndex, TypeIndex, TypeIndex] => {
-  let firstTargetType: TypeIndex | null = null;
-  let secondTargetType: TypeIndex | null = null;
-  let thirdTargetType: TypeIndex | null = null;
-
   const targetFirstPlacePowerIndex = targetPlaceIndices.findIndex(
     (pi) => pi === 0,
   );
@@ -424,6 +420,10 @@ export const getTypeTargetIndices = (
       ? targetPowers[targetThirdPlacePowerIndex]
       : null;
 
+  let firstTargetType: TypeIndex | null = null;
+  let secondTargetType: TypeIndex | null = null;
+  let thirdTargetType: TypeIndex | null = null;
+
   if (
     targetFirstPlacePower &&
     mealPowerHasType(targetFirstPlacePower.mealPower)
@@ -445,7 +445,7 @@ export const getTypeTargetIndices = (
 
   const typeSelection = rankedTypeBoosts.map((tb) => tb.type).concat([0, 1, 2]);
 
-  if (!firstTargetType) {
+  if (firstTargetType === null) {
     firstTargetType = typeSelection.find(
       (t) =>
         t !== firstTargetType &&
@@ -453,7 +453,7 @@ export const getTypeTargetIndices = (
         t !== thirdTargetType,
     )!;
   }
-  if (!secondTargetType) {
+  if (secondTargetType === null) {
     secondTargetType = typeSelection.find(
       (t) =>
         t !== firstTargetType &&
@@ -461,10 +461,10 @@ export const getTypeTargetIndices = (
         t !== thirdTargetType,
     )!;
   }
-  if (!thirdTargetType) {
+  if (thirdTargetType === null) {
     thirdTargetType = typeSelection.find(
       (t) =>
-        t !== thirdTargetType &&
+        t !== firstTargetType &&
         t !== secondTargetType &&
         t !== thirdTargetType,
     )!;

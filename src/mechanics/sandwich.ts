@@ -11,7 +11,7 @@ import {
   selectPowersAtTargetPositions,
   TargetConfig,
   TypeBoost,
-  getTypeTargetIndices,
+  getTypeTargetsByPlace,
   MealPowerBoost,
   rankMealPowerBoosts,
   permutePowerConfigs,
@@ -180,7 +180,7 @@ const selectIngredientCandidates = ({
   let deltaLevelNorm = Infinity;
   let targetConfigSet = targetConfigSets[0];
   for (const candidateConfigSet of targetConfigSets) {
-    const targetTypes = getTypeTargetIndices(
+    const targetTypes = getTypeTargetsByPlace(
       targetPowers,
       candidateConfigSet.map((c) => c.typePlaceIndex),
       rankedTypeBoosts,
@@ -280,7 +280,7 @@ const selectIngredientCandidates = ({
     typeScoreWeight === 0 &&
     mealPowerScoreWeight === 0
   ) {
-    const targetTypeIndices = getTypeTargetIndices(
+    const targetTypeIndices = getTypeTargetsByPlace(
       targetPowers,
       targetConfigSet.map((c) => c.typePlaceIndex),
       rankedTypeBoosts,
