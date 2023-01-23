@@ -1,7 +1,7 @@
 import { ingredients } from '../data';
 import { MealPower } from '../enum';
 import { Ingredient, Power, Sandwich } from '../types';
-import { add, diff, innerProduct, norm } from '../vector-math';
+import { add, diff, innerProduct, norm, scale } from '../vector-math';
 import {
   evaluateBoosts,
   getTargetConfigs,
@@ -168,8 +168,9 @@ const selectIngredientCandidates = ({
   debug,
 }: SelectIngredientProps) => {
   const repeatedType = getRepeatedType(targetPowers);
-  const CONDIMENT_BONUS = targetPowers.length < 2 ? 0.4 : 0;
-  const CAP_LEVEL_PRODUCTS =
+  const condimentBonus = targetPowers.length === 1 ? 0.4 : 0;
+  const capTypeProducts = targetPowers.length === 1;
+  const capLevelProducts =
     targetPowers.every((tp) => tp.level === 1) && repeatedType;
 
   let targetTypeVector: number[] = [];
@@ -331,20 +332,23 @@ const selectIngredientCandidates = ({
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
         : 0;
-    const positiveTypeNorm = norm(ing.typeVector.map((c) => (c > 0 ? c : 0)));
+
+    const adjustedIngTypeVector = capTypeProducts
+      ? scale(ing.typeVector, Math.min(1, deltaTypeNorm / norm(ing.typeVector)))
+      : ing.typeVector;
+    const positiveTypeNorm = norm(
+      adjustedIngTypeVector.map((c) => (c > 0 ? c : 0)),
+    );
     const n2 = Math.sqrt(positiveTypeNorm) * deltaTypeNorm;
+
     const typeProduct =
       checkType && n2 !== 0
-        ? innerProduct(ing.typeVector, deltaTypeVector) / n2
-        : // ? Math.min(
-          //   deltaTypeNorm,
-          //   innerProduct(ing.typeVector, deltaTypeVector),
-          // ) / n2
-          0;
+        ? innerProduct(adjustedIngTypeVector, deltaTypeVector) / n2
+        : 0;
     const n3 = deltaLevelNorm;
     const levelProduct =
       n3 !== 0
-        ? (CAP_LEVEL_PRODUCTS
+        ? (capLevelProducts
             ? Math.min(
                 deltaLevelNorm,
                 innerProduct(ing.typeVector, deltaLevelVector),
@@ -357,10 +361,10 @@ const selectIngredientCandidates = ({
         levelProduct * levelScoreWeight) *
       (1 +
         (ing.ingredientType === 'condiment' && !ing.isHerbaMystica
-          ? CONDIMENT_BONUS
+          ? condimentBonus
           : 0));
 
-    if (debug && (ing.name === 'Egg' || ing.name === 'Bacon')) {
+    if (debug && (ing.name === 'Pickle' || ing.name === 'Tofu')) {
       console.debug(
         `${ing.name}: ${score}
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}

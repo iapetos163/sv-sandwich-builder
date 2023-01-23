@@ -28,6 +28,7 @@ describe('getTypeScoreWeight', () => {
 });
 
 describe('makeSandwichForPower', () => {
+  // Watercress, Bitter Herba Mystica, Bitter Herba Mystica, Mustard
   it('Produces a sandwich with Lv 3 Sparkling Ground', () => {
     const sandwich = makeSandwichForPowers([
       {
@@ -47,7 +48,7 @@ describe('makeSandwichForPower', () => {
 
     expect(sandwich!.fillings.length).toBeGreaterThan(0);
     expect(sandwich!.condiments.length).toBeGreaterThan(0);
-    expect(numHerba).toBeLessThanOrEqual(2);
+    expect(numHerba).toBe(2);
     expect(numIngredients).toBeLessThanOrEqual(3);
   });
 
@@ -60,8 +61,14 @@ describe('makeSandwichForPower', () => {
       },
     ]);
 
-    // cheese OR rice, herba mystica
+    // cheese OR rice OR tofu, herba mystica
     expect(sandwich).not.toBeNull();
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
 
     const numHerba = sandwich!.condiments.filter(
       (s) => s.isHerbaMystica,
@@ -630,12 +637,6 @@ describe('makeSandwichForPower', () => {
 
     // 4x Bacon, Mustard
     expect(sandwich).not.toBeNull();
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
 
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
