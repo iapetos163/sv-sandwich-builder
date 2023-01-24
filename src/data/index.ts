@@ -1,5 +1,6 @@
-import { Ingredient, SandwichRecipe } from '../types';
+import { Ingredient, SandwichRecipe, Meal } from '../types';
 import ingredientsData from './ingredients.json';
+import mealsData from './meals.json';
 import recipesData from './recipes.json';
 
 export const ingredients = ingredientsData as Ingredient[];
@@ -13,3 +14,5 @@ export const recipes: SandwichRecipe[] = recipesData.map((recipe) => ({
     (condimentName) => ingredients.find((ing) => ing.name === condimentName)!,
   ),
 }));
+
+export const meals: Meal[] = mealsData;
