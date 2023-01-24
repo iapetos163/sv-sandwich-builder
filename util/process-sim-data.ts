@@ -4,7 +4,9 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
+import sandwiches from '../simulator-data/sandwiches.json';
 import { allTypes } from '../src/strings';
+import { Power } from '../src/types';
 
 type IngredientEntry = {
   name: string;
@@ -16,6 +18,17 @@ type IngredientEntry = {
   pieces: number;
   isHerbaMystica: boolean;
   ingredientType: 'filling' | 'condiment';
+};
+
+type RecipeEntry = {
+  number: string;
+  name: string;
+  fillings: string[];
+  condiments: string[];
+  powers: Power[];
+  imagePath: string;
+  imageUrl: string;
+  gameLocation: string;
 };
 
 export const flavors = ['Sweet', 'Sour', 'Salty', 'Bitter', 'Hot'];
@@ -114,18 +127,69 @@ const main = async () => {
     }),
   );
 
-  const outputData = parsedFillings.concat(parsedCondiments);
+  const recipeMealPowerNames = [
+    'Egg Power',
+    'Catching Power',
+    'Exp. Point Power',
+    'Item Drop Power',
+    'Raid Power',
+    'Sparkling Power',
+    'Title Power',
+    'Humungo Power',
+    'Teensy Power',
+    'Encounter Power',
+  ];
+  const parsedRecipes = sandwiches
+    .filter((s) => s.number !== '-1' && s.number !== '0')
+    .map(
+      ({
+        name,
+        number,
+        fillings,
+        condiments,
+        effects,
+        imageUrl,
+        location,
+      }): RecipeEntry => ({
+        name,
+        number,
+        fillings,
+        condiments,
+        gameLocation: location,
+        imageUrl,
+        imagePath: basename(imageUrl),
+        powers: effects.map(
+          (effect: { name: string; type: string; level: string }): Power => ({
+            mealPower: recipeMealPowerNames.indexOf(effect.name),
+            type: effect.type ? allTypes.indexOf(effect.type) : 0,
+            level: parseInt(effect.level),
+          }),
+        ),
+      }),
+    );
 
-  const outputPath = 'src/data/ingredients.json';
-  await writeFile(outputPath, JSON.stringify(outputData));
-  console.log(`Exported ${outputPath}`);
+  const ingredientsData = parsedFillings.concat(parsedCondiments);
+  const recipeData = parsedRecipes;
+
+  const ingOutputPath = 'src/data/ingredients.json';
+  await writeFile(ingOutputPath, JSON.stringify(ingredientsData));
+  console.log(`Exported ${ingOutputPath}`);
+
+  const recipeOutputPath = 'src/data/recipes.json';
+  await writeFile(recipeOutputPath, JSON.stringify(recipeData));
+  console.log(`Exported ${recipeOutputPath}`);
 
   if (args['--skip-images']) return;
-  for (const { imageUrl, imagePath } of outputData) {
+
+  const imageSources: (IngredientEntry | RecipeEntry)[] = [
+    ...ingredientsData,
+    ...recipeData,
+  ];
+  for (const { imageUrl, imagePath } of imageSources) {
     const res = await got(imageUrl, {
       responseType: 'buffer',
     });
-    const imgOutPath = joinPath('public/asset', basename(imagePath));
+    const imgOutPath = joinPath('public/assets', basename(imagePath));
     await writeFile(imgOutPath, res.body);
     console.log(`Exported ${imgOutPath}`);
   }

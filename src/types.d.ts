@@ -25,3 +25,13 @@ export interface Sandwich {
   flavorBoosts: number[];
   powers: Power[];
 }
+
+export interface SandwichRecipe {
+  number: string;
+  name: string;
+  fillings: Ingredient[];
+  condiments: Ingredient[];
+  powers: Power[];
+  imagePath: string;
+  gameLocation: string;
+}

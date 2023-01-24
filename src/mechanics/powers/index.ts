@@ -567,6 +567,9 @@ export const powersEqual = (a: Power, b: Power) =>
   a.mealPower === b.mealPower &&
   (!mealPowerHasType(a.mealPower) || a.type === b.type);
 
+export const powerSetsMatch = (test: Power[], target: Power[]) =>
+  target.every((tp) => test.some((p) => powersMatch(p, tp)));
+
 export const powerToString = (p: Power) => {
   if (!mealPowerHasType(p.mealPower)) {
     return `Lv. ${p.level} ${p.mealPower}`;

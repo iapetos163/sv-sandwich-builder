@@ -6,7 +6,6 @@ import {
   evaluateBoosts,
   getTargetConfigs,
   mealPowerHasType,
-  powersMatch,
   rankTypeBoosts,
   selectPowersAtTargetPositions,
   TargetConfig,
@@ -17,6 +16,7 @@ import {
   permutePowerConfigs,
   requestedPowersValid,
   getRepeatedType,
+  powerSetsMatch,
 } from './powers';
 import {
   boostMealPowerVector,
@@ -649,9 +649,7 @@ const makeSandwichGivenNumHerba = (
           newBoostedMealPower,
           newTypeVector,
         );
-        const reachedAllTargets = targetPowers.every((tp) =>
-          newPowers.some((p) => powersMatch(p, tp)),
-        );
+        const reachedAllTargets = powerSetsMatch(newPowers, targetPowers);
         if (debugCondition && newIngredient.name === 'Salt') {
           console.debug({
             newMealPowerVector,

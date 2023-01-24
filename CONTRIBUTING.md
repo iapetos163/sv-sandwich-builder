@@ -9,8 +9,6 @@ Before opening an Issue, please review the guidelines below.
 These features are planned for future releases
 (so please don't open an Issue to request them):
 
-* **Recipes for more than one power**
-* Include predetermined sandwich recipes in the results
 * Include restaurant meals in the results
 * Note when any kind of Herba Mystica will work for a recipe
 * Multiplayer sandwiches
