@@ -4,6 +4,7 @@ import arg from 'arg';
 import got from 'got';
 import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
+import meals from '../simulator-data/meals.json';
 import sandwiches from '../simulator-data/sandwiches.json';
 import { allTypes } from '../src/strings';
 import { Power } from '../src/types';
@@ -29,6 +30,21 @@ type RecipeEntry = {
   imagePath: string;
   imageUrl: string;
   gameLocation: string;
+};
+
+type MealEntry = {
+  name: string;
+  cost: number;
+  powers: Power[];
+  shop: string;
+  towns: string[];
+  imageUrl: string;
+  imagePath: string;
+};
+
+type ImageSource = {
+  imageUrl: string;
+  imagePath: string;
 };
 
 export const flavors = ['Sweet', 'Sour', 'Salty', 'Bitter', 'Hot'];
@@ -92,6 +108,29 @@ const getTypeVector = (
   return allTypes.map((t) => boosts[t] ?? 0);
 };
 
+const dataMealPowerNames = [
+  'Egg Power',
+  'Catching Power',
+  'Exp. Point Power',
+  'Item Drop Power',
+  'Raid Power',
+  'Sparkling Power',
+  'Title Power',
+  'Humungo Power',
+  'Teensy Power',
+  'Encounter Power',
+];
+
+const effectToPower = (effect: {
+  name: string;
+  type: string;
+  level: string;
+}): Power => ({
+  mealPower: dataMealPowerNames.indexOf(effect.name),
+  type: effect.type ? allTypes.indexOf(effect.type) : 0,
+  level: parseInt(effect.level),
+});
+
 const main = async () => {
   const args = arg({
     '--skip-images': Boolean,
@@ -103,7 +142,7 @@ const main = async () => {
     ({ name, imageUrl, powers, types, tastes }): IngredientEntry => ({
       name,
       isHerbaMystica: name.endsWith('Herba Mystica'),
-      imagePath: basename(imageUrl),
+      imagePath: `ingredient/${basename(imageUrl)}`,
       imageUrl,
       pieces: 1,
       flavorVector: getFlavorVector(tastes),
@@ -118,7 +157,7 @@ const main = async () => {
       pieces,
       name,
       isHerbaMystica: false,
-      imagePath: basename(imageUrl),
+      imagePath: `ingredient/${basename(imageUrl)}`,
       imageUrl,
       flavorVector: getFlavorVector(tastes, pieces),
       typeVector: getTypeVector(types, pieces),
@@ -127,19 +166,7 @@ const main = async () => {
     }),
   );
 
-  const recipeMealPowerNames = [
-    'Egg Power',
-    'Catching Power',
-    'Exp. Point Power',
-    'Item Drop Power',
-    'Raid Power',
-    'Sparkling Power',
-    'Title Power',
-    'Humungo Power',
-    'Teensy Power',
-    'Encounter Power',
-  ];
-  const parsedRecipes = sandwiches
+  const recipeData = sandwiches
     .filter((s) => s.number !== '-1' && s.number !== '0')
     .map(
       ({
@@ -157,19 +184,24 @@ const main = async () => {
         condiments,
         gameLocation: location,
         imageUrl,
-        imagePath: basename(imageUrl),
-        powers: effects.map(
-          (effect: { name: string; type: string; level: string }): Power => ({
-            mealPower: recipeMealPowerNames.indexOf(effect.name),
-            type: effect.type ? allTypes.indexOf(effect.type) : 0,
-            level: parseInt(effect.level),
-          }),
-        ),
+        imagePath: `sandwich/${basename(imageUrl)}`,
+        powers: effects.map(effectToPower),
       }),
     );
 
+  const mealData = meals.map(
+    ({ name, shop, towns, effects, cost, imageUrl }): MealEntry => ({
+      name,
+      shop,
+      towns,
+      cost: parseInt(cost),
+      imageUrl,
+      imagePath: `meal/${basename(imageUrl)}`,
+      powers: effects.map(effectToPower),
+    }),
+  );
+
   const ingredientsData = parsedFillings.concat(parsedCondiments);
-  const recipeData = parsedRecipes;
 
   const ingOutputPath = 'src/data/ingredients.json';
   await writeFile(ingOutputPath, JSON.stringify(ingredientsData));
@@ -179,17 +211,22 @@ const main = async () => {
   await writeFile(recipeOutputPath, JSON.stringify(recipeData));
   console.log(`Exported ${recipeOutputPath}`);
 
+  const mealOutputPath = 'src/data/meals.json';
+  await writeFile(mealOutputPath, JSON.stringify(mealData));
+  console.log(`Exported ${mealOutputPath}`);
+
   if (args['--skip-images']) return;
 
-  const imageSources: (IngredientEntry | RecipeEntry)[] = [
+  const imageSources: ImageSource[] = [
     ...ingredientsData,
     ...recipeData,
+    ...mealData,
   ];
   for (const { imageUrl, imagePath } of imageSources) {
     const res = await got(imageUrl, {
       responseType: 'buffer',
     });
-    const imgOutPath = joinPath('public/assets', basename(imagePath));
+    const imgOutPath = joinPath('public/assets', imagePath);
     await writeFile(imgOutPath, res.body);
     console.log(`Exported ${imgOutPath}`);
   }

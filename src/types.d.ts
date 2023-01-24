@@ -35,3 +35,12 @@ export interface SandwichRecipe {
   imagePath: string;
   gameLocation: string;
 }
+
+export interface Meal {
+  name: string;
+  cost: number;
+  powers: Power[];
+  shop: string;
+  towns: string[];
+  imagePath: string;
+}

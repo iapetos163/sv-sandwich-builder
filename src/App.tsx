@@ -1,15 +1,18 @@
-import { ReactElement, useCallback, useState } from 'react';
+import { ReactElement, useCallback, useMemo, useState } from 'react';
 import { GitHub } from 'react-feather';
 import styled from 'styled-components';
+import MealResult from './component/MealResult';
+import PokeDollar from './component/PokeDollar';
 import PowerQuery from './component/PowerQuery';
 import RecipeResult from './component/RecipeResult';
 import SandwichResult from './component/SandwichResult';
 import {
+  getMealForPowers,
   getRecipeForPowers,
   makeSandwichForPowers,
   powersEqual,
 } from './mechanics';
-import { Power, Sandwich, SandwichRecipe } from './types';
+import { Meal, Power, Sandwich, SandwichRecipe } from './types';
 
 const StyledContainer = styled.div`
   margin: 15px 10px;
@@ -81,6 +84,7 @@ function App(): ReactElement {
   const [resultCreativeSandwich, setResultCreativeSandwich] =
     useState<Sandwich | null>(null);
   const [resultRecipe, setResultRecipe] = useState<SandwichRecipe | null>(null);
+  const [resultMeal, setResultMeal] = useState<Meal | null>(null);
   const [queryPowers, setQueryPowers] = useState<Power[]>([]);
   const [queryChanged, setQueryChanged] = useState(true);
   const [calculating, setCalculating] = useState(false);
@@ -98,22 +102,40 @@ function App(): ReactElement {
       }
       setQueryPowers(newQuery);
 
+      const meal = getMealForPowers(newQuery);
+      if (meal) {
+        setResultCreativeSandwich(null);
+        setResultRecipe(null);
+        setResultMeal(meal);
+        setQueryChanged(false);
+        return;
+      }
+      setResultMeal(null);
+
+      const recipe = getRecipeForPowers(newQuery);
+      if (recipe) {
+        setResultCreativeSandwich(null);
+        setResultRecipe(recipe);
+        setQueryChanged(false);
+        return;
+      }
+      setResultRecipe(null);
+
       setCalculating(true);
       setTimeout(() => {
-        const recipe = getRecipeForPowers(newQuery);
-        if (recipe) {
-          setResultCreativeSandwich(null);
-          setResultRecipe(recipe);
-        } else {
-          const creativeSandwich = makeSandwichForPowers(newQuery);
-          setResultCreativeSandwich(creativeSandwich);
-          setResultRecipe(null);
-        }
+        const creativeSandwich = makeSandwichForPowers(newQuery);
+        setResultCreativeSandwich(creativeSandwich);
         setQueryChanged(false);
         setCalculating(false);
       }, 10);
     },
     [calculating, queryPowers],
+  );
+
+  const noResult = useMemo(
+    () =>
+      !calculating && !resultCreativeSandwich && !resultRecipe && !resultMeal,
+    [calculating, resultCreativeSandwich, resultMeal, resultRecipe],
   );
 
   return (
@@ -130,11 +152,8 @@ function App(): ReactElement {
             <h2>About</h2>
           </StyledSectionHeader>
           <p>
-            {/* Input one or more meal powers, and this tool will attempt to find a
-            meal or a sandwich recipe that yields those powers. */}
-            {/* Also update in README */}
             Input one or more meal powers, and this tool will attempt to find a
-            sandwich recipe that yields those powers.
+            meal or a sandwich recipe that yields those powers.
           </p>
         </StyledSection>
         <StyledSection>
@@ -149,18 +168,22 @@ function App(): ReactElement {
           </StyledSectionHeader>
           <StyledResultsContainer>
             {calculating && <>Calculating...</>}
-            {!calculating &&
-              queryChanged &&
-              !resultCreativeSandwich &&
-              !resultRecipe && (
-                <>Input a Meal Power query above and press Calculate!.</>
-              )}
-            {!calculating &&
-              !queryChanged &&
-              !resultCreativeSandwich &&
-              !resultRecipe && (
-                <>Could not create a sandwich with the requested power.</>
-              )}
+            {queryChanged && noResult && (
+              <>Input a Meal Power query above and press Calculate!.</>
+            )}
+            {!queryChanged && noResult && (
+              <>Could not create a sandwich with the requested power.</>
+            )}
+            {!calculating && resultMeal && (
+              <>
+                <h2>Restaurant Meal</h2>
+                <StyledResultSubheader>
+                  {resultMeal.name} (<PokeDollar />
+                  {resultMeal.cost})
+                </StyledResultSubheader>
+                <MealResult meal={resultMeal} />
+              </>
+            )}
             {!calculating && resultRecipe && (
               <>
                 <h2>Sandwich</h2>

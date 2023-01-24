@@ -4,15 +4,6 @@ Issues and Pull Requests are welcome!
 
 Before opening an Issue, please review the guidelines below.
 
-## Feature Roadmap
-
-These features are planned for future releases
-(so please don't open an Issue to request them):
-
-* Include restaurant meals in the results
-* Note when any kind of Herba Mystica will work for a recipe
-* Multiplayer sandwiches
-
 ## Incorrect or missing recipes
 
 Please note that if too many ingredients fall off while making a sandwich
