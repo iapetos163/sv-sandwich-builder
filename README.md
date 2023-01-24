@@ -2,19 +2,11 @@
 
 A tool to calculate sandwich recipes for Pokémon Scarlet/Violet.
 Input one or more meal powers, and this tool will attempt to find a
-sandwich recipe that yields those powers.
+meal or a sandwich recipe that yields those powers.
 
 [View the deployed project here.](https://birbzone.com/sandwich)
 
 This project is still very much a work in progress! [Contributions are welcome](./CONTRIBUTING.md).
-
-## Feature Roadmap
-
-These features are planned for future releases:
-
-* Include restaurant meals in the results
-* Note when any kind of Herba Mystica will work for a recipe
-* Multiplayer sandwiches
 
 ## Credits
 
