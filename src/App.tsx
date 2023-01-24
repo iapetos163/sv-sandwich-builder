@@ -74,6 +74,9 @@ const StyledTitleTag = styled.span`
   font-size: 0.5em;
 `;
 
+const StyledResultsContainer = styled.div``;
+const StyledResultSubheader = styled.h3``;
+
 function App(): ReactElement {
   const [resultCreativeSandwich, setResultCreativeSandwich] =
     useState<Sandwich | null>(null);
@@ -144,25 +147,37 @@ function App(): ReactElement {
           <StyledSectionHeader>
             <h2>Results</h2>
           </StyledSectionHeader>
-          {calculating && <>Calculating...</>}
-          {!calculating &&
-            queryChanged &&
-            !resultCreativeSandwich &&
-            !resultRecipe && (
-              <>Input a Meal Power query above and press Calculate!.</>
+          <StyledResultsContainer>
+            {calculating && <>Calculating...</>}
+            {!calculating &&
+              queryChanged &&
+              !resultCreativeSandwich &&
+              !resultRecipe && (
+                <>Input a Meal Power query above and press Calculate!.</>
+              )}
+            {!calculating &&
+              !queryChanged &&
+              !resultCreativeSandwich &&
+              !resultRecipe && (
+                <>Could not create a sandwich with the requested power.</>
+              )}
+            {!calculating && resultRecipe && (
+              <>
+                <h2>Sandwich</h2>
+                <StyledResultSubheader>
+                  #{resultRecipe.number} {resultRecipe.name}
+                </StyledResultSubheader>
+                <RecipeResult recipe={resultRecipe} />
+              </>
             )}
-          {!calculating &&
-            !queryChanged &&
-            !resultCreativeSandwich &&
-            !resultRecipe && (
-              <>Could not create a sandwich with the requested power.</>
+            {!calculating && resultCreativeSandwich && (
+              <>
+                <h2>Sandwich</h2>
+                <StyledResultSubheader>Creative Mode</StyledResultSubheader>
+                <SandwichResult sandwich={resultCreativeSandwich} />
+              </>
             )}
-          {!calculating && resultRecipe && (
-            <RecipeResult recipe={resultRecipe} />
-          )}
-          {!calculating && resultCreativeSandwich && (
-            <SandwichResult sandwich={resultCreativeSandwich} />
-          )}
+          </StyledResultsContainer>
         </StyledSection>
         <StyledSection>
           <StyledSectionHeader>
