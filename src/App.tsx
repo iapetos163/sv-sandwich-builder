@@ -1,6 +1,8 @@
 import { ReactElement, useCallback, useMemo, useState } from 'react';
 import { GitHub } from 'react-feather';
 import styled from 'styled-components';
+import MealResult from './component/MealResult';
+import PokeDollar from './component/PokeDollar';
 import PowerQuery from './component/PowerQuery';
 import RecipeResult from './component/RecipeResult';
 import SandwichResult from './component/SandwichResult';
@@ -178,8 +180,11 @@ function App(): ReactElement {
             {!calculating && resultMeal && (
               <>
                 <h2>Restaurant Meal</h2>
-                <StyledResultSubheader>{resultMeal.name}</StyledResultSubheader>
-                {/* <MealResult meal={resultMeal} /> */}
+                <StyledResultSubheader>
+                  {resultMeal.name} (<PokeDollar />
+                  {resultMeal.cost})
+                </StyledResultSubheader>
+                <MealResult meal={resultMeal} />
               </>
             )}
             {!calculating && resultRecipe && (
