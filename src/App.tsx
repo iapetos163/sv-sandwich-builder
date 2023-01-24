@@ -133,8 +133,8 @@ function App(): ReactElement {
             {/* Input one or more meal powers, and this tool will attempt to find a
             meal or a sandwich recipe that yields those powers. */}
             {/* Also update in README */}
-            Input a meal power, and this tool will attempt to find a sandwich
-            recipe that yields that power.
+            Input one or more meal powers, and this tool will attempt to find a
+            sandwich recipe that yields those powers.
           </p>
         </StyledSection>
         <StyledSection>
