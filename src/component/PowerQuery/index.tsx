@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { rangeMealPowers, rangeTypes } from '../../enum';
 import { Power } from '../../types';
@@ -21,6 +21,18 @@ const StyledAdd = styled.div`
   grid-column: 1 4;
 `;
 
+const StyledOptionsContainer = styled.div`
+  display: flex;
+  margin: 10px 0;
+  font-size: 0.9em;
+  > * {
+    margin-right: 10px;
+  }
+  label {
+    user-select: none;
+  }
+`;
+
 const allowedMealPowers = rangeMealPowers.map(() => true);
 
 const allowedTypes = rangeTypes.map(() => true);
@@ -37,6 +49,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const [firstQueryOverride, setFirstQueryOverride] = useState<Power | null>(
     null,
   );
+  const [includeMeals, setIncludeMeals] = useState(true);
+  const [includeRecipes, setIncludeRecipes] = useState(true);
   const [secondQueryOverride, setSecondQueryOverride] = useState<Power | null>(
     null,
   );
@@ -85,6 +99,14 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const handleRemoveThird = useCallback(() => {
     setThirdQueryPower(null);
     setShowThird(false);
+  }, []);
+
+  const toggleMeals = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setIncludeMeals(event.target.checked);
+  }, []);
+
+  const toggleRecipes = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setIncludeRecipes(event.target.checked);
   }, []);
 
   const handleSubmit = useCallback(
@@ -144,6 +166,24 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
             </StyledAdd>
           )}
         </StyledGrid>
+        <StyledOptionsContainer>
+          <label>
+            <input
+              type="checkbox"
+              checked={includeMeals}
+              onChange={toggleMeals}
+            ></input>{' '}
+            Include restaurant meals
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={includeRecipes}
+              onChange={toggleRecipes}
+            ></input>{' '}
+            Include sandwich recipes
+          </label>
+        </StyledOptionsContainer>
         <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
         </button>
