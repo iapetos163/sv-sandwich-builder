@@ -46,15 +46,14 @@ export interface MealResultProps {
 }
 
 const MealResult = ({ meal, className }: MealResultProps) => {
-  const { shop, towns, powers, imagePath } = meal;
+  const { shop, towns, powers, imagePath, name } = meal;
 
-  // TODO: name, number, image
   return (
     <StyledContainer className={className}>
       <StyledSummary>
         <StyledFrameContainer>
           <StyledFrame>
-            <img src={`assets/${imagePath}`} />
+            <img src={`assets/${imagePath}`} alt={name} />
           </StyledFrame>
         </StyledFrameContainer>
 
