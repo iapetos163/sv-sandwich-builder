@@ -4,7 +4,9 @@ import { allTypes, mealPowerCopy } from '../strings';
 import { Ingredient, Sandwich } from '../types';
 import RecipeList from './RecipeList';
 
-const StyledContainer = styled.div``;
+const StyledContainer = styled.div`
+  text-align: left;
+`;
 
 const StyledRecipeList = styled(RecipeList)`
   margin-bottom: 30px;

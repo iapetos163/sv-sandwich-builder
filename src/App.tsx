@@ -36,14 +36,6 @@ const StyledContainer = styled.div`
       margin-bottom: 0;
     }
   }
-
-  > main {
-    h2 {
-      color: #888653;
-      font-size: 1em;
-      font-style: italic;
-    }
-  }
 `;
 
 const StyledSection = styled.div`
@@ -56,6 +48,9 @@ const StyledSectionHeader = styled.div`
   margin-bottom: 0.5em;
 
   h2 {
+    color: #888653;
+    font-size: 1em;
+    font-style: italic;
     display: inline-block;
     margin: 0 0 0 1em;
     background-color: #f3f1e0;
@@ -77,8 +72,19 @@ const StyledTitleTag = styled.span`
   font-size: 0.5em;
 `;
 
-const StyledResultsContainer = styled.div``;
-const StyledResultSubheader = styled.h3``;
+const StyledResultsContainer = styled.div`
+  text-align: center;
+  background-color: #e2ddba;
+  padding: 5px;
+  h2 {
+    color: #1d261a;
+    margin: 0.3em;
+  }
+`;
+const StyledResultSubheader = styled.h3`
+  font-weight: 600;
+  margin: 0.3em;
+`;
 
 function App(): ReactElement {
   const [resultCreativeSandwich, setResultCreativeSandwich] =
