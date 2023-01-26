@@ -21,6 +21,10 @@ const StyledContainer = styled.div`
   flex-direction: column;
   align-items: center;
 
+  main {
+    max-width: 640px;
+  }
+
   h1 {
     margin-top: 0;
   }
@@ -36,26 +40,26 @@ const StyledContainer = styled.div`
       margin-bottom: 0;
     }
   }
-
-  > main {
-    h2 {
-      color: #888653;
-      font-size: 1em;
-      font-style: italic;
-    }
-  }
 `;
 
 const StyledSection = styled.div`
   margin-bottom: 15px;
+  display: flex;
+  max-width: 95vw;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const StyledSectionHeader = styled.div`
   border-bottom: 2px solid #888653;
   height: 0.5em;
   margin-bottom: 0.5em;
+  width: 100%;
 
   h2 {
+    color: #888653;
+    font-size: 1em;
+    font-style: italic;
     display: inline-block;
     margin: 0 0 0 1em;
     background-color: #f3f1e0;
@@ -77,8 +81,29 @@ const StyledTitleTag = styled.span`
   font-size: 0.5em;
 `;
 
-const StyledResultsContainer = styled.div``;
-const StyledResultSubheader = styled.h3``;
+const StyledResultsContainer = styled.div`
+  text-align: center;
+  background-color: #e2ddba;
+  padding: 20px;
+  max-width: 600px;
+  min-width: 50%;
+  h2 {
+    color: #1d261a;
+    margin: 0 0 0.3em;
+  }
+`;
+const StyledResultSubheader = styled.h3`
+  font-weight: 600;
+  margin: 0.3em;
+`;
+
+const StyledLinksSection = styled(StyledSection)`
+  display: block;
+  svg {
+    height: 1em;
+    stroke: #1d261a;
+  }
+`;
 
 function App(): ReactElement {
   const [resultCreativeSandwich, setResultCreativeSandwich] =
@@ -202,11 +227,11 @@ function App(): ReactElement {
             )}
           </StyledResultsContainer>
         </StyledSection>
-        <StyledSection>
+        <StyledLinksSection>
           <StyledSectionHeader>
             <h2>Links</h2>
           </StyledSectionHeader>
-          <div>
+          <p>
             <a
               href="https://github.com/iapetos163/sv-sandwich-builder/issues"
               target="_blank"
@@ -214,8 +239,8 @@ function App(): ReactElement {
             >
               <GitHub /> Report a bug on GitHub
             </a>
-          </div>
-          <div>
+          </p>
+          <p>
             <a
               href="https://github.com/iapetos163/sv-sandwich-builder"
               target="_blank"
@@ -223,8 +248,8 @@ function App(): ReactElement {
             >
               <GitHub /> View project source on GitHub
             </a>
-          </div>
-          <div>
+          </p>
+          <p>
             This project would not have been possible without data and code from
             the{' '}
             <a
@@ -232,11 +257,11 @@ function App(): ReactElement {
               target="_blank"
               rel="noreferrer"
             >
-              Pokémon Sandwich Simulator
+              Pokémon&nbsp;Sandwich&nbsp;Simulator
             </a>
             .
-          </div>
-        </StyledSection>
+          </p>
+        </StyledLinksSection>
       </main>
     </StyledContainer>
   );

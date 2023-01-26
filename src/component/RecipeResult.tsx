@@ -4,7 +4,21 @@ import { allTypes, mealPowerCopy } from '../strings';
 import { SandwichRecipe } from '../types';
 import RecipeList from './RecipeList';
 
-const StyledContainer = styled.div``;
+const StyledContainer = styled.div`
+  text-align: left;
+`;
+const StyledFrameContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const StyledFrame = styled.div`
+  border: 2px solid #bdf7ab;
+`;
+
+const StyledImage = styled.img`
+  display: block;
+  max-height: 240px;
+`;
 
 const StyledRecipeList = styled(RecipeList)`
   margin-bottom: 30px;
@@ -16,11 +30,16 @@ export interface RecipeResultProps {
 }
 
 const RecipeResult = ({ recipe, className }: RecipeResultProps) => {
-  const { fillings, condiments, powers } = recipe;
+  const { fillings, condiments, powers, imagePath, name } = recipe;
 
   // TODO: name, number, image
   return (
     <StyledContainer className={className}>
+      <StyledFrameContainer>
+        <StyledFrame>
+          <StyledImage src={`assets/${imagePath}`} alt={name} />
+        </StyledFrame>
+      </StyledFrameContainer>
       <h3>Ingredients</h3>
       <StyledRecipeList fillings={fillings} condiments={condiments} />
       <h3>Meal Powers</h3>
