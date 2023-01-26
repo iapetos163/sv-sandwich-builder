@@ -21,6 +21,10 @@ const StyledContainer = styled.div`
   flex-direction: column;
   align-items: center;
 
+  main {
+    max-width: 640px;
+  }
+
   h1 {
     margin-top: 0;
   }
@@ -41,7 +45,7 @@ const StyledContainer = styled.div`
 const StyledSection = styled.div`
   margin-bottom: 15px;
   display: flex;
-  max-width: 100vw;
+  max-width: 95vw;
   flex-direction: column;
   align-items: center;
 `;
@@ -253,7 +257,7 @@ function App(): ReactElement {
               target="_blank"
               rel="noreferrer"
             >
-              Pokémon Sandwich Simulator
+              Pokémon&nbsp;Sandwich&nbsp;Simulator
             </a>
             .
           </p>
