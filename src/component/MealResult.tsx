@@ -10,11 +10,14 @@ const StyledContainer = styled.div`
 
 const StyledSummary = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const StyledFrameContainer = styled.div`
   flex: 1;
   padding: 5px;
+  display: flex;
+  justify-content: center;
 `;
 
 const StyledFrame = styled.div`
@@ -27,6 +30,9 @@ const StyledLocationContainer = styled.div`
   display: flex;
   flex: 1;
   line-height: 1.3;
+  > div {
+    margin: 0 2px;
+  }
 `;
 
 const StyledShopName = styled.div`

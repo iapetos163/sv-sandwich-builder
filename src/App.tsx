@@ -40,12 +40,17 @@ const StyledContainer = styled.div`
 
 const StyledSection = styled.div`
   margin-bottom: 15px;
+  display: flex;
+  max-width: 100vw;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const StyledSectionHeader = styled.div`
   border-bottom: 2px solid #888653;
   height: 0.5em;
   margin-bottom: 0.5em;
+  width: 100%;
 
   h2 {
     color: #888653;
@@ -75,15 +80,25 @@ const StyledTitleTag = styled.span`
 const StyledResultsContainer = styled.div`
   text-align: center;
   background-color: #e2ddba;
-  padding: 5px;
+  padding: 20px;
+  max-width: 600px;
+  min-width: 50%;
   h2 {
     color: #1d261a;
-    margin: 0.3em;
+    margin: 0 0 0.3em;
   }
 `;
 const StyledResultSubheader = styled.h3`
   font-weight: 600;
   margin: 0.3em;
+`;
+
+const StyledLinksSection = styled(StyledSection)`
+  display: block;
+  svg {
+    height: 1em;
+    stroke: #1d261a;
+  }
 `;
 
 function App(): ReactElement {
@@ -208,11 +223,11 @@ function App(): ReactElement {
             )}
           </StyledResultsContainer>
         </StyledSection>
-        <StyledSection>
+        <StyledLinksSection>
           <StyledSectionHeader>
             <h2>Links</h2>
           </StyledSectionHeader>
-          <div>
+          <p>
             <a
               href="https://github.com/iapetos163/sv-sandwich-builder/issues"
               target="_blank"
@@ -220,8 +235,8 @@ function App(): ReactElement {
             >
               <GitHub /> Report a bug on GitHub
             </a>
-          </div>
-          <div>
+          </p>
+          <p>
             <a
               href="https://github.com/iapetos163/sv-sandwich-builder"
               target="_blank"
@@ -229,8 +244,8 @@ function App(): ReactElement {
             >
               <GitHub /> View project source on GitHub
             </a>
-          </div>
-          <div>
+          </p>
+          <p>
             This project would not have been possible without data and code from
             the{' '}
             <a
@@ -241,8 +256,8 @@ function App(): ReactElement {
               Pokémon Sandwich Simulator
             </a>
             .
-          </div>
-        </StyledSection>
+          </p>
+        </StyledLinksSection>
       </main>
     </StyledContainer>
   );
