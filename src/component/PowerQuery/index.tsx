@@ -37,8 +37,13 @@ const allowedMealPowers = rangeMealPowers.map(() => true);
 
 const allowedTypes = rangeTypes.map(() => true);
 
+export interface QueryOptions {
+  includeMeals?: boolean;
+  includeRecipes?: boolean;
+}
+
 export interface PowerQueryProps {
-  onSubmit: (queryPower: Power[]) => void;
+  onSubmit: (queryPowers: Power[], options?: QueryOptions) => void;
   enableSubmit: boolean;
 }
 
@@ -117,9 +122,16 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
         secondQueryPower,
         thirdQueryPower,
       ].filter((p): p is Power => !!p);
-      if (powers.length > 0) onSubmit(powers);
+      if (powers.length > 0) onSubmit(powers, { includeMeals, includeRecipes });
     },
-    [firstQueryPower, secondQueryPower, thirdQueryPower, onSubmit],
+    [
+      firstQueryPower,
+      secondQueryPower,
+      thirdQueryPower,
+      onSubmit,
+      includeMeals,
+      includeRecipes,
+    ],
   );
   return (
     <StyledContainer>
