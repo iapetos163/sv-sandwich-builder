@@ -535,26 +535,54 @@ export const evaluateBoosts = (
  * to an array config combinations
  */
 export const permutePowerConfigs = (
-  arr: TargetConfig[][],
+  powers: Power[],
+  configs: TargetConfig[][],
 ): TargetConfig[][] => {
   const recurse = (
     powerSelections: TargetConfig[],
-    remainingPowers: TargetConfig[][],
-  ): TargetConfig[][] =>
-    remainingPowers.length === 0
-      ? [powerSelections]
-      : remainingPowers[0]
-          .filter(
-            (c) =>
-              (powerSelections.length === 0 ||
-                c.config === powerSelections[0].config) &&
-              !powerSelections.some((d) => configsEqual(c, d)),
-          )
-          .flatMap((c) =>
-            recurse([...powerSelections, c], remainingPowers.slice(1)),
-          );
+    powerIndex: number,
+    typePlaceIndexMapping: Partial<Record<TypeIndex, number>>,
+  ): TargetConfig[][] => {
+    if (powers.length === powerIndex) return [powerSelections];
+    const powerType = powers[powerIndex].type;
+    const assignedTypePlaceIndex = typePlaceIndexMapping[powerType];
 
-  return recurse([], arr);
+    if (assignedTypePlaceIndex !== undefined) {
+      return configs[powerIndex]
+        .filter(
+          (c) =>
+            (powerSelections.length === 0 ||
+              c.config === powerSelections[0].config) &&
+            c.typePlaceIndex === assignedTypePlaceIndex &&
+            !powerSelections.some((d) => configsEqual(c, d)),
+        )
+        .flatMap((c) =>
+          recurse(
+            [...powerSelections, c],
+            powerIndex + 1,
+            typePlaceIndexMapping,
+          ),
+        );
+    }
+    return configs[powerIndex]
+      .filter(
+        (c) =>
+          (powerSelections.length === 0 ||
+            c.config === powerSelections[0].config) &&
+          !Object.values(typePlaceIndexMapping).some(
+            (pi) => c.typePlaceIndex === pi,
+          ) &&
+          !powerSelections.some((d) => configsEqual(c, d)),
+      )
+      .flatMap((c) =>
+        recurse([...powerSelections, c], powerIndex + 1, {
+          ...typePlaceIndexMapping,
+          [powerType]: c.typePlaceIndex,
+        }),
+      );
+  };
+
+  return recurse([], 0, {});
 };
 
 export const powersMatch = (test: Power, target: Power) =>

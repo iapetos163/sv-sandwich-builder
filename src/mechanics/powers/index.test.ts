@@ -103,22 +103,20 @@ describe('getTargetConfigs', () => {
 
 describe('permutePowerConfigs', () => {
   it('Returns distinct typePlaceIndexes for distinct types', () => {
-    const configs = getTargetConfigs(
-      [
-        {
-          mealPower: MealPower.EXP,
-          type: TypeIndex.DRAGON,
-          level: 1,
-        },
-        {
-          mealPower: MealPower.CATCH,
-          type: TypeIndex.DARK,
-          level: 1,
-        },
-      ],
-      0,
-    );
-    const res = permutePowerConfigs(configs);
+    const targetPowers = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.DRAGON,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.CATCH,
+        type: TypeIndex.DARK,
+        level: 1,
+      },
+    ];
+    const configs = getTargetConfigs(targetPowers, 0);
+    const res = permutePowerConfigs(targetPowers, configs);
     res.forEach(([config1, config2]) => {
       expect(config1.typePlaceIndex).not.toBe(config2.typePlaceIndex);
     });
