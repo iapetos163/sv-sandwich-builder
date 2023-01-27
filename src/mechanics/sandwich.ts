@@ -464,7 +464,7 @@ const makeSandwichGivenNumHerba = (
   targetNumHerba: number,
 ) => {
   const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
-  const targetConfigSets = permutePowerConfigs(targetConfigs);
+  const targetConfigSets = permutePowerConfigs(targetPowers, targetConfigs);
 
   const visited: Record<string, true> = {};
   const hasBeenVisited = (ingredients: Ingredient[]) => {
