@@ -187,14 +187,14 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
             ></input>{' '}
             Include restaurant meals
           </label>
-          <label>
+          {/* <label>
             <input
               type="checkbox"
               checked={includeRecipes}
               onChange={toggleRecipes}
             ></input>{' '}
             Include sandwich recipes
-          </label>
+          </label> */}
         </StyledOptionsContainer>
         <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
