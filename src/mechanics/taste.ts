@@ -125,12 +125,9 @@ const sumScaleClamp = (n1: number, n2: number) =>
   100 * Math.max(Math.min(n1 + n2, 1), -1);
 
 export const getRelativeTasteVector = (() => {
-  const flavorBoostsLookup: (FlavorBoost[] | undefined)[] = [];
+  const flavorBoostsLookup: Partial<Record<string, FlavorBoost[]>> = {};
   const memoRankFlavorBoosts = (flavorVector: number[]) => {
-    const key = rangeFlavors.reduce(
-      (sum, f) => (flavorVector[f] ?? 0) * Math.pow(5, f) + sum,
-      0,
-    );
+    const key = rangeFlavors.map((f) => String(flavorVector[f] ?? 0)).join(',');
     const memoized = flavorBoostsLookup[key];
     if (memoized) return memoized;
     const res = rankFlavorBoosts(flavorVector);
