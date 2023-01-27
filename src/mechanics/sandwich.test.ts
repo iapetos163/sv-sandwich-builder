@@ -641,6 +641,36 @@ describe('makeSandwichForPower', () => {
     expect(numHerba).toBe(0);
     // expect(numIngredients).toBeLessThanOrEqual(6);
   });
+
+  it('Naively produces #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catching Dark', () => {
+    const sandwich = makeSandwichForPowers([
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.DRAGON,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.CATCH,
+        type: TypeIndex.DARK,
+        level: 1,
+      },
+    ]);
+
+    // Avocado, Smoked fillet, salt
+    expect(sandwich).not.toBeNull();
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
+
+    const numFillings = sandwich!.fillings.length;
+    const numCondiments = sandwich!.condiments.length;
+    expect(numFillings).toBeLessThanOrEqual(2);
+    expect(numCondiments).toBe(1);
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', () => {
   //   const sandwich = makeSandwichForPowers([{
   //     mealPower: MealPower.CATCH,
