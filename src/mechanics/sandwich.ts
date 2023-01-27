@@ -556,7 +556,7 @@ const makeSandwichGivenNumHerba = (
     // ).length;
     // const numFillings = fillings.length;
     // const numCondiments = condiments.length;
-    // const debugCondition =
+    const debugCondition = false;
     //   numFillings === 2 &&
     //   numCondiments === 3 &&
     //   numChorizo === 2 &&
