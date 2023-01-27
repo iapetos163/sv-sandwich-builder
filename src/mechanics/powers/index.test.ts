@@ -4,6 +4,7 @@ import {
   evaluateBoosts,
   getTargetConfigs,
   getTypeTargetsByPlace,
+  permutePowerConfigs,
   powersMatch,
   rankMealPowerBoosts,
   rankTypeBoosts,
@@ -97,6 +98,28 @@ describe('getTargetConfigs', () => {
 
     expect(res[0].length).toBeLessThanOrEqual(4);
     expect(res[1].length).toBeLessThanOrEqual(4);
+  });
+});
+
+describe('permutePowerConfigs', () => {
+  it('Returns distinct typePlaceIndexes for distinct types', () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.DRAGON,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.CATCH,
+        type: TypeIndex.DARK,
+        level: 1,
+      },
+    ];
+    const configs = getTargetConfigs(targetPowers, 0);
+    const res = permutePowerConfigs(targetPowers, configs);
+    res.forEach(([config1, config2]) => {
+      expect(config1.typePlaceIndex).not.toBe(config2.typePlaceIndex);
+    });
   });
 });
 

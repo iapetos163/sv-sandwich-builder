@@ -482,6 +482,7 @@ describe('makeSandwichForPower', () => {
 
     // 2x Smoked Fillet, 4x Watercress, 3x vinegar, Sweet Herba
     // 2x Fried Fillet, Herbed Sausage, Rice, Sweet Herba
+    // 2x smoked fillet, 2x Fried fillet, rice prosciutto, sweet herba, whipped cream, whipped cream
     expect(sandwich).not.toBeNull();
 
     const numHerba = sandwich!.condiments.filter(
@@ -513,9 +514,18 @@ describe('makeSandwichForPower', () => {
       },
     ]);
 
+    // TODO: see how mpPlaceIndex set 2,0,1 (desired) compares to 2,1,0 (actual)
     // Chorizo, Herbed Sausage, pickle, yellow bell pepper, Avocado, marmalade, pepper
+    // Cheese, Ham, Basil, Chorizo, Pickle, Strawberry, Marmalade, Salt, Vinegar, Salt [too long]
+    // chorizo, pepper, chorizo, jam, jam
     // 2x Chorizo, Strawberry, Ham, Pickle, Herbed Sausage, Pepper, 2x Jam
     expect(sandwich).not.toBeNull();
+    console.debug(
+      `${sandwich!.fillings
+        .concat(sandwich!.condiments)
+        .map((i) => i.name)
+        .join(', ')}`,
+    );
 
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
@@ -641,6 +651,30 @@ describe('makeSandwichForPower', () => {
     expect(numHerba).toBe(0);
     // expect(numIngredients).toBeLessThanOrEqual(6);
   });
+
+  it('Naively produces #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catching Dark', () => {
+    const sandwich = makeSandwichForPowers([
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.DRAGON,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.CATCH,
+        type: TypeIndex.DARK,
+        level: 1,
+      },
+    ]);
+
+    // Avocado, Smoked fillet, salt
+    expect(sandwich).not.toBeNull();
+
+    const numFillings = sandwich!.fillings.length;
+    const numCondiments = sandwich!.condiments.length;
+    expect(numFillings).toBeLessThanOrEqual(2);
+    expect(numCondiments).toBe(1);
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', () => {
   //   const sandwich = makeSandwichForPowers([{
   //     mealPower: MealPower.CATCH,

@@ -3,7 +3,7 @@ import { GitHub } from 'react-feather';
 import styled from 'styled-components';
 import MealResult from './component/MealResult';
 import PokeDollar from './component/PokeDollar';
-import PowerQuery from './component/PowerQuery';
+import PowerQuery, { QueryOptions } from './component/PowerQuery';
 import RecipeResult from './component/RecipeResult';
 import SandwichResult from './component/SandwichResult';
 import {
@@ -113,36 +113,46 @@ function App(): ReactElement {
   const [queryPowers, setQueryPowers] = useState<Power[]>([]);
   const [queryChanged, setQueryChanged] = useState(true);
   const [calculating, setCalculating] = useState(false);
+  const [lastIncludeMeals, setLastIncludeMeals] = useState(true);
+  const [lastIncludeRecipes, setLastIncludeRecipes] = useState(true);
 
   const handleQuery = useCallback(
-    (newQuery: Power[]) => {
+    (newQuery: Power[], options: QueryOptions = {}) => {
       if (calculating) return;
 
       if (
         queryPowers.length === 0 ||
         newQuery.length !== queryPowers.length ||
+        lastIncludeMeals !== (options.includeMeals ?? false) ||
+        lastIncludeRecipes !== (options.includeRecipes ?? false) ||
         queryPowers.some((qp, i) => !powersEqual(qp, newQuery[i]))
       ) {
         setQueryChanged(true);
       }
       setQueryPowers(newQuery);
+      setLastIncludeMeals(options.includeMeals ?? false);
+      setLastIncludeRecipes(options.includeRecipes ?? false);
 
-      const meal = getMealForPowers(newQuery);
-      if (meal) {
-        setResultCreativeSandwich(null);
-        setResultRecipe(null);
-        setResultMeal(meal);
-        setQueryChanged(false);
-        return;
+      if (options.includeMeals) {
+        const meal = getMealForPowers(newQuery);
+        if (meal) {
+          setResultCreativeSandwich(null);
+          setResultRecipe(null);
+          setResultMeal(meal);
+          setQueryChanged(false);
+          return;
+        }
       }
       setResultMeal(null);
 
-      const recipe = getRecipeForPowers(newQuery);
-      if (recipe) {
-        setResultCreativeSandwich(null);
-        setResultRecipe(recipe);
-        setQueryChanged(false);
-        return;
+      if (options.includeRecipes) {
+        const recipe = getRecipeForPowers(newQuery);
+        if (recipe) {
+          setResultCreativeSandwich(null);
+          setResultRecipe(recipe);
+          setQueryChanged(false);
+          return;
+        }
       }
       setResultRecipe(null);
 
