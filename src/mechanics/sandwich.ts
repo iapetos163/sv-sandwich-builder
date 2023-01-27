@@ -170,8 +170,7 @@ const selectIngredientCandidates = ({
   const repeatedType = getRepeatedType(targetPowers);
   const condimentBonus = targetPowers.length === 1 ? 0.4 : 0;
   const capTypeProducts = targetPowers.length === 1;
-  const capLevelProducts =
-    targetPowers.every((tp) => tp.level === 1) && repeatedType;
+  const capLevelProducts = targetPowers.every((tp) => tp.level === 1); // && repeatedType;
 
   let targetTypeVector: number[] = [];
   let targetLevelVector: number[] = [];
@@ -327,7 +326,7 @@ const selectIngredientCandidates = ({
     const positiveBoostedMpNorm = norm(
       boostedMealPowerVector.map((c) => (c > 0 ? c : 0)),
     );
-    const n1 = deltaMpNorm * Math.sqrt(positiveBoostedMpNorm);
+    const n1 = deltaMpNorm * Math.sqrt(positiveBoostedMpNorm); // unsqrt?
     const mealPowerProduct =
       checkMealPower && n1 !== 0
         ? innerProduct(boostedMealPowerVector, deltaMealPowerVector) / n1
@@ -339,7 +338,7 @@ const selectIngredientCandidates = ({
     const positiveTypeNorm = norm(
       adjustedIngTypeVector.map((c) => (c > 0 ? c : 0)),
     );
-    const n2 = Math.sqrt(positiveTypeNorm) * deltaTypeNorm;
+    const n2 = positiveTypeNorm * deltaTypeNorm;
     const typeProduct =
       checkType && n2 !== 0
         ? innerProduct(adjustedIngTypeVector, deltaTypeVector) / n2
@@ -365,7 +364,7 @@ const selectIngredientCandidates = ({
           ? condimentBonus
           : 0));
 
-    if (debug && (ing.name === 'Pickle' || ing.name === 'Tofu')) {
+    if (debug && (ing.name === 'Jam' || ing.name === 'Herbed Sausage')) {
       console.debug(
         `${ing.name}: ${score}
     Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
@@ -412,6 +411,7 @@ const selectIngredientCandidates = ({
       .join(`
     `)}
     Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
+    Cap level products: ${capLevelProducts}
     Raw score components of ${
       candidateScoredIngredients[0]?.ing?.name
     }: ${bestMealPowerProduct}, ${bestTypeProduct}, ${bestLevelProduct}
@@ -427,7 +427,11 @@ const selectIngredientCandidates = ({
     Remaining condiments: ${remainingCondiments}`);
   }
 
+  const leastPassingScore =
+    candidateScoredIngredients[MAX_CANDIDATES - 1]?.score ?? 0;
+
   return candidateScoredIngredients
+    .filter(({ score }) => score >= leastPassingScore)
     .slice(0, MAX_CANDIDATES)
     .map(({ ing }) => ing as Ingredient);
 };
@@ -531,15 +535,33 @@ const makeSandwichGivenNumHerba = (
     const condimentsAllowed =
       !alreadyReachedAllTargets || condiments.length === 0;
 
-    const numEgg = fillings.filter((f) => f.name === 'Egg').length;
-    const numChorizo = fillings.filter((f) => f.name === 'Chorizo').length;
-    const numPepper = condiments.filter((f) => f.name === 'Pepper').length;
-    const numMarmalade = condiments.filter(
-      (f) => f.name === 'Marmalade',
-    ).length;
-    const numFillings = fillings.length;
-    const numCondiments = condiments.length;
-    const debugCondition = false;
+    // const numEgg = fillings.filter((f) => f.name === 'Egg').length;
+    // const numChorizo = fillings.filter((f) => f.name === 'Chorizo').length;
+    // const numPepper = condiments.filter((f) => f.name === 'Pepper').length;
+    // const numRice = fillings.filter((f) => f.name === 'Rice').length;
+    // const numFriedFillet = fillings.filter(
+    //   (f) => f.name === 'Fried Fillet',
+    // ).length;
+    // const numFruit = fillings.filter(
+    //   (f) =>
+    //     f.name === 'Pineapple' ||
+    //     f.name === 'Apple' ||
+    //     f.name === 'Banana' ||
+    //     f.name === 'Strawberry' ||
+    //     f.name === 'Kiwi',
+    // ).length;
+    // const numJam = condiments.filter((f) => f.name === 'Jam').length;
+    // const numMarmalade = condiments.filter(
+    //   (f) => f.name === 'Marmalade',
+    // ).length;
+    // const numFillings = fillings.length;
+    // const numCondiments = condiments.length;
+    // const debugCondition =
+    //   numFillings === 2 &&
+    //   numCondiments === 3 &&
+    //   numChorizo === 2 &&
+    //   numPepper === 1 &&
+    //   numJam === 2;
 
     const selectedPowerPerTarget = selectPowersForTargets(
       powers,
