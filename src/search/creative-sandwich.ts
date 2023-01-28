@@ -1,34 +1,34 @@
 import { ingredients } from '../data';
 import { MealPower } from '../enum';
-import { Ingredient, Power, Sandwich } from '../types';
-import { add, diff, innerProduct, norm, scale } from '../vector-math';
 import {
   evaluateBoosts,
-  getTargetConfigs,
   mealPowerHasType,
   rankTypeBoosts,
-  selectPowersAtTargetPositions,
-  TargetConfig,
   TypeBoost,
-  getTypeTargetsByPlace,
   MealPowerBoost,
   rankMealPowerBoosts,
-  permutePowerConfigs,
   requestedPowersValid,
   getRepeatedType,
   powerSetsMatch,
-} from './powers';
+  getBoostedMealPower,
+  rankFlavorBoosts,
+} from '../mechanics';
+import { Ingredient, Power, Sandwich } from '../types';
+import { add, diff, innerProduct, norm, scale } from '../vector-math';
 import {
+  getTargetConfigs,
+  selectPowersAtTargetPositions,
+  TargetConfig,
+  getTypeTargetsByPlace,
+  permutePowerConfigs,
+} from './target';
+import {
+  getRelativeTasteVector,
   boostMealPowerVector,
   getTargetLevelVector,
   getTargetMealPowerVector,
   getTargetTypeVector,
-} from './powers/vector';
-import {
-  getRelativeTasteVector,
-  getBoostedMealPower,
-  rankFlavorBoosts,
-} from './taste';
+} from './vector';
 
 const CANDIDATE_SCORE_THRESHOLD = 0.2;
 const MAX_CANDIDATES = 3;

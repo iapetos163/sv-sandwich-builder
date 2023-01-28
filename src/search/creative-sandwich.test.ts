@@ -3,7 +3,7 @@ import {
   getMpScoreWeight,
   getTypeScoreWeight,
   makeSandwichForPowers,
-} from './sandwich';
+} from './creative-sandwich';
 
 describe('getTypeScoreWeight', () => {
   it('Initially weighs level over meal power', () => {

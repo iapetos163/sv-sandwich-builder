@@ -1,4 +1,13 @@
-export { mealPowerHasType, powersEqual } from './powers';
-export { makeSandwichForPowers } from './sandwich';
-export { getRecipeForPowers } from './recipe';
-export { getMealForPowers } from './meal';
+export {
+  mealPowerHasType,
+  powersEqual,
+  rankTypeBoosts,
+  rankMealPowerBoosts,
+  getRepeatedType,
+  evaluateBoosts,
+  requestedPowersValid,
+  powerSetsMatch,
+} from './powers';
+export { rankFlavorBoosts, getBoostedMealPower } from './taste';
+export type { TypeBoost, MealPowerBoost } from './powers';
+export type { FlavorBoost } from './taste';
