@@ -122,7 +122,7 @@ export const getTargetTypeVector = ({
     currentVector,
   );
 
-  const config = targetConfigSet[0].config;
+  const config = targetConfigSet[0].typeAllocation;
 
   const targetFirstAmount = tentativeTargetVector[firstTargetIndex];
   const targetSecondAmount = tentativeTargetVector[secondTargetIndex];
@@ -174,9 +174,9 @@ export const getTargetTypeVector = ({
 
 const getMinRankedTypeAmounts = (
   targetPower: Power,
-  { mpPlaceIndex, typePlaceIndex, config }: TargetConfig,
+  { mpPlaceIndex, typePlaceIndex, typeAllocation }: TargetConfig,
 ): [number, number, number] => {
-  if (config === 'ONE_ONE_ONE') {
+  if (typeAllocation === 'ONE_ONE_ONE') {
     return [380, 380, 380];
     // OR 460, 0, 0
   }

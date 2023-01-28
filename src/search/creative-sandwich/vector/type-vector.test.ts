@@ -19,7 +19,7 @@ describe('getTargetTypeVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_THREE_TWO',
+          typeAllocation: 'ONE_THREE_TWO',
           mpPlaceIndex: 0,
           typePlaceIndex: 0,
         },
@@ -49,7 +49,7 @@ describe('getTargetTypeVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_THREE_TWO',
+          typeAllocation: 'ONE_THREE_TWO',
           typePlaceIndex: 2,
           mpPlaceIndex: 2,
         },
@@ -88,7 +88,7 @@ describe('getTargetTypeVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_THREE_TWO',
+          typeAllocation: 'ONE_THREE_TWO',
           typePlaceIndex: 2,
           mpPlaceIndex: 2,
         },
@@ -129,7 +129,7 @@ describe('getTargetTypeVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_THREE_TWO',
+          typeAllocation: 'ONE_THREE_TWO',
           typePlaceIndex: 0,
           mpPlaceIndex: 0,
         },
@@ -170,7 +170,7 @@ describe('getTargetTypeVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_THREE_TWO',
+          typeAllocation: 'ONE_THREE_TWO',
           typePlaceIndex: 2,
           mpPlaceIndex: 2,
         },
@@ -212,7 +212,7 @@ describe('getTargetTypeVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_THREE_TWO',
+          typeAllocation: 'ONE_THREE_TWO',
           typePlaceIndex: 2,
           mpPlaceIndex: 2,
         },
@@ -241,7 +241,7 @@ describe('getTargetTypeVector', () => {
       ],
       targetConfigSet: [
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 2,
         },
@@ -260,7 +260,7 @@ describe('getTargetTypeVector', () => {
       ],
       targetConfigSet: [
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 2,
         },
@@ -286,7 +286,7 @@ describe('getTargetLevelVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_THREE_TWO',
+          typeAllocation: 'ONE_THREE_TWO',
           typePlaceIndex: 0,
           mpPlaceIndex: 0,
         },
@@ -310,7 +310,7 @@ describe('getTargetLevelVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 2,
         },
@@ -346,7 +346,7 @@ describe('getTargetLevelVector', () => {
       targetPowers,
       targetConfigSet: [
         {
-          config: 'ONE_THREE_TWO',
+          typeAllocation: 'ONE_THREE_TWO',
           typePlaceIndex: 0,
           mpPlaceIndex: 0,
         },
@@ -366,7 +366,7 @@ describe('getTargetLevelVector', () => {
       ],
       targetConfigSet: [
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 2,
         },

@@ -2,20 +2,20 @@ import { MealPower, TypeIndex } from '../../enum';
 import { getRepeatedType, mealPowerHasType, TypeBoost } from '../../mechanics';
 import { Power } from '../../types';
 
-export type TypeArrangement =
+export type TypeAllocation =
   | 'ONE_ONE_ONE'
   | 'ONE_ONE_THREE'
   | 'ONE_THREE_ONE'
   | 'ONE_THREE_TWO';
 
 export interface TargetConfig {
-  config: TypeArrangement;
+  typeAllocation: TypeAllocation;
   typePlaceIndex: number;
   mpPlaceIndex: number;
 }
 
 export const configsEqual = (a: TargetConfig, b: TargetConfig) =>
-  a.config === b.config &&
+  a.typeAllocation === b.typeAllocation &&
   a.typePlaceIndex === b.typePlaceIndex &&
   a.mpPlaceIndex === b.mpPlaceIndex;
 
@@ -26,12 +26,18 @@ export const getTargetConfigs = (
   if (targetNumHerba >= 2) {
     return targetPowers.map((tp) => {
       if (tp.mealPower === MealPower.SPARKLING) {
-        return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 }];
+        return [
+          { typeAllocation: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+        ];
       }
       if (tp.mealPower === MealPower.TITLE) {
-        return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 }];
+        return [
+          { typeAllocation: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
       }
-      return [{ config: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 }];
+      return [
+        { typeAllocation: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+      ];
     });
   }
 
@@ -42,15 +48,25 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.mealPower === MealPower.TITLE) {
         return [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 1,
+          },
         ];
       }
       if (tp.type === repeatedType) {
         return [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 2,
+          },
         ];
       }
-      return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 }];
+      return [
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
+      ];
     });
   }
 
@@ -62,14 +78,22 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.mealPower === MealPower.TITLE) {
         return [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 1 },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 1,
+          },
+          {
+            typeAllocation: 'ONE_THREE_TWO',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 1,
+          },
         ];
       }
       return [
-        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
-        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
-        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
     });
   }
@@ -78,15 +102,23 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.mealPower === MealPower.TITLE) {
         return [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 1 },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 1,
+          },
+          {
+            typeAllocation: 'ONE_THREE_TWO',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 1,
+          },
         ];
       }
       return [
-        { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
-        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
-        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
-        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
     });
   }
@@ -99,15 +131,25 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
         return [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
         ];
       }
       if (tp.type === repeatedType) {
         return [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 1,
+          },
         ];
       }
-      return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 }];
+      return [
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      ];
     });
   }
 
@@ -117,11 +159,21 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.type === repeatedType) {
         return [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 1,
+          },
         ];
       }
-      return [{ config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 }];
+      return [
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+      ];
     });
   }
 
@@ -129,15 +181,31 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.type === repeatedType) {
         return [
-          { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-          { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 },
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+          {
+            typeAllocation: 'ONE_THREE_ONE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
+          {
+            typeAllocation: 'ONE_THREE_ONE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 2,
+          },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 1,
+          },
         ];
       }
       return [
-        { config: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
-        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        { typeAllocation: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
     });
   }
@@ -146,11 +214,21 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level === 2) {
         return [
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+          {
+            typeAllocation: 'ONE_THREE_TWO',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
+          {
+            typeAllocation: 'ONE_THREE_TWO',
+            typePlaceIndex: 2,
+            mpPlaceIndex: 1,
+          },
         ];
       }
-      return [{ config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 }];
+      return [
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+      ];
     });
   }
 
@@ -158,21 +236,25 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
         return [
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          {
+            typeAllocation: 'ONE_THREE_TWO',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
         ];
       }
       return [
-        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
       ];
     });
   }
 
   if (targetPowers.length >= 3) {
     return targetPowers.map((): TargetConfig[] => [
-      { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
-      { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-      { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+      { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+      { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+      { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
     ]);
   }
 
@@ -182,11 +264,21 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
         return [
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+          {
+            typeAllocation: 'ONE_THREE_TWO',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
+          {
+            typeAllocation: 'ONE_THREE_TWO',
+            typePlaceIndex: 2,
+            mpPlaceIndex: 1,
+          },
         ];
       }
-      return [{ config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 }];
+      return [
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+      ];
     });
   }
 
@@ -196,31 +288,39 @@ export const getTargetConfigs = (
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
         return [
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+          {
+            typeAllocation: 'ONE_THREE_TWO',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
+          {
+            typeAllocation: 'ONE_ONE_THREE',
+            typePlaceIndex: 0,
+            mpPlaceIndex: 0,
+          },
         ];
       }
       return [
-        { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-        { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
 
-        { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-        { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
     });
   }
 
   return targetPowers.map((): TargetConfig[] => [
-    { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
-    { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-    { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+    { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
+    { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
 
-    { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-    { config: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 },
-    { config: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
-    { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-    { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-    { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+    { typeAllocation: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { typeAllocation: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+    { typeAllocation: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
+    { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
+    { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
   ]);
 };
 
@@ -340,7 +440,7 @@ export const permutePowerConfigs = (
         .filter(
           (c) =>
             (powerSelections.length === 0 ||
-              c.config === powerSelections[0].config) &&
+              c.typeAllocation === powerSelections[0].typeAllocation) &&
             c.typePlaceIndex === assignedTypePlaceIndex &&
             !powerSelections.some((d) => configsEqual(c, d)),
         )
@@ -356,7 +456,7 @@ export const permutePowerConfigs = (
       .filter(
         (c) =>
           (powerSelections.length === 0 ||
-            c.config === powerSelections[0].config) &&
+            c.typeAllocation === powerSelections[0].typeAllocation) &&
           !Object.values(typePlaceIndexMapping).some(
             (pi) => c.typePlaceIndex === pi,
           ) &&

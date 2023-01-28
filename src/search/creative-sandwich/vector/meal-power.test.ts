@@ -16,7 +16,7 @@ describe('getTargetMealPowerVector', () => {
       ],
       targetConfigSet: [
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 2,
         },
@@ -37,7 +37,7 @@ describe('getTargetMealPowerVector', () => {
       ],
       targetConfigSet: [
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 2,
         },
@@ -58,7 +58,7 @@ describe('getTargetMealPowerVector', () => {
       ],
       targetConfigSet: [
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 2,
         },
@@ -87,12 +87,12 @@ describe('sortTargetPowersByMpPlace', () => {
       ],
       [
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 2,
         },
         {
-          config: 'ONE_ONE_THREE',
+          typeAllocation: 'ONE_ONE_THREE',
           typePlaceIndex: 0,
           mpPlaceIndex: 1,
         },
