@@ -1,5 +1,5 @@
-import { MealPower, rangeTypes, TypeIndex } from '../enum';
-import { rankTypeBoosts } from '../mechanics';
+import { MealPower, rangeTypes, TypeIndex } from '../../enum';
+import { rankTypeBoosts } from '../../mechanics';
 import {
   getTargetConfigs,
   getTypeTargetsByPlace,

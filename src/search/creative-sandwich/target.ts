@@ -1,6 +1,6 @@
-import { MealPower, TypeIndex } from '../enum';
-import { getRepeatedType, mealPowerHasType, TypeBoost } from '../mechanics';
-import { Power } from '../types';
+import { MealPower, TypeIndex } from '../../enum';
+import { getRepeatedType, mealPowerHasType, TypeBoost } from '../../mechanics';
+import { Power } from '../../types';
 
 export type TypeArrangement =
   | 'ONE_ONE_ONE'

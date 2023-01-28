@@ -1,4 +1,4 @@
-import { Flavor, rangeFlavors } from '../../enum';
+import { Flavor, rangeFlavors } from '../../../enum';
 import { getRelativeTasteVector } from './taste';
 
 describe('getRelativeTasteVector', () => {

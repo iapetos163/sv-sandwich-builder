@@ -1,4 +1,4 @@
-import { MealPower, TypeIndex } from '../../enum';
+import { MealPower, TypeIndex } from '../../../enum';
 import {
   getTargetMealPowerVector,
   sortTargetPowersByMpPlace,

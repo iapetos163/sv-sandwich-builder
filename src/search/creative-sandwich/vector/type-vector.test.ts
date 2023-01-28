@@ -1,7 +1,7 @@
-import { MealPower, rangeTypes, TypeIndex } from '../../enum';
-import { rankTypeBoosts, TypeBoost } from '../../mechanics';
-import { Power } from '../../types';
-import { norm } from '../../vector-math';
+import { MealPower, rangeTypes, TypeIndex } from '../../../enum';
+import { rankTypeBoosts, TypeBoost } from '../../../mechanics';
+import { Power } from '../../../types';
+import { norm } from '../../../vector-math';
 import { getTypeTargetsByPlace } from '../target';
 import { getTargetLevelVector, getTargetTypeVector } from './type-vector';
 

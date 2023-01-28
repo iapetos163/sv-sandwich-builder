@@ -1,6 +1,6 @@
-import { rangeTypes, TypeIndex } from '../../enum';
-import { rankTypeBoosts, TypeBoost } from '../../mechanics';
-import { Power } from '../../types';
+import { rangeTypes, TypeIndex } from '../../../enum';
+import { rankTypeBoosts, TypeBoost } from '../../../mechanics';
+import { Power } from '../../../types';
 import { TargetConfig } from '../target';
 
 /**

@@ -1,6 +1,6 @@
-import { MealPower, rangeMealPowers } from '../../enum';
-import { MealPowerBoost } from '../../mechanics';
-import { Power } from '../../types';
+import { MealPower, rangeMealPowers } from '../../../enum';
+import { MealPowerBoost } from '../../../mechanics';
+import { Power } from '../../../types';
 import { TargetConfig } from '../target';
 
 /**

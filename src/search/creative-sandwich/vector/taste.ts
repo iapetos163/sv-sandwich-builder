@@ -1,5 +1,10 @@
-import { Flavor, MealPower, rangeMealPowers, rangeFlavors } from '../../enum';
-import { FlavorBoost, rankFlavorBoosts } from '../../mechanics';
+import {
+  Flavor,
+  MealPower,
+  rangeMealPowers,
+  rangeFlavors,
+} from '../../../enum';
+import { FlavorBoost, rankFlavorBoosts } from '../../../mechanics';
 
 /** If has more than one element, then it is a subset of secondaryFlavorsForPower[power] */
 const primaryFlavorsForPower: Flavor[][] = [];
