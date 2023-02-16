@@ -10,7 +10,8 @@ import {
   getTargetTypeVector,
 } from './vector';
 
-const CANDIDATE_SCORE_THRESHOLD = 0.2;
+const TARGET_SCORE_THRESHOLD = 0.2; // 0.2
+const INGREDIENT_SCORE_THRESHOLD = 0.2;
 const MAX_CANDIDATES = 3;
 
 const MP_FILLING = 21;
@@ -78,8 +79,18 @@ export const getTypeScoreWeight = ({
 };
 
 type ScoredIngredient = {
-  ing: Ingredient | null;
+  ing: Ingredient;
   score: number;
+};
+
+type Target = {
+  targetTypeVector: number[];
+  targetLevelVector: number[];
+  deltaTypeVector: number[];
+  deltaLevelVector: number[];
+  deltaTypeNorm: number;
+  deltaLevelNorm: number;
+  targetConfigSet: TargetConfig[];
 };
 
 export interface SelectIngredientProps {
@@ -122,73 +133,134 @@ export const selectIngredientCandidates = ({
   const capTypeProducts = targetPowers.length === 1;
   const capLevelProducts = targetPowers.every((tp) => tp.level === 1); // && repeatedType;
 
-  let targetTypeVector: number[] = [];
-  let targetLevelVector: number[] = [];
-  let deltaTypeVector: number[] = [];
-  let deltaLevelVector: number[] = [];
-  let deltaTypeNorm = Infinity;
-  let deltaLevelNorm = Infinity;
-  let targetConfigSet = targetConfigSets[0];
-  for (const candidateConfigSet of targetConfigSets) {
-    const targetTypes = getTypeTargetsByPlace(
-      targetPowers,
-      candidateConfigSet.map((c) => c.typePlaceIndex),
-      rankedTypeBoosts,
-    );
-    const candTargetTypeVector = checkType
-      ? getTargetTypeVector({
-          targetPowers,
-          targetConfigSet: candidateConfigSet,
-          rankedTypeBoosts,
-          targetTypeIndices: targetTypes,
-          typeVector: currentTypeVector,
-        })
-      : currentTypeVector;
+  const zeroTarget: Target = {
+    targetTypeVector: [],
+    targetLevelVector: [],
+    deltaTypeVector: [],
+    deltaLevelVector: [],
+    deltaTypeNorm: Infinity,
+    deltaLevelNorm: Infinity,
+    targetConfigSet: targetConfigSets[0],
+  };
 
-    const candTargetLevelVector = getTargetLevelVector({
-      targetPowers,
-      targetConfigSet: candidateConfigSet,
-      targetTypes,
-      typeVector: currentTypeVector,
-    });
-    const candDeltaTypeVector = diff(candTargetTypeVector, currentTypeVector);
-    const candDeltaLevelVector = diff(candTargetLevelVector, currentTypeVector);
-    const candDeltaTypeNorm = norm(candDeltaTypeVector);
-    const candDeltaLevelNorm = norm(candDeltaLevelVector);
+  const [targets] = targetConfigSets.reduce(
+    (
+      [selectedTargets, prevMaxDeltaNorm],
+      targetConfigSet,
+    ): [Target[], number] => {
+      const targetTypes = getTypeTargetsByPlace(
+        targetPowers,
+        targetConfigSet.map((c) => c.typePlaceIndex),
+        rankedTypeBoosts,
+      );
+      const targetTypeVector = checkType
+        ? getTargetTypeVector({
+            targetPowers,
+            targetConfigSet,
+            rankedTypeBoosts,
+            targetTypeIndices: targetTypes,
+            typeVector: currentTypeVector,
+          })
+        : currentTypeVector;
 
-    if (
-      Math.max(candDeltaLevelNorm, candDeltaTypeNorm) <
-      Math.max(deltaLevelNorm, deltaTypeNorm)
-    ) {
-      targetTypeVector = candTargetTypeVector;
-      targetLevelVector = candTargetLevelVector;
-      deltaTypeVector = candDeltaTypeVector;
-      deltaLevelVector = candDeltaLevelVector;
-      deltaTypeNorm = candDeltaTypeNorm;
-      deltaLevelNorm = candDeltaLevelNorm;
-      targetConfigSet = candidateConfigSet;
-    }
-  }
-  if (deltaTypeNorm === Infinity || deltaLevelNorm === Infinity) {
+      const targetLevelVector = getTargetLevelVector({
+        targetPowers,
+        targetConfigSet,
+        targetTypes,
+        typeVector: currentTypeVector,
+      });
+      const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
+      const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
+      const deltaTypeNorm = norm(deltaTypeVector);
+      const deltaLevelNorm = norm(deltaLevelVector);
+
+      const maxDeltaNorm = Math.max(deltaLevelNorm, deltaTypeNorm);
+      if (maxDeltaNorm <= prevMaxDeltaNorm * (1 + TARGET_SCORE_THRESHOLD)) {
+        const leastMax = Math.min(maxDeltaNorm, prevMaxDeltaNorm);
+        const target = {
+          targetTypeVector,
+          targetLevelVector,
+          deltaTypeVector,
+          deltaLevelVector,
+          deltaTypeNorm,
+          deltaLevelNorm,
+          targetConfigSet,
+        };
+        if (debug) {
+          for (const t of selectedTargets) {
+            if (
+              Math.max(t.deltaLevelNorm, t.deltaTypeNorm) >
+              leastMax * (1 + TARGET_SCORE_THRESHOLD)
+            ) {
+              console.debug(`Discarding config set: ${[
+                '',
+                ...t.targetConfigSet.map((c) => JSON.stringify(c)),
+              ].join(`
+          `)}
+        Delta type norm: ${t.deltaTypeNorm}
+        Delta level norm: ${t.deltaLevelNorm}`);
+            }
+          }
+        }
+        return [
+          [
+            ...selectedTargets.filter(
+              (t) =>
+                Math.max(t.deltaLevelNorm, t.deltaTypeNorm) <=
+                leastMax * (1 + TARGET_SCORE_THRESHOLD),
+            ),
+            target,
+          ],
+          maxDeltaNorm,
+        ];
+      }
+      return [selectedTargets, prevMaxDeltaNorm];
+    },
+    [[zeroTarget], Infinity],
+  );
+
+  if (
+    targets[0].deltaTypeNorm === Infinity ||
+    targets[0].deltaLevelNorm === Infinity
+  ) {
     if (debug) {
       console.debug('Cannot satisfy constraints for target configs', {
         targetConfigSets,
         currentTypeVector,
-        targetTypeVector,
-        targetLevelVector,
+        targets,
         targetPowers,
       });
     }
     return [];
   }
 
-  const selectCandidatesForConfigSet = (targetConfigSet: TargetConfig[]) => {
+  const selectCandidatesForTarget = (target: Target) => {
+    let {
+      targetTypeVector,
+      deltaTypeVector,
+      deltaTypeNorm,
+      targetConfigSet,
+      targetLevelVector,
+      deltaLevelVector,
+      deltaLevelNorm,
+    } = target;
+
     const targetMealPowerVector = getTargetMealPowerVector({
       targetPowers,
       targetConfigSet,
       rankedMealPowerBoosts,
       mealPowerVector: currentBoostedMealPowerVector,
     });
+
+    if (debug) {
+      console.debug({
+        targetPowers,
+        targetConfigSet,
+        rankedMealPowerBoosts,
+        mealPowerVector: currentBoostedMealPowerVector,
+        targetMealPowerVector,
+      });
+    }
 
     const deltaMealPowerVector = diff(
       targetMealPowerVector,
@@ -246,6 +318,7 @@ export const selectIngredientCandidates = ({
       });
       deltaTypeVector = diff(targetTypeVector, currentTypeVector);
       deltaTypeNorm = norm(deltaTypeVector);
+      // Would change this to recursion but this needs to be forced somehow
       typeScoreWeight = 1;
     }
 
@@ -261,7 +334,7 @@ export const selectIngredientCandidates = ({
         (!allowHerbaMystica && ing.isHerbaMystica) ||
         skipIngredients[ing.name]
       ) {
-        return { ing: null, score: -Infinity };
+        return { ing, score: -Infinity };
       }
 
       const relativeTasteVector = getRelativeTasteVector({
@@ -321,7 +394,10 @@ export const selectIngredientCandidates = ({
             ? condimentBonus
             : 0));
 
-      if (debug && (ing.name === 'Jam' || ing.name === 'Herbed Sausage')) {
+      if (
+        debug &&
+        (ing.name === 'Watercress' || ing.name === 'Herbed Sausage')
+      ) {
         console.debug(
           `${ing.name}: ${score}
       Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
@@ -350,7 +426,7 @@ export const selectIngredientCandidates = ({
     scoredIngredients.sort((a, b) => b.score - a.score);
 
     const minScore =
-      bestScore - CANDIDATE_SCORE_THRESHOLD * Math.abs(bestScore);
+      bestScore - INGREDIENT_SCORE_THRESHOLD * Math.abs(bestScore);
     const candidateScoredIngredients = scoredIngredients.filter(
       ({ ing, score }) => ing && score >= minScore,
     );
@@ -388,11 +464,43 @@ export const selectIngredientCandidates = ({
     const leastPassingScore =
       candidateScoredIngredients[MAX_CANDIDATES - 1]?.score ?? 0;
 
-    return candidateScoredIngredients
-      .filter(({ score }) => score >= leastPassingScore)
-      .slice(0, MAX_CANDIDATES)
-      .map(({ ing }) => ing as Ingredient);
+    return candidateScoredIngredients.filter(
+      ({ score }) => score >= leastPassingScore,
+    );
   };
 
-  return selectCandidatesForConfigSet(targetConfigSet);
+  const scoredIngredients = targets.reduce<ScoredIngredient[]>(
+    (selectedIngredients, target) => {
+      const candidateIngredients = selectCandidatesForTarget(target);
+
+      const combinedIngredients = [
+        ...selectedIngredients,
+        ...candidateIngredients.filter(
+          (scored) =>
+            scored.ing &&
+            !selectedIngredients.some(
+              (selected) => selected.ing.name === scored.ing.name,
+            ),
+        ),
+      ];
+      combinedIngredients.sort((a, b) => b.score - a.score);
+      const leastPassingScore =
+        combinedIngredients[MAX_CANDIDATES - 1]?.score ?? 0;
+
+      return combinedIngredients.filter(
+        ({ score }) => score >= leastPassingScore,
+      );
+    },
+    [],
+  );
+
+  if (debug) {
+    console.debug(
+      `Final selection: ${scoredIngredients
+        .map((si) => si.ing.name)
+        .join(', ')}`,
+    );
+  }
+
+  return scoredIngredients.map((si) => si.ing);
 };
