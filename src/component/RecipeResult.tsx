@@ -45,7 +45,7 @@ const RecipeResult = ({ recipe, className }: RecipeResultProps) => {
       <h3>Meal Powers</h3>
       <div>
         {powers.map((power) => (
-          <div key={power.type + power.mealPower}>
+          <div key={`${power.type}${power.mealPower}`}>
             Lv. {power.level} {mealPowerCopy[power.mealPower]} Power
             {mealPowerHasType(power.mealPower) && `: ${allTypes[power.type]}`}
           </div>
