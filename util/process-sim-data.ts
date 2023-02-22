@@ -9,11 +9,12 @@ import sandwiches from '../simulator-data/sandwiches.json';
 import { allTypes } from '../src/strings';
 import { Power } from '../src/types';
 
-type IngredientEntry = {
+export type IngredientEntry = {
   name: string;
   flavorVector: number[];
   baseMealPowerVector: number[];
   typeVector: number[];
+  metaVector: number[];
   imagePath: string;
   imageUrl: string;
   pieces: number;
