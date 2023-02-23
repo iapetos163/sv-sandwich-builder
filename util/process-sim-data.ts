@@ -6,6 +6,7 @@ import condiments from '../simulator-data/condiments.json';
 import fillings from '../simulator-data/fillings.json';
 import meals from '../simulator-data/meals.json';
 import sandwiches from '../simulator-data/sandwiches.json';
+import { createMetaVector } from '../src/metavector';
 import { allTypes } from '../src/strings';
 import { Power } from '../src/types';
 
@@ -140,31 +141,51 @@ const main = async () => {
   });
 
   const parsedCondiments = condiments.map(
-    ({ name, imageUrl, powers, types, tastes }): IngredientEntry => ({
-      name,
-      isHerbaMystica: name.endsWith('Herba Mystica'),
-      imagePath: `ingredient/${basename(imageUrl)}`,
-      imageUrl,
-      pieces: 1,
-      flavorVector: getFlavorVector(tastes),
-      typeVector: getTypeVector(types),
-      baseMealPowerVector: getMealPowerVector(powers),
-      ingredientType: 'condiment',
-    }),
+    ({ name, imageUrl, powers, types, tastes }): IngredientEntry => {
+      const flavorVector = getFlavorVector(tastes);
+      const typeVector = getTypeVector(types);
+      const mealPowerVector = getMealPowerVector(powers);
+      return {
+        name,
+        isHerbaMystica: name.endsWith('Herba Mystica'),
+        imagePath: `ingredient/${basename(imageUrl)}`,
+        imageUrl,
+        pieces: 1,
+        flavorVector,
+        typeVector,
+        baseMealPowerVector: mealPowerVector,
+        metaVector: createMetaVector({
+          flavorVector,
+          typeVector,
+          mealPowerVector,
+        }),
+        ingredientType: 'condiment',
+      };
+    },
   );
 
   const parsedFillings = fillings.map(
-    ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => ({
-      pieces,
-      name,
-      isHerbaMystica: false,
-      imagePath: `ingredient/${basename(imageUrl)}`,
-      imageUrl,
-      flavorVector: getFlavorVector(tastes, pieces),
-      typeVector: getTypeVector(types, pieces),
-      baseMealPowerVector: getMealPowerVector(powers, pieces),
-      ingredientType: 'filling',
-    }),
+    ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => {
+      const flavorVector = getFlavorVector(tastes, pieces);
+      const typeVector = getTypeVector(types, pieces);
+      const mealPowerVector = getMealPowerVector(powers, pieces);
+      return {
+        pieces,
+        name,
+        isHerbaMystica: false,
+        imagePath: `ingredient/${basename(imageUrl)}`,
+        imageUrl,
+        flavorVector,
+        typeVector,
+        baseMealPowerVector: mealPowerVector,
+        metaVector: createMetaVector({
+          flavorVector,
+          typeVector,
+          mealPowerVector,
+        }),
+        ingredientType: 'filling',
+      };
+    },
   );
 
   const recipeData = sandwiches
