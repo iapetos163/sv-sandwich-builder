@@ -1,11 +1,17 @@
 import { createMetaVector } from '../src/metavector';
-import { IngredientEntry } from './process-sim-data';
+
+interface IngredientEntry {
+  flavorVector: number[];
+  baseMealPowerVector: number[];
+  typeVector: number[];
+  metaVector: number[];
+}
 
 const mpComponentWeight = (c: number) => Math.max(Math.abs(c), 21);
 const typeComponentWeight = (c: number) => Math.max(Math.abs(c), 36);
 const flavorComponentWeight = (c: number) => Math.max(Math.abs(c), 30);
 
-export const main = (ingredients: IngredientEntry[]) => {
+export const createMatrix = (ingredients: IngredientEntry[]) => {
   return ingredients.map(
     ({ baseMealPowerVector, typeVector, flavorVector, metaVector }) => {
       const totalMpWeight = baseMealPowerVector.reduce(
@@ -29,15 +35,15 @@ export const main = (ingredients: IngredientEntry[]) => {
 
       // TODO which one of these is right
       const mpPart = baseMealPowerVector.map(
-        (c) => (c < 0 ? -1 : 1) * mpComponentWeight(c) * adjustment,
+        (c) => ((c < 0 ? -1 : 1) * mpComponentWeight(c)) / componentAbsSum,
       );
 
       const typePart = typeVector.map(
-        (c) => (c < 0 ? -1 : 1) * typeComponentWeight(c) * adjustment,
+        (c) => ((c < 0 ? -1 : 1) * typeComponentWeight(c)) / componentAbsSum,
       );
 
       const flavorPart = flavorVector.map(
-        (c) => flavorComponentWeight(c) * adjustment,
+        (c) => ((c < 0 ? -1 : 1) * flavorComponentWeight(c)) / componentAbsSum,
       );
 
       return createMetaVector({
