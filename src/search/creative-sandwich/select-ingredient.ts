@@ -5,7 +5,6 @@ import { add, diff, innerProduct, norm, scale } from '../../vector-math';
 import { TargetConfig, getTypeTargetsByPlace } from './target';
 import {
   getRelativeTasteVector,
-  getTargetLevelVector,
   getTargetMealPowerVector,
   getTargetTypeVector,
 } from './vector';
@@ -85,11 +84,8 @@ type ScoredIngredient = {
 
 type Target = {
   targetTypeVector: number[];
-  targetLevelVector: number[];
   deltaTypeVector: number[];
-  deltaLevelVector: number[];
   deltaTypeNorm: number;
-  deltaLevelNorm: number;
   targetConfigSet: TargetConfig[];
 };
 
@@ -135,11 +131,8 @@ export const selectIngredientCandidates = ({
 
   const zeroTarget: Target = {
     targetTypeVector: [],
-    targetLevelVector: [],
     deltaTypeVector: [],
-    deltaLevelVector: [],
     deltaTypeNorm: Infinity,
-    deltaLevelNorm: Infinity,
     targetConfigSet: targetConfigSets[0],
   };
 
@@ -158,60 +151,42 @@ export const selectIngredientCandidates = ({
             targetPowers,
             targetConfigSet,
             rankedTypeBoosts,
-            targetTypeIndices: targetTypes,
+            targetTypes,
             typeVector: currentTypeVector,
           })
         : currentTypeVector;
 
-      const targetLevelVector = getTargetLevelVector({
-        targetPowers,
-        targetConfigSet,
-        targetTypes,
-        typeVector: currentTypeVector,
-      });
       const deltaTypeVector = diff(targetTypeVector, currentTypeVector);
-      const deltaLevelVector = diff(targetLevelVector, currentTypeVector);
       const deltaTypeNorm = norm(deltaTypeVector);
-      const deltaLevelNorm = norm(deltaLevelVector);
 
-      const maxDeltaNorm = Math.max(deltaLevelNorm, deltaTypeNorm);
-      if (maxDeltaNorm <= prevMaxDeltaNorm * (1 + TARGET_SCORE_THRESHOLD)) {
-        const leastMax = Math.min(maxDeltaNorm, prevMaxDeltaNorm);
+      if (deltaTypeNorm <= prevMaxDeltaNorm * (1 + TARGET_SCORE_THRESHOLD)) {
+        const leastMax = Math.min(deltaTypeNorm, prevMaxDeltaNorm);
         const target = {
           targetTypeVector,
-          targetLevelVector,
           deltaTypeVector,
-          deltaLevelVector,
           deltaTypeNorm,
-          deltaLevelNorm,
           targetConfigSet,
         };
         if (debug) {
           for (const t of selectedTargets) {
-            if (
-              Math.max(t.deltaLevelNorm, t.deltaTypeNorm) >
-              leastMax * (1 + TARGET_SCORE_THRESHOLD)
-            ) {
+            if (t.deltaTypeNorm > leastMax * (1 + TARGET_SCORE_THRESHOLD)) {
               console.debug(`Discarding config set: ${[
                 '',
                 ...t.targetConfigSet.map((c) => JSON.stringify(c)),
               ].join(`
           `)}
-        Delta type norm: ${t.deltaTypeNorm}
-        Delta level norm: ${t.deltaLevelNorm}`);
+        Delta type norm: ${t.deltaTypeNorm}`);
             }
           }
         }
         return [
           [
             ...selectedTargets.filter(
-              (t) =>
-                Math.max(t.deltaLevelNorm, t.deltaTypeNorm) <=
-                leastMax * (1 + TARGET_SCORE_THRESHOLD),
+              (t) => t.deltaTypeNorm <= leastMax * (1 + TARGET_SCORE_THRESHOLD),
             ),
             target,
           ],
-          maxDeltaNorm,
+          deltaTypeNorm,
         ];
       }
       return [selectedTargets, prevMaxDeltaNorm];
@@ -219,10 +194,7 @@ export const selectIngredientCandidates = ({
     [[zeroTarget], Infinity],
   );
 
-  if (
-    targets[0].deltaTypeNorm === Infinity ||
-    targets[0].deltaLevelNorm === Infinity
-  ) {
+  if (targets[0].deltaTypeNorm === Infinity) {
     if (debug) {
       console.debug('Cannot satisfy constraints for target configs', {
         targetConfigSets,
@@ -235,15 +207,8 @@ export const selectIngredientCandidates = ({
   }
 
   const selectCandidatesForTarget = (target: Target) => {
-    let {
-      targetTypeVector,
-      deltaTypeVector,
-      deltaTypeNorm,
-      targetConfigSet,
-      targetLevelVector,
-      deltaLevelVector,
-      deltaLevelNorm,
-    } = target;
+    let { targetTypeVector, deltaTypeVector, deltaTypeNorm, targetConfigSet } =
+      target;
 
     const targetMealPowerVector = getTargetMealPowerVector({
       targetPowers,
@@ -268,24 +233,16 @@ export const selectIngredientCandidates = ({
     );
     const deltaMpNorm = norm(deltaMealPowerVector);
 
-    let typeScoreWeight = checkType
-      ? getTypeScoreWeight({
-          targetVector: targetTypeVector,
-          deltaVector: deltaTypeVector,
-          currentVector: currentTypeVector,
-          remainingFillings,
-          remainingCondiments,
-        })
-      : 0;
-    const levelScoreWeight = checkLevel
-      ? getTypeScoreWeight({
-          targetVector: targetLevelVector,
-          deltaVector: deltaLevelVector,
-          currentVector: currentTypeVector,
-          remainingFillings,
-          remainingCondiments,
-        })
-      : 0;
+    let typeScoreWeight =
+      checkType || checkLevel
+        ? getTypeScoreWeight({
+            targetVector: targetTypeVector,
+            deltaVector: deltaTypeVector,
+            currentVector: currentTypeVector,
+            remainingFillings,
+            remainingCondiments,
+          })
+        : 0;
     const mealPowerScoreWeight = checkMealPower
       ? getMpScoreWeight({
           targetVector: targetMealPowerVector,
@@ -303,7 +260,7 @@ export const selectIngredientCandidates = ({
       typeScoreWeight === 0 &&
       mealPowerScoreWeight === 0
     ) {
-      const targetTypeIndices = getTypeTargetsByPlace(
+      const targetTypes = getTypeTargetsByPlace(
         targetPowers,
         targetConfigSet.map((c) => c.typePlaceIndex),
         rankedTypeBoosts,
@@ -311,7 +268,7 @@ export const selectIngredientCandidates = ({
       targetTypeVector = getTargetTypeVector({
         targetPowers,
         targetConfigSet,
-        targetTypeIndices,
+        targetTypes,
         rankedTypeBoosts,
         typeVector: currentTypeVector,
         forceDiff: true,
@@ -325,7 +282,6 @@ export const selectIngredientCandidates = ({
     let bestScore = -Infinity;
     let bestMealPowerProduct = -Infinity;
     let bestTypeProduct = -Infinity;
-    let bestLevelProduct = -Infinity;
 
     const ingredientMapper = (ing: Ingredient): ScoredIngredient => {
       if (
@@ -374,21 +330,9 @@ export const selectIngredientCandidates = ({
           ? innerProduct(adjustedIngTypeVector, deltaTypeVector) / n2
           : 0;
 
-      const adjustedIngLevelVector = capLevelProducts
-        ? scale(
-            ing.typeVector,
-            Math.min(1, deltaLevelNorm / norm(ing.typeVector)),
-          )
-        : ing.typeVector;
-      const n3 = deltaLevelNorm;
-      const levelProduct =
-        n3 !== 0
-          ? innerProduct(adjustedIngLevelVector, deltaLevelVector) / n3
-          : 0;
       const score =
         (mealPowerProduct * mealPowerScoreWeight +
-          typeProduct * typeScoreWeight +
-          levelProduct * levelScoreWeight) *
+          typeProduct * typeScoreWeight) *
         (1 +
           (ing.ingredientType === 'condiment' && !ing.isHerbaMystica
             ? condimentBonus
@@ -400,7 +344,7 @@ export const selectIngredientCandidates = ({
       ) {
         console.debug(
           `${ing.name}: ${score}
-      Raw scores: ${mealPowerProduct}, ${typeProduct}, ${levelProduct}
+      Raw scores: ${mealPowerProduct}, ${typeProduct}
       Relative taste vector: ${relativeTasteVector}
       Boosted meal power vector: ${boostedMealPowerVector}
         n1: ${deltaMpNorm} * ${Math.sqrt(positiveBoostedMpNorm)} = ${n1}
@@ -414,7 +358,6 @@ export const selectIngredientCandidates = ({
         bestScore = score;
         bestMealPowerProduct = mealPowerProduct;
         bestTypeProduct = typeProduct;
-        bestLevelProduct = levelProduct;
       }
       return {
         ing,
@@ -444,18 +387,16 @@ export const selectIngredientCandidates = ({
       Target config set:${['', ...targetConfigSet.map((c) => JSON.stringify(c))]
         .join(`
       `)}
-      Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}, ${levelScoreWeight}
+      Weights: ${mealPowerScoreWeight}, ${typeScoreWeight}
       Cap level products: ${capLevelProducts}
       Raw score components of ${
         candidateScoredIngredients[0]?.ing?.name
-      }: ${bestMealPowerProduct}, ${bestTypeProduct}, ${bestLevelProduct}
+      }: ${bestMealPowerProduct}, ${bestTypeProduct}
       Target MP: ${targetMealPowerVector}
       Delta MP: ${deltaMealPowerVector}
       Current MP: ${currentBoostedMealPowerVector}
       Target T: ${targetTypeVector}
       Delta T: ${deltaTypeVector}
-      Target L: ${targetLevelVector}
-      Delta L: ${deltaLevelVector}
       Current T: ${currentTypeVector}
       Remaining fillings: ${remainingFillings}
       Remaining condiments: ${remainingCondiments}`);

@@ -101,7 +101,7 @@ const getTargetTypeVectorForPosition = (
 export interface GetTargetTypeVectorProps {
   targetPowers: Power[];
   targetConfigSet: TargetConfig[];
-  targetTypeIndices: [TypeIndex, TypeIndex, TypeIndex];
+  targetTypes: [TypeIndex, TypeIndex, TypeIndex];
   rankedTypeBoosts: TypeBoost[];
   typeVector: number[];
   forceDiff?: boolean;
@@ -110,35 +110,43 @@ export interface GetTargetTypeVectorProps {
 export const getTargetTypeVector = ({
   targetPowers,
   targetConfigSet,
-  targetTypeIndices: [firstTargetIndex, secondTargetIndex],
+  targetTypes,
   rankedTypeBoosts: currentRankedTypes,
   typeVector: currentVector,
   forceDiff = false,
 }: GetTargetTypeVectorProps) => {
-  const tentativeTargetVector = getTargetTypeVectorForPosition(
+  const initialTargetVector = getTargetTypeVectorForPosition(
     targetPowers.map((p) => p.type),
     targetConfigSet.map((c) => c.typePlaceIndex),
     currentRankedTypes,
     currentVector,
   );
+  const tentativeTargetVector = getTargetLevelVector({
+    targetPowers,
+    targetConfigSet,
+    targetTypes,
+    typeVector: initialTargetVector,
+  });
 
-  const config = targetConfigSet[0].typeAllocation;
+  // Every member of targetConfigSet has the same typeAllocation
+  const allocation = targetConfigSet[0].typeAllocation;
 
+  const [firstTargetIndex, secondTargetIndex] = targetTypes;
   const targetFirstAmount = tentativeTargetVector[firstTargetIndex];
   const targetSecondAmount = tentativeTargetVector[secondTargetIndex];
   let minFirstAmount = 0;
   let maxFirstAmount = Infinity;
   let maxSecondAmount = Infinity;
-  if (config === 'ONE_ONE_ONE') {
+  if (allocation === 'ONE_ONE_ONE') {
     minFirstAmount = 481;
-  } else if (config === 'ONE_ONE_THREE') {
+  } else if (allocation === 'ONE_ONE_THREE') {
     minFirstAmount = 106;
     maxSecondAmount = Math.max(targetFirstAmount, minFirstAmount) - 106;
     if (targetSecondAmount > maxSecondAmount) {
       minFirstAmount = 281;
       maxSecondAmount = Infinity;
     }
-  } else if (config === 'ONE_THREE_ONE') {
+  } else if (allocation === 'ONE_THREE_ONE') {
     maxFirstAmount = 105;
     if (targetSecondAmount >= 100) {
       maxSecondAmount = 21;
@@ -215,14 +223,14 @@ const getMinRankedTypeAmounts = (
   return [1, 0, 0];
 };
 
-export interface GetTargetLevelVectorProps {
+interface GetTargetLevelVectorProps {
   targetPowers: Power[];
   targetConfigSet: TargetConfig[];
   targetTypes: [TypeIndex, TypeIndex, TypeIndex];
   typeVector: number[];
 }
 
-export const getTargetLevelVector = ({
+const getTargetLevelVector = ({
   targetPowers,
   targetConfigSet,
   targetTypes: [firstTargetIndex, secondTargetIndex, thirdTargetIndex],

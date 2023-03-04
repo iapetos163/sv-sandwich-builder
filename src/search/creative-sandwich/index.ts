@@ -90,6 +90,9 @@ const makeSandwichGivenNumHerba = (
   targetNumHerba: number,
 ) => {
   const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
+  /**
+   * Array of [arrays of configs per target power]
+   */
   const targetConfigSets = permutePowerConfigs(targetPowers, targetConfigs);
 
   const visited: Record<string, true> = {};
