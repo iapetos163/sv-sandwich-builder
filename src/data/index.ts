@@ -1,5 +1,6 @@
 import { Ingredient, SandwichRecipe, Meal } from '../types';
 import ingredientsData from './ingredients.json';
+import matrixData from './matrix.json';
 import mealsData from './meals.json';
 import recipesData from './recipes.json';
 
@@ -16,3 +17,5 @@ export const recipes: SandwichRecipe[] = recipesData.map((recipe) => ({
 }));
 
 export const meals: Meal[] = mealsData;
+
+export const ingredientMatrix: number[][] = matrixData;
