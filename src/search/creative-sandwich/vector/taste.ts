@@ -74,7 +74,7 @@ export interface RelativeTasteVectorProps {
  */
 const sumScaleClamp = (n1: number, n2: number) =>
   100 * Math.max(Math.min(n1 + n2, 1), -1);
-
+/** @deprecated */
 export const getRelativeTasteVector = (() => {
   const flavorBoostsLookup: Partial<Record<string, FlavorBoost[]>> = {};
   const memoRankFlavorBoosts = (flavorVector: number[]) => {
@@ -308,3 +308,55 @@ export const getRelativeTasteVector = (() => {
     });
   };
 })();
+
+export interface GetTargetFlavorVectorProps {
+  flavorVector: number[];
+  rankedFlavorBoosts: FlavorBoost[];
+  boostPower: MealPower;
+}
+
+export const getTargetFlavorVector = ({
+  flavorVector,
+  boostPower,
+  rankedFlavorBoosts,
+}: GetTargetFlavorVectorProps) => {
+  const candidatePrimaryFlavors = primaryFlavorsForPower[boostPower];
+
+  const primaryFlavor =
+    rankedFlavorBoosts.find(({ flavor }) =>
+      candidatePrimaryFlavors.includes(flavor),
+    )?.flavor ?? candidatePrimaryFlavors[0];
+
+  const candidateSecondaryFlavors = secondaryFlavorsForPower[boostPower];
+
+  const secondaryFlavor =
+    rankedFlavorBoosts.find(
+      ({ flavor }) =>
+        flavor !== primaryFlavor && candidateSecondaryFlavors.includes(flavor),
+    )?.flavor ?? candidateSecondaryFlavors[0];
+
+  let primaryTarget: number, secondaryTarget: number;
+  if (rankedFlavorBoosts[0]?.flavor === primaryFlavor) {
+    secondaryTarget =
+      rankedFlavorBoosts[1]?.flavor === secondaryFlavor
+        ? rankedFlavorBoosts[1].amount
+        : (rankedFlavorBoosts[1]?.amount ?? 0) + 1;
+    primaryTarget = Math.max(rankedFlavorBoosts[0].amount, secondaryTarget);
+  } else {
+    secondaryTarget =
+      rankedFlavorBoosts[0]?.flavor === secondaryFlavor
+        ? rankedFlavorBoosts[0].amount
+        : (rankedFlavorBoosts[0]?.amount ?? 0) + 1;
+
+    primaryTarget =
+      primaryFlavor < secondaryFlavor ? secondaryTarget : secondaryTarget + 1;
+  }
+
+  return flavorVector.map((c, f) =>
+    f === primaryFlavor
+      ? primaryTarget
+      : f === secondaryFlavor
+      ? secondaryTarget
+      : c,
+  );
+};
