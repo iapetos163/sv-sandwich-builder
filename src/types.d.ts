@@ -25,6 +25,7 @@ export interface Sandwich {
   typeBoosts: number[];
   flavorBoosts: number[];
   powers: Power[];
+  score: number;
 }
 
 export interface SandwichRecipe {

@@ -1,9 +1,8 @@
-import { ingredientMatrix, ingredients } from '../../data';
-import { MealPower, rangeFlavors, rangeMealPowers } from '../../enum';
-import { getBoostedMealPower } from '../../mechanics/taste';
+import { ingredientMatrix } from '../../data';
+import { MealPower, rangeMealPowers } from '../../enum';
 import { createMetaVector } from '../../metavector';
 import { Power } from '../../types';
-import { applyTransform, innerProduct } from '../../vector-math';
+import { applyTransform } from '../../vector-math';
 import {
   getTargetConfigs,
   getTypeTargetsByPlace,
@@ -18,6 +17,7 @@ import { getTargetFlavorVector } from './vector/taste';
 import { getTargetTypeVector } from './vector/type-vector';
 
 export interface Target {
+  powers: Power[];
   configSet: TargetConfig[];
   numHerbaMystica: number;
   transformedTargetMetaVector: number[];
@@ -27,8 +27,6 @@ export interface SelectInitialTargetsProps {
   targetPowers: Power[];
   /** @default true */
   avoidHerbaMystica?: boolean;
-  /** @default false */
-  multiplayer?: boolean;
 }
 
 // export interface SelectTargetsProps {
@@ -41,43 +39,39 @@ export interface SelectInitialTargetsProps {
 //   remainingFillings: number;
 //   remainingCondiments: number;
 //   remainingHerba: number;
+// /** @default false */
+// multiplayer?: boolean;
 // }
 
-const CONDIMENT_SCORE = 1;
-const FILLING_SCORE = 5;
-const DEFAULT_HERBA_SCORE = 35;
-const SCORE_THRESHOLD = 0.2;
+// const CONDIMENT_SCORE = 1;
+// const FILLING_SCORE = 5;
+// const DEFAULT_HERBA_SCORE = 35;
+
+// const HERBA_SCORE = avoidHerbaMystica ? DEFAULT_HERBA_SCORE : CONDIMENT_SCORE;
 
 export const selectInitialTargets = ({
   targetPowers,
   avoidHerbaMystica = true,
-  multiplayer = false,
 }: SelectInitialTargetsProps): Target[] => {
-  const HERBA_SCORE = avoidHerbaMystica ? DEFAULT_HERBA_SCORE : CONDIMENT_SCORE;
-  const MAX_FILLINGS = multiplayer ? 12 : 6;
-  const MAX_CONDIMENTS = multiplayer ? 8 : 4;
-  const MAX_PIECES = multiplayer ? 15 : 12;
-
-  let targetNumHerba = 0;
+  let numHerbaTargets = [0];
   if (targetPowers.some((p) => p.mealPower === MealPower.SPARKLING)) {
-    targetNumHerba = 2;
+    numHerbaTargets = [2];
   } else if (targetPowers.some((p) => p.level === 3)) {
-    targetNumHerba = avoidHerbaMystica ? 1 : 2;
+    numHerbaTargets = avoidHerbaMystica ? [1, 2] : [2];
   } else if (targetPowers.some((p) => p.mealPower === MealPower.TITLE)) {
-    targetNumHerba = 1;
+    numHerbaTargets = [1];
+  } else if (targetPowers.some((p) => p.level === 2)) {
+    numHerbaTargets = [0, 1];
   }
 
-  const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
-  /**
-   * Array of [arrays of configs per target power]
-   */
-  const targetConfigSets = permutePowerConfigs(targetPowers, targetConfigs);
+  return numHerbaTargets.reduce<Target[]>((accum1, targetNumHerba) => {
+    const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
+    /**
+     * Array of [arrays of configs per target power]
+     */
+    const targetConfigSets = permutePowerConfigs(targetPowers, targetConfigs);
 
-  const { leastScore, targets } = targetConfigSets.reduce<{
-    leastScore: number;
-    targets: Target[];
-  }>(
-    (accum, targetConfigSet) => {
+    return targetConfigSets.reduce<Target[]>((accum, targetConfigSet) => {
       const targetTypes = getTypeTargetsByPlace(
         targetPowers,
         targetConfigSet.map((c) => c.typePlaceIndex),
@@ -99,78 +93,46 @@ export const selectInitialTargets = ({
         typeVector: [],
       });
 
-      return rangeMealPowers.reduce<{ leastScore: number; targets: Target[] }>(
-        ({ leastScore, targets }, boostPower) => {
-          if (
-            boostPower === MealPower.SPARKLING ||
-            boostPower === MealPower.TITLE
-          ) {
-            return { leastScore, targets };
-          }
+      return rangeMealPowers.reduce<Target[]>((targets, boostPower) => {
+        if (
+          boostPower === MealPower.SPARKLING ||
+          boostPower === MealPower.TITLE
+        ) {
+          return targets;
+        }
 
-          const targetFlavorVector = getTargetFlavorVector({
-            flavorVector: [],
-            boostPower,
-            rankedFlavorBoosts: [],
-          });
+        const targetFlavorVector = getTargetFlavorVector({
+          flavorVector: [],
+          boostPower,
+          rankedFlavorBoosts: [],
+        });
 
-          const adjustedMealPowerVector = adjustMealPowerTargetForFlavorBoost(
-            targetMealPowerVector,
-            boostPower,
-          );
+        const adjustedMealPowerVector = adjustMealPowerTargetForFlavorBoost(
+          targetMealPowerVector,
+          boostPower,
+        );
 
-          const metaVector = createMetaVector({
-            mealPowerVector: adjustedMealPowerVector,
-            typeVector: targetTypeVector,
-            flavorVector: targetFlavorVector,
-          });
+        const metaVector = createMetaVector({
+          mealPowerVector: adjustedMealPowerVector,
+          typeVector: targetTypeVector,
+          flavorVector: targetFlavorVector,
+        });
 
-          const transformedTargetMetaVector = applyTransform(
-            ingredientMatrix,
-            metaVector,
-          );
+        const transformedTargetMetaVector = applyTransform(
+          ingredientMatrix,
+          metaVector,
+        );
 
-          const ingData = ingredients.map(
-            ({ metaVector, isHerbaMystica, ingredientType }, index) => {
-              const adjustedIngMetaVector = metaVector.map((c, j) =>
-                (metaVector[j] ?? 0) > 0 ? c : 0,
-              );
-
-              const transformedIngMetaVector = applyTransform(
-                ingredientMatrix,
-                adjustedIngMetaVector,
-              );
-              const product = innerProduct(
-                transformedTargetMetaVector,
-                transformedIngMetaVector,
-              );
-
-              return {
-                // isHerbaMystica, ingredientType,
-                index,
-                product,
-                score:
-                  ingredientType === 'filling'
-                    ? FILLING_SCORE
-                    : isHerbaMystica
-                    ? HERBA_SCORE
-                    : CONDIMENT_SCORE,
-              };
-            },
-          );
-
-          ingData.sort((a, b) => a.scoredProduct - b.scoredProduct);
-
-          const {};
-        },
-        accum,
-      );
-    },
-    {
-      leastScore: Infinity,
-      targets: [],
-    },
-  );
-
-  return targets;
+        return [
+          ...targets,
+          {
+            transformedTargetMetaVector,
+            configSet: targetConfigSet,
+            numHerbaMystica: targetNumHerba,
+            powers: targetPowers,
+          },
+        ];
+      }, accum);
+    }, accum1);
+  }, []);
 };

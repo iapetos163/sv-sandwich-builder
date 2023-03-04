@@ -159,7 +159,7 @@ export const requestedPowersValid = (powers: Power[]) => {
 
 export const rankMealPowerBoosts = (
   mealPowerVector: number[],
-  boostedMealPower: MealPower | null,
+  boostedMealPower?: MealPower | null,
 ): MealPowerBoost[] => {
   return mealPowerVector
     .map((c, i) => ({
