@@ -2,13 +2,14 @@ import { writeFile } from 'fs/promises';
 import { basename, join as joinPath } from 'path';
 import arg from 'arg';
 import got from 'got';
-import condiments from '../simulator-data/condiments.json';
-import fillings from '../simulator-data/fillings.json';
-import meals from '../simulator-data/meals.json';
-import sandwiches from '../simulator-data/sandwiches.json';
+import condiments from '../source-data/condiments.json';
+import fillings from '../source-data/fillings.json';
+import meals from '../source-data/meals.json';
+import sandwiches from '../source-data/sandwiches.json';
 import { createMetaVector } from '../src/metavector';
 import { allTypes } from '../src/strings';
 import { Power } from '../src/types';
+import { createMatrix } from './create-matrix';
 
 export type IngredientEntry = {
   name: string;
@@ -225,17 +226,16 @@ const main = async () => {
 
   const ingredientsData = parsedFillings.concat(parsedCondiments);
 
-  const ingOutputPath = 'src/data/ingredients.json';
-  await writeFile(ingOutputPath, JSON.stringify(ingredientsData));
-  console.log(`Exported ${ingOutputPath}`);
+  const outputJson = async (filename: string, data: any) => {
+    const outputPath = `src/data/${filename}`;
+    await writeFile(outputPath, JSON.stringify(data));
+    console.log(`Exported ${outputPath}`);
+  };
 
-  const recipeOutputPath = 'src/data/recipes.json';
-  await writeFile(recipeOutputPath, JSON.stringify(recipeData));
-  console.log(`Exported ${recipeOutputPath}`);
-
-  const mealOutputPath = 'src/data/meals.json';
-  await writeFile(mealOutputPath, JSON.stringify(mealData));
-  console.log(`Exported ${mealOutputPath}`);
+  await outputJson('ingredients.json', ingredientsData);
+  await outputJson('recipes.json', recipeData);
+  await outputJson('meals.json', mealData);
+  await outputJson('matrix.json', createMatrix(ingredientsData));
 
   if (args['--skip-images']) return;
 
