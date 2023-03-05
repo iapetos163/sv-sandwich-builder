@@ -1,9 +1,5 @@
-import { MealPower } from '../../enum';
 import {
   evaluateBoosts,
-  mealPowerHasType,
-  rankTypeBoosts,
-  rankMealPowerBoosts,
   requestedPowersValid,
   powerSetsMatch,
   getBoostedMealPower,
@@ -12,14 +8,8 @@ import {
 import { Ingredient, Power, Sandwich } from '../../types';
 import { add } from '../../vector-math';
 import { selectIngredientCandidates } from './select-ingredient';
-import { selectInitialTargets, Target } from './select-target';
-import {
-  getTargetConfigs,
-  selectPowersAtTargetPositions,
-  TargetConfig,
-  permutePowerConfigs,
-} from './target';
-import { boostMealPowerVector } from './vector';
+import { selectInitialTargets, Target, TargetConfig } from './target';
+import { selectPowersAtTargetPositions } from './target/target-config';
 
 const SCORE_THRESHOLD = 0.2;
 
@@ -31,6 +21,7 @@ export const emptySandwich = {
   typeBoosts: {},
 };
 
+/** @deprecated */
 const selectPowersForTargets = (
   actualPowers: Power[],
   targetPowers: Power[],

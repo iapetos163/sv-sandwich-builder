@@ -1,20 +1,22 @@
-import { ingredientMatrix } from '../../data';
-import { MealPower, rangeMealPowers, TypeIndex } from '../../enum';
-import { createMetaVector } from '../../metavector';
-import { Power } from '../../types';
-import { applyTransform } from '../../vector-math';
+import { ingredientMatrix } from '../../../data';
+import { MealPower, rangeMealPowers, TypeIndex } from '../../../enum';
+import { createMetaVector } from '../../../metavector';
+import { Power } from '../../../types';
+import { applyTransform } from '../../../vector-math';
+import {
+  adjustMealPowerTargetForFlavorBoost,
+  getTargetMealPowerVector,
+} from '../vector/meal-power';
+import { getTargetFlavorVector } from '../vector/taste';
+import { getTargetTypeVector } from '../vector/type-vector';
 import {
   getTargetConfigs,
   getTypeTargetsByPlace,
   permutePowerConfigs,
   TargetConfig,
-} from './target';
-import {
-  adjustMealPowerTargetForFlavorBoost,
-  getTargetMealPowerVector,
-} from './vector/meal-power';
-import { getTargetFlavorVector } from './vector/taste';
-import { getTargetTypeVector } from './vector/type-vector';
+} from './target-config';
+
+export type { TargetConfig };
 
 export interface Target {
   powers: Power[];

@@ -1,10 +1,10 @@
-import { MealPower, rangeTypes, TypeIndex } from '../../enum';
-import { rankTypeBoosts } from '../../mechanics';
+import { MealPower, rangeTypes, TypeIndex } from '../../../enum';
+import { rankTypeBoosts } from '../../../mechanics';
 import {
   getTargetConfigs,
   getTypeTargetsByPlace,
   permutePowerConfigs,
-} from './target';
+} from './target-config';
 
 describe('getTargetConfigs', () => {
   it('Returns no more than 4 for any target config when numHerbaMystica is 1', () => {

@@ -5,17 +5,9 @@ import {
   rankFlavorBoosts,
 } from '../../mechanics';
 import { createMetaVector } from '../../metavector';
-import { Ingredient, Power } from '../../types';
-import {
-  add,
-  applyTransform,
-  diff,
-  innerProduct,
-  norm,
-  scale,
-} from '../../vector-math';
-import { Target } from './select-target';
-import { TargetConfig, getTypeTargetsByPlace } from './target';
+import { Ingredient } from '../../types';
+import { applyTransform, diff, innerProduct, norm } from '../../vector-math';
+import { Target } from './target/index';
 import {
   adjustMealPowerTargetForFlavorBoost,
   getTargetFlavorVector,
