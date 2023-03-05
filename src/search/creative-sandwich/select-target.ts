@@ -1,5 +1,5 @@
 import { ingredientMatrix } from '../../data';
-import { MealPower, rangeMealPowers } from '../../enum';
+import { MealPower, rangeMealPowers, TypeIndex } from '../../enum';
 import { createMetaVector } from '../../metavector';
 import { Power } from '../../types';
 import { applyTransform } from '../../vector-math';
@@ -20,7 +20,10 @@ export interface Target {
   powers: Power[];
   configSet: TargetConfig[];
   numHerbaMystica: number;
+  // TODO: remove
   transformedTargetMetaVector: number[];
+  typesByPlace: [TypeIndex, TypeIndex, TypeIndex];
+  boostPower: MealPower;
 }
 
 export interface SelectInitialTargetsProps {
@@ -42,12 +45,6 @@ export interface SelectInitialTargetsProps {
 // /** @default false */
 // multiplayer?: boolean;
 // }
-
-// const CONDIMENT_SCORE = 1;
-// const FILLING_SCORE = 5;
-// const DEFAULT_HERBA_SCORE = 35;
-
-// const HERBA_SCORE = avoidHerbaMystica ? DEFAULT_HERBA_SCORE : CONDIMENT_SCORE;
 
 export const selectInitialTargets = ({
   targetPowers,
@@ -130,6 +127,8 @@ export const selectInitialTargets = ({
             configSet: targetConfigSet,
             numHerbaMystica: targetNumHerba,
             powers: targetPowers,
+            typesByPlace: targetTypes,
+            boostPower,
           },
         ];
       }, accum);

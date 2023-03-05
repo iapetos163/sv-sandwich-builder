@@ -168,9 +168,8 @@ const makeSandwichesForTarget = (
       debug: debugCondition,
       target,
       currentTypeVector: typeVector,
-      rankedTypeBoosts: rankTypeBoosts(typeVector),
-      rankedMealPowerBoosts: rankMealPowerBoosts(baseMealPowerVector),
-      maxScore,
+      currentMealPowerVector: baseMealPowerVector,
+      currentFlavorVector: flavorVector,
       remainingFillings:
         !alreadyReachedAllTargets || fillings.length === 0
           ? maxFillings - fillings.length
@@ -178,7 +177,6 @@ const makeSandwichesForTarget = (
       remainingCondiments: condimentsAllowed
         ? maxCondiments - condiments.length
         : 0,
-      currentFlavorVector: flavorVector,
       remainingHerba: target.numHerbaMystica - herba.length,
       skipIngredients,
     });
@@ -187,6 +185,14 @@ const makeSandwichesForTarget = (
       triedIngredients: Ingredient[];
     }>(
       ({ sandwiches, triedIngredients }, newIngredient, i) => {
+        const newScore = score + newIngredient.score;
+        if (newScore > maxScore) {
+          return {
+            sandwiches,
+            triedIngredients: [...triedIngredients, newIngredient],
+          };
+        }
+
         let newFillings = fillings;
         let newCondiments = condiments;
         let newHerba = herba;
@@ -259,7 +265,7 @@ const makeSandwichesForTarget = (
                 flavorBoosts: newFlavorVector,
                 mealPowerBoosts: newMealPowerVector,
                 powers: newPowers,
-                score: score + newIngredient.score,
+                score: newScore,
               },
             ],
             triedIngredients: [...triedIngredients, newIngredient],
@@ -269,7 +275,7 @@ const makeSandwichesForTarget = (
         return {
           sandwiches: [
             ...sandwiches,
-            recurse({
+            ...recurse({
               fillings: newFillings,
               condiments: newCondiments,
               herba: newHerba,
@@ -281,7 +287,7 @@ const makeSandwichesForTarget = (
               flavorVector: newFlavorVector,
               reachedAllTargets,
               skipIngredients: newSkipIngredients,
-              score: score + newIngredient.score,
+              score: newScore,
             }),
           ],
           triedIngredients: [...triedIngredients, newIngredient],
@@ -290,7 +296,7 @@ const makeSandwichesForTarget = (
       { sandwiches: [], triedIngredients: [] },
     );
 
-    sandwiches.sort((a, b) => a.score - b.score);
+    sandwiches.sort((a, b) => b.score - a.score);
     return sandwiches;
   };
 
