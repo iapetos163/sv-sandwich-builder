@@ -141,17 +141,17 @@ const makeSandwichesForTarget = (
     const condimentsAllowed =
       !alreadyReachedAllTargets || condiments.length === 0;
 
-    const debugCondition = false;
+    const debugCondition = condiments.length === 0;
 
     if (debugCondition) {
       console.debug(
-        `
-    Sandwich so far: ${fillings
-      .concat(condiments)
-      .map((ing) => ing.name)
-      .join(', ')}
-    Target config set:${target.configSet}
+        `Sandwich so far: ${fillings
+          .concat(condiments)
+          .map((ing) => ing.name)
+          .join(', ')}
+    Target config set:${target.configSet.map((c) => JSON.stringify(c))}
     alreadyReachedAllTargets: ${alreadyReachedAllTargets}
+    max score: ${maxScore}
     `,
       );
     }

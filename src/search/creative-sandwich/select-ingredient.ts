@@ -87,6 +87,7 @@ export const getTypeScoreWeight = ({
 
 type ScoredIngredient = Ingredient & {
   score: number;
+  scoredProduct: number;
 };
 
 export interface SelectIngredientProps {
@@ -146,11 +147,13 @@ export const selectIngredientCandidates = ({
     typeVector: currentTypeVector,
   });
 
-  const targetFlavorVector = getTargetFlavorVector({
-    flavorVector: currentFlavorVector,
-    boostPower: target.boostPower,
-    rankedFlavorBoosts,
-  });
+  const targetFlavorVector = target.boostPower
+    ? getTargetFlavorVector({
+        flavorVector: currentFlavorVector,
+        boostPower: target.boostPower,
+        rankedFlavorBoosts,
+      })
+    : currentFlavorVector;
 
   let targetMetaVector = createMetaVector({
     mealPowerVector: adjustedTargetMealPowerVector,
@@ -201,9 +204,16 @@ export const selectIngredientCandidates = ({
 
   const { chosenIngredients } = ingredients.reduce<{
     chosenIngredients: ScoredIngredient[];
-    leastScore: number;
+    highestScoredProduct: number;
   }>(
-    ({ chosenIngredients, leastScore }, ing) => {
+    (
+      { chosenIngredients, highestScoredProduct },
+      ing,
+      i,
+    ): {
+      chosenIngredients: ScoredIngredient[];
+      highestScoredProduct: number;
+    } => {
       if (
         (remainingFillings <= 0 && ing.ingredientType === 'filling') ||
         (remainingCondiments <= 0 &&
@@ -212,7 +222,7 @@ export const selectIngredientCandidates = ({
         (remainingHerba <= 0 && ing.isHerbaMystica) ||
         skipIngredients[ing.name]
       ) {
-        return { chosenIngredients, leastScore };
+        return { chosenIngredients, highestScoredProduct };
       }
 
       const [score, minProduct] =
@@ -221,10 +231,6 @@ export const selectIngredientCandidates = ({
           : ing.isHerbaMystica
           ? [HERBA_SCORE, minHerbaProduct]
           : [CONDIMENT_SCORE, minCondimentProduct];
-
-      if (score > leastScore * (1 + INGREDIENT_SCORE_THRESHOLD)) {
-        return { chosenIngredients, leastScore };
-      }
 
       const adjustedMetaVector = ing.metaVector.map((c, i) =>
         targetMetaVector[i] > 0 ? c : 0,
@@ -235,33 +241,66 @@ export const selectIngredientCandidates = ({
         adjustedMetaVector,
       );
 
-      const product = innerProduct(
-        transformedTargetMetaVector,
-        transformedMetaVector,
-      );
+      const product = transformedTargetMetaVector[i] * transformedMetaVector[i];
 
       if (product < minProduct) {
-        return { chosenIngredients, leastScore };
+        return { chosenIngredients, highestScoredProduct };
       }
 
-      if (score > leastScore) {
+      const scoredProduct = product / score;
+
+      if (
+        scoredProduct <
+        highestScoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD)
+      ) {
+        return { chosenIngredients, highestScoredProduct };
+      }
+
+      if (debug && !ing.isHerbaMystica && scoredProduct > 1) {
+        console.debug({
+          product,
+          transformedMetaVector,
+          transformedTargetMetaVector,
+          adjustedMetaVector,
+          targetMetaVector,
+        });
+      }
+
+      if (scoredProduct < highestScoredProduct) {
         return {
-          chosenIngredients: [...chosenIngredients, { ...ing, score }],
-          leastScore,
+          chosenIngredients: [
+            ...chosenIngredients,
+            { ...ing, score, scoredProduct },
+          ],
+          highestScoredProduct,
         };
       }
 
-      const newMaxScore = score * (1 + INGREDIENT_SCORE_THRESHOLD);
+      const newMinScoredProduct =
+        scoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD);
       return {
         chosenIngredients: [
-          ...chosenIngredients.filter((i) => i.score <= newMaxScore),
-          { ...ing, score },
+          ...chosenIngredients.filter(
+            (i) => i.scoredProduct >= newMinScoredProduct,
+          ),
+          { ...ing, score, scoredProduct },
         ],
-        leastScore: score,
+        highestScoredProduct: scoredProduct,
       };
     },
-    { chosenIngredients: [], leastScore: Infinity },
+    { chosenIngredients: [], highestScoredProduct: 0 },
   );
+
+  if (debug) {
+    console.debug(
+      `New ingredient candidates: ${[
+        '',
+        ...chosenIngredients.map(
+          (i) => `${i.name} ${i.score} ${i.scoredProduct}`,
+        ),
+      ].join('\n  ')}`,
+    );
+  }
 
   return chosenIngredients;
 };

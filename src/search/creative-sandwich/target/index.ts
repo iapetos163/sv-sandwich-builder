@@ -25,7 +25,7 @@ export interface Target {
   // TODO: remove
   transformedTargetMetaVector: number[];
   typesByPlace: [TypeIndex, TypeIndex, TypeIndex];
-  boostPower: MealPower;
+  boostPower: MealPower | null;
 }
 
 export interface SelectInitialTargetsProps {
@@ -91,6 +91,36 @@ export const selectInitialTargets = ({
         rankedTypeBoosts: [],
         typeVector: [],
       });
+
+      const flavorIndependent = targetPowers.every(
+        (tp) =>
+          tp.mealPower === MealPower.SPARKLING ||
+          tp.mealPower === MealPower.TITLE,
+      );
+
+      if (flavorIndependent) {
+        const metaVector = createMetaVector({
+          mealPowerVector: targetMealPowerVector,
+          typeVector: targetTypeVector,
+          flavorVector: [],
+        });
+
+        const transformedTargetMetaVector = applyTransform(
+          ingredientMatrix,
+          metaVector,
+        );
+
+        return [
+          {
+            transformedTargetMetaVector,
+            configSet: targetConfigSet,
+            numHerbaMystica: targetNumHerba,
+            powers: targetPowers,
+            typesByPlace: targetTypes,
+            boostPower: null,
+          },
+        ];
+      }
 
       return rangeMealPowers.reduce<Target[]>((targets, boostPower) => {
         if (

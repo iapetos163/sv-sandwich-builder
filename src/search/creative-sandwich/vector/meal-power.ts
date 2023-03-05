@@ -73,7 +73,7 @@ export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>
 
 export const adjustMealPowerTargetForFlavorBoost = (
   mealPowerVector: number[],
-  boostedPower: MealPower,
+  boostedPower: MealPower | null,
 ) =>
   mealPowerVector.map((c, mp) =>
     mp === boostedPower ? Math.max(c - 100, 0) : c,
