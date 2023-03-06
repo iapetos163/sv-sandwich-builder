@@ -155,13 +155,13 @@ export const selectIngredientCandidates = ({
       })
     : currentFlavorVector;
 
-  let targetMetaVector = createMetaVector({
+  const targetMetaVector = createMetaVector({
     mealPowerVector: adjustedTargetMealPowerVector,
     typeVector: targetTypeVector,
     flavorVector: targetFlavorVector,
   });
 
-  const deltaMetaVector = diff(targetMetaVector, currentMetaVector);
+  let deltaMetaVector = diff(targetMetaVector, currentMetaVector);
   const deltaNorm = norm(deltaMetaVector);
 
   if (deltaNorm === Infinity) {
@@ -185,17 +185,18 @@ export const selectIngredientCandidates = ({
       typeVector: currentTypeVector,
       forceDiff: true,
     });
-    targetMetaVector = createMetaVector({
+    const newTargetMetaVector = createMetaVector({
       mealPowerVector: adjustedTargetMealPowerVector,
       typeVector: newTargetTypeVector,
       flavorVector: targetFlavorVector,
     });
+    deltaMetaVector = diff(newTargetMetaVector, currentMetaVector);
     // todo: make this recursive?
   }
 
-  const transformedTargetMetaVector = applyTransform(
+  const transformedDeltaMetaVector = applyTransform(
     ingredientMatrix,
-    targetMetaVector,
+    deltaMetaVector,
   );
 
   const minFillingProduct = 1 / remainingFillings;
@@ -225,33 +226,30 @@ export const selectIngredientCandidates = ({
         return { chosenIngredients, highestScoredProduct };
       }
 
-      const [score, minProduct] =
-        ing.ingredientType === 'filling'
-          ? [FILLING_SCORE, minFillingProduct]
-          : ing.isHerbaMystica
-          ? [HERBA_SCORE, minHerbaProduct]
-          : [CONDIMENT_SCORE, minCondimentProduct];
-
       const adjustedMetaVector = ing.metaVector.map((c, i) =>
         targetMetaVector[i] > 0 ? c : 0,
       );
 
-      const transformedMetaVector = applyTransform(
-        ingredientMatrix,
+      const transformedMetaVectorC = innerProduct(
+        ingredientMatrix[i],
         adjustedMetaVector,
       );
 
-      const product = transformedTargetMetaVector[i] * transformedMetaVector[i];
+      const product = transformedDeltaMetaVector[i] * transformedMetaVectorC;
 
-      if (product < minProduct) {
-        return { chosenIngredients, highestScoredProduct };
-      }
-
-      const scoredProduct = product / score;
+      const [scoredProduct, score, minProduct] =
+        ing.ingredientType === 'filling'
+          ? [product / FILLING_SCORE, FILLING_SCORE, minFillingProduct]
+          : [
+              product / CONDIMENT_SCORE,
+              ...(ing.isHerbaMystica
+                ? [HERBA_SCORE, minHerbaProduct]
+                : [CONDIMENT_SCORE, minCondimentProduct]),
+            ];
 
       if (
-        scoredProduct <
-        highestScoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD)
+        product < minProduct ||
+        scoredProduct < highestScoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD)
       ) {
         return { chosenIngredients, highestScoredProduct };
       }
@@ -259,8 +257,9 @@ export const selectIngredientCandidates = ({
       if (debug && !ing.isHerbaMystica && scoredProduct > 1) {
         console.debug({
           product,
-          transformedMetaVector,
-          transformedTargetMetaVector,
+          transformedMetaVectorC,
+          ingredientMatrixRow: ingredientMatrix[i],
+          transformedDeltaMetaVector,
           adjustedMetaVector,
           targetMetaVector,
         });
