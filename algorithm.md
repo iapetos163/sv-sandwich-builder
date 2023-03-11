@@ -18,9 +18,28 @@ Mv = v'
 DO YOU WANT TO MAKE A SANDWICH?
 
 Create candidate TARGET VECTORS
-Take each ingredient vector and convert negative components to be zero for each zero component in the target vector
-Take each ingredient vector and transform to a unit in ingredient space
+ Take each ingredient vector and transform to a unit in ingredient space
   This transform is static
 Transform target vector to ingredient space
 Find component with highest product with transformed target
 That's the choice!
+
+Difficulty score:
+base on:
+(w) width
+(t) top nonflatness
+(b) bottom nonflatness
+(d) thickness
+
+Need to determine:
+* how much each aspect weighs
+* how much the omission of an ingredient weighs
+
+
+
+num pieces to width
+w = 1/n
+
+
+Gonna say something like
+stackability = (1 + 0.5Cd) * w
