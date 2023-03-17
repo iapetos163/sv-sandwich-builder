@@ -170,7 +170,8 @@ const makeSandwichesForTarget = (
         : 0,
       remainingHerba: target.numHerbaMystica - herba.length,
       skipIngredients,
-      avoidFillings: fillings.length > 0,
+      needFilling: fillings.length === 0,
+      needCondiment: condiments.length + herba.length === 0,
     });
     const { sandwiches } = newIngredientCandidates.reduce<{
       sandwiches: Sandwich[];

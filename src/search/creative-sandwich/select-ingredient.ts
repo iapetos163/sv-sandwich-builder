@@ -6,7 +6,13 @@ import {
 } from '../../mechanics';
 import { createMetaVector } from '../../metavector';
 import { Ingredient } from '../../types';
-import { applyTransform, diff, innerProduct, norm, normSquared } from '../../vector-math';
+import {
+  applyTransform,
+  diff,
+  innerProduct,
+  norm,
+  normSquared,
+} from '../../vector-math';
 import { Target } from './target/index';
 import {
   adjustMealPowerTargetForFlavorBoost,
@@ -100,10 +106,8 @@ export interface SelectIngredientProps {
   remainingHerba: number;
   skipIngredients: Record<string, boolean>;
   debug?: boolean;
-  /** @default true */
-  avoidHerbaMystica?: boolean;
-  /** @default true */
-  avoidFillings?: boolean;
+  needFilling: boolean;
+  needCondiment: boolean;
 }
 
 export const selectIngredientCandidates = ({
@@ -115,11 +119,12 @@ export const selectIngredientCandidates = ({
   remainingHerba,
   remainingCondiments,
   remainingFillings,
-  avoidFillings = true,
+  needCondiment,
+  needFilling,
   debug,
 }: SelectIngredientProps): ScoredIngredient[] => {
   const HERBA_SCORE = CONDIMENT_SCORE;
-  const FILLING_SCORE = avoidFillings ? DEFAULT_FILLING_SCORE : 1;
+  const FILLING_SCORE = needFilling ? 1 : DEFAULT_FILLING_SCORE;
 
   const currentMetaVector = createMetaVector({
     mealPowerVector: currentMealPowerVector,
@@ -228,8 +233,9 @@ export const selectIngredientCandidates = ({
       //   targetMetaVector[i] > 0 ? c : 0,
       // );
 
-
-      const product = innerProduct(ing.metaVector, deltaMetaVector) / normSquared(deltaMetaVector);
+      const product =
+        innerProduct(ing.metaVector, deltaMetaVector) /
+        normSquared(deltaMetaVector);
 
       const [scoredProduct, score, minProduct] =
         ing.ingredientType === 'filling'
@@ -263,7 +269,16 @@ export const selectIngredientCandidates = ({
       return {
         chosenIngredients: [
           ...chosenIngredients.filter(
-            (i) => i.scoredProduct >= newMinScoredProduct,
+            (i) =>
+              i.scoredProduct >= newMinScoredProduct ||
+              (!needCondiment &&
+                needFilling &&
+                i.ingredientType === 'filling' &&
+                i.scoredProduct >= 1) ||
+              (!needFilling &&
+                needCondiment &&
+                i.ingredientType === 'condiment' &&
+                i.scoredProduct >= 1),
           ),
           { ...ing, score, scoredProduct },
         ],
