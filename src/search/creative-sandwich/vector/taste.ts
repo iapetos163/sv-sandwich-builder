@@ -357,6 +357,6 @@ export const getTargetFlavorVector = ({
       ? primaryTarget
       : f === secondaryFlavor
       ? secondaryTarget
-      : flavorVector[f],
+      : flavorVector[f] ?? 0,
   );
 };
