@@ -1,3 +1,4 @@
+import { MealPower } from '../../enum';
 import {
   evaluateBoosts,
   requestedPowersValid,
@@ -7,6 +8,7 @@ import {
 } from '../../mechanics';
 import { Ingredient, Power, Sandwich } from '../../types';
 import { add } from '../../vector-math';
+import { targetToStr } from './debug';
 import { selectIngredientCandidates } from './select-ingredient';
 import { selectInitialTargets, Target, TargetConfig } from './target';
 import { selectPowersAtTargetPositions } from './target/target-config';
@@ -142,7 +144,19 @@ const makeSandwichesForTarget = (
     const condimentsAllowed =
       !alreadyReachedAllTargets || condiments.length === 0;
 
-    const debugCondition = false;
+    const numChorizo = fillings.filter((i) => i.name === 'Chorizo').length;
+    const numHerbed = fillings.filter(
+      (i) => i.name === 'Herbed Sausage',
+    ).length;
+    const debugCondition =
+      condiments.length === 0 &&
+      fillings.length === 0 &&
+      // numChorizo === 1 &&
+      // numHerbed === 1 &&
+      target.configSet[0].mpPlaceIndex === 0 &&
+      // target.configSet[1].mpPlaceIndex === 0 &&
+      // target.configSet[2].mpPlaceIndex === 1 &&
+      target.boostPower === MealPower.EXP;
 
     if (debugCondition) {
       console.debug(
@@ -150,10 +164,9 @@ const makeSandwichesForTarget = (
           .concat(condiments)
           .map((ing) => ing.name)
           .join(', ')}
-    Target config set:${target.configSet.map((c) => JSON.stringify(c))}
-    alreadyReachedAllTargets: ${alreadyReachedAllTargets}
-    max score: ${maxScore}
-    `,
+  Target:${['', ...targetToStr(target).split('\n')].join('\n    ')}
+  alreadyReachedAllTargets: ${alreadyReachedAllTargets}
+  max score: ${maxScore}`,
       );
     }
     const remainingCondiments =
@@ -178,15 +191,17 @@ const makeSandwichesForTarget = (
       needCondiment: condiments.length + herba.length === 0,
     });
     const { sandwiches } = newIngredientCandidates.reduce<{
+      maxScore: number;
       sandwiches: Sandwich[];
       triedIngredients: Ingredient[];
     }>(
-      ({ sandwiches, triedIngredients }, newIngredient, i) => {
+      ({ sandwiches, triedIngredients, maxScore }, newIngredient, i) => {
         const newScore = score + newIngredient.score;
         if (newScore > maxScore) {
           return {
             sandwiches,
             triedIngredients: [...triedIngredients, newIngredient],
+            maxScore,
           };
         }
 
@@ -266,31 +281,38 @@ const makeSandwichesForTarget = (
               },
             ],
             triedIngredients: [...triedIngredients, newIngredient],
+            maxScore: Math.min(maxScore, newScore * (1 + SCORE_THRESHOLD)),
           };
         }
 
+        const newSandwiches = recurse({
+          fillings: newFillings,
+          condiments: newCondiments,
+          herba: newHerba,
+          typeVector: newTypeVector,
+          baseMealPowerVector: add(
+            baseMealPowerVector,
+            newIngredient.baseMealPowerVector,
+          ),
+          flavorVector: newFlavorVector,
+          reachedAllTargets,
+          skipIngredients: newSkipIngredients,
+          score: newScore,
+        });
+        newSandwiches.sort((a, b) => a.score - b.score);
+
         return {
-          sandwiches: [
-            ...sandwiches,
-            ...recurse({
-              fillings: newFillings,
-              condiments: newCondiments,
-              herba: newHerba,
-              typeVector: newTypeVector,
-              baseMealPowerVector: add(
-                baseMealPowerVector,
-                newIngredient.baseMealPowerVector,
-              ),
-              flavorVector: newFlavorVector,
-              reachedAllTargets,
-              skipIngredients: newSkipIngredients,
-              score: newScore,
-            }),
-          ],
+          sandwiches: [...sandwiches, ...newSandwiches],
           triedIngredients: [...triedIngredients, newIngredient],
+          maxScore: Math.min(
+            maxScore,
+            newSandwiches.length > 0
+              ? newSandwiches[0].score * (1 + SCORE_THRESHOLD)
+              : Infinity,
+          ),
         };
       },
-      { sandwiches: [], triedIngredients: [] },
+      { sandwiches: [], triedIngredients: [], maxScore },
     );
     return sandwiches;
   };

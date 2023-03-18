@@ -138,7 +138,9 @@ export const selectIngredientCandidates = ({
     targetConfigSet: target.configSet,
     rankedMealPowerBoosts,
     mealPowerVector: currentMealPowerVector,
+    boostPower: target.boostPower,
   });
+
   const adjustedTargetMealPowerVector = adjustMealPowerTargetForFlavorBoost(
     targetMealPowerVector,
     target.boostPower,
@@ -214,7 +216,7 @@ export const selectIngredientCandidates = ({
       const minProduct =
         1 / (remainingFillings + remainingCondiments + remainingHerba);
 
-      return ingredients.reduce<{
+      const res = ingredients.reduce<{
         chosenIngredients: ScoredIngredient[];
         highestScoredProduct: number;
       }>(
@@ -296,6 +298,18 @@ export const selectIngredientCandidates = ({
         },
         { chosenIngredients, highestScoredProduct },
       );
+      if (debug) {
+        console.debug(
+          `New ingredient candidates for current flavor vector: ${[
+            '',
+            ...res.chosenIngredients.map(
+              (i) => `${i.name} ${i.score} ${i.scoredProduct}`,
+            ),
+          ].join('\n  ')}
+Delta target: ${deltaMetaVector.join(' ')}`,
+        );
+      }
+      return res;
     },
     { chosenIngredients: [], highestScoredProduct: 0 },
   );
@@ -307,7 +321,8 @@ export const selectIngredientCandidates = ({
         ...chosenIngredients.map(
           (i) => `${i.name} ${i.score} ${i.scoredProduct}`,
         ),
-      ].join('\n  ')}`,
+      ].join('\n  ')}
+Target MP vector ${targetMealPowerVector.join(' ')}`,
     );
   }
   return chosenIngredients;

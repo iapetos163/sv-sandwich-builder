@@ -22,6 +22,8 @@ export interface GetTargetMealPowerVectorProps {
   targetConfigSet: TargetConfig[];
   rankedMealPowerBoosts: MealPowerBoost[];
   mealPowerVector: number[];
+  /** Only used to adjust target amounts. */
+  boostPower?: MealPower | null;
 }
 
 export const getTargetMealPowerVector = ({
@@ -29,6 +31,7 @@ export const getTargetMealPowerVector = ({
   targetConfigSet,
   rankedMealPowerBoosts,
   mealPowerVector: currentVector,
+  boostPower = null,
 }: GetTargetMealPowerVectorProps) => {
   const sortedPowerPlaceIndexes = sortTargetPowersByMpPlace(
     targetPowers,
@@ -40,8 +43,9 @@ export const getTargetMealPowerVector = ({
       const lastMpAmount = mpAmounts[i - 1];
       const lastAmount = lastMpAmount ? lastMpAmount[1] : 0;
       const currentBoostAtTargetPlace = rankedMealPowerBoosts[placeIndex];
-      const mpToBeat = currentBoostAtTargetPlace?.mealPower ?? placeIndex;
+      const mpToBeat = currentBoostAtTargetPlace?.mealPower ?? null;
       const amountToBeat = currentBoostAtTargetPlace?.amount ?? 0;
+      // (boostPower !== null && mpToBeat === boostPower ? 100 : 0);
       return [
         ...mpAmounts,
         [
@@ -57,6 +61,29 @@ export const getTargetMealPowerVector = ({
     },
     [],
   );
+
+  // const boostingMpAmountIndex = targetMpAmounts.findIndex(
+  //   ([mp]) => mp === boostPower,
+  // );
+  // if (boostingMpAmountIndex >= 0) {
+  //   const [mp, currentAmount] = targetMpAmounts[boostingMpAmountIndex];
+  //   const nextMpAmount = targetMpAmounts[boostingMpAmountIndex + 1];
+  //   if (!nextMpAmount) {
+  //     targetMpAmounts[boostingMpAmountIndex] = [
+  //       mp,
+  //       Math.max(100, currentAmount),
+  //     ];
+  //   } else {
+  //     const [nextMp, nextAmount] = nextMpAmount;
+  //     targetMpAmounts[boostingMpAmountIndex] = [
+  //       mp,
+  //       Math.max(
+  //         Math.min(100, nextMp < mp ? nextAmount : nextAmount - 1),
+  //         currentAmount,
+  //       ),
+  //     ];
+  //   }
+  // }
 
   return rangeMealPowers.map((mp) => {
     const targetMatch = targetMpAmounts.find(([tmp]) => tmp === mp);

@@ -23,20 +23,6 @@ export interface SelectInitialTargetsProps {
   avoidHerbaMystica?: boolean;
 }
 
-// export interface SelectTargetsProps {
-//   targetPowers: Power[];
-//   mealPowerVector: number[];
-//   typeVector: number[];
-//   flavorVector: number[];
-//   /** @default true */
-//   avoidHerbaMystica?: boolean;
-//   remainingFillings: number;
-//   remainingCondiments: number;
-//   remainingHerba: number;
-// /** @default false */
-// multiplayer?: boolean;
-// }
-
 export const selectInitialTargets = ({
   targetPowers,
   avoidHerbaMystica = true,
@@ -84,7 +70,8 @@ export const selectInitialTargets = ({
         ];
       }
 
-      return rangeMealPowers.reduce<Target[]>((targets, boostPower) => {
+      return targetPowers.reduce<Target[]>((targets, power) => {
+        const boostPower = power.mealPower;
         if (
           boostPower === MealPower.SPARKLING ||
           boostPower === MealPower.TITLE

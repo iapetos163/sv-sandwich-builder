@@ -68,6 +68,33 @@ describe('getTargetMealPowerVector', () => {
     });
     expect(v[0]).toBeGreaterThan(0);
   });
+
+  it('Does not bump up targets to 100 when mpPlaceIndex of boost power is 0', () => {
+    const res = getTargetMealPowerVector({
+      targetPowers: [
+        { mealPower: MealPower.EXP, type: 5, level: 1 },
+        { mealPower: MealPower.CATCH, type: 5, level: 1 },
+      ],
+      targetConfigSet: [
+        {
+          typeAllocation: 'ONE_THREE_ONE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 0,
+        },
+        {
+          typeAllocation: 'ONE_THREE_ONE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+      ],
+      rankedMealPowerBoosts: [],
+      mealPowerVector: [],
+      boostPower: MealPower.EXP,
+    });
+
+    const compOver100Index = res.findIndex((c) => c >= 100);
+    expect(compOver100Index).toBe(-1);
+  });
 });
 
 describe('sortTargetPowersByMpPlace', () => {
