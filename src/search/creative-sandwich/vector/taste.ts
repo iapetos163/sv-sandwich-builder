@@ -352,11 +352,11 @@ export const getTargetFlavorVector = ({
       primaryFlavor < secondaryFlavor ? secondaryTarget : secondaryTarget + 1;
   }
 
-  return flavorVector.map((c, f) =>
+  return rangeFlavors.map((f) =>
     f === primaryFlavor
       ? primaryTarget
       : f === secondaryFlavor
       ? secondaryTarget
-      : c,
+      : flavorVector[f],
   );
 };
