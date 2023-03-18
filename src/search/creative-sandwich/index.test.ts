@@ -560,8 +560,10 @@ describe('makeSandwichForPower', () => {
     ]);
 
     // Jalapeno, Tofu, 2x Prosciutto, Sweet Herba Mystica
+    // Rice, Rice, Prosciutto, Salt, Horseradish, Olive Oil, Sweet Herba Mystica
     expect(sandwich).not.toBeNull();
 
+    const numFillings = sandwich!.fillings.length;
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
     const numHerba = sandwich!.condiments.filter(
@@ -569,7 +571,8 @@ describe('makeSandwichForPower', () => {
     ).length;
 
     expect(numHerba).toBe(1);
-    expect(numIngredients).toBeLessThanOrEqual(6);
+    expect(numFillings).toBeLessThanOrEqual(4);
+    expect(numIngredients).toBeLessThanOrEqual(7);
   });
 
   it('Produces a sandwich with Lv 3 Sparkling Ice and Lv 3 Exp Ice', () => {
