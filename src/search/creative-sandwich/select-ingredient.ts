@@ -154,12 +154,12 @@ export const selectIngredientCandidates = ({
 
   const targetFlavorVector =
     target.boostPower !== null
-    ? getTargetFlavorVector({
-        flavorVector: currentFlavorVector,
-        boostPower: target.boostPower,
-        rankedFlavorBoosts,
-      })
-    : currentFlavorVector;
+      ? getTargetFlavorVector({
+          flavorVector: currentFlavorVector,
+          boostPower: target.boostPower,
+          rankedFlavorBoosts,
+        })
+      : currentFlavorVector;
 
   const targetMetaVector = createMetaVector({
     mealPowerVector: adjustedTargetMealPowerVector,
@@ -200,9 +200,8 @@ export const selectIngredientCandidates = ({
     // todo: make this recursive?
   }
 
-  const minFillingProduct = 1 / remainingFillings;
-  const minCondimentProduct = 1 / remainingCondiments;
-  const minHerbaProduct = 1 / remainingHerba;
+  const minProduct =
+    1 / (remainingFillings + remainingCondiments + remainingHerba);
 
   const { chosenIngredients } = ingredients.reduce<{
     chosenIngredients: ScoredIngredient[];
@@ -234,14 +233,12 @@ export const selectIngredientCandidates = ({
         innerProduct(ing.metaVector, deltaMetaVector) /
         normSquared(deltaMetaVector);
 
-      const [scoredProduct, score, minProduct] =
+      const [scoredProduct, score] =
         ing.ingredientType === 'filling'
-          ? [product / internalFillingScore, FILLING_SCORE, minFillingProduct]
+          ? [product / internalFillingScore, FILLING_SCORE]
           : [
               product / CONDIMENT_SCORE,
-              ...(ing.isHerbaMystica
-                ? [HERBA_SCORE, minHerbaProduct]
-                : [CONDIMENT_SCORE, minCondimentProduct]),
+              ing.isHerbaMystica ? HERBA_SCORE : CONDIMENT_SCORE,
             ];
 
       if (
