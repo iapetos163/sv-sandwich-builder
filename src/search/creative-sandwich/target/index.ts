@@ -1,10 +1,5 @@
-import { ingredientMatrix } from '../../../data';
 import { MealPower, rangeMealPowers, TypeIndex } from '../../../enum';
-import { createMetaVector } from '../../../metavector';
 import { Power } from '../../../types';
-import { applyTransform } from '../../../vector-math';
-import { getTargetMealPowerVector } from '../vector/meal-power';
-import { getTargetTypeVector } from '../vector/type-vector';
 import {
   getTargetConfigs,
   getTypeTargetsByPlace,
@@ -71,21 +66,6 @@ export const selectInitialTargets = ({
         [],
       );
 
-      const targetMealPowerVector = getTargetMealPowerVector({
-        targetPowers,
-        targetConfigSet,
-        rankedMealPowerBoosts: [],
-        mealPowerVector: [],
-      });
-
-      const targetTypeVector = getTargetTypeVector({
-        targetPowers,
-        targetConfigSet,
-        targetTypes,
-        rankedTypeBoosts: [],
-        typeVector: [],
-      });
-
       const flavorIndependent = targetPowers.every(
         (tp) =>
           tp.mealPower === MealPower.SPARKLING ||
@@ -93,20 +73,8 @@ export const selectInitialTargets = ({
       );
 
       if (flavorIndependent) {
-        const metaVector = createMetaVector({
-          mealPowerVector: targetMealPowerVector,
-          typeVector: targetTypeVector,
-          flavorVector: [],
-        });
-
-        const transformedTargetMetaVector = applyTransform(
-          ingredientMatrix,
-          metaVector,
-        );
-
         return [
           {
-            transformedTargetMetaVector,
             configSet: targetConfigSet,
             numHerbaMystica: targetNumHerba,
             powers: targetPowers,
