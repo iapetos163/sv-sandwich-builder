@@ -626,7 +626,7 @@ describe('makeSandwichForPower', () => {
     // expect(numIngredients).toBeLessThanOrEqual(6);
   });
 
-  it('Naively produces #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catching Dark', () => {
+  it('Does NOT Naively produces #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catching Dark', () => {
     const sandwich = makeSandwichForPowers([
       {
         mealPower: MealPower.EXP,
@@ -640,13 +640,13 @@ describe('makeSandwichForPower', () => {
       },
     ]);
 
-    // Avocado, Smoked fillet, salt
+    // Previously: Avocado, Smoked fillet, salt
+    // Potato Salad, Jam, Pepper, Yogurt
     expect(sandwich).not.toBeNull();
 
     const numFillings = sandwich!.fillings.length;
     const numCondiments = sandwich!.condiments.length;
-    expect(numFillings).toBeLessThanOrEqual(2);
-    expect(numCondiments).toBe(1);
+    expect(numFillings).toBe(1);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', () => {

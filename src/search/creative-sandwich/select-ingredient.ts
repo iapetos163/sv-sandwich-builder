@@ -1,4 +1,4 @@
-import { ingredientMatrix, ingredients } from '../../data';
+import { ingredients } from '../../data';
 import {
   rankTypeBoosts,
   rankMealPowerBoosts,
@@ -6,13 +6,7 @@ import {
 } from '../../mechanics';
 import { createMetaVector } from '../../metavector';
 import { Ingredient } from '../../types';
-import {
-  applyTransform,
-  diff,
-  innerProduct,
-  norm,
-  normSquared,
-} from '../../vector-math';
+import { diff, innerProduct, norm, normSquared } from '../../vector-math';
 import { Target } from './target/index';
 import {
   adjustMealPowerTargetForFlavorBoost,
@@ -23,7 +17,7 @@ import {
 
 const INGREDIENT_SCORE_THRESHOLD = 0.2;
 const CONDIMENT_SCORE = 1;
-const DEFAULT_FILLING_SCORE = 5;
+const FILLING_SCORE = 5;
 const DEFAULT_HERBA_SCORE = 35;
 const MP_FILLING = 21;
 const MP_CONDIMENT = 21;
@@ -106,6 +100,8 @@ export interface SelectIngredientProps {
   remainingHerba: number;
   skipIngredients: Record<string, boolean>;
   debug?: boolean;
+  /** @default true */
+  avoidHerbaMystica?: boolean;
   needFilling: boolean;
   needCondiment: boolean;
 }
@@ -121,10 +117,11 @@ export const selectIngredientCandidates = ({
   remainingFillings,
   needCondiment,
   needFilling,
+  avoidHerbaMystica = true,
   debug,
 }: SelectIngredientProps): ScoredIngredient[] => {
-  const HERBA_SCORE = CONDIMENT_SCORE;
-  const FILLING_SCORE = needFilling ? 1 : DEFAULT_FILLING_SCORE;
+  const internalFillingScore = needFilling ? CONDIMENT_SCORE : FILLING_SCORE;
+  const HERBA_SCORE = DEFAULT_HERBA_SCORE; // avoidHerbaMystica ? DEFAULT_HERBA_SCORE : CONDIMENT_SCORE;
 
   const currentMetaVector = createMetaVector({
     mealPowerVector: currentMealPowerVector,
@@ -213,7 +210,6 @@ export const selectIngredientCandidates = ({
     (
       { chosenIngredients, highestScoredProduct },
       ing,
-      i,
     ): {
       chosenIngredients: ScoredIngredient[];
       highestScoredProduct: number;
@@ -239,7 +235,7 @@ export const selectIngredientCandidates = ({
 
       const [scoredProduct, score, minProduct] =
         ing.ingredientType === 'filling'
-          ? [product / FILLING_SCORE, FILLING_SCORE, minFillingProduct]
+          ? [product / internalFillingScore, FILLING_SCORE, minFillingProduct]
           : [
               product / CONDIMENT_SCORE,
               ...(ing.isHerbaMystica
