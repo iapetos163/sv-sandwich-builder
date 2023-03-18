@@ -361,4 +361,35 @@ describe('getTargetTypeVector', () => {
 
     expect(v[TypeIndex.ROCK]).toBeGreaterThanOrEqual(74);
   });
+
+  it('Returns a vector with norm Infinity if the target allocation is not achievable', () => {
+    const typeVector = [
+      0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36, 0, 0, 36,
+    ];
+    const rankedTypeBoosts = rankTypeBoosts(typeVector);
+
+    const v = getTargetTypeVector({
+      targetPowers: [
+        { mealPower: 2, type: TypeIndex.ROCK, level: 1 },
+        { mealPower: 1, type: TypeIndex.ROCK, level: 1 },
+      ],
+      targetTypes: [TypeIndex.ROCK, 0, 1],
+      targetConfigSet: [
+        {
+          typeAllocation: 'ONE_THREE_ONE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 0,
+        },
+        {
+          typeAllocation: 'ONE_THREE_ONE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+      ],
+      typeVector,
+      rankedTypeBoosts,
+    });
+
+    expect(norm(v)).toBe(Infinity);
+  });
 });

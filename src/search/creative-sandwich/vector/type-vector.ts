@@ -131,6 +131,9 @@ export const getTargetTypeVector = ({
   // Every member of targetConfigSet has the same typeAllocation
   const allocation = targetConfigSet[0].typeAllocation;
 
+  const [currentFirstType, currentSecondType] = currentRankedTypes;
+  const currentFirstAmount = currentFirstType?.amount ?? 0;
+  const currentSecondAmount = currentSecondType?.amount ?? 0;
   const [firstTargetIndex, secondTargetIndex] = targetTypes;
   const targetFirstAmount = tentativeTargetVector[firstTargetIndex];
   const targetSecondAmount = tentativeTargetVector[secondTargetIndex];
@@ -162,6 +165,8 @@ export const getTargetTypeVector = ({
 
   if (
     targetFirstAmount > maxFirstAmount ||
+    currentFirstAmount > maxFirstAmount ||
+    currentSecondAmount > maxSecondAmount ||
     targetSecondAmount > maxSecondAmount
   ) {
     return tentativeTargetVector.map((c, i) =>
