@@ -85,6 +85,7 @@ export const makeSandwichForPowers = (
     { leastScore: Infinity, sandwiches: [] },
   );
 
+  sandwiches.sort((a, b) => a.score - b.score);
   return sandwiches[0] ?? null;
 };
 
@@ -141,7 +142,7 @@ const makeSandwichesForTarget = (
     const condimentsAllowed =
       !alreadyReachedAllTargets || condiments.length === 0;
 
-    const debugCondition = condiments.length === 0;
+    const debugCondition = false;
 
     if (debugCondition) {
       console.debug(
@@ -291,8 +292,6 @@ const makeSandwichesForTarget = (
       },
       { sandwiches: [], triedIngredients: [] },
     );
-
-    sandwiches.sort((a, b) => b.score - a.score);
     return sandwiches;
   };
 
