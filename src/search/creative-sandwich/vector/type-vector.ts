@@ -148,18 +148,15 @@ export const getTargetTypeVector = ({
     }
   } else if (allocation === 'ONE_THREE_ONE') {
     maxFirstAmount = 105;
-    if (targetSecondAmount >= 100) {
-      maxSecondAmount = 21;
-      minFirstAmount = targetSecondAmount + 80;
-    } else if (targetSecondAmount >= 90) {
-      maxSecondAmount = 16;
-      minFirstAmount = targetSecondAmount + 78;
-    } else if (targetSecondAmount >= 80) {
-      maxSecondAmount = 9;
-      minFirstAmount = targetSecondAmount + 74;
-    } else if (targetSecondAmount >= 74) {
-      maxSecondAmount = 5;
-      minFirstAmount = targetSecondAmount + 72;
+    maxSecondAmount = 21;
+    if (targetSecondAmount <= 5) {
+      minFirstAmount = Math.max(targetSecondAmount + 72, 74);
+    } else if (targetSecondAmount <= 9) {
+      minFirstAmount = Math.max(targetSecondAmount + 74, 80);
+    } else if (targetSecondAmount <= 16) {
+      minFirstAmount = Math.max(targetSecondAmount + 78, 90);
+    } else if (targetSecondAmount <= 21) {
+      minFirstAmount = Math.max(targetSecondAmount + 80, 100);
     }
   }
 

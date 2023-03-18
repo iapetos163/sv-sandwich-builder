@@ -335,4 +335,30 @@ describe('getTargetTypeVector', () => {
     expect(v[15]).toBe(180);
     expect(v[0]).toBe(146);
   });
+
+  it('Respects requirements for ONE_THREE_ONE', () => {
+    const v = getTargetTypeVector({
+      targetPowers: [
+        { mealPower: 2, type: TypeIndex.ROCK, level: 1 },
+        { mealPower: 1, type: TypeIndex.ROCK, level: 1 },
+      ],
+      targetConfigSet: [
+        {
+          typeAllocation: 'ONE_THREE_ONE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 0,
+        },
+        {
+          typeAllocation: 'ONE_THREE_ONE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+      ],
+      rankedTypeBoosts: [],
+      targetTypes: [TypeIndex.ROCK, 0, 1],
+      typeVector: [],
+    });
+
+    expect(v[TypeIndex.ROCK]).toBeGreaterThanOrEqual(74);
+  });
 });
