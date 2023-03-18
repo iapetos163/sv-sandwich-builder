@@ -490,8 +490,8 @@ describe('makeSandwichForPower', () => {
 
     // TODO: see how mpPlaceIndex set 2,0,1 (desired) compares to 2,1,0 (actual)
     // Chorizo, Herbed Sausage, pickle, yellow bell pepper, Avocado, marmalade, pepper
+    // Chorizo, Herbed Sausage, 2x Yellow Bell Pepper, Avocado, Marmalade, 2x Wasabi, Mayonnaise
     // Cheese, Ham, Basil, Chorizo, Pickle, Strawberry, Marmalade, Salt, Vinegar, Salt [too long]
-    // chorizo, pepper, chorizo, jam, jam
     // 2x Chorizo, Strawberry, Ham, Pickle, Herbed Sausage, Pepper, 2x Jam
     expect(sandwich).not.toBeNull();
     console.debug(

@@ -3,11 +3,7 @@ import { MealPower, rangeMealPowers, TypeIndex } from '../../../enum';
 import { createMetaVector } from '../../../metavector';
 import { Power } from '../../../types';
 import { applyTransform } from '../../../vector-math';
-import {
-  adjustMealPowerTargetForFlavorBoost,
-  getTargetMealPowerVector,
-} from '../vector/meal-power';
-import { getTargetFlavorVector } from '../vector/taste';
+import { getTargetMealPowerVector } from '../vector/meal-power';
 import { getTargetTypeVector } from '../vector/type-vector';
 import {
   getTargetConfigs,
@@ -22,8 +18,6 @@ export interface Target {
   powers: Power[];
   configSet: TargetConfig[];
   numHerbaMystica: number;
-  // TODO: remove
-  transformedTargetMetaVector: number[];
   typesByPlace: [TypeIndex, TypeIndex, TypeIndex];
   boostPower: MealPower | null;
 }
@@ -130,32 +124,9 @@ export const selectInitialTargets = ({
           return targets;
         }
 
-        const targetFlavorVector = getTargetFlavorVector({
-          flavorVector: [],
-          boostPower,
-          rankedFlavorBoosts: [],
-        });
-
-        const adjustedMealPowerVector = adjustMealPowerTargetForFlavorBoost(
-          targetMealPowerVector,
-          boostPower,
-        );
-
-        const metaVector = createMetaVector({
-          mealPowerVector: adjustedMealPowerVector,
-          typeVector: targetTypeVector,
-          flavorVector: targetFlavorVector,
-        });
-
-        const transformedTargetMetaVector = applyTransform(
-          ingredientMatrix,
-          metaVector,
-        );
-
         return [
           ...targets,
           {
-            transformedTargetMetaVector,
             configSet: targetConfigSet,
             numHerbaMystica: targetNumHerba,
             powers: targetPowers,

@@ -152,135 +152,150 @@ export const selectIngredientCandidates = ({
     typeVector: currentTypeVector,
   });
 
-  const targetFlavorVector =
+  const targetFlavorVectors =
     target.boostPower !== null
       ? getTargetFlavorVectors({
           flavorVector: currentFlavorVector,
           boostPower: target.boostPower,
           rankedFlavorBoosts,
-        })[0]
-      : currentFlavorVector;
+        })
+      : [currentFlavorVector];
 
-  const targetMetaVector = createMetaVector({
-    mealPowerVector: adjustedTargetMealPowerVector,
-    typeVector: targetTypeVector,
-    flavorVector: targetFlavorVector,
-  });
-
-  let deltaMetaVector = diff(targetMetaVector, currentMetaVector);
-  const deltaNorm = norm(deltaMetaVector);
-
-  if (deltaNorm === Infinity) {
-    if (debug) {
-      console.debug('Cannot satisfy constraints for target configs', {
-        targetTypeVector,
-        currentTypeVector,
-        target,
-      });
-    }
-    return [];
-  }
-  // In the case we are forced to pick an ingredient but we have what we need
-  // Force a nonzero deltaTypeVector
-  else if (deltaNorm === 0) {
-    const newTargetTypeVector = getTargetTypeVector({
-      targetPowers: target.powers,
-      targetConfigSet: target.configSet,
-      targetTypes: target.typesByPlace,
-      rankedTypeBoosts,
-      typeVector: currentTypeVector,
-      forceDiff: true,
-    });
-    const newTargetMetaVector = createMetaVector({
-      mealPowerVector: adjustedTargetMealPowerVector,
-      typeVector: newTargetTypeVector,
-      flavorVector: targetFlavorVector,
-    });
-    deltaMetaVector = diff(newTargetMetaVector, currentMetaVector);
-    // todo: make this recursive?
-  }
-
-  const minProduct =
-    1 / (remainingFillings + remainingCondiments + remainingHerba);
-
-  const { chosenIngredients } = ingredients.reduce<{
+  const { chosenIngredients } = targetFlavorVectors.reduce<{
     chosenIngredients: ScoredIngredient[];
     highestScoredProduct: number;
   }>(
     (
       { chosenIngredients, highestScoredProduct },
-      ing,
+      targetFlavorVector,
     ): {
       chosenIngredients: ScoredIngredient[];
       highestScoredProduct: number;
     } => {
-      if (
-        (remainingFillings <= 0 && ing.ingredientType === 'filling') ||
-        (remainingCondiments <= 0 &&
-          ing.ingredientType === 'condiment' &&
-          !ing.isHerbaMystica) ||
-        (remainingHerba <= 0 && ing.isHerbaMystica) ||
-        skipIngredients[ing.name]
-      ) {
+      const targetMetaVector = createMetaVector({
+        mealPowerVector: adjustedTargetMealPowerVector,
+        typeVector: targetTypeVector,
+        flavorVector: targetFlavorVector,
+      });
+
+      let deltaMetaVector = diff(targetMetaVector, currentMetaVector);
+      const deltaNorm = norm(deltaMetaVector);
+
+      if (deltaNorm === Infinity) {
+        if (debug) {
+          console.debug('Cannot satisfy constraints for target configs', {
+            targetTypeVector,
+            currentTypeVector,
+            target,
+          });
+        }
         return { chosenIngredients, highestScoredProduct };
       }
-
-      // const adjustedMetaVector = ing.metaVector.map((c, i) =>
-      //   targetMetaVector[i] > 0 ? c : 0,
-      // );
-
-      const product =
-        innerProduct(ing.metaVector, deltaMetaVector) /
-        normSquared(deltaMetaVector);
-
-      const [scoredProduct, score] =
-        ing.ingredientType === 'filling'
-          ? [product / internalFillingScore, FILLING_SCORE]
-          : [
-              product / CONDIMENT_SCORE,
-              ing.isHerbaMystica ? HERBA_SCORE : CONDIMENT_SCORE,
-            ];
-
-      if (debug && (ing.name === 'Jam' || ing.name === 'Vinegar')) {
-        console.debug({ name: ing.name, product, scoredProduct });
-      }
-      if (
-        product < minProduct ||
-        scoredProduct < highestScoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD)
-      ) {
-        return { chosenIngredients, highestScoredProduct };
+      // In the case we are forced to pick an ingredient but we have what we need
+      // Force a nonzero deltaTypeVector
+      else if (deltaNorm === 0) {
+        const newTargetTypeVector = getTargetTypeVector({
+          targetPowers: target.powers,
+          targetConfigSet: target.configSet,
+          targetTypes: target.typesByPlace,
+          rankedTypeBoosts,
+          typeVector: currentTypeVector,
+          forceDiff: true,
+        });
+        const newTargetMetaVector = createMetaVector({
+          mealPowerVector: adjustedTargetMealPowerVector,
+          typeVector: newTargetTypeVector,
+          flavorVector: targetFlavorVector,
+        });
+        deltaMetaVector = diff(newTargetMetaVector, currentMetaVector);
+        // todo: make this recursive?
       }
 
-      if (scoredProduct < highestScoredProduct) {
-        return {
-          chosenIngredients: [
-            ...chosenIngredients,
-            { ...ing, score, scoredProduct },
-          ],
-          highestScoredProduct,
-        };
-      }
+      const minProduct =
+        1 / (remainingFillings + remainingCondiments + remainingHerba);
 
-      const newMinScoredProduct =
-        scoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD);
-      return {
-        chosenIngredients: [
-          ...chosenIngredients.filter(
-            (i) =>
-              i.scoredProduct >= newMinScoredProduct ||
-              (!needCondiment &&
-                needFilling &&
-                i.ingredientType === 'filling' &&
-                i.scoredProduct >= 1) ||
-              (!needFilling &&
-                needCondiment &&
-                i.ingredientType === 'condiment' &&
-                i.scoredProduct >= 1),
-          ),
-          { ...ing, score, scoredProduct },
-        ],
-        highestScoredProduct: scoredProduct,
-      };
+      return ingredients.reduce<{
+        chosenIngredients: ScoredIngredient[];
+        highestScoredProduct: number;
+      }>(
+        (
+          { chosenIngredients, highestScoredProduct },
+          ing,
+        ): {
+          chosenIngredients: ScoredIngredient[];
+          highestScoredProduct: number;
+        } => {
+          if (
+            (remainingFillings <= 0 && ing.ingredientType === 'filling') ||
+            (remainingCondiments <= 0 &&
+              ing.ingredientType === 'condiment' &&
+              !ing.isHerbaMystica) ||
+            (remainingHerba <= 0 && ing.isHerbaMystica) ||
+            skipIngredients[ing.name]
+          ) {
+            return { chosenIngredients, highestScoredProduct };
+          }
+
+          // const adjustedMetaVector = ing.metaVector.map((c, i) =>
+          //   targetMetaVector[i] > 0 ? c : 0,
+          // );
+
+          const product =
+            innerProduct(ing.metaVector, deltaMetaVector) /
+            normSquared(deltaMetaVector);
+
+          const [scoredProduct, score] =
+            ing.ingredientType === 'filling'
+              ? [product / internalFillingScore, FILLING_SCORE]
+              : [
+                  product / CONDIMENT_SCORE,
+                  ing.isHerbaMystica ? HERBA_SCORE : CONDIMENT_SCORE,
+                ];
+
+          if (debug && (ing.name === 'Jam' || ing.name === 'Vinegar')) {
+            console.debug({ name: ing.name, product, scoredProduct });
+          }
+          if (
+            product < minProduct ||
+            scoredProduct <
+              highestScoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD)
+          ) {
+            return { chosenIngredients, highestScoredProduct };
+          }
+
+          if (scoredProduct < highestScoredProduct) {
+            return {
+              chosenIngredients: [
+                ...chosenIngredients,
+                { ...ing, score, scoredProduct },
+              ],
+              highestScoredProduct,
+            };
+          }
+
+          const newMinScoredProduct =
+            scoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD);
+          return {
+            chosenIngredients: [
+              ...chosenIngredients.filter(
+                (i) =>
+                  i.scoredProduct >= newMinScoredProduct ||
+                  (!needCondiment &&
+                    needFilling &&
+                    i.ingredientType === 'filling' &&
+                    i.scoredProduct >= 1) ||
+                  (!needFilling &&
+                    needCondiment &&
+                    i.ingredientType === 'condiment' &&
+                    i.scoredProduct >= 1),
+              ),
+              { ...ing, score, scoredProduct },
+            ],
+            highestScoredProduct: scoredProduct,
+          };
+        },
+        { chosenIngredients, highestScoredProduct },
+      );
     },
     { chosenIngredients: [], highestScoredProduct: 0 },
   );
@@ -292,10 +307,8 @@ export const selectIngredientCandidates = ({
         ...chosenIngredients.map(
           (i) => `${i.name} ${i.score} ${i.scoredProduct}`,
         ),
-      ].join('\n  ')}
-      Delta Target: ${deltaMetaVector.join(' ')}`,
+      ].join('\n  ')}`,
     );
   }
-
   return chosenIngredients;
 };
