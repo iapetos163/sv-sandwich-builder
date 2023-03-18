@@ -511,3 +511,6 @@ export const permutePowerConfigs = (
 
   return recurse([], 0, {});
 };
+
+export const allocationHasMaxes = (typeAllocation: TypeAllocation) =>
+  typeAllocation === 'ONE_ONE_THREE' || typeAllocation === 'ONE_THREE_ONE';

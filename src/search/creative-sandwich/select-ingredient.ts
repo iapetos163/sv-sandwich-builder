@@ -6,8 +6,8 @@ import {
 } from '../../mechanics';
 import { createMetaVector } from '../../metavector';
 import { Ingredient } from '../../types';
-import { diff, innerProduct, norm, normSquared } from '../../vector-math';
-import { Target } from './target/index';
+import { add, diff, innerProduct, norm, normSquared } from '../../vector-math';
+import { allocationHasMaxes, Target } from './target';
 import {
   adjustMealPowerTargetForFlavorBoost,
   getTargetFlavorVectors,
@@ -254,7 +254,7 @@ export const selectIngredientCandidates = ({
                   ing.isHerbaMystica ? HERBA_SCORE : CONDIMENT_SCORE,
                 ];
 
-          if (debug && (ing.name === 'Jam' || ing.name === 'Vinegar')) {
+          if (debug && ing.name === 'Bacon') {
             console.debug({ name: ing.name, product, scoredProduct });
           }
           if (
@@ -263,6 +263,21 @@ export const selectIngredientCandidates = ({
               highestScoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD)
           ) {
             return { chosenIngredients, highestScoredProduct };
+          }
+
+          if (allocationHasMaxes(target.configSet[0].typeAllocation)) {
+            const nextTypeVector = add(currentTypeVector, ing.typeVector);
+            const nextRtb = rankTypeBoosts(nextTypeVector);
+            const nextTargetTypeVector = getTargetTypeVector({
+              targetPowers: target.powers,
+              targetTypes: target.typesByPlace,
+              targetConfigSet: target.configSet,
+              typeVector: nextTypeVector,
+              rankedTypeBoosts: nextRtb,
+            });
+            if (norm(nextTargetTypeVector) === Infinity) {
+              return { chosenIngredients, highestScoredProduct };
+            }
           }
 
           if (scoredProduct < highestScoredProduct) {

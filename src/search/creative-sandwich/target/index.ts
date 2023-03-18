@@ -1,4 +1,4 @@
-import { MealPower, rangeMealPowers, TypeIndex } from '../../../enum';
+import { MealPower, TypeIndex } from '../../../enum';
 import { Power } from '../../../types';
 import {
   getTargetConfigs,
@@ -6,6 +6,8 @@ import {
   permutePowerConfigs,
   TargetConfig,
 } from './target-config';
+
+export { allocationHasMaxes } from './target-config';
 
 export type { TargetConfig };
 
