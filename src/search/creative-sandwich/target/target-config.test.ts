@@ -142,6 +142,94 @@ describe('permutePowerConfigs', () => {
     );
     expect(oneOneThreeAllocation).toBeDefined();
   });
+
+  it('Does not output duplicate config sets', () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.TITLE,
+        type: TypeIndex.FLYING,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.GRASS,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.EGG,
+        type: 0,
+        level: 1,
+      },
+    ];
+
+    const configs: TargetConfig[][] = [
+      [
+        {
+          typeAllocation: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 1,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 1,
+        },
+      ],
+      [
+        {
+          typeAllocation: 'ONE_ONE_THREE',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 3,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 1,
+          mpPlaceIndex: 3,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 2,
+        },
+      ],
+      [
+        {
+          typeAllocation: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+        {
+          typeAllocation: 'ONE_ONE_THREE',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 3,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 1,
+          mpPlaceIndex: 3,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 2,
+        },
+      ],
+    ];
+
+    const res = permutePowerConfigs(targetPowers, configs);
+
+    const matches = res.filter(
+      (cs) =>
+        cs[0].typeAllocation === 'ONE_ONE_THREE' &&
+        cs[0].typePlaceIndex === 0 &&
+        cs[0].mpPlaceIndex === 1 &&
+        cs[1].typePlaceIndex === 2 &&
+        cs[1].mpPlaceIndex === 3 &&
+        cs[2].typePlaceIndex === 0 &&
+        cs[2].mpPlaceIndex === 2,
+    );
+    expect(matches).toHaveLength(1);
+  });
 });
 
 describe('getTypeTargetsByPlace', () => {
