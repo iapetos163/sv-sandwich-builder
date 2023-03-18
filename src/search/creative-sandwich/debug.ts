@@ -1,8 +1,11 @@
 import { allTypes, mealPowerCopy } from '../../strings';
-import { Target } from './target';
+import { Target, TargetConfig } from './target';
+
+export const configSetToStr = (configs: TargetConfig[]) =>
+  `${configs[0].typeAllocation}
+mpPlaceIndices: ${configs.map((c) => c.mpPlaceIndex)}
+typePlaceIndices: ${configs.map((c) => c.typePlaceIndex)}`;
 
 export const targetToStr = (t: Target) =>
-  `${t.configSet[0].typeAllocation}
-mpPlaceIndices: ${t.configSet.map((c) => c.mpPlaceIndex)}
-typePlaceIndices: ${t.configSet.map((c) => c.typePlaceIndex)}
+  `${configSetToStr(t.configSet)}
 Boost ${t.boostPower !== null ? mealPowerCopy[t.boostPower] : 'none'}`;
