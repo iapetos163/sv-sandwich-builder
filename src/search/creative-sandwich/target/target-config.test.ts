@@ -19,6 +19,25 @@ describe('getTargetConfigs', () => {
     expect(res[0].length).toBeLessThanOrEqual(4);
     expect(res[1].length).toBeLessThanOrEqual(4);
   });
+
+  it('Allows for Egg power to be in the place of a repeated type', () => {
+    const res = getTargetConfigs(
+      [
+        { mealPower: MealPower.TITLE, type: TypeIndex.FLYING, level: 1 },
+        { mealPower: MealPower.ENCOUNTER, type: TypeIndex.GRASS, level: 1 },
+        { mealPower: MealPower.EGG, type: TypeIndex.NORMAL, level: 1 },
+      ],
+      1,
+    );
+
+    const matchingEggConfig = res[2].find(
+      (c) =>
+        c.typeAllocation === 'ONE_ONE_THREE' &&
+        c.mpPlaceIndex === 2 &&
+        c.typePlaceIndex === 0,
+    );
+    expect(matchingEggConfig).toBeDefined();
+  });
 });
 
 describe('permutePowerConfigs', () => {
