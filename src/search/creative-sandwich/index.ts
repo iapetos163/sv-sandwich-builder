@@ -155,6 +155,8 @@ const makeSandwichesForTarget = (
     `,
       );
     }
+    const remainingCondiments =
+      maxCondiments - condiments.length - herba.length;
     const newIngredientCandidates = selectIngredientCandidates({
       debug: debugCondition,
       target,
@@ -165,10 +167,11 @@ const makeSandwichesForTarget = (
         !alreadyReachedAllTargets || fillings.length === 0
           ? maxFillings - fillings.length
           : 0,
-      remainingCondiments: condimentsAllowed
-        ? maxCondiments - condiments.length
-        : 0,
-      remainingHerba: target.numHerbaMystica - herba.length,
+      remainingCondiments: condimentsAllowed ? remainingCondiments : 0,
+      remainingHerba: Math.min(
+        remainingCondiments,
+        target.numHerbaMystica - herba.length,
+      ),
       skipIngredients,
       needFilling: fillings.length === 0,
       needCondiment: condiments.length + herba.length === 0,
