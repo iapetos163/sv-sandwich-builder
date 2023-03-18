@@ -9,6 +9,7 @@ import {
   rankMealPowerBoosts,
   rankTypeBoosts,
   requestedPowersValid,
+  TargetConfig,
 } from './index';
 
 describe('rankMealPowerBoosts', () => {
@@ -139,6 +140,87 @@ describe('permutePowerConfigs', () => {
     res.forEach(([config1, config2]) => {
       expect(config1.typePlaceIndex).not.toBe(config2.typePlaceIndex);
     });
+  });
+
+  it('Is flexible with Egg power', () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.TITLE,
+        type: TypeIndex.FLYING,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.GRASS,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.EGG,
+        type: 0,
+        level: 1,
+      },
+    ];
+
+    const configs: TargetConfig[][] = [
+      [
+        {
+          config: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 1,
+        },
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 1,
+        },
+      ],
+      [
+        {
+          config: 'ONE_ONE_THREE',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 3,
+        },
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 1,
+          mpPlaceIndex: 3,
+        },
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 2,
+        },
+      ],
+      [
+        {
+          config: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+        {
+          config: 'ONE_ONE_THREE',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 3,
+        },
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 1,
+          mpPlaceIndex: 3,
+        },
+        {
+          config: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 2,
+        },
+      ],
+    ];
+
+    const res = permutePowerConfigs(targetPowers, configs);
+
+    const oneOneThreeAllocation = res.find(
+      (cs) => cs[0].config === 'ONE_ONE_THREE',
+    );
+    expect(oneOneThreeAllocation).toBeDefined();
   });
 });
 
