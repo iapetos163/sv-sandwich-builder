@@ -452,7 +452,25 @@ export const permutePowerConfigs = (
     powerIndex: number,
     typePlaceIndexMapping: Partial<Record<TypeIndex, number>>,
   ): TargetConfig[][] => {
-    if (powers.length === powerIndex) return [powerSelections];
+    if (powers.length <= powerIndex) return [powerSelections];
+
+    if (!mealPowerHasType(powers[powerIndex].mealPower)) {
+      return configs[powerIndex]
+        .filter(
+          (c) =>
+            (powerSelections.length === 0 ||
+              c.typeAllocation === powerSelections[0].typeAllocation) &&
+            !powerSelections.some((d) => configsEqual(c, d)),
+        )
+        .flatMap((c) =>
+          recurse(
+            [...powerSelections, c],
+            powerIndex + 1,
+            typePlaceIndexMapping,
+          ),
+        );
+    }
+
     const powerType = powers[powerIndex].type;
     const assignedTypePlaceIndex = typePlaceIndexMapping[powerType];
 

@@ -27,7 +27,7 @@ jobs:
         run: pnpm run build
 
       - name: Test
-        run: pnpm run test --ci --reporters=jest-junit
+        run: pnpm run test --ci
 
       - name: Test Report
         uses: dorny/test-reporter@v1
