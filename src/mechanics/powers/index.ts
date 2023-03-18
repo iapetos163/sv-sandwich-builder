@@ -209,11 +209,11 @@ export const getTargetConfigs = (
     });
   }
 
-  const titlePower = targetPowers.find(
+  const hasTitlePower = targetPowers.find(
     (tp) => tp.mealPower === MealPower.TITLE,
   );
 
-  if (targetNumHerba >= 1 && titlePower) {
+  if (targetNumHerba >= 1 && hasTitlePower) {
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.mealPower === MealPower.TITLE) {
         return [
@@ -221,6 +221,16 @@ export const getTargetConfigs = (
           { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 1 },
         ];
       }
+
+      if (!mealPowerHasType(tp.mealPower)) {
+        return [
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
+          { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
+          { config: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        ];
+      }
+
       return [
         { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
         { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
@@ -230,13 +240,8 @@ export const getTargetConfigs = (
   }
 
   if (targetNumHerba >= 1) {
-    return targetPowers.map((tp): TargetConfig[] => {
-      if (tp.mealPower === MealPower.TITLE) {
-        return [
-          { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-          { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 1 },
-        ];
-      }
+    // Does not have title as a target
+    return targetPowers.map((): TargetConfig[] => {
       return [
         { config: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
         { config: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
@@ -297,7 +302,11 @@ export const getTargetConfigs = (
     });
   }
 
-  if (targetPowers.length >= 3 && lv2s.length >= 2) {
+  const couldHaveSameTypes = targetPowers.some(
+    (p) => !mealPowerHasType(p.mealPower),
+  );
+
+  if (targetPowers.length >= 3 && !couldHaveSameTypes && lv2s.length >= 2) {
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level === 2) {
         return [
@@ -309,7 +318,7 @@ export const getTargetConfigs = (
     });
   }
 
-  if (targetPowers.length >= 3 && lv2s.length === 1) {
+  if (targetPowers.length >= 3 && !couldHaveSameTypes && lv2s.length === 1) {
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
         return [
@@ -323,7 +332,7 @@ export const getTargetConfigs = (
     });
   }
 
-  if (targetPowers.length >= 3) {
+  if (targetPowers.length >= 3 && !couldHaveSameTypes) {
     return targetPowers.map((): TargetConfig[] => [
       { config: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
       { config: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
