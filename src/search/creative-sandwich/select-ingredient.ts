@@ -152,7 +152,8 @@ export const selectIngredientCandidates = ({
     typeVector: currentTypeVector,
   });
 
-  const targetFlavorVector = target.boostPower
+  const targetFlavorVector =
+    target.boostPower !== null
     ? getTargetFlavorVector({
         flavorVector: currentFlavorVector,
         boostPower: target.boostPower,
