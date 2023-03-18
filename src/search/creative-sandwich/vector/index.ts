@@ -1,5 +1,5 @@
 export { getTargetTypeVector } from './type-vector';
-export { getRelativeTasteVector, getTargetFlavorVector } from './taste';
+export { getRelativeTasteVector, getTargetFlavorVectors } from './taste';
 export {
   getTargetMealPowerVector,
   adjustMealPowerTargetForFlavorBoost,
@@ -8,6 +8,6 @@ export {
 export type { GetTargetTypeVectorProps } from './type-vector';
 export type {
   RelativeTasteVectorProps,
-  GetTargetFlavorVectorProps,
+  GetTargetFlavorVectorsProps,
 } from './taste';
 export type { GetTargetMealPowerVectorProps } from './meal-power';

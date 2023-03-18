@@ -10,7 +10,7 @@ import { diff, innerProduct, norm, normSquared } from '../../vector-math';
 import { Target } from './target/index';
 import {
   adjustMealPowerTargetForFlavorBoost,
-  getTargetFlavorVector,
+  getTargetFlavorVectors,
   getTargetMealPowerVector,
   getTargetTypeVector,
 } from './vector';
@@ -154,11 +154,11 @@ export const selectIngredientCandidates = ({
 
   const targetFlavorVector =
     target.boostPower !== null
-      ? getTargetFlavorVector({
+      ? getTargetFlavorVectors({
           flavorVector: currentFlavorVector,
           boostPower: target.boostPower,
           rankedFlavorBoosts,
-        })
+        })[0]
       : currentFlavorVector;
 
   const targetMetaVector = createMetaVector({
@@ -241,6 +241,9 @@ export const selectIngredientCandidates = ({
               ing.isHerbaMystica ? HERBA_SCORE : CONDIMENT_SCORE,
             ];
 
+      if (debug && (ing.name === 'Jam' || ing.name === 'Vinegar')) {
+        console.debug({ name: ing.name, product, scoredProduct });
+      }
       if (
         product < minProduct ||
         scoredProduct < highestScoredProduct * (1 - INGREDIENT_SCORE_THRESHOLD)
@@ -289,7 +292,8 @@ export const selectIngredientCandidates = ({
         ...chosenIngredients.map(
           (i) => `${i.name} ${i.score} ${i.scoredProduct}`,
         ),
-      ].join('\n  ')}`,
+      ].join('\n  ')}
+      Delta Target: ${deltaMetaVector.join(' ')}`,
     );
   }
 

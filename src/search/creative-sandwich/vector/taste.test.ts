@@ -1,5 +1,5 @@
 import { Flavor, rangeFlavors } from '../../../enum';
-import { getRelativeTasteVector, getTargetFlavorVector } from './taste';
+import { getRelativeTasteVector, getTargetFlavorVectors } from './taste';
 
 describe('getRelativeTasteVector', () => {
   it('Does not output infinite components', () => {
@@ -177,12 +177,12 @@ describe('getRelativeTasteVector', () => {
 
 describe('getTargetFlavorVector', () => {
   it('Does not output a zero vector for boosting Egg Power', () => {
-    const res = getTargetFlavorVector({
+    const res = getTargetFlavorVectors({
       flavorVector: [],
       boostPower: 0,
       rankedFlavorBoosts: [],
     });
 
-    expect(res[Flavor.SWEET]).toBeGreaterThan(0);
+    expect(res[0][Flavor.SWEET]).toBeGreaterThan(0);
   });
 });

@@ -309,54 +309,54 @@ export const getRelativeTasteVector = (() => {
   };
 })();
 
-export interface GetTargetFlavorVectorProps {
+export interface GetTargetFlavorVectorsProps {
   flavorVector: number[];
   rankedFlavorBoosts: FlavorBoost[];
   boostPower: MealPower;
 }
 
-export const getTargetFlavorVector = ({
+export const getTargetFlavorVectors = ({
   flavorVector,
   boostPower,
   rankedFlavorBoosts,
-}: GetTargetFlavorVectorProps) => {
+}: GetTargetFlavorVectorsProps) => {
   const candidatePrimaryFlavors = primaryFlavorsForPower[boostPower];
-
-  const primaryFlavor =
-    rankedFlavorBoosts.find(({ flavor }) =>
-      candidatePrimaryFlavors.includes(flavor),
-    )?.flavor ?? candidatePrimaryFlavors[0];
 
   const candidateSecondaryFlavors = secondaryFlavorsForPower[boostPower];
 
-  const secondaryFlavor =
-    rankedFlavorBoosts.find(
-      ({ flavor }) =>
-        flavor !== primaryFlavor && candidateSecondaryFlavors.includes(flavor),
-    )?.flavor ?? candidateSecondaryFlavors[0];
+  return candidatePrimaryFlavors.flatMap((primaryFlavor) => {
+    return candidateSecondaryFlavors
+      .filter((f) => f !== primaryFlavor)
+      .map((secondaryFlavor) => {
+        let primaryTarget: number, secondaryTarget: number;
+        if (rankedFlavorBoosts[0]?.flavor === primaryFlavor) {
+          secondaryTarget =
+            rankedFlavorBoosts[1]?.flavor === secondaryFlavor
+              ? rankedFlavorBoosts[1].amount
+              : (rankedFlavorBoosts[1]?.amount ?? 0) + 1;
+          primaryTarget = Math.max(
+            rankedFlavorBoosts[0].amount,
+            secondaryTarget,
+          );
+        } else {
+          secondaryTarget =
+            rankedFlavorBoosts[0]?.flavor === secondaryFlavor
+              ? rankedFlavorBoosts[0].amount
+              : (rankedFlavorBoosts[0]?.amount ?? 0) + 1;
 
-  let primaryTarget: number, secondaryTarget: number;
-  if (rankedFlavorBoosts[0]?.flavor === primaryFlavor) {
-    secondaryTarget =
-      rankedFlavorBoosts[1]?.flavor === secondaryFlavor
-        ? rankedFlavorBoosts[1].amount
-        : (rankedFlavorBoosts[1]?.amount ?? 0) + 1;
-    primaryTarget = Math.max(rankedFlavorBoosts[0].amount, secondaryTarget);
-  } else {
-    secondaryTarget =
-      rankedFlavorBoosts[0]?.flavor === secondaryFlavor
-        ? rankedFlavorBoosts[0].amount
-        : (rankedFlavorBoosts[0]?.amount ?? 0) + 1;
+          primaryTarget =
+            primaryFlavor < secondaryFlavor
+              ? secondaryTarget
+              : secondaryTarget + 1;
+        }
 
-    primaryTarget =
-      primaryFlavor < secondaryFlavor ? secondaryTarget : secondaryTarget + 1;
-  }
-
-  return rangeFlavors.map((f) =>
-    f === primaryFlavor
-      ? primaryTarget
-      : f === secondaryFlavor
-      ? secondaryTarget
-      : flavorVector[f] ?? 0,
-  );
+        return rangeFlavors.map((f) =>
+          f === primaryFlavor
+            ? primaryTarget
+            : f === secondaryFlavor
+            ? secondaryTarget
+            : flavorVector[f] ?? 0,
+        );
+      });
+  });
 };
