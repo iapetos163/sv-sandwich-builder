@@ -44,8 +44,9 @@ export const getTargetMealPowerVector = ({
       const lastAmount = lastMpAmount ? lastMpAmount[1] : 0;
       const currentBoostAtTargetPlace = rankedMealPowerBoosts[placeIndex];
       const mpToBeat = currentBoostAtTargetPlace?.mealPower ?? null;
-      const amountToBeat = currentBoostAtTargetPlace?.amount ?? 0;
-      // (boostPower !== null && mpToBeat === boostPower ? 100 : 0);
+      const amountToBeat =
+        (currentBoostAtTargetPlace?.amount ?? 0) +
+        (boostPower !== null && mpToBeat === boostPower ? 100 : 0);
       return [
         ...mpAmounts,
         [
