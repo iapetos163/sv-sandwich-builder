@@ -13,6 +13,10 @@ export type TypeAllocation =
   | 'ONE_THREE_TWO';
 
 export interface TargetConfig {
+  /**
+   * @deprecated
+   * Use Target#typeAllocation instead
+   */
   typeAllocation: TypeAllocation;
   typePlaceIndex: number;
   mpPlaceIndex: number;

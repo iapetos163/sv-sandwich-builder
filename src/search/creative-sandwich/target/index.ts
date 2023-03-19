@@ -1,10 +1,12 @@
-import { MealPower, TypeIndex } from '../../../enum';
+import { Flavor, MealPower, TypeIndex } from '../../../enum';
+import { getFlavorProfilesForPower } from '../../../mechanics';
 import { Power } from '../../../types';
 import {
   getTargetConfigs,
   getTypeTargetsByPlace,
   permutePowerConfigs,
   TargetConfig,
+  TypeAllocation,
 } from './target-config';
 
 export { allocationHasMaxes } from './target-config';
@@ -13,10 +15,12 @@ export type { TargetConfig };
 
 export interface Target {
   powers: Power[];
+  typeAllocation: TypeAllocation;
   configSet: TargetConfig[];
   numHerbaMystica: number;
   typesByPlace: [TypeIndex, TypeIndex, TypeIndex];
   boostPower: MealPower | null;
+  flavorProfile?: [Flavor, Flavor];
 }
 
 export interface SelectInitialTargetsProps {
@@ -64,6 +68,7 @@ export const selectInitialTargets = ({
         return [
           {
             configSet: targetConfigSet,
+            typeAllocation: targetConfigSet[0].typeAllocation,
             numHerbaMystica: targetNumHerba,
             powers: targetPowers,
             typesByPlace: targetTypes,
@@ -72,26 +77,22 @@ export const selectInitialTargets = ({
         ];
       }
 
-      return targetPowers.reduce<Target[]>((targets, power) => {
+      return targetPowers.flatMap((power) => {
         const boostPower = power.mealPower;
-        if (
-          boostPower === MealPower.SPARKLING ||
-          boostPower === MealPower.TITLE
-        ) {
-          return targets;
+        const flavorProfiles = getFlavorProfilesForPower(power.mealPower);
+        if (flavorProfiles.length === 0) {
+          return [];
         }
-
-        return [
-          ...targets,
-          {
-            configSet: targetConfigSet,
-            numHerbaMystica: targetNumHerba,
-            powers: targetPowers,
-            typesByPlace: targetTypes,
-            boostPower,
-          },
-        ];
-      }, accum);
+        return flavorProfiles.map((flavorProfile) => ({
+          configSet: targetConfigSet,
+          typeAllocation: targetConfigSet[0].typeAllocation,
+          numHerbaMystica: targetNumHerba,
+          powers: targetPowers,
+          typesByPlace: targetTypes,
+          boostPower,
+          flavorProfile,
+        }));
+      });
     }, accum1);
   }, []);
 };

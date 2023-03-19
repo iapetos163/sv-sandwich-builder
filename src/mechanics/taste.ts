@@ -36,20 +36,53 @@ tasteMap[Flavor.SPICY][Flavor.SOUR] = MealPower.HUMUNGO;
 tasteMap[Flavor.SPICY][Flavor.BITTER] = MealPower.HUMUNGO;
 tasteMap[Flavor.SPICY][Flavor.SPICY] = MealPower.HUMUNGO;
 
-/*
-  const componentFlavors: Record<MealPower, Flavor[]> = {
-    Egg: ['Sweet'],
-    Humungo: ['Hot'],
-    Teensy: ['Sour'],
-    Item: ['Bitter'],
-    Encounter: ['Salty'],
-    Exp: ['Bitter', 'Salty'],
-    Catch: ['Sweet', 'Sour'],
-    Raid: ['Sweet', 'Hot'],
-    Title: [],
-    Sparkling: [],
-  };
-  */
+/** If has more than one element, then it is a subset of secondaryFlavorsForPower[power] */
+const primaryFlavorsForPower: Flavor[][] = [];
+primaryFlavorsForPower[MealPower.EGG] = [Flavor.SWEET];
+primaryFlavorsForPower[MealPower.HUMUNGO] = [Flavor.SPICY];
+primaryFlavorsForPower[MealPower.TEENSY] = [Flavor.SOUR];
+primaryFlavorsForPower[MealPower.ITEM] = [Flavor.BITTER];
+primaryFlavorsForPower[MealPower.ENCOUNTER] = [Flavor.SALTY];
+primaryFlavorsForPower[MealPower.EXP] = [Flavor.BITTER, Flavor.SALTY];
+primaryFlavorsForPower[MealPower.CATCH] = [Flavor.SWEET, Flavor.SOUR];
+primaryFlavorsForPower[MealPower.RAID] = [Flavor.SWEET, Flavor.SPICY];
+primaryFlavorsForPower[MealPower.TITLE] = [];
+primaryFlavorsForPower[MealPower.SPARKLING] = [];
+
+const secondaryFlavorsForPower: Flavor[][] = [];
+secondaryFlavorsForPower[MealPower.EGG] = [Flavor.SALTY, Flavor.BITTER];
+secondaryFlavorsForPower[MealPower.HUMUNGO] = [
+  Flavor.SALTY,
+  Flavor.BITTER,
+  Flavor.SOUR,
+];
+secondaryFlavorsForPower[MealPower.TEENSY] = [
+  Flavor.SALTY,
+  Flavor.BITTER,
+  Flavor.SPICY,
+];
+secondaryFlavorsForPower[MealPower.ITEM] = [
+  Flavor.SPICY,
+  Flavor.SOUR,
+  Flavor.SWEET,
+];
+secondaryFlavorsForPower[MealPower.ENCOUNTER] = [
+  Flavor.SWEET,
+  Flavor.SPICY,
+  Flavor.SOUR,
+];
+secondaryFlavorsForPower[MealPower.EXP] = [Flavor.BITTER, Flavor.SALTY];
+secondaryFlavorsForPower[MealPower.CATCH] = [Flavor.SWEET, Flavor.SOUR];
+secondaryFlavorsForPower[MealPower.RAID] = [Flavor.SWEET, Flavor.SPICY];
+secondaryFlavorsForPower[MealPower.TITLE] = [];
+secondaryFlavorsForPower[MealPower.SPARKLING] = [];
+
+export const getFlavorProfilesForPower = (mp: MealPower): [Flavor, Flavor][] =>
+  primaryFlavorsForPower[mp].flatMap((primary) =>
+    secondaryFlavorsForPower[mp]
+      .filter((secondary) => secondary !== primary)
+      .map((secondary): [Flavor, Flavor] => [primary, secondary]),
+  );
 
 export const getBoostedMealPower = (rankedFlavorBoosts: FlavorBoost[]) => {
   if (rankedFlavorBoosts.length === 0 || rankedFlavorBoosts[0].amount <= 0) {
