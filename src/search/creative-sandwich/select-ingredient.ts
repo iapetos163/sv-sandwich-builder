@@ -16,7 +16,7 @@ import {
   getTargetTypeVector,
 } from './vector';
 
-const INGREDIENT_SCORE_THRESHOLD = 0.2;
+const INGREDIENT_SCORE_THRESHOLD = 0.25;
 const CONDIMENT_SCORE = 1;
 const FILLING_SCORE = 5;
 const DEFAULT_HERBA_SCORE = 35;
@@ -254,7 +254,7 @@ export const selectIngredientCandidates = ({
               ing.isHerbaMystica ? HERBA_SCORE : CONDIMENT_SCORE,
             ];
 
-      if (debug && ing.name === 'Bacon') {
+      if (debug && (ing.name === 'Pepper' || ing.name === 'Pickle')) {
         console.debug({ name: ing.name, product, scoredProduct });
       }
       if (
