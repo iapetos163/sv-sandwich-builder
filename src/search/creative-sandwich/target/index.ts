@@ -37,21 +37,21 @@ export const selectInitialTargets = ({
   if (targetPowers.some((p) => p.mealPower === MealPower.SPARKLING)) {
     numHerbaTargets = [2];
   } else if (targetPowers.some((p) => p.level === 3)) {
-    numHerbaTargets = avoidHerbaMystica ? [1, 2] : [2];
+    numHerbaTargets = avoidHerbaMystica ? [2, 1] : [2];
   } else if (targetPowers.some((p) => p.mealPower === MealPower.TITLE)) {
     numHerbaTargets = [1];
   } else if (targetPowers.some((p) => p.level === 2)) {
-    numHerbaTargets = [0, 1];
+    numHerbaTargets = [1, 0];
   }
 
-  return numHerbaTargets.reduce<Target[]>((accum1, targetNumHerba) => {
+  return numHerbaTargets.flatMap((targetNumHerba) => {
     const targetConfigs = getTargetConfigs(targetPowers, targetNumHerba);
     /**
      * Array of [arrays of configs per target power]
      */
     const targetConfigSets = permutePowerConfigs(targetPowers, targetConfigs);
 
-    return targetConfigSets.reduce<Target[]>((accum, targetConfigSet) => {
+    return targetConfigSets.flatMap((targetConfigSet): Target[] => {
       const targetTypes = getTypeTargetsByPlace(
         targetPowers,
         targetConfigSet.map((c) => c.typePlaceIndex),
@@ -93,6 +93,6 @@ export const selectInitialTargets = ({
           flavorProfile,
         }));
       });
-    }, accum1);
-  }, []);
+    });
+  });
 };
