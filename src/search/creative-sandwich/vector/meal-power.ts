@@ -55,6 +55,7 @@ export const getTargetMealPowerVector = ({
         placeIndex < placeIndexOfBoost!
           ? 100
           : 0);
+
       return [
         ...mpAmounts,
         [
@@ -71,34 +72,12 @@ export const getTargetMealPowerVector = ({
     [],
   );
 
-  // const boostingMpAmountIndex = targetMpAmounts.findIndex(
-  //   ([mp]) => mp === boostPower,
-  // );
-  // if (boostingMpAmountIndex >= 0) {
-  //   const [mp, currentAmount] = targetMpAmounts[boostingMpAmountIndex];
-  //   const nextMpAmount = targetMpAmounts[boostingMpAmountIndex + 1];
-  //   if (!nextMpAmount) {
-  //     targetMpAmounts[boostingMpAmountIndex] = [
-  //       mp,
-  //       Math.max(100, currentAmount),
-  //     ];
-  //   } else {
-  //     const [nextMp, nextAmount] = nextMpAmount;
-  //     targetMpAmounts[boostingMpAmountIndex] = [
-  //       mp,
-  //       Math.max(
-  //         Math.min(100, nextMp < mp ? nextAmount : nextAmount - 1),
-  //         currentAmount,
-  //       ),
-  //     ];
-  //   }
-  // }
-
   return rangeMealPowers.map((mp) => {
     const targetMatch = targetMpAmounts.find(([tmp]) => tmp === mp);
-    if (!targetMatch) return currentVector[mp] ?? 0;
+    const currentAmount = currentVector[mp] ?? 0;
+    if (!targetMatch) return currentAmount;
     const [, targetAmount] = targetMatch;
-    return targetAmount;
+    return Math.max(targetAmount, currentAmount);
   });
 };
 

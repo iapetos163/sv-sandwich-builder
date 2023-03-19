@@ -1,5 +1,6 @@
 import { MealPower, TypeIndex } from '../../../enum';
 import { rankMealPowerBoosts } from '../../../mechanics/powers';
+import { diff } from '../../../vector-math';
 import {
   getTargetMealPowerVector,
   sortTargetPowersByMpPlace,
@@ -128,6 +129,41 @@ describe('getTargetMealPowerVector', () => {
     });
     const compOver100Index = v.findIndex((c) => c >= 100);
     expect(compOver100Index).toBe(-1);
+  });
+
+  it('Does not undershoot current vector', () => {
+    const mealPowerVector = [0, 0, 21, -3, 0, 0, 0, 0, 0, 12];
+    const v = getTargetMealPowerVector({
+      targetPowers: [
+        { mealPower: 2, type: 15, level: 1 },
+        { mealPower: 3, type: 1, level: 1 },
+        { mealPower: 9, type: 12, level: 1 },
+      ],
+      targetConfigSet: [
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 1,
+          mpPlaceIndex: 2,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 0,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 1,
+        },
+      ],
+      mealPowerVector,
+      rankedMealPowerBoosts: rankMealPowerBoosts(mealPowerVector),
+      boostPower: 3,
+    });
+
+    const deltaVector = diff(v, mealPowerVector);
+    const negativeCompIndex = deltaVector.findIndex((c) => c < 0);
+    expect(negativeCompIndex).toBe(-1);
   });
 });
 
