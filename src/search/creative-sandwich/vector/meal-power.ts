@@ -39,7 +39,7 @@ export const getTargetMealPowerVector = ({
   );
 
   const placeIndexOfBoost = (sortedPowerPlaceIndexes.find(
-    ([mp, placeIndex]) => mp.mealPower === boostPower,
+    ([mp]) => mp.mealPower === boostPower,
   ) ?? [])[1];
 
   const targetMpAmounts = sortedPowerPlaceIndexes.reduce<[MealPower, number][]>(
@@ -48,7 +48,6 @@ export const getTargetMealPowerVector = ({
       const lastAmount = lastMpAmount ? lastMpAmount[1] : 0;
       const currentBoostAtTargetPlace = rankedMealPowerBoosts[placeIndex];
       const mpToBeat = currentBoostAtTargetPlace?.mealPower ?? null;
-      console.debug({ mpToBeat, lastAmount });
       const amountToBeat =
         (currentBoostAtTargetPlace?.amount ?? 0) +
         (boostPower !== null &&
