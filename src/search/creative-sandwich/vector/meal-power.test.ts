@@ -1,4 +1,5 @@
 import { MealPower, TypeIndex } from '../../../enum';
+import { rankMealPowerBoosts } from '../../../mechanics/powers';
 import {
   getTargetMealPowerVector,
   sortTargetPowersByMpPlace,
@@ -93,6 +94,39 @@ describe('getTargetMealPowerVector', () => {
     });
 
     const compOver100Index = res.findIndex((c) => c >= 100);
+    expect(compOver100Index).toBe(-1);
+  });
+
+  it('Does not factor in boosts for meal powers in later places', () => {
+    const mealPowerVector = [5, 0, 18, 9, 0, 0, 0, 0, -15, 12];
+    const v = getTargetMealPowerVector({
+      targetPowers: [
+        { mealPower: MealPower.EXP, type: 15, level: 1 },
+        { mealPower: MealPower.ITEM, type: 1, level: 1 },
+        { mealPower: MealPower.ENCOUNTER, type: 12, level: 1 },
+      ],
+      targetConfigSet: [
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 1,
+          mpPlaceIndex: 2,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 0,
+        },
+        {
+          typeAllocation: 'ONE_THREE_TWO',
+          typePlaceIndex: 2,
+          mpPlaceIndex: 1,
+        },
+      ],
+      mealPowerVector,
+      rankedMealPowerBoosts: rankMealPowerBoosts(mealPowerVector),
+      boostPower: MealPower.ITEM,
+    });
+    const compOver100Index = v.findIndex((c) => c >= 100);
     expect(compOver100Index).toBe(-1);
   });
 });
