@@ -2,6 +2,7 @@ import { rangeTypes, TypeIndex } from '../../../enum';
 import { rankTypeBoosts, TypeBoost } from '../../../mechanics';
 import { Power } from '../../../types';
 import { TargetConfig } from '../target';
+import { TypeAllocation } from '../target/target-config';
 
 /**
  * @returns Array of [type, typePlaceIndex] by descending typePlaceIndex
@@ -180,6 +181,30 @@ export const getTargetTypeVector = ({
     }
     return c;
   });
+};
+
+const INFINITE_TYPE_VECTOR = rangeTypes.map(() => Infinity);
+
+export const getMaxTypeVector = ({
+  typeAllocation,
+  typeVector,
+}: {
+  typeAllocation: TypeAllocation;
+  typeVector: number[];
+}) => {
+  if (typeAllocation !== 'ONE_THREE_ONE') return INFINITE_TYPE_VECTOR;
+
+  const maxFirstAmount = 105;
+  const maxSecondAmount = 21;
+
+  const currentFirstAmount = Math.max(...typeVector, 0);
+  const firstAmountType = typeVector.findIndex((c) => c === currentFirstAmount);
+  if (currentFirstAmount > maxSecondAmount) {
+    return rangeTypes.map((t) =>
+      t === firstAmountType ? maxFirstAmount : maxSecondAmount,
+    );
+  }
+  return rangeTypes.map((t) => maxFirstAmount);
 };
 
 const getMinRankedTypeAmounts = (

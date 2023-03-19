@@ -1,4 +1,4 @@
-export { getTargetTypeVector } from './type-vector';
+export { getTargetTypeVector, getMaxTypeVector } from './type-vector';
 export { getRelativeTasteVector, getTargetFlavorVectors } from './taste';
 export {
   getTargetMealPowerVector,

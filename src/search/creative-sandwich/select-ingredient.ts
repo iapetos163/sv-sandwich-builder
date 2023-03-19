@@ -10,6 +10,7 @@ import { add, diff, innerProduct, norm, normSquared } from '../../vector-math';
 import { allocationHasMaxes, Target } from './target';
 import {
   adjustMealPowerTargetForFlavorBoost,
+  getMaxTypeVector,
   getTargetFlavorVectors,
   getTargetMealPowerVector,
   getTargetTypeVector,
@@ -265,17 +266,15 @@ export const selectIngredientCandidates = ({
             return { chosenIngredients, highestScoredProduct };
           }
 
-          if (allocationHasMaxes(target.configSet[0].typeAllocation)) {
+          const typeAllocation = target.configSet[0].typeAllocation;
+          if (allocationHasMaxes(typeAllocation)) {
             const nextTypeVector = add(currentTypeVector, ing.typeVector);
-            const nextRtb = rankTypeBoosts(nextTypeVector);
-            const nextTargetTypeVector = getTargetTypeVector({
-              targetPowers: target.powers,
-              targetTypes: target.typesByPlace,
-              targetConfigSet: target.configSet,
+            const maxTypeVector = getMaxTypeVector({
+              typeAllocation,
               typeVector: nextTypeVector,
-              rankedTypeBoosts: nextRtb,
             });
-            if (norm(nextTargetTypeVector) === Infinity) {
+
+            if (maxTypeVector.some((c, t) => c < (nextTypeVector[t] ?? 0))) {
               return { chosenIngredients, highestScoredProduct };
             }
           }
