@@ -242,8 +242,35 @@ describe('getTargetTypeVector', () => {
         },
       ],
       rankedTypeBoosts: rangeTypes.map((t) => ({ type: t, amount: 250 })),
-      targetTypes: [14, 0, 1],
+      targetTypes: [TypeIndex.ICE, 0, 1],
       typeVector: rangeTypes.map(() => 250),
+    });
+    expect(norm(v)).toBeLessThan(Infinity);
+  });
+
+  it('Does not return infinity when targeting ONE_ONE_THREE and having added one herba mystica and another ingredient', () => {
+    const typeVector = [
+      250, 250, 286, 250, 250, 286, 250, 250, 286, 250, 250, 286, 250, 250, 286,
+      250, 250, 286,
+    ];
+    const v = getTargetTypeVector({
+      typeVector,
+      targetConfigSet: [
+        {
+          typeAllocation: 'ONE_ONE_THREE',
+          typePlaceIndex: 0,
+          mpPlaceIndex: 2,
+        },
+      ],
+      targetPowers: [
+        {
+          mealPower: MealPower.EXP,
+          type: TypeIndex.ICE,
+          level: 3,
+        },
+      ],
+      targetTypes: [TypeIndex.ICE, 0, 1],
+      rankedTypeBoosts: rankTypeBoosts(typeVector),
     });
     expect(norm(v)).toBeLessThan(Infinity);
   });

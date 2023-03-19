@@ -146,7 +146,10 @@ export const getTargetTypeVector = ({
   } else if (allocation === 'ONE_ONE_THREE') {
     minFirstAmount = 106;
     maxSecondAmount = Math.max(targetFirstAmount, minFirstAmount) - 106;
-    if (targetSecondAmount > maxSecondAmount) {
+    if (
+      targetSecondAmount > maxSecondAmount ||
+      currentSecondAmount > maxSecondAmount
+    ) {
       minFirstAmount = 281;
       maxSecondAmount = Infinity;
     }
