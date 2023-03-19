@@ -7,4 +7,7 @@ export {
 
 export type { GetTargetTypeVectorProps } from './type-vector';
 export type { GetTargetFlavorVectorProps } from './flavor';
-export type { GetTargetMealPowerVectorProps } from './meal-power';
+export type {
+  GetTargetMealPowerVectorProps,
+  AdjustMealPowerTargetProps,
+} from './meal-power';

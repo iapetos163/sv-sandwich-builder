@@ -142,10 +142,21 @@ export const selectIngredientCandidates = ({
     boostPower: target.boostPower,
   });
 
-  const adjustedTargetMealPowerVector = adjustMealPowerTargetForFlavorBoost(
-    targetMealPowerVector,
-    target.boostPower,
-  );
+  // if (debug) {
+  //   console.debug({
+  //     targetPowers: target.powers,
+  //     targetConfigSet: target.configSet,
+  //     mealPowerVector: currentMealPowerVector,
+  //     boostPower: target.boostPower,
+  //     targetMealPowerVector,
+  //   });
+  // }
+
+  const adjustedTargetMealPowerVector = adjustMealPowerTargetForFlavorBoost({
+    currentVector: currentMealPowerVector,
+    targetVector: targetMealPowerVector,
+    boostedPower: target.boostPower,
+  });
 
   const targetTypeVector = getTargetTypeVector({
     targetPowers: target.powers,
@@ -306,7 +317,9 @@ export const selectIngredientCandidates = ({
           (i) => `${i.name} ${i.score} ${i.scoredProduct}`,
         ),
       ].join('\n  ')}
-Delta target: ${deltaMetaVector.join(' ')}`,
+Current:  ${currentMetaVector.join(' ')}
+Target:   ${targetMetaVector.join(' ')}
+D Target: ${deltaMetaVector.join(' ')}`,
     );
   }
 

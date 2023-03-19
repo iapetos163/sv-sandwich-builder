@@ -86,10 +86,17 @@ export const boostMealPowerVector = (v: number[], boostedPower: MealPower) =>
     mp === boostedPower ? (v[mp] ?? 0) + 100 : v[mp],
   );
 
-export const adjustMealPowerTargetForFlavorBoost = (
-  mealPowerVector: number[],
-  boostedPower: MealPower | null,
-) =>
-  mealPowerVector.map((c, mp) =>
-    mp === boostedPower ? Math.max(c - 100, 0) : c,
+export interface AdjustMealPowerTargetProps {
+  currentVector: number[];
+  targetVector: number[];
+  boostedPower: MealPower | null;
+}
+
+export const adjustMealPowerTargetForFlavorBoost = ({
+  currentVector,
+  targetVector,
+  boostedPower,
+}: AdjustMealPowerTargetProps) =>
+  targetVector.map((c, mp) =>
+    mp === boostedPower ? Math.max(c - 100, currentVector[mp] ?? 0) : c,
   );
