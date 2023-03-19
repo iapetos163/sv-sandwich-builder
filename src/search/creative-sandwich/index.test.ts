@@ -59,6 +59,7 @@ describe('makeSandwichForPower', () => {
       },
     ]);
 
+    // ONE_THREE_TWO; Salty + Hot = Encounter (9)
     // One acceptable recipe: 4x chorizo, 2x rice, 1x peanut butter
     expect(sandwich).not.toBeNull();
 
@@ -488,18 +489,12 @@ describe('makeSandwichForPower', () => {
       },
     ]);
 
-    // TODO: see how mpPlaceIndex set 2,0,1 (desired) compares to 2,1,0 (actual)
+    // ONE_THREE_TWO; Bitter+Sour = Item (3)
     // Chorizo, Herbed Sausage, pickle, yellow bell pepper, Avocado, marmalade, pepper
     // Chorizo, Herbed Sausage, 2x Yellow Bell Pepper, Avocado, Marmalade, 2x Wasabi, Mayonnaise
-    // Cheese, Ham, Basil, Chorizo, Pickle, Strawberry, Marmalade, Salt, Vinegar, Salt [too long]
-    // 2x Chorizo, Strawberry, Ham, Pickle, Herbed Sausage, Pepper, 2x Jam
+
+    // Chorizo, Herbed Sausage, Yellow Bell Pepper, Avocado, Tomato, Marmalade, Curry Powder, Mayonnaise, Horseradish
     expect(sandwich).not.toBeNull();
-    console.debug(
-      `${sandwich!.fillings
-        .concat(sandwich!.condiments)
-        .map((i) => i.name)
-        .join(', ')}`,
-    );
 
     const numIngredients =
       sandwich!.fillings.length + sandwich!.condiments.length;
