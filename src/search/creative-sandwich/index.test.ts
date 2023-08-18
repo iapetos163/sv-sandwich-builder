@@ -489,11 +489,13 @@ describe('makeSandwichForPower', () => {
       },
     ]);
 
-    // ONE_THREE_TWO; Bitter+Sour = Item (3)
+    // ONE_THREE_TWO; 2,0,1; Bitter+Sour = Item (3)
     // Chorizo, Herbed Sausage, pickle, yellow bell pepper, Avocado, marmalade, pepper
     // Chorizo, Herbed Sausage, 2x Yellow Bell Pepper, Avocado, Marmalade, 2x Wasabi, Mayonnaise
+    // Chorizo, Herbed Sausage, pickle, yellow bell pepper, Avocado, marmalade, vinegar, salt
 
     // Chorizo, Herbed Sausage, Yellow Bell Pepper, Avocado, Tomato, Marmalade, Curry Powder, Mayonnaise, Horseradish
+    // HOLY SHIT: Chorizo, Strawberry, Cheese, Pickle, Wasabi, Salt
     expect(sandwich).not.toBeNull();
 
     const numIngredients =
