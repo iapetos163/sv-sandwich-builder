@@ -23,37 +23,41 @@ export const calculateTypes = (
     secondType = { type: 1, amount: 0 },
     thirdType = { type: 2, amount: 0 },
   ] = rankedTypes;
-  const { amount: mainTypeAmount } = firstType;
+  const { amount: firstTypeAmount } = firstType;
   const { amount: secondTypeAmount } = secondType;
-  const oneTwoDiff = mainTypeAmount - secondTypeAmount;
+  const oneTwoDiff = firstTypeAmount - secondTypeAmount;
 
-  if (mainTypeAmount > 480) {
+  if (firstTypeAmount > 480) {
     // mono type
     return [firstType, firstType, firstType];
   }
-  if (mainTypeAmount > 280 || (mainTypeAmount > 105 && oneTwoDiff > 105)) {
+  if (firstTypeAmount > 280 || (firstTypeAmount > 105 && oneTwoDiff > 105)) {
     // dual type
     return [firstType, firstType, thirdType];
   }
 
-  if (mainTypeAmount <= 105) {
-    if (mainTypeAmount >= 100) {
-      if (oneTwoDiff >= 80 && secondTypeAmount <= 21) {
-        return [firstType, thirdType, firstType];
-      }
-    } else if (mainTypeAmount >= 90) {
-      if (oneTwoDiff >= 78 && secondTypeAmount <= 16) {
-        return [firstType, thirdType, firstType];
-      }
-    } else if (mainTypeAmount >= 80) {
-      if (oneTwoDiff >= 74 && secondTypeAmount <= 9) {
-        return [firstType, thirdType, firstType];
-      }
-    } else if (mainTypeAmount >= 74) {
-      if (oneTwoDiff >= 72 && secondTypeAmount <= 5) {
-        return [firstType, thirdType, firstType];
-      }
-    }
+  if (
+    firstTypeAmount <= 105 &&
+    firstTypeAmount - 1.5 * secondTypeAmount >= 70
+  ) {
+    return [firstType, thirdType, firstType];
+    // if (firstTypeAmount >= 100) {
+    //   if (oneTwoDiff >= 80 && secondTypeAmount <= 21) {
+    //     return [firstType, thirdType, firstType];
+    //   }
+    // } else if (firstTypeAmount >= 90) {
+    //   if (oneTwoDiff >= 78 && secondTypeAmount <= 16) {
+    //     return [firstType, thirdType, firstType];
+    //   }
+    // } else if (firstTypeAmount >= 80) {
+    //   if (oneTwoDiff >= 74 && secondTypeAmount <= 9) {
+    //     return [firstType, thirdType, firstType];
+    //   }
+    // } else if (firstTypeAmount >= 74) {
+    //   if (oneTwoDiff >= 72 && secondTypeAmount <= 5) {
+    //     return [firstType, thirdType, firstType];
+    //   }
+    // }
   }
 
   return [firstType, thirdType, secondType];
