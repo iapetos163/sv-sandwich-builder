@@ -26,7 +26,7 @@
     "@vitejs/plugin-react": "^1.1.3",
     "arg": "^5.0.2",
     "eslint": "^8.5.0",
-    "eslint-config-birbcore": "github:iapetos163/eslint-config-birbcore#v2.2.1",
+    "eslint-config-birbcore": "github:iapetos163/eslint-config-birbcore#v2.4.0",
     "got": "^11",
     "jest": "^27.4.5",
     "jest-junit": "^15.0.0",
