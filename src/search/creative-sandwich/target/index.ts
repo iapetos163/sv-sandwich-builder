@@ -18,9 +18,11 @@ export interface Target {
   typeAllocation: TypeAllocation;
   configSet: TargetConfig[];
   numHerbaMystica: number;
-  typesByPlace: [TypeIndex, TypeIndex, TypeIndex];
+  typesByPlace: [TypeIndex, TypeIndex | undefined, TypeIndex | undefined];
   boostPower: MealPower | null;
   flavorProfile?: [Flavor, Flavor];
+  // flavorConstraints: Record<string, number>[];
+  // typePlaceConstraints: Record<string, number>[];
 }
 
 export interface SelectInitialTargetsProps {

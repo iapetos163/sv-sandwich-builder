@@ -2,6 +2,7 @@ import { MealPower } from '../../enum';
 import { requestedPowersValid } from '../../mechanics';
 import { Ingredient, Power, Sandwich } from '../../types';
 import { selectInitialTargets, Target } from './target';
+import SimpleSimplex from 'simple-simplex';
 
 const SCORE_THRESHOLD = 0.2;
 
@@ -62,7 +63,7 @@ const makeSandwichesForTarget = (
 ): Sandwich[] => {
   const maxFillings = multiplayer ? 12 : 6;
   const maxCondiments = multiplayer ? 8 : 4;
-  const maxPieces = multiplayer ? 15 : 12;
+  const maxPiecesPerIngredient = multiplayer ? 15 : 12;
 
   type IngredientSelectionState = {
     fillings: Ingredient[];
@@ -88,6 +89,29 @@ const makeSandwichesForTarget = (
     score: 0,
   };
 
+  const simplex = new SimpleSimplex({
+    objective: {
+      herba: 35,
+      condiments: 5,
+      fillings: 1,
+    },
+    constraints: [
+      // per filling with >= 2 pieces
+      // maxPieces
+      // Total num fillings
+      // Total num condiments
+      // Herba cap
+      // second-best flavor
+      // 1, 2, 3
+      // first flavor
+      // first type
+      // second type ?
+      // third type ?
+      // 1, 2, ...14
+      // type score constraints
+    ],
+    optimizationType: 'min',
+  });
   // TODO
   return [];
 };

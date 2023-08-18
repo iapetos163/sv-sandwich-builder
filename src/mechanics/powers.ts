@@ -25,13 +25,15 @@ export const calculateTypes = (
   ] = rankedTypes;
   const { amount: firstTypeAmount } = firstType;
   const { amount: secondTypeAmount } = secondType;
-  const oneTwoDiff = firstTypeAmount - secondTypeAmount;
 
   if (firstTypeAmount > 480) {
     // mono type
     return [firstType, firstType, firstType];
   }
-  if (firstTypeAmount > 280 || (firstTypeAmount > 105 && oneTwoDiff > 105)) {
+  if (
+    firstTypeAmount > 280 ||
+    (firstTypeAmount > 105 && firstTypeAmount - secondTypeAmount > 105)
+  ) {
     // dual type
     return [firstType, firstType, thirdType];
   }
