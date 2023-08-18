@@ -87,6 +87,7 @@ export const calculateLevels = (
   }
 
   if (firstTypeAmount > 280) {
+    // FIXME ?
     if (thirdTypeAmount >= 180) {
       return [2, 2, 2];
     }
