@@ -1,6 +1,6 @@
-import { Flavor, MealPower, TypeIndex } from '../../../enum';
-import { getFlavorProfilesForPower } from '../../../mechanics';
-import { Power } from '../../../types';
+import { Flavor, MealPower, TypeIndex } from '@/enum';
+import { getFlavorProfilesForPower } from '@/mechanics';
+import { Power } from '@/types';
 import {
   getTargetConfigs,
   getTypeTargetsByPlace,
@@ -21,8 +21,9 @@ export interface Target {
   typesByPlace: [TypeIndex, TypeIndex | undefined, TypeIndex | undefined];
   boostPower: MealPower | null;
   flavorProfile?: [Flavor, Flavor];
-  // flavorConstraints: Record<string, number>[];
-  // typePlaceConstraints: Record<string, number>[];
+  firstTypeGte: number;
+  thirdTypeGte: number;
+  firstTypeLte: number;
 }
 
 export interface SelectInitialTargetsProps {
@@ -60,6 +61,22 @@ export const selectInitialTargets = ({
         [],
       );
 
+      const firstTypeGte = targetConfigSet.reduce((max, c) => {
+        if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
+        if (c.firstTypeGte) return Math.max(max, c.firstTypeGte);
+        if (c.thirdTypeGte) return Math.max(max, c.thirdTypeGte);
+        return max;
+      }, 0);
+
+      const thirdTypeGte = targetConfigSet.reduce(
+        (max, c) => Math.max(max, c.thirdTypeGte || 0),
+        0,
+      );
+      const firstTypeLte = targetConfigSet.reduce(
+        (max, c) => Math.max(max, c.firstTypeLte ?? Infinity),
+        Infinity,
+      );
+
       const flavorIndependent = targetPowers.every(
         (tp) =>
           tp.mealPower === MealPower.SPARKLING ||
@@ -75,6 +92,9 @@ export const selectInitialTargets = ({
             powers: targetPowers,
             typesByPlace: targetTypes,
             boostPower: null,
+            firstTypeGte,
+            thirdTypeGte,
+            firstTypeLte,
           },
         ];
       }
@@ -93,6 +113,9 @@ export const selectInitialTargets = ({
           typesByPlace: targetTypes,
           boostPower,
           flavorProfile,
+          firstTypeGte,
+          thirdTypeGte,
+          firstTypeLte,
         }));
       });
     });

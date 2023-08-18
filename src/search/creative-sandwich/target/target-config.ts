@@ -420,11 +420,23 @@ export const permutePowerConfigs = (
   powers: Power[],
   configs: TargetConfig[][],
 ): TargetConfig[][] => {
-  const recurse = (
-    powerSelections: TargetConfig[],
-    powerIndex: number,
-    typePlaceIndexMapping: Partial<Record<TypeIndex, number>>,
-  ): TargetConfig[][] => {
+  type RecurseArgs = {
+    powerSelections: TargetConfig[];
+    powerIndex: number;
+    typePlaceIndexMapping: Partial<Record<TypeIndex, number>>;
+    firstTypeGte: number;
+    firstTypeLte: number;
+    thirdTypeGte: number;
+  };
+
+  const recurse = ({
+    powerSelections,
+    powerIndex,
+    typePlaceIndexMapping,
+    firstTypeLte,
+    firstTypeGte,
+    thirdTypeGte,
+  }: RecurseArgs): TargetConfig[][] => {
     if (powers.length <= powerIndex) return [powerSelections];
 
     if (!mealPowerHasType(powers[powerIndex].mealPower)) {
@@ -433,14 +445,26 @@ export const permutePowerConfigs = (
           (c) =>
             (powerSelections.length === 0 ||
               c.typeAllocation === powerSelections[0].typeAllocation) &&
-            !powerSelections.some((d) => configsEqual(c, d)),
+            !powerSelections.some((d) => configsEqual(c, d)) &&
+            (c.firstTypeGt || 0) < firstTypeLte &&
+            (c.firstTypeGte || 0) <= firstTypeLte &&
+            (c.firstTypeLte === undefined || c.firstTypeLte >= firstTypeGte) &&
+            (c.thirdTypeGte || 0 <= firstTypeLte),
         )
         .flatMap((c) =>
-          recurse(
-            [...powerSelections, c],
-            powerIndex + 1,
+          recurse({
+            powerSelections: [...powerSelections, c],
+            powerIndex: powerIndex + 1,
             typePlaceIndexMapping,
-          ),
+            firstTypeGte: Math.max(
+              firstTypeGte,
+              (c.firstTypeGt || -1) + 1,
+              c.firstTypeGte || 0,
+              c.thirdTypeGte || 0,
+            ),
+            firstTypeLte: Math.min(firstTypeLte, c.firstTypeLte ?? Infinity),
+            thirdTypeGte: Math.max(thirdTypeGte, c.thirdTypeGte || 0),
+          }),
         );
     }
 
@@ -454,14 +478,26 @@ export const permutePowerConfigs = (
             (powerSelections.length === 0 ||
               c.typeAllocation === powerSelections[0].typeAllocation) &&
             c.typePlaceIndex === assignedTypePlaceIndex &&
-            !powerSelections.some((d) => configsEqual(c, d)),
+            !powerSelections.some((d) => configsEqual(c, d)) &&
+            (c.firstTypeGt || 0) < firstTypeLte &&
+            (c.firstTypeGte || 0) <= firstTypeLte &&
+            (c.firstTypeLte === undefined || c.firstTypeLte >= firstTypeGte) &&
+            (c.thirdTypeGte || 0 <= firstTypeLte),
         )
         .flatMap((c) =>
-          recurse(
-            [...powerSelections, c],
-            powerIndex + 1,
+          recurse({
+            powerSelections: [...powerSelections, c],
+            powerIndex: powerIndex + 1,
             typePlaceIndexMapping,
-          ),
+            firstTypeGte: Math.max(
+              firstTypeGte,
+              (c.firstTypeGt || -1) + 1,
+              c.firstTypeGte || 0,
+              c.thirdTypeGte || 0,
+            ),
+            firstTypeLte: Math.min(firstTypeLte, c.firstTypeLte ?? Infinity),
+            thirdTypeGte: Math.max(thirdTypeGte, c.thirdTypeGte || 0),
+          }),
         );
     }
     return configs[powerIndex]
@@ -472,17 +508,40 @@ export const permutePowerConfigs = (
           !Object.values(typePlaceIndexMapping).some(
             (pi) => c.typePlaceIndex === pi,
           ) &&
-          !powerSelections.some((d) => configsEqual(c, d)),
+          !powerSelections.some((d) => configsEqual(c, d)) &&
+          (c.firstTypeGt || 0) < firstTypeLte &&
+          (c.firstTypeGte || 0) <= firstTypeLte &&
+          (c.firstTypeLte === undefined || c.firstTypeLte >= firstTypeGte) &&
+          (c.thirdTypeGte || 0 <= firstTypeLte),
       )
       .flatMap((c) =>
-        recurse([...powerSelections, c], powerIndex + 1, {
-          ...typePlaceIndexMapping,
-          [powerType]: c.typePlaceIndex,
+        recurse({
+          powerSelections: [...powerSelections, c],
+          powerIndex: powerIndex + 1,
+          typePlaceIndexMapping: {
+            ...typePlaceIndexMapping,
+            [powerType]: c.typePlaceIndex,
+          },
+          firstTypeGte: Math.max(
+            firstTypeGte,
+            (c.firstTypeGt || -1) + 1,
+            c.firstTypeGte || 0,
+            c.thirdTypeGte || 0,
+          ),
+          firstTypeLte: Math.min(firstTypeLte, c.firstTypeLte ?? Infinity),
+          thirdTypeGte: Math.max(thirdTypeGte, c.thirdTypeGte || 0),
         }),
       );
   };
 
-  return recurse([], 0, {});
+  return recurse({
+    powerSelections: [],
+    powerIndex: 0,
+    typePlaceIndexMapping: {},
+    firstTypeGte: 0,
+    firstTypeLte: Infinity,
+    thirdTypeGte: 0,
+  });
 };
 
 export const allocationHasMaxes = (typeAllocation: TypeAllocation) =>
