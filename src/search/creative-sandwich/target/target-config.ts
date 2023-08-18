@@ -20,7 +20,20 @@ export interface TargetConfig {
   typeAllocation: TypeAllocation;
   typePlaceIndex: number;
   mpPlaceIndex: number;
+  firstTypeGt?: number;
+  firstTypeGte?: number;
+  firstTypeLte?: number;
+  thirdTypeGte?: number;
+  /** firstType - secondType > 105 */
+  diff105?: boolean;
+  /** firstTypeAmount - 1.5 * secondTypeAmount >= 70 */
+  diff70?: boolean;
 }
+
+export type InitTargetConfig = {
+  typePlaceIndex: number;
+  mpPlaceIndex: number;
+};
 
 export const configsEqual = (a: TargetConfig, b: TargetConfig) =>
   a.typeAllocation === b.typeAllocation &&
@@ -32,20 +45,15 @@ export const getTargetConfigs = (
   targetNumHerba: number,
 ): TargetConfig[][] => {
   if (targetNumHerba >= 2) {
+    const c = { typeAllocation: 'ONE_ONE_ONE' } as const;
     return targetPowers.map((tp) => {
       if (tp.mealPower === MealPower.SPARKLING) {
-        return [
-          { typeAllocation: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-        ];
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 0 }];
       }
       if (tp.mealPower === MealPower.TITLE) {
-        return [
-          { typeAllocation: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-        ];
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 1 }];
       }
-      return [
-        { typeAllocation: 'ONE_ONE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 },
-      ];
+      return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 2 }];
     });
   }
 
@@ -53,28 +61,15 @@ export const getTargetConfigs = (
   const hasSameTypes = !!repeatedType;
 
   if (targetNumHerba >= 1 && hasSameTypes) {
+    const c = { typeAllocation: 'ONE_ONE_THREE', firstTypeGt: 280 } as const;
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.mealPower === MealPower.TITLE) {
-        return [
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 1,
-          },
-        ];
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 1 }];
       }
       if (tp.type === repeatedType) {
-        return [
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 2,
-          },
-        ];
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 2 }];
       }
-      return [
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
-      ];
+      return [{ ...c, typePlaceIndex: 2, mpPlaceIndex: 3 }];
     });
   }
 
@@ -83,63 +78,57 @@ export const getTargetConfigs = (
   );
 
   if (targetNumHerba >= 1 && hasTitlePower) {
+    const oneOneThree = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeGt: 280,
+    } as const;
+    const oneThreeTwo = {
+      typeAllocation: 'ONE_THREE_TWO',
+      firstTypeLte: 280,
+    } as const;
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.mealPower === MealPower.TITLE) {
         return [
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 1,
-          },
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 1,
-          },
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 1 },
+          { ...oneThreeTwo, typePlaceIndex: 0, mpPlaceIndex: 1 },
         ];
       }
 
       if (!mealPowerHasType(tp.mealPower)) {
         return [
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 2,
-          },
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 2,
-            mpPlaceIndex: 3,
-          },
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 1,
-            mpPlaceIndex: 3,
-          },
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 2,
-            mpPlaceIndex: 2,
-          },
+          // We have already ruled out hasSameTypes
+          // So this one isn't included if power has type
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 2 },
+          { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 3 },
+          { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 3 },
+          { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 2 },
         ];
       }
 
       return [
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 3 },
+        { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 3 },
+        { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
     });
   }
 
   if (targetNumHerba >= 1) {
+    const oneOneThree = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeGt: 280,
+    } as const;
+    const oneThreeTwo = {
+      typeAllocation: 'ONE_THREE_TWO',
+      firstTypeLte: 280,
+    } as const;
     // Does not have title as a target
     return targetPowers.map((): TargetConfig[] => {
       return [
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 2 },
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 3 },
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 3 },
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 2 },
+        { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 3 },
+        { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 3 },
+        { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
     });
   }
@@ -149,84 +138,65 @@ export const getTargetConfigs = (
 
   // ONE_THREE_ONE can only be done if there are no level 2s
   if (hasSameTypes && lv2s.length === 1 && lv2s[0].type === repeatedType) {
+    const oneOneThree = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeGte: 180,
+      diff105: true,
+    } as const;
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
-        return [
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
-        ];
+        return [{ ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 0 }];
       }
       if (tp.type === repeatedType) {
-        return [
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 1,
-          },
-        ];
+        return [{ ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 1 }];
       }
-      return [
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
-      ];
+      return [{ ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 2 }];
     });
   }
 
   // ONE_THREE_ONE can only be done if there are no level 2s
   // ONE_ONE_THREE can only be done with at most one level 2
   if (hasSameTypes && lv2s.length > 0) {
+    const oneOneThree = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeGte: 180,
+      diff105: true,
+    } as const;
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.type === repeatedType) {
         return [
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 1,
-          },
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 1 },
         ];
       }
-      return [
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
-      ];
+      return [{ ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 2 }];
     });
   }
 
   if (hasSameTypes) {
     return targetPowers.map((tp): TargetConfig[] => {
+      const oneOneThree = {
+        typeAllocation: 'ONE_ONE_THREE',
+        firstTypeGt: 105,
+        diff105: true,
+      } as const;
+      const oneThreeOne = {
+        typeAllocation: 'ONE_THREE_ONE',
+        firstTypeLte: 105,
+        diff70: true,
+      } as const;
+
       if (tp.type === repeatedType) {
         return [
-          {
-            typeAllocation: 'ONE_THREE_ONE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
-          {
-            typeAllocation: 'ONE_THREE_ONE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 2,
-          },
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 1,
-          },
+          { ...oneThreeOne, typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { ...oneThreeOne, typePlaceIndex: 0, mpPlaceIndex: 2 },
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 1 },
         ];
       }
       return [
-        { typeAllocation: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        { ...oneThreeOne, typePlaceIndex: 2, mpPlaceIndex: 1 },
+        { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
     });
   }
@@ -236,41 +206,35 @@ export const getTargetConfigs = (
   );
 
   if (targetPowers.length >= 3 && !couldHaveSameTypes && lv2s.length >= 2) {
+    const oneThreeTwo = {
+      typeAllocation: 'ONE_THREE_TWO',
+      thirdTypeGte: 180,
+    } as const;
+
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level === 2) {
         return [
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 2,
-            mpPlaceIndex: 1,
-          },
+          { ...oneThreeTwo, typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 1 },
         ];
       }
-      return [
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-      ];
+      return [{ ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 2 }];
     });
   }
 
   if (targetPowers.length >= 3 && !couldHaveSameTypes && lv2s.length === 1) {
+    const oneThreeTwo = {
+      typeAllocation: 'ONE_THREE_TWO',
+      firstTypeGte: 180,
+    } as const;
+
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
-        return [
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
-        ];
+        return [{ ...oneThreeTwo, typePlaceIndex: 0, mpPlaceIndex: 0 }];
       }
       return [
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 2 },
+        { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 1 },
       ];
     });
   }
@@ -286,66 +250,71 @@ export const getTargetConfigs = (
   // ONE_THREE_ONE can only be done if there are no level 2s
   // ONE_ONE_THREE can only be done with at most one level 2
   if (lv2s.length >= 2) {
+    const c = { typeAllocation: 'ONE_THREE_TWO', thirdTypeGte: 180 } as const;
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
         return [
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 2,
-            mpPlaceIndex: 1,
-          },
+          { ...c, typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { ...c, typePlaceIndex: 2, mpPlaceIndex: 1 },
         ];
       }
-      return [
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-      ];
+      return [{ ...c, typePlaceIndex: 1, mpPlaceIndex: 2 }];
     });
   }
 
   // ONE_THREE_ONE can only be done if there are no level 2s
   // ONE_ONE_THREE can only be done with at most one level 2
   if (lv2s.length === 1) {
+    const oneThreeTwo = {
+      typeAllocation: 'ONE_THREE_TWO',
+      diff105: false,
+      firstTypeGte: 180,
+    } as const;
+    const oneOneThree = {
+      typeAllocation: 'ONE_ONE_THREE',
+      diff105: true,
+    } as const;
     return targetPowers.map((tp): TargetConfig[] => {
       if (tp.level >= 2) {
         return [
-          {
-            typeAllocation: 'ONE_THREE_TWO',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
-          {
-            typeAllocation: 'ONE_ONE_THREE',
-            typePlaceIndex: 0,
-            mpPlaceIndex: 0,
-          },
+          { ...oneThreeTwo, typePlaceIndex: 0, mpPlaceIndex: 0 },
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 0 },
         ];
       }
       return [
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-        { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+        { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 2 },
+        { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 1 },
 
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-        { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+        { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 1 },
+        { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
     });
   }
 
+  const oneThreeTwo = {
+    typeAllocation: 'ONE_THREE_TWO',
+    diff105: false,
+  } as const;
+  const oneOneThree = {
+    typeAllocation: 'ONE_ONE_THREE',
+    diff105: true,
+  } as const;
+  const oneThreeOne = {
+    typeAllocation: 'ONE_THREE_ONE',
+    firstTypeLte: 105,
+    diff70: true,
+  } as const;
   return targetPowers.map((): TargetConfig[] => [
-    { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 0, mpPlaceIndex: 0 },
-    { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 1, mpPlaceIndex: 2 },
-    { typeAllocation: 'ONE_THREE_TWO', typePlaceIndex: 2, mpPlaceIndex: 1 },
+    { ...oneThreeTwo, typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 2 },
+    { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 1 },
 
-    { typeAllocation: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-    { typeAllocation: 'ONE_THREE_ONE', typePlaceIndex: 0, mpPlaceIndex: 2 },
-    { typeAllocation: 'ONE_THREE_ONE', typePlaceIndex: 2, mpPlaceIndex: 1 },
-    { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 0 },
-    { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 0, mpPlaceIndex: 1 },
-    { typeAllocation: 'ONE_ONE_THREE', typePlaceIndex: 2, mpPlaceIndex: 2 },
+    { ...oneThreeOne, typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { ...oneThreeOne, typePlaceIndex: 0, mpPlaceIndex: 2 },
+    { ...oneThreeOne, typePlaceIndex: 2, mpPlaceIndex: 1 },
+    { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 0 },
+    { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 1 },
+    { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 2 },
   ]);
 };
 
