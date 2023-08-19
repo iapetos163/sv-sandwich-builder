@@ -1,8 +1,11 @@
-import { MealPower } from '../../enum';
-import { requestedPowersValid } from '../../mechanics';
-import { Ingredient, Power, Sandwich } from '../../types';
+import { MealPower } from '@/enum';
+import { requestedPowersValid } from '@/mechanics';
+import { Ingredient, Power, Sandwich } from '@/types';
 import { selectInitialTargets, Target } from './target';
-import SimpleSimplex from 'simple-simplex';
+//@ts-expect-error
+import { solve } from 'yalps';
+import { ingredients } from '@/data';
+import { getModel } from './model';
 
 const SCORE_THRESHOLD = 0.2;
 
@@ -30,23 +33,24 @@ export const makeSandwichForPowers = (
     leastScore: number;
   }>(
     ({ sandwiches, leastScore }, target) => {
-      const newSandwiches = makeSandwichesForTarget(
+      const newSandwich = makeSandwichForTarget(
         target,
         leastScore * (1 + SCORE_THRESHOLD),
       );
-      const leastScoreOfNew = Math.min(...newSandwiches.map((s) => s.score));
-      const allSandwiches = sandwiches.concat(newSandwiches);
-      if (leastScoreOfNew >= leastScore) {
+      if (!newSandwich) return { sandwiches, leastScore };
+
+      const allSandwiches = [...sandwiches, newSandwich];
+      if (newSandwich.score >= leastScore) {
         return {
           sandwiches: allSandwiches,
           leastScore,
         };
       }
 
-      const newMaxScore = leastScoreOfNew * (1 + SCORE_THRESHOLD);
+      const newMaxScore = newSandwich.score * (1 + SCORE_THRESHOLD);
       return {
         sandwiches: allSandwiches.filter((s) => s.score <= newMaxScore),
-        leastScore: leastScoreOfNew,
+        leastScore: newSandwich.score,
       };
     },
     { leastScore: Infinity, sandwiches: [] },
@@ -56,15 +60,11 @@ export const makeSandwichForPowers = (
   return sandwiches[0] ?? null;
 };
 
-const makeSandwichesForTarget = (
+const makeSandwichForTarget = (
   target: Target,
   maxScore: number,
   multiplayer = false,
-): Sandwich[] => {
-  const maxFillings = multiplayer ? 12 : 6;
-  const maxCondiments = multiplayer ? 8 : 4;
-  const maxPiecesPerIngredient = multiplayer ? 15 : 12;
-
+): Sandwich | null => {
   type IngredientSelectionState = {
     fillings: Ingredient[];
     condiments: Ingredient[];
@@ -89,29 +89,15 @@ const makeSandwichesForTarget = (
     score: 0,
   };
 
-  const simplex = new SimpleSimplex({
-    objective: {
-      herba: 35,
-      condiments: 5,
-      fillings: 1,
-    },
-    constraints: [
-      // per filling with >= 2 pieces
-      // maxPieces
-      // Total num fillings
-      // Total num condiments
-      // Herba cap
-      // second-best flavor
-      // 1, 2, 3
-      // first flavor
-      // first type
-      // second type ?
-      // third type ?
-      // 1, 2, ...14
-      // type score constraints
-    ],
-    optimizationType: 'min',
-  });
-  // TODO
-  return [];
+  const model = getModel({ multiplayer });
+
+  const solution = solve(model);
+  if (solution.status === 'infeasible') return null;
+
+  solution.variables;
+  if (solution.status === 'optimal') {
+    console.log(solution.variables);
+    return null; // TODO
+  }
+  throw solution;
 };
