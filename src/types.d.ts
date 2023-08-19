@@ -21,9 +21,9 @@ export interface Ingredient {
 export interface Sandwich {
   fillings: Ingredient[];
   condiments: Ingredient[];
-  mealPowerBoosts: number[];
-  typeBoosts: number[];
-  flavorBoosts: number[];
+  // mealPowerBoosts: number[];
+  // typeBoosts: number[];
+  // flavorBoosts: number[];
   powers: Power[];
   score: number;
 }

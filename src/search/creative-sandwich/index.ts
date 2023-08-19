@@ -1,18 +1,42 @@
-import { MealPower } from '@/enum';
-import { requestedPowersValid } from '@/mechanics';
+import {
+  requestedPowersValid,
+  getBoostedMealPower,
+  rankFlavorBoosts,
+  evaluateBoosts,
+} from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
 import { selectInitialTargets, Target } from './target';
 //@ts-expect-error
 import { solve } from 'yalps';
 import { ingredients } from '@/data';
 import { getModel } from './model';
+import { add } from '@/vector-math';
+
+const getPowersForIngredients = (ingredients: Ingredient[]) => {
+  const init = {
+    mealPowerBoosts: [] as number[],
+    typeBoosts: [] as number[],
+    flavorBoosts: [] as number[],
+  };
+
+  const { mealPowerBoosts, typeBoosts, flavorBoosts } = ingredients.reduce(
+    ({ mealPowerBoosts, typeBoosts, flavorBoosts }, ingredient) => ({
+      mealPowerBoosts: add(mealPowerBoosts, ingredient.baseMealPowerVector),
+      typeBoosts: add(typeBoosts, ingredient.typeVector),
+      flavorBoosts: add(flavorBoosts, ingredient.flavorVector),
+    }),
+    init,
+  );
+
+  const rankedFlavorBoosts = rankFlavorBoosts(flavorBoosts);
+  const boostedPower = getBoostedMealPower(rankedFlavorBoosts);
+  return evaluateBoosts(mealPowerBoosts, boostedPower, typeBoosts);
+};
 
 export const emptySandwich = {
   fillings: [],
   condiments: [],
-  mealPowerBoosts: {},
-  flavorBoosts: {},
-  typeBoosts: {},
+  powers: [],
 };
 
 export const makeSandwichForPowers = (
@@ -30,7 +54,16 @@ export const makeSandwichForPowers = (
     .map((target) => makeSandwichForTarget(target))
     .filter((s): s is SandwichResult => !!s);
   sandwiches.sort((a, b) => a.score - b.score);
-  return sandwiches[0] ?? null;
+  const result = sandwiches[0];
+  if (!result) return null;
+  const powers = getPowersForIngredients(
+    result.fillings.concat(result.condiments),
+  );
+
+  return {
+    ...result,
+    powers,
+  };
 };
 
 type SandwichResult = {
