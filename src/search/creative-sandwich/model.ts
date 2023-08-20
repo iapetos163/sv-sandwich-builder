@@ -1,6 +1,6 @@
-import { ingredients } from '@/data';
 //@ts-expect-error
 import type { Model } from 'yalps';
+import { ingredients } from '@/data';
 
 const getPiecesConstraints = (limit: number) =>
   Object.fromEntries(

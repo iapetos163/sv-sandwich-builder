@@ -1,3 +1,6 @@
+//@ts-expect-error
+import { solve } from 'yalps';
+import { ingredients } from '@/data';
 import {
   requestedPowersValid,
   getBoostedMealPower,
@@ -5,12 +8,9 @@ import {
   evaluateBoosts,
 } from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
-import { selectInitialTargets, Target } from './target';
-//@ts-expect-error
-import { solve } from 'yalps';
-import { ingredients } from '@/data';
-import { getModel } from './model';
 import { add } from '@/vector-math';
+import { getModel } from './model';
+import { selectInitialTargets, Target } from './target';
 
 const getPowersForIngredients = (ingredients: Ingredient[]) => {
   const init = {
@@ -82,7 +82,7 @@ const makeSandwichForTarget = (
   if (solution.status === 'infeasible') return null;
 
   if (solution.status === 'optimal') {
-    const [, score] = solution.variables.find(([n]) => n === 'score') ?? [, 0];
+    const [, score = 0] = solution.variables.find(([n]) => n === 'score') ?? [];
 
     const fillings: Ingredient[] = [];
     const condiments: Ingredient[] = [];
