@@ -1,5 +1,5 @@
-import { MealPower, TypeIndex } from '../enum';
-import { Power } from '../types';
+import { MealPower, TypeIndex } from '@/enum';
+import { Power } from '@/types';
 
 export interface TypeBoost {
   type: TypeIndex;
@@ -13,6 +13,9 @@ export interface MealPowerBoost {
 
 export const mealPowerHasType = (mealPower: MealPower) =>
   mealPower !== MealPower.EGG;
+
+export const isHerbaMealPower = (mealPower: MealPower) =>
+  mealPower === MealPower.SPARKLING || mealPower === MealPower.TITLE;
 
 // Assumes 3+ star sandwich
 export const calculateTypes = (

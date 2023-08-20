@@ -1,5 +1,5 @@
 import { Flavor, MealPower, TypeIndex } from '@/enum';
-import { getFlavorProfilesForPower } from '@/mechanics';
+import { getFlavorProfilesForPower, isHerbaMealPower } from '@/mechanics';
 import { Power } from '@/types';
 import {
   getTargetConfigs,
@@ -77,10 +77,8 @@ export const selectInitialTargets = ({
         Infinity,
       );
 
-      const flavorIndependent = targetPowers.every(
-        (tp) =>
-          tp.mealPower === MealPower.SPARKLING ||
-          tp.mealPower === MealPower.TITLE,
+      const flavorIndependent = targetPowers.every((tp) =>
+        isHerbaMealPower(tp.mealPower),
       );
 
       if (flavorIndependent) {

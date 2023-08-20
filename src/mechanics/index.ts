@@ -7,6 +7,7 @@ export {
   evaluateBoosts,
   requestedPowersValid,
   powerSetsMatch,
+  isHerbaMealPower,
 } from './powers';
 export {
   rankFlavorBoosts,
