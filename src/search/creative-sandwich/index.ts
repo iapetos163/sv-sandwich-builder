@@ -76,7 +76,9 @@ const makeSandwichForTarget = (
   target: Target,
   multiplayer = false,
 ): SandwichResult | null => {
-  const model = getModel({ multiplayer });
+  // TODO meal power
+  // TODO types
+  const model = getModel({ multiplayer, flavorProfile: target.flavorProfile });
 
   const solution = solve(model);
   if (solution.status === 'infeasible') return null;

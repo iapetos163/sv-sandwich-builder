@@ -1,59 +1,58 @@
 //@ts-expect-error
-import type { Model } from 'yalps';
-import { ingredients } from '@/data';
-
-const getPiecesConstraints = (limit: number) =>
-  Object.fromEntries(
-    ingredients
-      .filter((i) => i.pieces > 2)
-      .map((i) => [i.name, { max: Math.floor(limit / i.pieces) }]),
-  );
-
-const multiplayerPiecesConstraints = getPiecesConstraints(15);
-const singlePlayerPiecesConstraints = getPiecesConstraints(12);
-
-const variables = {
-  fillings: Object.fromEntries(
-    ingredients
-      .filter((i) => i.ingredientType === 'filling')
-      .map((i) => i.name)
-      .map((n) => [n, 1]),
-  ),
-  condiments: Object.fromEntries(
-    ingredients
-      .filter((i) => i.ingredientType === 'condiment')
-      .map((i) => i.name)
-      .map((n) => [n, 1]),
-  ),
-  herba: Object.fromEntries(
-    ingredients
-      .filter((i) => i.isHerbaMystica)
-      .map((i) => i.name)
-      .map((n) => [n, 1]),
-  ),
-  score: Object.fromEntries(
-    ingredients.map((ing) => [
-      ing.name,
-      ing.ingredientType === 'filling' ? 5 : ing.isHerbaMystica ? 35 : 1,
-    ]),
-  ),
-};
+import type { Constraint, Model } from 'yalps';
+import { linearVariables as lv } from '@/data';
+import { Flavor, rangeFlavors } from '@/enum';
 
 type ModelParams = {
+  flavorProfile?: [Flavor, Flavor];
   multiplayer: boolean;
 };
 
-export const getModel = ({ multiplayer }: ModelParams): Model => ({
-  direction: 'minimize',
-  objective: 'score',
-  constraints: {
-    herba: { max: 2 },
-    fillings: { max: multiplayer ? 12 : 6 },
-    condiments: { max: multiplayer ? 8 : 4 },
-    ...(multiplayer
-      ? multiplayerPiecesConstraints
-      : singlePlayerPiecesConstraints),
-  },
-  variables,
-  integers: true,
-});
+export const getModel = ({
+  flavorProfile,
+  multiplayer,
+}: ModelParams): Model => {
+  const piecesConstraints = multiplayer
+    ? lv.constraints.multiplayerPieces
+    : lv.constraints.singlePlayerPieces;
+
+  const flavorConstraints: Record<string, Constraint> = {};
+  const flavorVariables: Record<
+    string,
+    Record<string, number | undefined>
+  > = {};
+  if (flavorProfile) {
+    const [firstFlavor, secondFlavor] = flavorProfile;
+    const firstDiffVar = `F${firstFlavor}-F${secondFlavor}`;
+    flavorVariables[firstDiffVar] =
+      lv.variableSets.flavorValueDifferences[firstFlavor][secondFlavor];
+    flavorConstraints[firstDiffVar] = {
+      min: firstFlavor > secondFlavor ? 0 : 1,
+    };
+
+    rangeFlavors.forEach((flavor) => {
+      if (flavor === firstFlavor || flavor === secondFlavor) return;
+      const varName = `F${secondFlavor}-F${flavor}`;
+      flavorVariables[varName] =
+        lv.variableSets.flavorValueDifferences[secondFlavor][flavor];
+      flavorConstraints[varName] = { min: secondFlavor > flavor ? 0 : 1 };
+    });
+  }
+
+  return {
+    direction: 'minimize',
+    objective: 'score',
+    constraints: {
+      herba: { max: 2 },
+      fillings: { max: multiplayer ? 12 : 6 },
+      condiments: { max: multiplayer ? 8 : 4 },
+      ...piecesConstraints,
+      ...flavorConstraints,
+    },
+    variables: {
+      ...lv.variables,
+      ...flavorVariables,
+    },
+    integers: true,
+  };
+};
