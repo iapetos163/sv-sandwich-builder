@@ -46,3 +46,13 @@ export interface Meal {
   towns: string[];
   imagePath: string;
 }
+
+export type LinearVariables = {
+  constraints: {
+    multiplayerPieces: Record<string, { max: number }>;
+    singlePlayerPieces: Record<string, { max: number }>;
+  };
+  variables: {
+    flavorValueDifferences: Record<string, number | undefined>[][];
+  };
+};
