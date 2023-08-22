@@ -12,11 +12,11 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "glpk.js": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.10",
-    "styled-components": "^5.3.6",
-    "yalps": "^0.5.5"
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",

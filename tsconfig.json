@@ -2,7 +2,6 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "yalps": ["./node_modules/yalps/lib/types"]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
