@@ -103,6 +103,13 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
           .map((i) => i.name)
           .map((n) => [n, 1]),
       ),
+      typeValues: rangeTypes.map((t) =>
+        Object.fromEntries(
+          ingredients
+            .map(({ name, typeVector }) => [name, typeVector[t]])
+            .filter(([, v]) => v !== 0),
+        ),
+      ),
     },
     constraints: {
       herbaMealPowerValue: {

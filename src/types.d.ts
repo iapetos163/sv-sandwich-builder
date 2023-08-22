@@ -62,6 +62,7 @@ export type LinearConstraints = {
     fillings: Record<string, number>;
     condiments: Record<string, number>;
     herba: Record<string, number>;
+    typeValues: Record<string, number>[];
   };
   constraints: {
     herbaMealPowerValue: Constraint;
