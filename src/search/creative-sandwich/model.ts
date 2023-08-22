@@ -1,7 +1,7 @@
 //@ts-expect-error
 import type { Constraint, Model } from 'yalps';
 import { linearVariables as lv } from '@/data';
-import { rangeFlavors } from '@/enum';
+import { MealPower, rangeFlavors, rangeMealPowers } from '@/enum';
 import { isHerbaMealPower } from '@/mechanics';
 import { Target } from './target';
 
@@ -43,27 +43,56 @@ export const getModel = ({
   const requestedHerbaPower = powers.find((p) => isHerbaMealPower(p.mealPower));
   if (requestedHerbaPower) {
     const varName = `MP${requestedHerbaPower.mealPower}`;
-    mpVariables[varName] = {}; // TODO
+    mpVariables[varName] = lv.variables.herbaMealPowerValue;
     mpConstraints[varName] = { min: 1 };
   }
-  if (boostPower) {
-    const baseMpPlaceIndex = numHerbaMystica > 0 ? 2 : 0;
-    const firstMp =
-      powers[configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex)]
-        ?.mealPower;
+  const baseMpPlaceIndex = numHerbaMystica > 0 ? 2 : 0;
+  const firstMp =
+    powers[configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex)]
+      ?.mealPower;
 
-    const secondMp =
-      powers[
-        configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex + 1)
-      ]?.mealPower;
+  const secondMp =
+    powers[configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex + 1)]
+      ?.mealPower;
 
-    const thirdMp =
-      powers[
-        configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex + 2)
-      ]?.mealPower;
+  const thirdMp =
+    powers[configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex + 2)]
+      ?.mealPower;
 
-    // TODO: do something with these
+  const lastMp = thirdMp ?? secondMp ?? firstMp;
+
+  const setMpDiffConstraint = (greater: MealPower, lesser: MealPower) => {
+    const varName = `MP${greater}-MP${lesser}`;
+    const boostOffset =
+      greater === boostPower ? -100 : lesser === boostPower ? 100 : 0;
+    mpVariables[varName] =
+      lv.variableSets.mealPowerValueDifferences[greater][lesser];
+    mpConstraints[varName] = {
+      min: (greater > lesser ? 0 : 1) + boostOffset,
+    };
+  };
+
+  if (firstMp && secondMp) {
+    setMpDiffConstraint(firstMp, secondMp);
   }
+
+  if (secondMp && thirdMp) {
+    setMpDiffConstraint(secondMp, thirdMp);
+  }
+
+  if (lastMp) {
+    rangeMealPowers
+      .filter(
+        (mp) =>
+          !isHerbaMealPower(mp) &&
+          mp !== firstMp &&
+          mp !== secondMp &&
+          mp !== lastMp,
+      )
+      .forEach((mp) => setMpDiffConstraint(lastMp, mp));
+  }
+
+  const { fillings, condiments, herba, score } = lv.variables;
 
   return {
     direction: 'minimize',
@@ -74,10 +103,15 @@ export const getModel = ({
       condiments: { max: multiplayer ? 8 : 4 },
       ...piecesConstraints,
       ...flavorConstraints,
+      ...mpConstraints,
     },
     variables: {
-      ...lv.variables,
+      fillings,
+      condiments,
+      herba,
+      score,
       ...flavorVars,
+      ...mpVariables,
     },
     integers: true,
   };

@@ -1,4 +1,9 @@
-import { rangeFlavors } from '../src/enum';
+import {
+  MealPower,
+  rangeFlavors,
+  rangeMealPowers,
+  rangeTypes,
+} from '../src/enum';
 import { IngredientEntry } from './process-sim-data';
 
 const getPiecesConstraints = (ingredients: IngredientEntry[], limit: number) =>
@@ -34,6 +39,11 @@ export const generateLinearVariables = (ingredients: IngredientEntry[]) => {
         ing.ingredientType === 'filling' ? 5 : ing.isHerbaMystica ? 35 : 1,
       ]),
     ),
+    herbaMealPowerValue: Object.fromEntries(
+      ingredients
+        .filter((i) => i.isHerbaMystica)
+        .map((i) => [i.name, i.baseMealPowerVector[MealPower.SPARKLING]]),
+    ),
   };
 
   return {
@@ -52,6 +62,34 @@ export const generateLinearVariables = (ingredients: IngredientEntry[]) => {
                   .map(({ name, flavorVector }) => [
                     name,
                     flavorVector[fa] - flavorVector[fb],
+                  ])
+                  .filter(([, v]) => v !== 0),
+              ),
+        ),
+      ),
+      mealPowerValueDifferences: rangeMealPowers.map((mpa) =>
+        rangeMealPowers.map((mpb) =>
+          mpa === mpb
+            ? {}
+            : Object.fromEntries(
+                ingredients
+                  .map(({ name, baseMealPowerVector }) => [
+                    name,
+                    baseMealPowerVector[mpa] - baseMealPowerVector[mpb],
+                  ])
+                  .filter(([, v]) => v !== 0),
+              ),
+        ),
+      ),
+      typeValueDifferences: rangeTypes.map((ta) =>
+        rangeTypes.map((tb) =>
+          ta === tb
+            ? {}
+            : Object.fromEntries(
+                ingredients
+                  .map(({ name, typeVector }) => [
+                    name,
+                    typeVector[ta] - typeVector[tb],
                   ])
                   .filter(([, v]) => v !== 0),
               ),

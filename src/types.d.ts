@@ -57,8 +57,11 @@ export type LinearVariables = {
     fillings: Record<string, number | undefined>;
     condiments: Record<string, number | undefined>;
     herba: Record<string, number | undefined>;
+    herbaMealPowerValue: Record<string, number | undefined>;
   };
   variableSets: {
     flavorValueDifferences: Record<string, number | undefined>[][];
+    mealPowerValueDifferences: Record<string, number | undefined>[][];
+    typeValueDifferences: Record<string, number | undefined>[][];
   };
 };

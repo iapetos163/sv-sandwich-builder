@@ -76,8 +76,8 @@ const makeSandwichForTarget = (
   target: Target,
   multiplayer = false,
 ): SandwichResult | null => {
-  // TODO meal power
   // TODO types
+  // TODO levels
   const model = getModel({ multiplayer, target });
 
   const solution = solve(model);
