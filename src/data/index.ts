@@ -21,4 +21,4 @@ export const meals: Meal[] = mealsData;
 
 export const ingredientMatrix: number[][] = matrixData;
 
-export const linearVariables: LinearVariables = linearVarsData;
+export const linearVariables = linearVarsData as unknown as LinearVariables;

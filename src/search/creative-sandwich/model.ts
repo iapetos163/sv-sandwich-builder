@@ -1,7 +1,6 @@
-//@ts-expect-error
-import type { Constraint, Model } from 'yalps';
 import { linearVariables as lv } from '@/data';
 import { MealPower, rangeFlavors, rangeMealPowers } from '@/enum';
+import type { Constraint, Model } from '@/lp';
 import { isHerbaMealPower } from '@/mechanics';
 import { Target } from './target';
 
@@ -10,6 +9,7 @@ type ModelParams = {
   multiplayer: boolean;
 };
 
+// TODO: modify data format to work better for this model type
 export const getModel = ({
   target: { powers, configSet, flavorProfile, numHerbaMystica, boostPower },
   multiplayer,
@@ -18,33 +18,32 @@ export const getModel = ({
     ? lv.constraints.multiplayerPieces
     : lv.constraints.singlePlayerPieces;
 
-  const flavorConstraints: Record<string, Constraint> = {};
-  const flavorVars: Record<string, Record<string, number | undefined>> = {};
+  const constraints: Constraint[] = [];
+
   if (flavorProfile) {
     const [firstFlavor, secondFlavor] = flavorProfile;
-    const firstDiffVar = `F${firstFlavor}-F${secondFlavor}`;
-    flavorVars[firstDiffVar] =
-      lv.variableSets.flavorValueDifferences[firstFlavor][secondFlavor];
-    flavorConstraints[firstDiffVar] = {
-      min: firstFlavor > secondFlavor ? 0 : 1,
-    };
+    constraints.push({
+      coefficients:
+        lv.variableSets.flavorValueDifferences[firstFlavor][secondFlavor],
+      lowerBound: firstFlavor > secondFlavor ? 0 : 1,
+    });
 
     rangeFlavors.forEach((flavor) => {
       if (flavor === firstFlavor || flavor === secondFlavor) return;
-      const varName = `F${secondFlavor}-F${flavor}`;
-      flavorVars[varName] =
-        lv.variableSets.flavorValueDifferences[secondFlavor][flavor];
-      flavorConstraints[varName] = { min: secondFlavor > flavor ? 0 : 1 };
+      constraints.push({
+        coefficients:
+          lv.variableSets.flavorValueDifferences[secondFlavor][flavor],
+        lowerBound: secondFlavor > flavor ? 0 : 1,
+      });
     });
   }
 
-  const mpConstraints: Record<string, Constraint> = {};
-  const mpVariables: Record<string, Record<string, number | undefined>> = {};
   const requestedHerbaPower = powers.find((p) => isHerbaMealPower(p.mealPower));
   if (requestedHerbaPower) {
-    const varName = `MP${requestedHerbaPower.mealPower}`;
-    mpVariables[varName] = lv.variables.herbaMealPowerValue;
-    mpConstraints[varName] = { min: 1 };
+    constraints.push({
+      coefficients: lv.variables.herbaMealPowerValue,
+      lowerBound: 1,
+    });
   }
   const baseMpPlaceIndex = numHerbaMystica > 0 ? 2 : 0;
   const firstMp =
@@ -62,14 +61,13 @@ export const getModel = ({
   const lastMp = thirdMp ?? secondMp ?? firstMp;
 
   const setMpDiffConstraint = (greater: MealPower, lesser: MealPower) => {
-    const varName = `MP${greater}-MP${lesser}`;
     const boostOffset =
       greater === boostPower ? -100 : lesser === boostPower ? 100 : 0;
-    mpVariables[varName] =
-      lv.variableSets.mealPowerValueDifferences[greater][lesser];
-    mpConstraints[varName] = {
-      min: (greater > lesser ? 0 : 1) + boostOffset,
-    };
+
+    constraints.push({
+      coefficients: lv.variableSets.mealPowerValueDifferences[greater][lesser],
+      lowerBound: (greater > lesser ? 0 : 1) + boostOffset,
+    });
   };
 
   if (firstMp && secondMp) {
@@ -95,24 +93,34 @@ export const getModel = ({
   const { fillings, condiments, herba, score } = lv.variables;
 
   return {
-    direction: 'minimize',
-    objective: 'score',
-    constraints: {
-      herba: { equal: numHerbaMystica },
-      fillings: { max: multiplayer ? 12 : 6 },
-      condiments: { max: multiplayer ? 8 : 4 },
-      ...piecesConstraints,
-      ...flavorConstraints,
-      ...mpConstraints,
+    objective: {
+      direction: 'min',
+      coefficients: score,
     },
-    variables: {
-      fillings,
-      condiments,
-      herba,
-      score,
-      ...flavorVars,
-      ...mpVariables,
-    },
-    integers: true,
+    constraints: [
+      {
+        lowerBound: numHerbaMystica,
+        // TODO equal
+        // upperBound: numHerbaMystica,
+        coefficients: herba,
+      },
+      {
+        upperBound: multiplayer ? 12 : 6,
+        coefficients: fillings,
+        lowerBound: 1,
+      },
+      {
+        upperBound: multiplayer ? 8 : 4,
+        coefficients: condiments,
+        lowerBound: 1,
+      },
+      ...Object.entries(piecesConstraints).map(
+        ([name, { max: upperBound }]) => ({
+          coefficients: { [name]: 1 },
+          upperBound,
+        }),
+      ),
+      ...constraints,
+    ],
   };
 };

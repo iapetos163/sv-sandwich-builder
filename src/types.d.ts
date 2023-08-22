@@ -53,15 +53,15 @@ export type LinearVariables = {
     singlePlayerPieces: Record<string, { max: number }>;
   };
   variables: {
-    score: Record<string, number | undefined>;
-    fillings: Record<string, number | undefined>;
-    condiments: Record<string, number | undefined>;
-    herba: Record<string, number | undefined>;
-    herbaMealPowerValue: Record<string, number | undefined>;
+    score: Record<string, number>;
+    fillings: Record<string, number>;
+    condiments: Record<string, number>;
+    herba: Record<string, number>;
+    herbaMealPowerValue: Record<string, number>;
   };
   variableSets: {
-    flavorValueDifferences: Record<string, number | undefined>[][];
-    mealPowerValueDifferences: Record<string, number | undefined>[][];
-    typeValueDifferences: Record<string, number | undefined>[][];
+    flavorValueDifferences: Record<string, number>[][];
+    mealPowerValueDifferences: Record<string, number>[][];
+    typeValueDifferences: Record<string, number>[][];
   };
 };
