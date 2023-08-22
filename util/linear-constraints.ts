@@ -43,7 +43,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
                     ])
                     .filter(([, v]) => v !== 0),
                 ),
-                lowerBound: fa > fb ? 0 : 1,
+                lowerBound: fa > fb ? 1 : 0,
               },
         ),
       ),
@@ -61,7 +61,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
                     ])
                     .filter(([, v]) => v !== 0),
                 ),
-                lowerBound: mpa > mpb ? 0 : 1,
+                lowerBound: mpa > mpb ? 1 : 0,
               },
         ),
       ),
@@ -79,7 +79,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
                     ])
                     .filter(([, v]) => v !== 0),
                 ),
-                lowerBound: ta > tb ? 0 : 1,
+                lowerBound: ta > tb ? 1 : 0,
               },
         ),
       ),
