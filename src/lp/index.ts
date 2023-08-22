@@ -68,6 +68,10 @@ export const solve = (model: Model) => {
   } = glpk.solve(transformedModel);
 
   return {
+    status:
+      status !== glpk.GLP_NOFEAS
+        ? ('optimal' as const)
+        : ('infeasible' as const),
     variables: vars,
     objectiveValue: z,
   };
