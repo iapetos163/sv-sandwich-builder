@@ -10,7 +10,7 @@ import { createMetaVector } from '../src/metavector';
 import { allTypes } from '../src/strings';
 import { Power } from '../src/types';
 import { createMatrix } from './create-matrix';
-import { generateLinearVariables } from './linear-variables';
+import { generateLinearConstraints } from './linear-constraints';
 
 export type IngredientEntry = {
   name: string;
@@ -239,7 +239,7 @@ const main = async () => {
   await outputJson('matrix.json', createMatrix(ingredientsData));
   await outputJson(
     'linear-vars.json',
-    generateLinearVariables(ingredientsData),
+    generateLinearConstraints(ingredientsData),
   );
 
   if (args['--skip-images']) return;

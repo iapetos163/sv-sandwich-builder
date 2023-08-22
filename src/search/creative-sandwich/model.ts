@@ -1,4 +1,4 @@
-import { linearVariables as lv } from '@/data';
+import { linearConstraints as lc } from '@/data';
 import { MealPower, rangeFlavors, rangeMealPowers } from '@/enum';
 import type { Constraint, Model } from '@/lp';
 import { isHerbaMealPower } from '@/mechanics';
@@ -11,39 +11,39 @@ type ModelParams = {
 
 // TODO: modify data format to work better for this model type
 export const getModel = ({
-  target: { powers, configSet, flavorProfile, numHerbaMystica, boostPower },
+  target: {
+    powers,
+    configSet,
+    flavorProfile,
+    numHerbaMystica,
+    boostPower,
+    typesByPlace,
+  },
   multiplayer,
 }: ModelParams): Model => {
   const piecesConstraints = multiplayer
-    ? lv.constraints.multiplayerPieces
-    : lv.constraints.singlePlayerPieces;
+    ? lc.constraintSets.multiplayerPieces
+    : lc.constraintSets.singlePlayerPieces;
 
   const constraints: Constraint[] = [];
 
   if (flavorProfile) {
     const [firstFlavor, secondFlavor] = flavorProfile;
-    constraints.push({
-      coefficients:
-        lv.variableSets.flavorValueDifferences[firstFlavor][secondFlavor],
-      lowerBound: firstFlavor > secondFlavor ? 0 : 1,
-    });
+    constraints.push(
+      lc.constraintSets.flavorValueDifferences[firstFlavor][secondFlavor],
+    );
 
     rangeFlavors.forEach((flavor) => {
       if (flavor === firstFlavor || flavor === secondFlavor) return;
-      constraints.push({
-        coefficients:
-          lv.variableSets.flavorValueDifferences[secondFlavor][flavor],
-        lowerBound: secondFlavor > flavor ? 0 : 1,
-      });
+      constraints.push(
+        lc.constraintSets.flavorValueDifferences[secondFlavor][flavor],
+      );
     });
   }
 
   const requestedHerbaPower = powers.find((p) => isHerbaMealPower(p.mealPower));
   if (requestedHerbaPower) {
-    constraints.push({
-      coefficients: lv.variables.herbaMealPowerValue,
-      lowerBound: 1,
-    });
+    constraints.push(lc.constraints.herbaMealPowerValue);
   }
   const baseMpPlaceIndex = numHerbaMystica > 0 ? 2 : 0;
   const firstMp =
@@ -64,9 +64,11 @@ export const getModel = ({
     const boostOffset =
       greater === boostPower ? -100 : lesser === boostPower ? 100 : 0;
 
+    const baseConstraint =
+      lc.constraintSets.mealPowerValueDifferences[greater][lesser];
     constraints.push({
-      coefficients: lv.variableSets.mealPowerValueDifferences[greater][lesser],
-      lowerBound: (greater > lesser ? 0 : 1) + boostOffset,
+      coefficients: baseConstraint.coefficients,
+      lowerBound: baseConstraint.lowerBound! + boostOffset,
     });
   };
 
@@ -90,36 +92,32 @@ export const getModel = ({
       .forEach((mp) => setMpDiffConstraint(lastMp, mp));
   }
 
-  const { fillings, condiments, herba, score } = lv.variables;
+  const [firstType, secondType, thirdType] = typesByPlace;
+  const lastType = thirdType ?? secondType ?? firstType;
+
+  // TODO types
+  // TODO levels
 
   return {
-    objective: {
-      direction: 'min',
-      coefficients: score,
-    },
+    objective: lc.objective,
     constraints: [
       {
         lowerBound: numHerbaMystica,
         // TODO equal
         // upperBound: numHerbaMystica,
-        coefficients: herba,
+        coefficients: lc.coefficientSets.herba,
       },
       {
+        coefficients: lc.coefficientSets.fillings,
         upperBound: multiplayer ? 12 : 6,
-        coefficients: fillings,
         lowerBound: 1,
       },
       {
+        coefficients: lc.coefficientSets.condiments,
         upperBound: multiplayer ? 8 : 4,
-        coefficients: condiments,
         lowerBound: 1,
       },
-      ...Object.entries(piecesConstraints).map(
-        ([name, { max: upperBound }]) => ({
-          coefficients: { [name]: 1 },
-          upperBound,
-        }),
-      ),
+      ...piecesConstraints,
       ...constraints,
     ],
   };

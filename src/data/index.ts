@@ -1,4 +1,4 @@
-import { Ingredient, SandwichRecipe, Meal, LinearVariables } from '@/types';
+import { Ingredient, SandwichRecipe, Meal, LinearConstraints } from '@/types';
 import ingredientsData from './ingredients.json';
 import linearVarsData from './linear-vars.json';
 import matrixData from './matrix.json';
@@ -21,4 +21,4 @@ export const meals: Meal[] = mealsData;
 
 export const ingredientMatrix: number[][] = matrixData;
 
-export const linearVariables = linearVarsData as unknown as LinearVariables;
+export const linearConstraints = linearVarsData as unknown as LinearConstraints;

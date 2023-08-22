@@ -2,6 +2,11 @@ import GLPK, { GLPK as GLPKInstance, LP } from 'glpk.js';
 
 const glpk: GLPKInstance = (GLPK as any)();
 
+export type Objective = {
+  direction: 'min' | 'max';
+  coefficients: Record<string, number>;
+};
+
 export type Constraint = {
   coefficients: Record<string, number>;
   upperBound?: number;
@@ -9,10 +14,7 @@ export type Constraint = {
 };
 
 export interface Model {
-  objective: {
-    direction: 'min' | 'max';
-    coefficients: Record<string, number>;
-  };
+  objective: Objective;
   constraints: Constraint[];
 }
 
