@@ -18,6 +18,9 @@ export const getModel = ({
     numHerbaMystica,
     boostPower,
     typesByPlace,
+    firstTypeGte,
+    firstTypeLte,
+    thirdTypeGte,
   },
   multiplayer,
 }: ModelParams): Model => {
@@ -124,9 +127,7 @@ export const getModel = ({
     objective: lc.objective,
     constraints: [
       {
-        lowerBound: numHerbaMystica,
-        // TODO equal
-        // upperBound: numHerbaMystica,
+        equals: numHerbaMystica,
         coefficients: lc.coefficientSets.herba,
       },
       {

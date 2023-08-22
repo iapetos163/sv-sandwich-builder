@@ -7,11 +7,15 @@ export type Objective = {
   coefficients: Record<string, number>;
 };
 
-export type Constraint = {
+export type Bounds =
+  | { upperBound: number; lowerBound?: never; equals?: never }
+  | { upperBound?: never; lowerBound: number; equals?: never }
+  | { upperBound: number; lowerBound: number; equals?: never }
+  | { upperBound?: never; lowerBound?: never; equals: number };
+
+export type Constraint = Bounds & {
   name?: string;
   coefficients: Record<string, number>;
-  upperBound?: number;
-  lowerBound?: number;
 };
 
 export interface Model {
@@ -33,9 +37,14 @@ export const transformModel = (model: Model): LP => {
   };
 
   const subjectTo = model.constraints.map(
-    ({ coefficients, upperBound, lowerBound, name }, i) => {
+    ({ coefficients, upperBound, lowerBound, equals, name }, i) => {
       let bnds = { type: -1, ub: 0, lb: 0 };
-      if (typeof upperBound === 'number' && typeof lowerBound === 'number') {
+      if (typeof equals === 'number') {
+        bnds = { type: glpk.GLP_FX, ub: equals, lb: equals };
+      } else if (
+        typeof upperBound === 'number' &&
+        typeof lowerBound === 'number'
+      ) {
         bnds = { type: glpk.GLP_DB, ub: upperBound, lb: lowerBound };
       } else if (typeof upperBound === 'number') {
         bnds = { type: glpk.GLP_UP, ub: upperBound, lb: 0 };
