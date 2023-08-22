@@ -1,5 +1,5 @@
 import { linearConstraints as lc } from '@/data';
-import { MealPower, rangeFlavors, rangeMealPowers } from '@/enum';
+import { MealPower, rangeFlavors, rangeMealPowers, rangeTypes } from '@/enum';
 import type { Constraint, Model } from '@/lp';
 import { isHerbaMealPower } from '@/mechanics';
 import { Target } from './target';
@@ -95,7 +95,29 @@ export const getModel = ({
   const [firstType, secondType, thirdType] = typesByPlace;
   const lastType = thirdType ?? secondType ?? firstType;
 
-  // TODO types
+  if (secondType) {
+    const constraint =
+      lc.constraintSets.typeValueDifferences[firstType][secondType];
+    constraints.push(constraint);
+  }
+  if (secondType && thirdType) {
+    const constraint =
+      lc.constraintSets.typeValueDifferences[secondType][thirdType];
+    constraints.push(constraint);
+  }
+
+  rangeTypes.forEach((typeIndex) => {
+    if (
+      typeIndex === firstType ||
+      typeIndex === secondType ||
+      typeIndex === lastType
+    )
+      return;
+
+    const constraint =
+      lc.constraintSets.typeValueDifferences[lastType][typeIndex];
+    constraints.push(constraint);
+  });
   // TODO levels
 
   return {
