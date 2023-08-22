@@ -34,6 +34,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
           fa === fb
             ? { coefficients: {}, lowerBound: 0 }
             : {
+                name: `F${fa}-F${fb}`,
                 coefficients: Object.fromEntries(
                   ingredients
                     .map(({ name, flavorVector }) => [
@@ -51,6 +52,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
           mpa === mpb
             ? { coefficients: {}, lowerBound: 0 }
             : {
+                name: `MP${mpa}-MP${mpb}`,
                 coefficients: Object.fromEntries(
                   ingredients
                     .map(({ name, baseMealPowerVector }) => [
@@ -68,6 +70,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
           ta === tb
             ? { coefficients: {}, lowerBound: 0 }
             : {
+                name: `T${ta}-T${tb}`,
                 coefficients: Object.fromEntries(
                   ingredients
                     .map(({ name, typeVector }) => [
