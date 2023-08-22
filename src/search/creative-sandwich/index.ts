@@ -53,7 +53,6 @@ export const makeSandwichForPowers = (
     .map((target) => makeSandwichForTarget(target))
     .filter((s): s is SandwichResult => !!s);
   sandwiches.sort((a, b) => a.score - b.score);
-  console.debug(sandwiches);
   const result = sandwiches[0];
   if (!result) return null;
   const powers = getPowersForIngredients(
@@ -93,10 +92,7 @@ const makeSandwichForTarget = (
     const ingredient = ingredients.find((i) => i.name === name);
     if (!ingredient) return;
     if (ingredient.ingredientType === 'filling') {
-      [...Array(count).keys()].forEach(() => {
-        fillings.push(ingredient);
-        console.debug(fillings);
-      });
+      [...Array(count).keys()].forEach(() => fillings.push(ingredient));
     } else {
       [...Array(count).keys()].forEach(() => condiments.push(ingredient));
     }
