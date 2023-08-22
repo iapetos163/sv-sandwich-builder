@@ -72,15 +72,15 @@ export const getModel = ({
     });
   };
 
-  if (firstMp && secondMp) {
+  if (firstMp !== undefined && secondMp !== undefined) {
     setMpDiffConstraint(firstMp, secondMp);
   }
 
-  if (secondMp && thirdMp) {
+  if (secondMp !== undefined && thirdMp !== undefined) {
     setMpDiffConstraint(secondMp, thirdMp);
   }
 
-  if (lastMp) {
+  if (lastMp !== undefined) {
     rangeMealPowers
       .filter(
         (mp) =>
@@ -95,12 +95,12 @@ export const getModel = ({
   const [firstType, secondType, thirdType] = typesByPlace;
   const lastType = thirdType ?? secondType ?? firstType;
 
-  if (secondType) {
+  if (secondType !== undefined) {
     const constraint =
       lc.constraintSets.typeValueDifferences[firstType][secondType];
     constraints.push(constraint);
   }
-  if (secondType && thirdType) {
+  if (secondType !== undefined && thirdType !== undefined) {
     const constraint =
       lc.constraintSets.typeValueDifferences[secondType][thirdType];
     constraints.push(constraint);
