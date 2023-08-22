@@ -1,5 +1,5 @@
 import { ingredients } from '@/data';
-import { solve } from '@/lp';
+import { Model, solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
 import { getModel } from './model';
@@ -42,6 +42,7 @@ type SandwichResult = {
   score: number;
   fillings: Ingredient[];
   condiments: Ingredient[];
+  model: Model;
 };
 
 const makeSandwichForTarget = (
@@ -51,9 +52,8 @@ const makeSandwichForTarget = (
   const model = getModel({ multiplayer, target });
 
   const solution = solve(model);
-  // if (solution.status === 'infeasible') return null;
+  if (solution.status === 'infeasible') return null;
 
-  // if (solution.status === 'optimal') {
   const score = solution.objectiveValue ?? 0;
 
   const fillings: Ingredient[] = [];
@@ -69,7 +69,5 @@ const makeSandwichForTarget = (
     }
   });
 
-  return { fillings, condiments, score };
-  // }
-  // throw solution;
+  return { fillings, condiments, score, model };
 };
