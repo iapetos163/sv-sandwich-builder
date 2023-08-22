@@ -1,36 +1,9 @@
 import { ingredients } from '@/data';
 import { solve } from '@/lp';
-import {
-  requestedPowersValid,
-  getBoostedMealPower,
-  rankFlavorBoosts,
-  evaluateBoosts,
-} from '@/mechanics';
+import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
-import { add } from '@/vector-math';
 import { getModel } from './model';
 import { selectInitialTargets, Target } from './target';
-
-const getPowersForIngredients = (ingredients: Ingredient[]) => {
-  const init = {
-    mealPowerBoosts: [] as number[],
-    typeBoosts: [] as number[],
-    flavorBoosts: [] as number[],
-  };
-
-  const { mealPowerBoosts, typeBoosts, flavorBoosts } = ingredients.reduce(
-    ({ mealPowerBoosts, typeBoosts, flavorBoosts }, ingredient) => ({
-      mealPowerBoosts: add(mealPowerBoosts, ingredient.baseMealPowerVector),
-      typeBoosts: add(typeBoosts, ingredient.typeVector),
-      flavorBoosts: add(flavorBoosts, ingredient.flavorVector),
-    }),
-    init,
-  );
-
-  const rankedFlavorBoosts = rankFlavorBoosts(flavorBoosts);
-  const boostedPower = getBoostedMealPower(rankedFlavorBoosts);
-  return evaluateBoosts(mealPowerBoosts, boostedPower, typeBoosts);
-};
 
 export const emptySandwich = {
   fillings: [],

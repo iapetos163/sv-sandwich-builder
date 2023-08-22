@@ -9,6 +9,7 @@ export {
   powerSetsMatch,
   isHerbaMealPower,
 } from './powers';
+export { getPowersForIngredients } from './sandwich';
 export {
   rankFlavorBoosts,
   getBoostedMealPower,
