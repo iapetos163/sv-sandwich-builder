@@ -108,7 +108,19 @@ export const getModel = ({
     if (diff70) {
       constraints.push(lc.constraintSets.typeDiff70[firstType][secondType]);
     }
+  } else if (diff105 || diff70) {
+    rangeTypes.forEach((typeIndex) => {
+      if (typeIndex === firstType) return;
+
+      if (diff105) {
+        constraints.push(lc.constraintSets.typeDiff105[firstType][typeIndex]);
+      }
+      if (diff70) {
+        constraints.push(lc.constraintSets.typeDiff70[firstType][typeIndex]);
+      }
+    });
   }
+
   if (secondType !== undefined && thirdType !== undefined) {
     const constraint =
       lc.constraintSets.typeValueDifferences[secondType][thirdType];
