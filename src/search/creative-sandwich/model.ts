@@ -121,7 +121,32 @@ export const getModel = ({
       lc.constraintSets.typeValueDifferences[lastType][typeIndex];
     constraints.push(constraint);
   });
-  // TODO levels
+
+  if (firstTypeGte > 0 && firstTypeLte < Infinity) {
+    constraints.push({
+      upperBound: firstTypeLte,
+      lowerBound: firstTypeGte,
+      coefficients: lc.coefficientSets.typeValues[firstType],
+    });
+  } else if (firstTypeLte < Infinity) {
+    constraints.push({
+      upperBound: firstTypeLte,
+      coefficients: lc.coefficientSets.typeValues[firstType],
+    });
+  } else if (firstTypeGte > 0) {
+    constraints.push({
+      lowerBound: firstTypeGte,
+      coefficients: lc.coefficientSets.typeValues[firstType],
+    });
+  }
+
+  // FIXME? what if thirdType === undefined && thirdTypeGte > 0
+  if (thirdType !== undefined && thirdTypeGte > 0) {
+    constraints.push({
+      lowerBound: thirdTypeGte,
+      coefficients: lc.coefficientSets.typeValues[thirdType],
+    });
+  }
 
   return {
     objective: lc.objective,
