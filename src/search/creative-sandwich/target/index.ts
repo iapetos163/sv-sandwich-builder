@@ -24,6 +24,10 @@ export interface Target {
   firstTypeGte: number;
   thirdTypeGte: number;
   firstTypeLte: number;
+  /** firstType - secondType > 105 */
+  diff105: boolean;
+  /** firstTypeAmount - 1.5 * secondTypeAmount >= 70 */
+  diff70: boolean;
 }
 
 export interface SelectInitialTargetsProps {
@@ -77,6 +81,9 @@ export const selectInitialTargets = ({
         Infinity,
       );
 
+      const diff70 = targetConfigSet.some((t) => t.diff70);
+      const diff105 = targetConfigSet.some((t) => t.diff105);
+
       const flavorIndependent = targetPowers.every((tp) =>
         isHerbaMealPower(tp.mealPower),
       );
@@ -93,6 +100,8 @@ export const selectInitialTargets = ({
             firstTypeGte,
             thirdTypeGte,
             firstTypeLte,
+            diff70,
+            diff105,
           },
         ];
       }
@@ -114,6 +123,8 @@ export const selectInitialTargets = ({
           firstTypeGte,
           thirdTypeGte,
           firstTypeLte,
+          diff70,
+          diff105,
         }));
       });
     });
