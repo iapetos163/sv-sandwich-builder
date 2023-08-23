@@ -9,7 +9,6 @@ type ModelParams = {
   multiplayer: boolean;
 };
 
-// TODO: modify data format to work better for this model type
 export const getModel = ({
   target: {
     powers,
@@ -21,6 +20,8 @@ export const getModel = ({
     firstTypeGte,
     firstTypeLte,
     thirdTypeGte,
+    diff70,
+    diff105,
   },
   multiplayer,
 }: ModelParams): Model => {
@@ -100,9 +101,13 @@ export const getModel = ({
   const lastType = thirdType ?? secondType ?? firstType;
 
   if (secondType !== undefined) {
-    const constraint =
-      lc.constraintSets.typeValueDifferences[firstType][secondType];
+    const constraint = diff105
+      ? lc.constraintSets.typeDiff105[firstType][secondType]
+      : lc.constraintSets.typeValueDifferences[firstType][secondType];
     constraints.push(constraint);
+    if (diff70) {
+      constraints.push(lc.constraintSets.typeDiff70[firstType][secondType]);
+    }
   }
   if (secondType !== undefined && thirdType !== undefined) {
     const constraint =
