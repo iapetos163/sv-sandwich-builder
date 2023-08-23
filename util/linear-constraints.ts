@@ -83,6 +83,42 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
               },
         ),
       ),
+      typeDiff70: rangeTypes.map((ta) =>
+        rangeTypes.map((tb) =>
+          ta === tb
+            ? { coefficients: {}, lowerBound: 0 }
+            : {
+                name: `T${ta}-1.5T${tb}>=70`,
+                coefficients: Object.fromEntries(
+                  ingredients
+                    .map(({ name, typeVector }) => [
+                      name,
+                      typeVector[ta] - 1.5 * typeVector[tb],
+                    ])
+                    .filter(([, v]) => v !== 0),
+                ),
+                lowerBound: 70,
+              },
+        ),
+      ),
+      typeDiff105: rangeTypes.map((ta) =>
+        rangeTypes.map((tb) =>
+          ta === tb
+            ? { coefficients: {}, lowerBound: 0 }
+            : {
+                name: `T${ta}-${tb}>=105`,
+                coefficients: Object.fromEntries(
+                  ingredients
+                    .map(({ name, typeVector }) => [
+                      name,
+                      typeVector[ta] - typeVector[tb],
+                    ])
+                    .filter(([, v]) => v !== 0),
+                ),
+                lowerBound: 105,
+              },
+        ),
+      ),
     },
     coefficientSets: {
       fillings: Object.fromEntries(

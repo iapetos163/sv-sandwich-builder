@@ -56,6 +56,8 @@ export type LinearConstraints = {
     flavorValueDifferences: Constraint[][];
     mealPowerValueDifferences: Constraint[][];
     typeValueDifferences: Constraint[][];
+    typeDiff70: Constraint[][];
+    typeDiff105: Constraint[][];
   };
   coefficientSets: {
     score: Record<string, number>;
