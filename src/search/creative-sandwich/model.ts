@@ -70,6 +70,7 @@ export const getModel = ({
     const baseConstraint =
       lc.constraintSets.mealPowerValueDifferences[greater][lesser];
     constraints.push({
+      name: baseConstraint.name,
       coefficients: baseConstraint.coefficients,
       lowerBound: baseConstraint.lowerBound! + boostOffset,
     });
