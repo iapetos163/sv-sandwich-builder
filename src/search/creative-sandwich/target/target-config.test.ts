@@ -237,11 +237,10 @@ describe('getTypeTargetsByPlace', () => {
     const res = getTypeTargetsByPlace(
       [{ mealPower: 6, type: 0, level: 2 }],
       [0],
-      rankTypeBoosts(rangeTypes.map(() => 0)),
     );
 
     expect(res[0]).toBe(0);
-    expect(res[1]).toBe(1);
-    expect(res[2]).toBe(2);
+    expect(res[1]).toBe(null);
+    expect(res[2]).toBe(null);
   });
 });

@@ -334,8 +334,7 @@ export const selectPowersAtTargetPositions = (
 export const getTypeTargetsByPlace = (
   targetPowers: Power[],
   targetPlaceIndices: number[],
-  rankedTypeBoosts: TypeBoost[],
-): [TypeIndex, TypeIndex, TypeIndex] => {
+): [TypeIndex | null, TypeIndex | null, TypeIndex | null] => {
   const targetFirstPlacePowerIndex = targetPlaceIndices.findIndex(
     (pi) => pi === 0,
   );
@@ -382,34 +381,26 @@ export const getTypeTargetsByPlace = (
     thirdTargetType = targetThirdPlacePower.type;
   }
 
-  const typeSelection = rankedTypeBoosts.map((tb) => tb.type).concat([0, 1, 2]);
-
-  if (firstTargetType === null) {
-    firstTargetType = typeSelection.find(
-      (t) =>
-        t !== firstTargetType &&
-        t !== secondTargetType &&
-        t !== thirdTargetType,
-    )!;
-  }
-  if (secondTargetType === null) {
-    secondTargetType = typeSelection.find(
-      (t) =>
-        t !== firstTargetType &&
-        t !== secondTargetType &&
-        t !== thirdTargetType,
-    )!;
-  }
-  if (thirdTargetType === null) {
-    thirdTargetType = typeSelection.find(
-      (t) =>
-        t !== firstTargetType &&
-        t !== secondTargetType &&
-        t !== thirdTargetType,
-    )!;
-  }
-
   return [firstTargetType, secondTargetType, thirdTargetType];
+};
+
+export const fillIn = <T>(
+  arr: [T | null, T | null, T | null],
+  selection: T[],
+): [T, T, T] => {
+  let [first, second, third] = arr;
+
+  if (first === null) {
+    first = selection.find((t) => t !== first && t !== second && t !== third)!;
+  }
+  if (second === null) {
+    second = selection.find((t) => t !== first && t !== second && t !== third)!;
+  }
+  if (third === null) {
+    third = selection.find((t) => t !== first && t !== second && t !== third)!;
+  }
+
+  return [first, second, third];
 };
 
 /**

@@ -1,7 +1,8 @@
-import { Flavor, MealPower, TypeIndex } from '@/enum';
+import { Flavor, MealPower, TypeIndex, rangeTypes } from '@/enum';
 import { getFlavorProfilesForPower, isHerbaMealPower } from '@/mechanics';
 import { Power } from '@/types';
 import {
+  fillIn,
   getTargetConfigs,
   getTypeTargetsByPlace,
   permutePowerConfigs,
@@ -62,8 +63,9 @@ export const selectInitialTargets = ({
       const targetTypes = getTypeTargetsByPlace(
         targetPowers,
         targetConfigSet.map((c) => c.typePlaceIndex),
-        [],
       );
+
+      const typesByPlace = fillIn<TypeIndex>(targetTypes, rangeTypes);
 
       const firstTypeGte = targetConfigSet.reduce((max, c) => {
         if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
@@ -95,7 +97,7 @@ export const selectInitialTargets = ({
             typeAllocation: targetConfigSet[0].typeAllocation,
             numHerbaMystica: targetNumHerba,
             powers: targetPowers,
-            typesByPlace: targetTypes,
+            typesByPlace,
             boostPower: null,
             firstTypeGte,
             thirdTypeGte,
@@ -117,7 +119,7 @@ export const selectInitialTargets = ({
           typeAllocation: targetConfigSet[0].typeAllocation,
           numHerbaMystica: targetNumHerba,
           powers: targetPowers,
-          typesByPlace: targetTypes,
+          typesByPlace,
           boostPower,
           flavorProfile,
           firstTypeGte,
