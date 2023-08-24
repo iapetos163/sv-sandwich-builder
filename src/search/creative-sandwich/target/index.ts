@@ -1,10 +1,9 @@
 import { Flavor, MealPower, TypeIndex, rangeTypes } from '@/enum';
 import { getFlavorProfilesForPower, isHerbaMealPower } from '@/mechanics';
 import { Power } from '@/types';
+import { getTypeTargetsByPlace, fillIn } from './placement';
 import {
-  fillIn,
   getTargetConfigs,
-  getTypeTargetsByPlace,
   permutePowerConfigs,
   TargetConfig,
   TypeAllocation,

@@ -1,8 +1,6 @@
-import { MealPower, rangeTypes, TypeIndex } from '../../../enum';
-import { rankTypeBoosts } from '../../../mechanics';
+import { MealPower, TypeIndex } from '../../../enum';
 import {
   getTargetConfigs,
-  getTypeTargetsByPlace,
   permutePowerConfigs,
   TargetConfig,
 } from './target-config';
@@ -229,18 +227,5 @@ describe('permutePowerConfigs', () => {
         cs[2].mpPlaceIndex === 2,
     );
     expect(matches).toHaveLength(1);
-  });
-});
-
-describe('getTypeTargetsByPlace', () => {
-  it('Returns a valid result', () => {
-    const res = getTypeTargetsByPlace(
-      [{ mealPower: 6, type: 0, level: 2 }],
-      [0],
-    );
-
-    expect(res[0]).toBe(0);
-    expect(res[1]).toBe(null);
-    expect(res[2]).toBe(null);
   });
 });
