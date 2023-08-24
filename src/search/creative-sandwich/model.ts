@@ -12,7 +12,7 @@ type ModelParams = {
 export const getModel = ({
   target: {
     powers,
-    configSet,
+    mealPowersByPlace,
     flavorProfile,
     numHerbaMystica,
     boostPower,
@@ -50,17 +50,8 @@ export const getModel = ({
     constraints.push(lc.constraints.herbaMealPowerValue);
   }
   const baseMpPlaceIndex = numHerbaMystica > 0 ? 2 : 0;
-  const firstMp =
-    powers[configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex)]
-      ?.mealPower;
-
-  const secondMp =
-    powers[configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex + 1)]
-      ?.mealPower;
-
-  const thirdMp =
-    powers[configSet.findIndex((c) => c.mpPlaceIndex === baseMpPlaceIndex + 2)]
-      ?.mealPower;
+  const [firstMp, secondMp, thirdMp] =
+    mealPowersByPlace.slice(baseMpPlaceIndex);
 
   const lastMp = thirdMp ?? secondMp ?? firstMp;
 
