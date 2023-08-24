@@ -175,6 +175,12 @@ describe('makeSandwichForPower', () => {
     );
     expect(correctResult).toBe(true);
 
+    const numHerba = sandwich!.condiments.filter(
+      (s) => s.isHerbaMystica,
+    ).length;
+
+    expect(numHerba).toBe(0);
+
     // const numFillings = sandwich!.fillings.length;
 
     // expect(numIngredients).toBeLessThanOrEqual(8);
@@ -860,8 +866,7 @@ describe('makeSandwichForPower', () => {
   // expect(correctResult).toBe(true);
 
   //   console.debug(
-  //     `${sandwich!.fillings
-  //       .concat(sandwich!.condiments)
+  //     `${ingredients
   //       .map((i) => i.name)
   //       .join(', ')}`,
   //   );
