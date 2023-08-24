@@ -384,6 +384,41 @@ export const getTypeTargetsByPlace = (
   return [firstTargetType, secondTargetType, thirdTargetType];
 };
 
+export const getMealPowerTargetsByPlace = (
+  targetPowers: Power[],
+  targetPlaceIndices: number[],
+  firstIndex = 0,
+): [MealPower | null, MealPower | null, MealPower | null] => {
+  const targetFirstPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === firstIndex,
+  );
+  const targetSecondPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === firstIndex + 1,
+  );
+  const targetThirdPlacePowerIndex = targetPlaceIndices.findIndex(
+    (pi) => pi === firstIndex + 2,
+  );
+
+  const targetFirstPlacePower =
+    targetFirstPlacePowerIndex !== undefined
+      ? targetPowers[targetFirstPlacePowerIndex]
+      : null;
+  const targetSecondPlacePower =
+    targetSecondPlacePowerIndex !== undefined
+      ? targetPowers[targetSecondPlacePowerIndex]
+      : null;
+  const targetThirdPlacePower =
+    targetThirdPlacePowerIndex !== undefined
+      ? targetPowers[targetThirdPlacePowerIndex]
+      : null;
+
+  const firstTargetMp = targetFirstPlacePower?.mealPower ?? null;
+  const secondTargetMp = targetSecondPlacePower?.mealPower ?? null;
+  const thirdTargetMp = targetThirdPlacePower?.mealPower ?? null;
+
+  return [firstTargetMp, secondTargetMp, thirdTargetMp];
+};
+
 export const fillIn = <T>(
   arr: [T | null, T | null, T | null],
   selection: T[],
