@@ -1,7 +1,17 @@
-import { Flavor, MealPower, TypeIndex, rangeTypes } from '@/enum';
+import {
+  Flavor,
+  MealPower,
+  TypeIndex,
+  rangeMealPowers,
+  rangeTypes,
+} from '@/enum';
 import { getFlavorProfilesForPower, isHerbaMealPower } from '@/mechanics';
 import { Power } from '@/types';
-import { getTypeTargetsByPlace, fillIn } from './placement';
+import {
+  getTypeTargetsByPlace,
+  fillIn,
+  getMealPowerTargetsByPlace,
+} from './placement';
 import {
   getTargetConfigs,
   permutePowerConfigs,
@@ -18,7 +28,8 @@ export interface Target {
   typeAllocation: TypeAllocation;
   configSet: TargetConfig[];
   numHerbaMystica: number;
-  typesByPlace: [TypeIndex, TypeIndex | undefined, TypeIndex | undefined];
+  typesByPlace: [TypeIndex, TypeIndex, TypeIndex];
+  mealPowersByPlace: MealPower[];
   boostPower: MealPower | null;
   flavorProfile?: [Flavor, Flavor];
   firstTypeGte: number;
@@ -66,6 +77,21 @@ export const selectInitialTargets = ({
 
       const typesByPlace = fillIn<TypeIndex>(targetTypes, rangeTypes);
 
+      const mpBase =
+        targetNumHerba > 0 ? [MealPower.SPARKLING, MealPower.TITLE] : [];
+      const targetMps = getMealPowerTargetsByPlace(
+        targetPowers,
+        targetConfigSet.map((c) => c.mpPlaceIndex),
+        mpBase.length,
+      );
+      const mealPowersByPlace = [
+        ...mpBase,
+        ...fillIn<MealPower>(
+          targetMps,
+          rangeMealPowers.filter((mp) => !isHerbaMealPower(mp)),
+        ),
+      ];
+
       const firstTypeGte = targetConfigSet.reduce((max, c) => {
         if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
         if (c.firstTypeGte) return Math.max(max, c.firstTypeGte);
@@ -97,6 +123,7 @@ export const selectInitialTargets = ({
             numHerbaMystica: targetNumHerba,
             powers: targetPowers,
             typesByPlace,
+            mealPowersByPlace,
             boostPower: null,
             firstTypeGte,
             thirdTypeGte,
@@ -119,6 +146,7 @@ export const selectInitialTargets = ({
           numHerbaMystica: targetNumHerba,
           powers: targetPowers,
           typesByPlace,
+          mealPowersByPlace,
           boostPower,
           flavorProfile,
           firstTypeGte,
