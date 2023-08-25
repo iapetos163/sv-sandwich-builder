@@ -1,4 +1,5 @@
 import { ingredients } from '@/data';
+// import { Flavor, MealPower, TypeIndex } from '@/enum';
 import { Model, solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
@@ -22,6 +23,14 @@ export const makeSandwichForPowers = (
     targetPowers,
     avoidHerbaMystica: true,
   });
+  // const expectedSuccessfulTargets = targets.filter(
+  //   (t) =>
+  //     t.typeAllocation === 'ONE_THREE_TWO' &&
+  //     t.flavorProfile![0] === Flavor.SOUR &&
+  //     t.flavorProfile![1] === Flavor.SWEET &&
+  //     t.typesByPlace[0] === TypeIndex.DARK,
+  // );
+  // console.debug(expectedSuccessfulTargets);
   const sandwiches = targets
     .map((target) => makeSandwichForTarget(target))
     .filter((s): s is SandwichResult => !!s);
@@ -31,6 +40,9 @@ export const makeSandwichForPowers = (
   const powers = getPowersForIngredients(
     result.fillings.concat(result.condiments),
   );
+
+  // console.debug(result.target);
+  // console.debug(JSON.stringify(result.model));
 
   return {
     ...result,
@@ -43,6 +55,7 @@ type SandwichResult = {
   fillings: Ingredient[];
   condiments: Ingredient[];
   model: Model;
+  target: Target;
 };
 
 const makeSandwichForTarget = (
@@ -69,5 +82,5 @@ const makeSandwichForTarget = (
     }
   });
 
-  return { fillings, condiments, score, model };
+  return { fillings, condiments, score, model, target };
 };
