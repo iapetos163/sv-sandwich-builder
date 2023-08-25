@@ -28,8 +28,8 @@ export interface Target {
   typeAllocation: TypeAllocation;
   configSet: TargetConfig[];
   numHerbaMystica: number;
-  typesByPlace: [TypeIndex, TypeIndex, TypeIndex];
-  mealPowersByPlace: MealPower[];
+  typesByPlace: [TypeIndex, TypeIndex | null, TypeIndex | null];
+  mealPowersByPlace: (MealPower | null)[];
   boostPower: MealPower | null;
   flavorProfile?: [Flavor, Flavor];
   firstTypeGte: number;

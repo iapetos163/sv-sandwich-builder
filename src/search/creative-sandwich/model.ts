@@ -68,15 +68,15 @@ export const getModel = ({
     });
   };
 
-  if (firstMp !== undefined && secondMp !== undefined) {
-    setMpDiffConstraint(firstMp, secondMp);
+  if (secondMp !== null) {
+    setMpDiffConstraint(firstMp!, secondMp);
   }
 
-  if (secondMp !== undefined && thirdMp !== undefined) {
+  if (secondMp !== null && thirdMp !== null) {
     setMpDiffConstraint(secondMp, thirdMp);
   }
 
-  if (lastMp !== undefined) {
+  if (lastMp !== null) {
     rangeMealPowers
       .filter(
         (mp) =>
@@ -91,7 +91,7 @@ export const getModel = ({
   const [firstType, secondType, thirdType] = typesByPlace;
   const lastType = thirdType ?? secondType ?? firstType;
 
-  if (secondType !== undefined) {
+  if (secondType !== null) {
     const constraint = diff105
       ? lc.constraintSets.typeDiff105[firstType][secondType]
       : lc.constraintSets.typeValueDifferences[firstType][secondType];
@@ -112,7 +112,7 @@ export const getModel = ({
     });
   }
 
-  if (secondType !== undefined && thirdType !== undefined) {
+  if (secondType !== null && thirdType !== null) {
     const constraint =
       lc.constraintSets.typeValueDifferences[secondType][thirdType];
     constraints.push(constraint);
@@ -150,7 +150,7 @@ export const getModel = ({
   }
 
   // FIXME? what if thirdType === undefined && thirdTypeGte > 0
-  if (thirdType !== undefined && thirdTypeGte > 0) {
+  if (thirdType !== null && thirdTypeGte > 0) {
     constraints.push({
       lowerBound: thirdTypeGte,
       coefficients: lc.coefficientSets.typeValues[thirdType],

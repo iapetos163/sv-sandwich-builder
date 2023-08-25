@@ -96,17 +96,23 @@ export const getMealPowerTargetsByPlace = (
 export const fillIn = <T>(
   arr: [T | null, T | null, T | null],
   selection: T[],
-): [T, T, T] => {
+): [T, T | null, T | null] => {
   let [first, second, third] = arr;
+  let encounteredValue = false;
 
+  if (third === null && encounteredValue) {
+    third = selection.find((t) => t !== first && t !== second && t !== third)!;
+  } else if (third !== null) {
+    encounteredValue = true;
+  }
+  if (second === null && encounteredValue) {
+    second = selection.find((t) => t !== first && t !== second && t !== third)!;
+  } else if (second !== null) {
+    encounteredValue = true;
+  }
+  // Assumption: encounteredValue || first !== null
   if (first === null) {
     first = selection.find((t) => t !== first && t !== second && t !== third)!;
-  }
-  if (second === null) {
-    second = selection.find((t) => t !== first && t !== second && t !== third)!;
-  }
-  if (third === null) {
-    third = selection.find((t) => t !== first && t !== second && t !== third)!;
   }
 
   return [first, second, third];
