@@ -70,16 +70,36 @@ export const selectInitialTargets = ({
     const targetConfigSets = permutePowerConfigs(targetPowers, targetConfigs);
 
     return targetConfigSets.flatMap((targetConfigSet): Target[] => {
+      const firstTypeGte = targetConfigSet.reduce((max, c) => {
+        if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
+        if (c.firstTypeGte) return Math.max(max, c.firstTypeGte);
+        if (c.thirdTypeGte) return Math.max(max, c.thirdTypeGte);
+        return max;
+      }, 0);
+
+      const thirdTypeGte = targetConfigSet.reduce(
+        (max, c) => Math.max(max, c.thirdTypeGte || 0),
+        0,
+      );
+      const firstTypeLte = targetConfigSet.reduce(
+        (max, c) => Math.min(max, c.firstTypeLte ?? Infinity),
+        Infinity,
+      );
+
+      const diff70 = targetConfigSet.some((t) => t.diff70);
+      const diff105 = targetConfigSet.some((t) => t.diff105);
+
       const targetTypes = getTypeTargetsByPlace(
         targetPowers,
         targetConfigSet.map((c) => c.typePlaceIndex),
       );
 
-      const typesByPlace = fillIn<TypeIndex>(targetTypes, rangeTypes) as [
-        TypeIndex,
-        TypeIndex | null,
-        TypeIndex | null,
-      ];
+      const fillInAll = thirdTypeGte > 0;
+      const typesByPlace = fillIn<TypeIndex>(
+        targetTypes,
+        rangeTypes,
+        fillInAll,
+      ) as [TypeIndex, TypeIndex | null, TypeIndex | null];
 
       const mpBase =
         targetNumHerba > 0 ? [MealPower.SPARKLING, MealPower.TITLE] : [];
@@ -116,25 +136,6 @@ export const selectInitialTargets = ({
         ...mpBase,
         ...arr,
       ]);
-
-      const firstTypeGte = targetConfigSet.reduce((max, c) => {
-        if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
-        if (c.firstTypeGte) return Math.max(max, c.firstTypeGte);
-        if (c.thirdTypeGte) return Math.max(max, c.thirdTypeGte);
-        return max;
-      }, 0);
-
-      const thirdTypeGte = targetConfigSet.reduce(
-        (max, c) => Math.max(max, c.thirdTypeGte || 0),
-        0,
-      );
-      const firstTypeLte = targetConfigSet.reduce(
-        (max, c) => Math.min(max, c.firstTypeLte ?? Infinity),
-        Infinity,
-      );
-
-      const diff70 = targetConfigSet.some((t) => t.diff70);
-      const diff105 = targetConfigSet.some((t) => t.diff105);
 
       const flavorIndependent = targetPowers.every((tp) =>
         isHerbaMealPower(tp.mealPower),

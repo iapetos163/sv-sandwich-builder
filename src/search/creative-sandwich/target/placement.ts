@@ -93,9 +93,13 @@ export const getMealPowerTargetsByPlace = (
   return [firstTargetMp, secondTargetMp, thirdTargetMp];
 };
 
-export const fillIn = <T>(arr: (T | null)[], selection: T[]): (T | null)[] => {
+export const fillIn = <T>(
+  arr: (T | null)[],
+  selection: T[],
+  fillAll = false,
+): (T | null)[] => {
   const res = [...arr];
-  let encounteredValue = false;
+  let encounteredValue = fillAll;
 
   for (let i = res.length - 1; i >= 0; i--) {
     if (res[i] === null && encounteredValue) {
