@@ -6,10 +6,8 @@ import condiments from '../source-data/condiments.json';
 import fillings from '../source-data/fillings.json';
 import meals from '../source-data/meals.json';
 import sandwiches from '../source-data/sandwiches.json';
-import { createMetaVector } from '../src/metavector';
 import { allTypes } from '../src/strings';
 import { Power } from '../src/types';
-import { createMatrix } from './create-matrix';
 import { generateLinearConstraints } from './linear-constraints';
 
 export type IngredientEntry = {
@@ -17,7 +15,6 @@ export type IngredientEntry = {
   flavorVector: number[];
   baseMealPowerVector: number[];
   typeVector: number[];
-  metaVector: number[];
   imagePath: string;
   imageUrl: string;
   pieces: number;
@@ -156,11 +153,6 @@ const main = async () => {
         flavorVector,
         typeVector,
         baseMealPowerVector: mealPowerVector,
-        metaVector: createMetaVector({
-          flavorVector,
-          typeVector,
-          mealPowerVector,
-        }),
         ingredientType: 'condiment',
       };
     },
@@ -180,11 +172,6 @@ const main = async () => {
         flavorVector,
         typeVector,
         baseMealPowerVector: mealPowerVector,
-        metaVector: createMetaVector({
-          flavorVector,
-          typeVector,
-          mealPowerVector,
-        }),
         ingredientType: 'filling',
       };
     },
@@ -236,7 +223,6 @@ const main = async () => {
   await outputJson('ingredients.json', ingredientsData);
   await outputJson('recipes.json', recipeData);
   await outputJson('meals.json', mealData);
-  await outputJson('matrix.json', createMatrix(ingredientsData));
   await outputJson(
     'linear-vars.json',
     generateLinearConstraints(ingredientsData),
