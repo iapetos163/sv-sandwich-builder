@@ -75,7 +75,11 @@ export const selectInitialTargets = ({
         targetConfigSet.map((c) => c.typePlaceIndex),
       );
 
-      const typesByPlace = fillIn<TypeIndex>(targetTypes, rangeTypes);
+      const typesByPlace = fillIn<TypeIndex>(targetTypes, rangeTypes) as [
+        TypeIndex,
+        TypeIndex | null,
+        TypeIndex | null,
+      ];
 
       const mpBase =
         targetNumHerba > 0 ? [MealPower.SPARKLING, MealPower.TITLE] : [];
