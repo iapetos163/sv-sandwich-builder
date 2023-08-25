@@ -824,7 +824,7 @@ describe('makeSandwichForPower', () => {
   });
 
   // The optimal sandwich for these powers is easier than #44 Avocado Sandwich
-  it('Does NOT Naively produces #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catching Dark', async () => {
+  it('Does NOT naively produce #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catch Dark', async () => {
     const sandwich = await makeSandwichForPowers([
       {
         mealPower: MealPower.EXP,
@@ -846,6 +846,37 @@ describe('makeSandwichForPower', () => {
     expect(numFillings).toBe(1);
   });
 
+  it('Produces a sandwich for Lv 2 Title Fairy, Lv 2 Egg, and Lv 2 Raid Normal', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EGG,
+        type: TypeIndex.NORMAL,
+        level: 2,
+      },
+      {
+        mealPower: MealPower.TITLE,
+        type: TypeIndex.FAIRY,
+        level: 2,
+      },
+      {
+        mealPower: MealPower.RAID,
+        type: TypeIndex.NORMAL,
+        level: 2,
+      },
+    ];
+    const sandwich = await makeSandwichForPowers(targetPowers);
+
+    expect(sandwich).not.toBeNull();
+    const ingredients = sandwich!.fillings.concat(sandwich!.condiments);
+
+    console.debug(`${ingredients.map((i) => i.name).join(', ')}`);
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(ingredients),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', async () => {
   //   const sandwich = await makeSandwichForPowers([{
   //     mealPower: MealPower.CATCH,
@@ -862,10 +893,7 @@ describe('makeSandwichForPower', () => {
   // );
   // expect(correctResult).toBe(true);
 
-  //   console.debug(
-  //     `${ingredients
-  //       .map((i) => i.name)
-  //       .join(', ')}`,
-  //   );
+  // console.debug(`${ingredients.map((i) => i.name).join(', ')}`);
+
   // });
 });
