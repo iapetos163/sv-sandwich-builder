@@ -105,7 +105,7 @@ export const selectInitialTargets = ({
         0,
       );
       const firstTypeLte = targetConfigSet.reduce(
-        (max, c) => Math.max(max, c.firstTypeLte ?? Infinity),
+        (max, c) => Math.min(max, c.firstTypeLte ?? Infinity),
         Infinity,
       );
 
