@@ -100,7 +100,6 @@ const PowerSelector = ({
   );
 
   useEffect(() => {
-    console.log({ selectedMealPower });
     if (
       selectedMealPower === null ||
       (selectedType === null && mealPowerHasType(selectedMealPower)) ||
