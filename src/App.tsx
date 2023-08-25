@@ -187,8 +187,8 @@ function App(): ReactElement {
             <h2>About</h2>
           </StyledSectionHeader>
           <p>
-            Input one or more meal powers, and this tool will attempt to find a
-            meal or a sandwich recipe that yields those powers.
+            Input one or more meal powers, and this tool will find a meal or a
+            sandwich recipe that yields those powers.
           </p>
         </StyledSection>
         <StyledSection>
