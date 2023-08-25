@@ -83,15 +83,39 @@ export const selectInitialTargets = ({
 
       const mpBase =
         targetNumHerba > 0 ? [MealPower.SPARKLING, MealPower.TITLE] : [];
-      const targetMps = getMealPowerTargetsByPlace(
+      const mealPowersByPlace = getMealPowerTargetsByPlace(
         targetPowers,
         targetConfigSet.map((c) => c.mpPlaceIndex),
         mpBase.length,
       );
-      const mealPowersByPlace = fillIn<MealPower>(
-        [...mpBase, ...targetMps],
-        rangeMealPowers.filter((mp) => !isHerbaMealPower(mp)),
-      );
+      let mealPowersByPlaceArrays = [mealPowersByPlace];
+      if (mealPowersByPlace[0] === null) {
+        mealPowersByPlaceArrays = rangeMealPowers
+          .filter(
+            (mp) =>
+              !isHerbaMealPower(mp) &&
+              !mealPowersByPlace.some((mp2) => mp2 === mp),
+          )
+          .map((mpChoice) => [
+            mpChoice,
+            mealPowersByPlace[1],
+            mealPowersByPlace[2],
+          ]);
+      }
+      if (mealPowersByPlace[1] === null && mealPowersByPlace[2] !== null) {
+        mealPowersByPlaceArrays = mealPowersByPlaceArrays.flatMap(
+          (arr): [MealPower | null, MealPower | null, MealPower | null][] =>
+            rangeMealPowers
+              .filter(
+                (mp) => !isHerbaMealPower(mp) && !arr.some((mp2) => mp2 === mp),
+              )
+              .map((mpChoice) => [arr[0], mpChoice, arr[2]]),
+        );
+      }
+      const completeMpArrays = mealPowersByPlaceArrays.map((arr) => [
+        ...mpBase,
+        ...arr,
+      ]);
 
       const firstTypeGte = targetConfigSet.reduce((max, c) => {
         if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
@@ -117,22 +141,20 @@ export const selectInitialTargets = ({
       );
 
       if (flavorIndependent) {
-        return [
-          {
-            configSet: targetConfigSet,
-            typeAllocation: targetConfigSet[0].typeAllocation,
-            numHerbaMystica: targetNumHerba,
-            powers: targetPowers,
-            typesByPlace,
-            mealPowersByPlace,
-            boostPower: null,
-            firstTypeGte,
-            thirdTypeGte,
-            firstTypeLte,
-            diff70,
-            diff105,
-          },
-        ];
+        return completeMpArrays.map((mealPowersByPlace) => ({
+          configSet: targetConfigSet,
+          typeAllocation: targetConfigSet[0].typeAllocation,
+          numHerbaMystica: targetNumHerba,
+          powers: targetPowers,
+          typesByPlace,
+          mealPowersByPlace,
+          boostPower: null,
+          firstTypeGte,
+          thirdTypeGte,
+          firstTypeLte,
+          diff70,
+          diff105,
+        }));
       }
 
       return targetPowers.flatMap((power) => {
@@ -141,21 +163,23 @@ export const selectInitialTargets = ({
         if (flavorProfiles.length === 0) {
           return [];
         }
-        return flavorProfiles.map((flavorProfile) => ({
-          configSet: targetConfigSet,
-          typeAllocation: targetConfigSet[0].typeAllocation,
-          numHerbaMystica: targetNumHerba,
-          powers: targetPowers,
-          typesByPlace,
-          mealPowersByPlace,
-          boostPower,
-          flavorProfile,
-          firstTypeGte,
-          thirdTypeGte,
-          firstTypeLte,
-          diff70,
-          diff105,
-        }));
+        return flavorProfiles.flatMap((flavorProfile) =>
+          completeMpArrays.map((mealPowersByPlace) => ({
+            configSet: targetConfigSet,
+            typeAllocation: targetConfigSet[0].typeAllocation,
+            numHerbaMystica: targetNumHerba,
+            powers: targetPowers,
+            typesByPlace,
+            mealPowersByPlace,
+            boostPower,
+            flavorProfile,
+            firstTypeGte,
+            thirdTypeGte,
+            firstTypeLte,
+            diff70,
+            diff105,
+          })),
+        );
       });
     });
   });
