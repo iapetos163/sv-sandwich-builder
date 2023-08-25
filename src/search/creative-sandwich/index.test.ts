@@ -817,15 +817,14 @@ describe('makeSandwichForPower', () => {
     );
     expect(correctResult).toBe(true);
 
-    const numIngredients = ingredients.length;
     const numHerba = sandwich!.condiments.filter(
       (s) => s.isHerbaMystica,
     ).length;
 
     expect(numHerba).toBe(0);
-    // expect(numIngredients).toBeLessThanOrEqual(6);
   });
 
+  // The optimal sandwich for these powers is easier than #44 Avocado Sandwich
   it('Does NOT Naively produces #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catching Dark', () => {
     const sandwich = makeSandwichForPowers([
       {
@@ -845,7 +844,6 @@ describe('makeSandwichForPower', () => {
     expect(sandwich).not.toBeNull();
 
     const numFillings = sandwich!.fillings.length;
-    const numCondiments = sandwich!.condiments.length;
     expect(numFillings).toBe(1);
   });
 
