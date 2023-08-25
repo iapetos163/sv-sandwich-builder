@@ -106,7 +106,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
           ta === tb
             ? { coefficients: {}, lowerBound: 0 }
             : {
-                name: `T${ta}-${tb}>=105`,
+                name: `T${ta}-${tb}>105`,
                 coefficients: Object.fromEntries(
                   ingredients
                     .map(({ name, typeVector }) => [
@@ -115,7 +115,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
                     ])
                     .filter(([, v]) => v !== 0),
                 ),
-                lowerBound: 105,
+                lowerBound: 106,
               },
         ),
       ),
