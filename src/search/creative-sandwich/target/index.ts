@@ -88,13 +88,10 @@ export const selectInitialTargets = ({
         targetConfigSet.map((c) => c.mpPlaceIndex),
         mpBase.length,
       );
-      const mealPowersByPlace = [
-        ...mpBase,
-        ...fillIn<MealPower>(
-          targetMps,
-          rangeMealPowers.filter((mp) => !isHerbaMealPower(mp)),
-        ),
-      ];
+      const mealPowersByPlace = fillIn<MealPower>(
+        [...mpBase, ...targetMps],
+        rangeMealPowers.filter((mp) => !isHerbaMealPower(mp)),
+      );
 
       const firstTypeGte = targetConfigSet.reduce((max, c) => {
         if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
