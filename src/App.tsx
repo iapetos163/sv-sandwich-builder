@@ -6,12 +6,12 @@ import PokeDollar from './component/PokeDollar';
 import PowerQuery, { QueryOptions } from './component/PowerQuery';
 import RecipeResult from './component/RecipeResult';
 import SandwichResult from './component/SandwichResult';
+import { powersEqual } from './mechanics';
 import {
   getMealForPowers,
   getRecipeForPowers,
   makeSandwichForPowers,
-  powersEqual,
-} from './mechanics';
+} from './search';
 import { Meal, Power, Sandwich, SandwichRecipe } from './types';
 
 const StyledContainer = styled.div`
@@ -157,14 +157,14 @@ function App(): ReactElement {
       setResultRecipe(null);
 
       setCalculating(true);
-      setTimeout(() => {
-        const creativeSandwich = makeSandwichForPowers(newQuery);
+      setTimeout(async () => {
+        const creativeSandwich = await makeSandwichForPowers(newQuery);
         setResultCreativeSandwich(creativeSandwich);
         setQueryChanged(false);
         setCalculating(false);
       }, 10);
     },
-    [calculating, queryPowers],
+    [calculating, queryPowers, lastIncludeMeals, lastIncludeRecipes],
   );
 
   const noResult = useMemo(
@@ -187,8 +187,8 @@ function App(): ReactElement {
             <h2>About</h2>
           </StyledSectionHeader>
           <p>
-            Input one or more meal powers, and this tool will attempt to find a
-            meal or a sandwich recipe that yields those powers.
+            Input one or more meal powers, and this tool will find a meal or a
+            sandwich recipe that yields those powers.
           </p>
         </StyledSection>
         <StyledSection>

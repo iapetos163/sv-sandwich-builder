@@ -1,4 +1,5 @@
 import { MealPower, TypeIndex } from './enum';
+import { Constraint, Objective } from './lp';
 
 export interface Power {
   mealPower: MealPower;
@@ -20,10 +21,11 @@ export interface Ingredient {
 export interface Sandwich {
   fillings: Ingredient[];
   condiments: Ingredient[];
-  mealPowerBoosts: number[];
-  typeBoosts: number[];
-  flavorBoosts: number[];
+  // mealPowerBoosts: number[];
+  // typeBoosts: number[];
+  // flavorBoosts: number[];
   powers: Power[];
+  score: number;
 }
 
 export interface SandwichRecipe {
@@ -44,3 +46,26 @@ export interface Meal {
   towns: string[];
   imagePath: string;
 }
+
+export type LinearConstraints = {
+  objective: Objective;
+  constraintSets: {
+    multiplayerPieces: Constraint[];
+    singlePlayerPieces: Constraint[];
+    flavorValueDifferences: Constraint[][];
+    mealPowerValueDifferences: Constraint[][];
+    typeValueDifferences: Constraint[][];
+    typeDiff70: Constraint[][];
+    typeDiff105: Constraint[][];
+  };
+  coefficientSets: {
+    score: Record<string, number>;
+    fillings: Record<string, number>;
+    condiments: Record<string, number>;
+    herba: Record<string, number>;
+    typeValues: Record<string, number>[];
+  };
+  constraints: {
+    herbaMealPowerValue: Constraint;
+  };
+};

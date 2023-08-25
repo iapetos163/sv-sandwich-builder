@@ -1,6 +1,6 @@
 import { recipes } from '../data';
+import { powerSetsMatch } from '../mechanics';
 import { Power, SandwichRecipe } from '../types';
-import { powerSetsMatch } from './powers';
 
 export const getRecipeForPowers = (targetPowers: Power[]) => {
   const [optimalRecipe] = recipes.reduce<[SandwichRecipe | null, number]>(
