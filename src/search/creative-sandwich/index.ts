@@ -12,9 +12,9 @@ export const emptySandwich = {
   powers: [],
 };
 
-export const makeSandwichForPowers = (
+export const makeSandwichForPowers = async (
   targetPowers: Power[],
-): Sandwich | null => {
+): Promise<Sandwich | null> => {
   if (!requestedPowersValid(targetPowers)) {
     return null;
   }
@@ -31,9 +31,9 @@ export const makeSandwichForPowers = (
   //     t.typesByPlace[0] === TypeIndex.DARK,
   // );
   // console.debug(expectedSuccessfulTargets);
-  const sandwiches = targets
-    .map((target) => makeSandwichForTarget(target))
-    .filter((s): s is SandwichResult => !!s);
+  const sandwiches = (
+    await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
+  ).filter((s): s is SandwichResult => !!s);
   sandwiches.sort((a, b) => a.score - b.score);
   const result = sandwiches[0];
   if (!result) return null;
@@ -58,13 +58,13 @@ type SandwichResult = {
   target: Target;
 };
 
-const makeSandwichForTarget = (
+const makeSandwichForTarget = async (
   target: Target,
   multiplayer = false,
-): SandwichResult | null => {
+): Promise<SandwichResult | null> => {
   const model = getModel({ multiplayer, target });
 
-  const solution = solve(model);
+  const solution = await solve(model);
   if (solution.status === 'infeasible') return null;
 
   const score = solution.objectiveValue ?? 0;

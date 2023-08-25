@@ -157,14 +157,14 @@ function App(): ReactElement {
       setResultRecipe(null);
 
       setCalculating(true);
-      setTimeout(() => {
-        const creativeSandwich = makeSandwichForPowers(newQuery);
+      setTimeout(async () => {
+        const creativeSandwich = await makeSandwichForPowers(newQuery);
         setResultCreativeSandwich(creativeSandwich);
         setQueryChanged(false);
         setCalculating(false);
       }, 10);
     },
-    [calculating, queryPowers],
+    [calculating, queryPowers, lastIncludeMeals, lastIncludeRecipes],
   );
 
   const noResult = useMemo(

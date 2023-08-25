@@ -1,6 +1,8 @@
-import GLPK, { GLPK as GLPKInstance, LP } from 'glpk.js';
+import type { GLPK as GLPKInstance, LP } from 'glpk.js';
+import GLPK from 'glpk.js';
 
-const glpk: GLPKInstance = (GLPK as any)();
+// @ts-expect-error
+const _glpk: Promise<GLPKInstance> = GLPK();
 
 export type Objective = {
   direction: 'min' | 'max';
@@ -23,7 +25,7 @@ export interface Model {
   constraints: Constraint[];
 }
 
-export const transformModel = (model: Model): LP => {
+export const transformModel = (glpk: GLPKInstance, model: Model): LP => {
   const variableNames = new Set<string>();
 
   const objective = {
@@ -69,12 +71,13 @@ export const transformModel = (model: Model): LP => {
   };
 };
 
-export const solve = (model: Model) => {
-  const transformedModel = transformModel(model);
+export const solve = async (model: Model) => {
+  const glpk = await _glpk;
+  const transformedModel = transformModel(glpk, model);
 
   const {
     result: { vars, z, status },
-  } = glpk.solve(transformedModel);
+  } = await glpk.solve(transformedModel);
 
   return {
     status:
