@@ -1,6 +1,6 @@
 import { meals } from '../data';
+import { powerSetsMatch } from '../mechanics';
 import { Meal, Power } from '../types';
-import { powerSetsMatch } from './powers';
 
 export const getMealForPowers = (targetPowers: Power[]) => {
   const [optimalMeal] = meals.reduce<[Meal | null, number]>(

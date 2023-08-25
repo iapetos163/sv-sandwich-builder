@@ -13,4 +13,15 @@ export const diff = (a: number[], b: number[]) =>
 export const innerProduct = (a: number[], b: number[]) =>
   a.reduce((product, aVal, i) => aVal * (b[i] ?? 0) + product, 0);
 
-export const norm = (v: number[]) => Math.sqrt(innerProduct(v, v));
+export const norm = (v: number[]) => Math.sqrt(normSquared(v));
+
+export const normSquared = (v: number[]) => innerProduct(v, v);
+
+/**
+ *
+ * @param m Matrix (array of M rows, each row with N components)
+ * @param v Vertical vector (N components)
+ * @returns Vector with M components
+ */
+export const applyTransform = (m: number[][], v: number[]) =>
+  m.map((u) => innerProduct(u, v));

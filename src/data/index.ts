@@ -1,5 +1,6 @@
-import { Ingredient, SandwichRecipe, Meal } from '../types';
+import { Ingredient, SandwichRecipe, Meal, LinearConstraints } from '@/types';
 import ingredientsData from './ingredients.json';
+import linearVarsData from './linear-vars.json';
 import mealsData from './meals.json';
 import recipesData from './recipes.json';
 
@@ -16,3 +17,5 @@ export const recipes: SandwichRecipe[] = recipesData.map((recipe) => ({
 }));
 
 export const meals: Meal[] = mealsData;
+
+export const linearConstraints = linearVarsData as unknown as LinearConstraints;

@@ -2,14 +2,15 @@ import { writeFile } from 'fs/promises';
 import { basename, join as joinPath } from 'path';
 import arg from 'arg';
 import got from 'got';
-import condiments from '../simulator-data/condiments.json';
-import fillings from '../simulator-data/fillings.json';
-import meals from '../simulator-data/meals.json';
-import sandwiches from '../simulator-data/sandwiches.json';
+import condiments from '../source-data/condiments.json';
+import fillings from '../source-data/fillings.json';
+import meals from '../source-data/meals.json';
+import sandwiches from '../source-data/sandwiches.json';
 import { allTypes } from '../src/strings';
 import { Power } from '../src/types';
+import { generateLinearConstraints } from './linear-constraints';
 
-type IngredientEntry = {
+export type IngredientEntry = {
   name: string;
   flavorVector: number[];
   baseMealPowerVector: number[];
@@ -139,31 +140,41 @@ const main = async () => {
   });
 
   const parsedCondiments = condiments.map(
-    ({ name, imageUrl, powers, types, tastes }): IngredientEntry => ({
-      name,
-      isHerbaMystica: name.endsWith('Herba Mystica'),
-      imagePath: `ingredient/${basename(imageUrl)}`,
-      imageUrl,
-      pieces: 1,
-      flavorVector: getFlavorVector(tastes),
-      typeVector: getTypeVector(types),
-      baseMealPowerVector: getMealPowerVector(powers),
-      ingredientType: 'condiment',
-    }),
+    ({ name, imageUrl, powers, types, tastes }): IngredientEntry => {
+      const flavorVector = getFlavorVector(tastes);
+      const typeVector = getTypeVector(types);
+      const mealPowerVector = getMealPowerVector(powers);
+      return {
+        name,
+        isHerbaMystica: name.endsWith('Herba Mystica'),
+        imagePath: `ingredient/${basename(imageUrl)}`,
+        imageUrl,
+        pieces: 1,
+        flavorVector,
+        typeVector,
+        baseMealPowerVector: mealPowerVector,
+        ingredientType: 'condiment',
+      };
+    },
   );
 
   const parsedFillings = fillings.map(
-    ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => ({
-      pieces,
-      name,
-      isHerbaMystica: false,
-      imagePath: `ingredient/${basename(imageUrl)}`,
-      imageUrl,
-      flavorVector: getFlavorVector(tastes, pieces),
-      typeVector: getTypeVector(types, pieces),
-      baseMealPowerVector: getMealPowerVector(powers, pieces),
-      ingredientType: 'filling',
-    }),
+    ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => {
+      const flavorVector = getFlavorVector(tastes, pieces);
+      const typeVector = getTypeVector(types, pieces);
+      const mealPowerVector = getMealPowerVector(powers, pieces);
+      return {
+        pieces,
+        name,
+        isHerbaMystica: false,
+        imagePath: `ingredient/${basename(imageUrl)}`,
+        imageUrl,
+        flavorVector,
+        typeVector,
+        baseMealPowerVector: mealPowerVector,
+        ingredientType: 'filling',
+      };
+    },
   );
 
   const recipeData = sandwiches
@@ -203,17 +214,19 @@ const main = async () => {
 
   const ingredientsData = parsedFillings.concat(parsedCondiments);
 
-  const ingOutputPath = 'src/data/ingredients.json';
-  await writeFile(ingOutputPath, JSON.stringify(ingredientsData));
-  console.log(`Exported ${ingOutputPath}`);
+  const outputJson = async (filename: string, data: any) => {
+    const outputPath = `src/data/${filename}`;
+    await writeFile(outputPath, JSON.stringify(data));
+    console.log(`Exported ${outputPath}`);
+  };
 
-  const recipeOutputPath = 'src/data/recipes.json';
-  await writeFile(recipeOutputPath, JSON.stringify(recipeData));
-  console.log(`Exported ${recipeOutputPath}`);
-
-  const mealOutputPath = 'src/data/meals.json';
-  await writeFile(mealOutputPath, JSON.stringify(mealData));
-  console.log(`Exported ${mealOutputPath}`);
+  await outputJson('ingredients.json', ingredientsData);
+  await outputJson('recipes.json', recipeData);
+  await outputJson('meals.json', mealData);
+  await outputJson(
+    'linear-vars.json',
+    generateLinearConstraints(ingredientsData),
+  );
 
   if (args['--skip-images']) return;
 

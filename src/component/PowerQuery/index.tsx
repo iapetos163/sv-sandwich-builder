@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { rangeMealPowers, rangeTypes } from '../../enum';
 import { Power } from '../../types';
@@ -21,12 +21,29 @@ const StyledAdd = styled.div`
   grid-column: 1 4;
 `;
 
+const StyledOptionsContainer = styled.div`
+  display: flex;
+  margin: 10px 0;
+  font-size: 0.9em;
+  > * {
+    margin-right: 10px;
+  }
+  label {
+    user-select: none;
+  }
+`;
+
 const allowedMealPowers = rangeMealPowers.map(() => true);
 
 const allowedTypes = rangeTypes.map(() => true);
 
+export interface QueryOptions {
+  includeMeals?: boolean;
+  includeRecipes?: boolean;
+}
+
 export interface PowerQueryProps {
-  onSubmit: (queryPower: Power[]) => void;
+  onSubmit: (queryPowers: Power[], options?: QueryOptions) => void;
   enableSubmit: boolean;
 }
 
@@ -37,6 +54,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const [firstQueryOverride, setFirstQueryOverride] = useState<Power | null>(
     null,
   );
+  const [includeMeals, setIncludeMeals] = useState(true);
+  const [includeRecipes, setIncludeRecipes] = useState(true);
   const [secondQueryOverride, setSecondQueryOverride] = useState<Power | null>(
     null,
   );
@@ -87,6 +106,14 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     setShowThird(false);
   }, []);
 
+  const toggleMeals = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setIncludeMeals(event.target.checked);
+  }, []);
+
+  const toggleRecipes = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setIncludeRecipes(event.target.checked);
+  }, []);
+
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
       evt.preventDefault();
@@ -95,9 +122,16 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
         secondQueryPower,
         thirdQueryPower,
       ].filter((p): p is Power => !!p);
-      if (powers.length > 0) onSubmit(powers);
+      if (powers.length > 0) onSubmit(powers, { includeMeals, includeRecipes });
     },
-    [firstQueryPower, secondQueryPower, thirdQueryPower, onSubmit],
+    [
+      firstQueryPower,
+      secondQueryPower,
+      thirdQueryPower,
+      onSubmit,
+      includeMeals,
+      includeRecipes,
+    ],
   );
   return (
     <StyledContainer>
@@ -144,6 +178,24 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
             </StyledAdd>
           )}
         </StyledGrid>
+        <StyledOptionsContainer>
+          <label>
+            <input
+              type="checkbox"
+              checked={includeMeals}
+              onChange={toggleMeals}
+            ></input>{' '}
+            Include restaurant meals
+          </label>
+          {/* <label>
+            <input
+              type="checkbox"
+              checked={includeRecipes}
+              onChange={toggleRecipes}
+            ></input>{' '}
+            Include sandwich recipes
+          </label> */}
+        </StyledOptionsContainer>
         <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
         </button>

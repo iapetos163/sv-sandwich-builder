@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: pnpm/action-setup@v2
         with:
-          version: ^7
+          version: ^8
 
       - uses: actions/checkout@v3 # checkout the repo
 
@@ -27,7 +27,7 @@ jobs:
         run: pnpm run build
 
       - name: Test
-        run: pnpm run test --ci --reporters=jest-junit
+        run: pnpm run test --ci
 
       - name: Test Report
         uses: dorny/test-reporter@v1

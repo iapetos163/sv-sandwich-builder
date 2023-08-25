@@ -1,14 +1,12 @@
-import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
+import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../enum';
 import {
   calculateTypes,
   evaluateBoosts,
-  getTargetConfigs,
-  getTypeTargetsByPlace,
   powersMatch,
   rankMealPowerBoosts,
   rankTypeBoosts,
   requestedPowersValid,
-} from './index';
+} from './powers';
 
 describe('rankMealPowerBoosts', () => {
   it('Considers an unboosted meal power when applying flavor boost', () => {
@@ -85,21 +83,6 @@ describe('evaluateBoosts', () => {
   });
 });
 
-describe('getTargetConfigs', () => {
-  it('Returns no more than 4 for any target config when numHerbaMystica is 1', () => {
-    const res = getTargetConfigs(
-      [
-        { mealPower: MealPower.HUMUNGO, level: 3, type: TypeIndex.STEEL },
-        { mealPower: MealPower.CATCH, level: 2, type: TypeIndex.PSYCHIC },
-      ],
-      1,
-    );
-
-    expect(res[0].length).toBeLessThanOrEqual(4);
-    expect(res[1].length).toBeLessThanOrEqual(4);
-  });
-});
-
 describe('requestedPowersValid', () => {
   it('Returns true for Lv 1 Exp Dragon, Lv 1 Item Fighting, and Lv 1 Encounter Electric', () => {
     const res = requestedPowersValid([
@@ -137,19 +120,5 @@ describe('requestedPowersValid', () => {
     ]);
 
     expect(res).toBe(true);
-  });
-});
-
-describe('getTypeTargetsByPlace', () => {
-  it('Returns a valid result', () => {
-    const res = getTypeTargetsByPlace(
-      [{ mealPower: 6, type: 0, level: 2 }],
-      [0],
-      rankTypeBoosts(rangeTypes.map(() => 0)),
-    );
-
-    expect(res[0]).toBe(0);
-    expect(res[1]).toBe(1);
-    expect(res[2]).toBe(2);
   });
 });
