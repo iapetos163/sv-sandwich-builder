@@ -110,7 +110,11 @@ export const getTargetConfigs = (
   }
 
   if (targetNumHerba >= 1) {
-    const oneOneThree = {
+    const oneOneThreeLv3 = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeGte: 380,
+    } as const;
+    const oneOneThreeLv2 = {
       typeAllocation: 'ONE_ONE_THREE',
       firstTypeGt: 280,
     } as const;
@@ -119,10 +123,16 @@ export const getTargetConfigs = (
       firstTypeLte: 280,
     } as const;
     // Does not have title as a target
-    return targetPowers.map((): TargetConfig[] => {
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.level >= 3) {
+        return [
+          { ...oneOneThreeLv3, typePlaceIndex: 0, mpPlaceIndex: 2 },
+          { ...oneOneThreeLv3, typePlaceIndex: 2, mpPlaceIndex: 3 },
+        ];
+      }
       return [
-        { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 2 },
-        { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 3 },
+        { ...oneOneThreeLv2, typePlaceIndex: 0, mpPlaceIndex: 2 },
+        { ...oneOneThreeLv2, typePlaceIndex: 2, mpPlaceIndex: 3 },
         { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 3 },
         { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 2 },
       ];
