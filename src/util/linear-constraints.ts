@@ -1,9 +1,4 @@
-import {
-  MealPower,
-  rangeFlavors,
-  rangeMealPowers,
-  rangeTypes,
-} from '../src/enum';
+import { MealPower, rangeFlavors, rangeMealPowers, rangeTypes } from '@/enum';
 import { IngredientEntry } from './process-sim-data';
 
 const getPiecesConstraints = (ingredients: IngredientEntry[], limit: number) =>

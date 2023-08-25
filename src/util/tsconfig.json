@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
+    "composite": true,
+    "rootDir": "../..",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["../*"],
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": ["ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -15,13 +17,8 @@
     "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "types": [
-      "vite-plugin-svgr/client",
-      "jest"
-    ]
+    "types": ["node"]
   },
-  "include": ["./src"],
-  "references": [{"path": "./src/util/tsconfig.json"}]
+  "include": ["../../*"],
+  "ts-node": {"require": ["tsconfig-paths/register"]},
 }

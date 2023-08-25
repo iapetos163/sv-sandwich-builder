@@ -2,12 +2,12 @@ import { writeFile } from 'fs/promises';
 import { basename, join as joinPath } from 'path';
 import arg from 'arg';
 import got from 'got';
-import condiments from '../source-data/condiments.json';
-import fillings from '../source-data/fillings.json';
-import meals from '../source-data/meals.json';
-import sandwiches from '../source-data/sandwiches.json';
-import { allTypes } from '../src/strings';
-import { Power } from '../src/types';
+import { allTypes } from '@/strings';
+import { Power } from '@/types';
+import condiments from '../../source-data/condiments.json';
+import fillings from '../../source-data/fillings.json';
+import meals from '../../source-data/meals.json';
+import sandwiches from '../../source-data/sandwiches.json';
 import { generateLinearConstraints } from './linear-constraints';
 
 export type IngredientEntry = {
