@@ -73,6 +73,46 @@ export const getTargetConfigs = (
     (tp) => tp.mealPower === MealPower.TITLE,
   );
 
+  const lv2s = targetPowers.filter((tp) => tp.level >= 2);
+
+  if (targetNumHerba >= 1 && hasTitlePower && lv2s.length >= 3) {
+    const oneOneThree = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeGt: 280,
+      thirdTypeGte: 280,
+    } as const;
+    const oneThreeTwo = {
+      typeAllocation: 'ONE_THREE_TWO',
+      firstTypeLte: 280,
+      thirdTypeGte: 280,
+    } as const;
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 1 },
+          { ...oneThreeTwo, typePlaceIndex: 0, mpPlaceIndex: 1 },
+        ];
+      }
+
+      if (!mealPowerHasType(tp.mealPower)) {
+        return [
+          // We have already ruled out hasSameTypes
+          // So this one isn't included if power has type
+          { ...oneOneThree, typePlaceIndex: 0, mpPlaceIndex: 2 },
+          { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 3 },
+          { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 3 },
+          { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 2 },
+        ];
+      }
+
+      return [
+        { ...oneOneThree, typePlaceIndex: 2, mpPlaceIndex: 3 },
+        { ...oneThreeTwo, typePlaceIndex: 1, mpPlaceIndex: 3 },
+        { ...oneThreeTwo, typePlaceIndex: 2, mpPlaceIndex: 2 },
+      ];
+    });
+  }
+
   if (targetNumHerba >= 1 && hasTitlePower) {
     const oneOneThree = {
       typeAllocation: 'ONE_ONE_THREE',
@@ -140,7 +180,6 @@ export const getTargetConfigs = (
   }
 
   // Level should not exceed 2 at this point
-  const lv2s = targetPowers.filter((tp) => tp.level >= 2);
 
   // ONE_THREE_ONE can only be done if there are no level 2s
   if (hasSameTypes && lv2s.length === 1 && lv2s[0].type === repeatedType) {

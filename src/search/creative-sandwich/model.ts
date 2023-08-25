@@ -131,7 +131,12 @@ export const getModel = ({
     constraints.push(constraint);
   });
 
-  if (firstTypeGte > 0 && firstTypeLte < Infinity) {
+  if (firstTypeGte === firstTypeLte) {
+    constraints.push({
+      equals: firstTypeLte,
+      coefficients: lc.coefficientSets.typeValues[firstType],
+    });
+  } else if (firstTypeGte > 0 && firstTypeLte < Infinity) {
     constraints.push({
       upperBound: firstTypeLte,
       lowerBound: firstTypeGte,
