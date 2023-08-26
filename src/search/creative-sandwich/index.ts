@@ -4,7 +4,7 @@ import { Model, solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
 import { getModel } from './model';
-import { selectInitialTargets, Target } from './target';
+import { refineTarget, selectInitialTargets, Target } from './target';
 
 export const emptySandwich = {
   fillings: [],
@@ -35,14 +35,24 @@ export const makeSandwichForPowers = async (
     await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
   ).filter((s): s is SandwichResult => !!s);
   sandwiches.sort((a, b) => a.score - b.score);
-  const result = sandwiches[0];
+  let result = sandwiches[0];
   if (!result) return null;
-  const powers = getPowersForIngredients(
-    result.fillings.concat(result.condiments),
-  );
 
   // console.debug(result.target);
   // console.debug(JSON.stringify(result.model));
+
+  if (result.target.arbitraryTypePlaceIndices.length > 0) {
+    const targets = refineTarget(result.target);
+    const sandwiches = (
+      await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
+    ).filter((s): s is SandwichResult => !!s);
+    sandwiches.sort((a, b) => a.score - b.score);
+    result = sandwiches[0];
+  }
+
+  const powers = getPowersForIngredients(
+    result.fillings.concat(result.condiments),
+  );
 
   return {
     ...result,

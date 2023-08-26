@@ -122,8 +122,11 @@ describe('makeSandwichForPower', () => {
     const sandwich = await makeSandwichForPowers(targetPowers);
 
     // 4x Chorizo, 1x Banana, 1x (Banana OR potato salad OR fried fillet), 2x Whippped Cream
+    // 4x Chorizo, 1x Rice, 3x Whipped Cream
     expect(sandwich).not.toBeNull();
     const ingredients = sandwich!.fillings.concat(sandwich!.condiments);
+    expect(ingredients.length).toBeLessThanOrEqual(7);
+
     const correctResult = powerSetsMatch(
       getPowersForIngredients(ingredients),
       targetPowers,
