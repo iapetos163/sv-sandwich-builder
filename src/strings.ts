@@ -36,6 +36,6 @@ export const mealPowerCopy = [
 ];
 
 export const getPowerCopy = (power: Power) =>
-  `Lv. ${power.level} ${mealPowerCopy[power.mealPower]} Power ${
-    mealPowerHasType(power.mealPower) && `: ${allTypes[power.type]}`
+  `Lv. ${power.level} ${mealPowerCopy[power.mealPower]} Power${
+    mealPowerHasType(power.mealPower) ? `: ${allTypes[power.type]}` : ''
   }`;
