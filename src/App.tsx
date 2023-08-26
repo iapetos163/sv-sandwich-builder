@@ -115,6 +115,7 @@ function App(): ReactElement {
   const [calculating, setCalculating] = useState(false);
   const [lastIncludeMeals, setLastIncludeMeals] = useState(true);
   const [lastIncludeRecipes, setLastIncludeRecipes] = useState(true);
+  const [lastIncludeCreative, setLastIncludeCreative] = useState(true);
 
   const handleQuery = useCallback(
     (newQuery: Power[], options: QueryOptions = {}) => {
@@ -125,6 +126,7 @@ function App(): ReactElement {
         newQuery.length !== queryPowers.length ||
         lastIncludeMeals !== (options.includeMeals ?? false) ||
         lastIncludeRecipes !== (options.includeRecipes ?? false) ||
+        lastIncludeCreative !== (options.includeCreative ?? false) ||
         queryPowers.some((qp, i) => !powersEqual(qp, newQuery[i]))
       ) {
         setQueryChanged(true);
@@ -132,6 +134,7 @@ function App(): ReactElement {
       setQueryPowers(newQuery);
       setLastIncludeMeals(options.includeMeals ?? false);
       setLastIncludeRecipes(options.includeRecipes ?? false);
+      setLastIncludeCreative(options.includeCreative ?? false);
 
       if (options.includeMeals) {
         const meal = getMealForPowers(newQuery);
@@ -156,15 +159,24 @@ function App(): ReactElement {
       }
       setResultRecipe(null);
 
-      setCalculating(true);
-      setTimeout(async () => {
-        const creativeSandwich = await makeSandwichForPowers(newQuery);
-        setResultCreativeSandwich(creativeSandwich);
-        setQueryChanged(false);
-        setCalculating(false);
-      }, 10);
+      if (options.includeCreative) {
+        setCalculating(true);
+        setTimeout(async () => {
+          const creativeSandwich = await makeSandwichForPowers(newQuery);
+          setResultCreativeSandwich(creativeSandwich);
+          setQueryChanged(false);
+          setCalculating(false);
+        }, 10);
+      }
+      setResultCreativeSandwich(null);
     },
-    [calculating, queryPowers, lastIncludeMeals, lastIncludeRecipes],
+    [
+      calculating,
+      queryPowers,
+      lastIncludeMeals,
+      lastIncludeRecipes,
+      lastIncludeCreative,
+    ],
   );
 
   const noResult = useMemo(
