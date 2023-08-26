@@ -22,7 +22,6 @@ const StyledAdd = styled.div`
 `;
 
 const StyledOptionsContainer = styled.div`
-  display: flex;
   margin: 10px 0;
   font-size: 0.9em;
   > * {
@@ -40,6 +39,7 @@ const allowedTypes = rangeTypes.map(() => true);
 export interface QueryOptions {
   includeMeals?: boolean;
   includeRecipes?: boolean;
+  includeCreative?: boolean;
 }
 
 export interface PowerQueryProps {
@@ -56,6 +56,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   );
   const [includeMeals, setIncludeMeals] = useState(true);
   const [includeRecipes, setIncludeRecipes] = useState(true);
+  const [includeCreative, setIncludeCreative] = useState(true);
   const [secondQueryOverride, setSecondQueryOverride] = useState<Power | null>(
     null,
   );
@@ -114,6 +115,10 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     setIncludeRecipes(event.target.checked);
   }, []);
 
+  const toggleCreative = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setIncludeCreative(event.target.checked);
+  }, []);
+
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
       evt.preventDefault();
@@ -122,7 +127,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
         secondQueryPower,
         thirdQueryPower,
       ].filter((p): p is Power => !!p);
-      if (powers.length > 0) onSubmit(powers, { includeMeals, includeRecipes });
+      if (powers.length > 0)
+        onSubmit(powers, { includeMeals, includeRecipes, includeCreative });
     },
     [
       firstQueryPower,
@@ -131,6 +137,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
       onSubmit,
       includeMeals,
       includeRecipes,
+      includeCreative,
     ],
   );
   return (
@@ -179,22 +186,37 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
           )}
         </StyledGrid>
         <StyledOptionsContainer>
-          <label>
-            <input
-              type="checkbox"
-              checked={includeMeals}
-              onChange={toggleMeals}
-            ></input>{' '}
-            Include restaurant meals
-          </label>
-          {/* <label>
-            <input
-              type="checkbox"
-              checked={includeRecipes}
-              onChange={toggleRecipes}
-            ></input>{' '}
-            Include sandwich recipes
-          </label> */}
+          <StyledHeading>Options</StyledHeading>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={includeMeals}
+                onChange={toggleMeals}
+              ></input>{' '}
+              Restaurant meals
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={includeRecipes}
+                onChange={toggleRecipes}
+              ></input>{' '}
+              Sandwich recipes
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={includeCreative}
+                onChange={toggleCreative}
+              ></input>{' '}
+              Creative mode sandwiches
+            </label>
+          </div>
         </StyledOptionsContainer>
         <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
