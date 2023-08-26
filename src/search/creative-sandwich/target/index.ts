@@ -208,3 +208,39 @@ const getMpTargets = (
     );
   });
 };
+
+/**
+ * Replace arbitrarily-chosen types with every possible combination
+ */
+export const refineTarget = (target: Target) =>
+  target.arbitraryTypePlaceIndices.reduce<Target[]>(
+    (targets, i) =>
+      targets.flatMap((target) =>
+        rangeTypes
+          .filter(
+            (t) =>
+              // Filter out types equal to some already-target type that wasn't arbitrarily chosen
+              !target.typesByPlace.some(
+                (t2, j) =>
+                  !target.arbitraryTypePlaceIndices.some((i) => i === j) &&
+                  t === t2,
+              ),
+          )
+          .map((t) => {
+            const typesByPlace: [
+              TypeIndex,
+              TypeIndex | null,
+              TypeIndex | null,
+            ] = [
+              target.typesByPlace[0],
+              target.typesByPlace[1],
+              target.typesByPlace[2],
+            ];
+            const arbitraryTypePlaceIndices =
+              target.arbitraryTypePlaceIndices.filter((j) => j !== i);
+            typesByPlace[i] = t;
+            return { ...target, typesByPlace, arbitraryTypePlaceIndices };
+          }),
+      ),
+    [target],
+  );
