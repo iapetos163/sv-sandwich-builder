@@ -29,6 +29,8 @@ export interface Target {
   configSet: TargetConfig[];
   numHerbaMystica: number;
   typesByPlace: [TypeIndex, TypeIndex | null, TypeIndex | null];
+  /** Place indexes of types that were chosen arbitrarily */
+  arbitraryTypePlaceIndices: number[];
   mealPowersByPlace: (MealPower | null)[];
   boostPower: MealPower | null;
   flavorProfile?: [Flavor, Flavor];
@@ -123,6 +125,10 @@ const getTypeTargets = (targetPowers: Power[], configSet: TargetConfig[]) => {
     fillInAll,
   ) as [TypeIndex, TypeIndex | null, TypeIndex | null];
 
+  const arbitraryTypePlaceIndices = typesByPlace
+    .map((t, i) => (t !== null && targetTypes[i] === null ? i : -1))
+    .filter((i) => i >= 0);
+
   return [
     {
       typeAllocation: configSet[0].typeAllocation,
@@ -132,6 +138,7 @@ const getTypeTargets = (targetPowers: Power[], configSet: TargetConfig[]) => {
       firstTypeLte,
       diff70,
       diff105,
+      arbitraryTypePlaceIndices,
     },
   ];
 };
