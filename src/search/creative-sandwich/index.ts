@@ -12,11 +12,14 @@ export const emptySandwich = {
   powers: [],
 };
 
-export const makeSandwichForPowers = async (
+const SCORE_THRESHOLD = 1.2;
+const RESULT_LIMIT = 5;
+
+export const makeSandwichesForPowers = async (
   targetPowers: Power[],
-): Promise<Sandwich | null> => {
+): Promise<Sandwich[]> => {
   if (!requestedPowersValid(targetPowers)) {
-    return null;
+    return [];
   }
 
   const targets = selectInitialTargets({
@@ -36,7 +39,7 @@ export const makeSandwichForPowers = async (
   ).filter((s): s is SandwichResult => !!s);
   sandwiches.sort((a, b) => a.score - b.score);
   let result = sandwiches[0];
-  if (!result) return null;
+  if (!result) return [];
 
   // console.debug(result.target);
   // console.debug(JSON.stringify(result.model));
@@ -54,10 +57,12 @@ export const makeSandwichForPowers = async (
     result.fillings.concat(result.condiments),
   );
 
-  return {
-    ...result,
-    powers,
-  };
+  return [
+    {
+      ...result,
+      powers,
+    },
+  ];
 };
 
 type SandwichResult = {

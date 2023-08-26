@@ -10,7 +10,7 @@ import { powersEqual } from './mechanics';
 import {
   getMealForPowers,
   getRecipeForPowers,
-  makeSandwichForPowers,
+  makeSandwichesForPowers,
 } from './search';
 import { Meal, Power, Sandwich, SandwichRecipe } from './types';
 
@@ -162,8 +162,8 @@ function App(): ReactElement {
       if (options.includeCreative) {
         setCalculating(true);
         setTimeout(async () => {
-          const creativeSandwich = await makeSandwichForPowers(newQuery);
-          setResultCreativeSandwich(creativeSandwich);
+          const creativeSandwiches = await makeSandwichesForPowers(newQuery);
+          setResultCreativeSandwich(creativeSandwiches[0] ?? null);
           setQueryChanged(false);
           setCalculating(false);
         }, 10);
