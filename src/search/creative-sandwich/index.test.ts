@@ -869,7 +869,37 @@ describe('makeSandwichForPower', () => {
     expect(sandwich).not.toBeNull();
     const ingredients = sandwich!.fillings.concat(sandwich!.condiments);
 
-    console.debug(`${ingredients.map((i) => i.name).join(', ')}`);
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(ingredients),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+  });
+
+  it('Produces a sandwich for Lv 2 Title Normal, Lv 2 Encounter Normal, and Lv 2 Catch Fighting', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.TITLE,
+        type: TypeIndex.NORMAL,
+        level: 2,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.NORMAL,
+        level: 2,
+      },
+      {
+        mealPower: MealPower.CATCH,
+        type: TypeIndex.FIGHTING,
+        level: 2,
+      },
+    ];
+    const sandwich = await makeSandwichForPowers(targetPowers);
+
+    // Prosciutto, Rice, Tofu, Salty Herba Mystica
+    expect(sandwich).not.toBeNull();
+    const ingredients = sandwich!.fillings.concat(sandwich!.condiments);
+
     const correctResult = powerSetsMatch(
       getPowersForIngredients(ingredients),
       targetPowers,
@@ -878,22 +908,24 @@ describe('makeSandwichForPower', () => {
   });
 
   // it('Produces a sandwich with Lv 2 mp t', async () => {
-  //   const sandwich = await makeSandwichForPowers([{
-  //     mealPower: MealPower.CATCH,
-  //     type: TypeIndex.BUG,
-  //     level: 2,
-  //   }]);
+  //   const targetPowers = [
+  //     {
+  //       mealPower: MealPower.CATCH,
+  //       type: TypeIndex.BUG,
+  //       level: 2,
+  //     },
+  //   ];
+  //   const sandwich = await makeSandwichForPowers(targetPowers);
 
   //   //
   //   expect(sandwich).not.toBeNull();
-  // const ingredients = sandwich!.fillings.concat(sandwich!.condiments);
-  // const correctResult = powerSetsMatch(
-  //   getPowersForIngredients(ingredients),
-  //   targetPowers,
-  // );
-  // expect(correctResult).toBe(true);
+  //   const ingredients = sandwich!.fillings.concat(sandwich!.condiments);
+  //   console.debug(`${ingredients.map((i) => i.name).join(', ')}`);
 
-  // console.debug(`${ingredients.map((i) => i.name).join(', ')}`);
-
+  //   const correctResult = powerSetsMatch(
+  //     getPowersForIngredients(ingredients),
+  //     targetPowers,
+  //   );
+  //   expect(correctResult).toBe(true);
   // });
 });
