@@ -24,6 +24,10 @@ const StyledFrame = styled.div`
   background-color: #f3f1e0;
   border: 2px solid #bdf7ab;
   padding: 5px;
+  img {
+    max-width: 175px;
+    max-height: 240px;
+  }
 `;
 
 const StyledLocationContainer = styled.div`
