@@ -1,3 +1,6 @@
+import { mealPowerHasType } from '@/mechanics';
+import { Power } from '@/types';
+
 export const allTypes = [
   'Normal',
   'Fighting',
@@ -31,3 +34,8 @@ export const mealPowerCopy = [
   'Teensy',
   'Encounter',
 ];
+
+export const getPowerCopy = (power: Power) =>
+  `Lv. ${power.level} ${mealPowerCopy[power.mealPower]} Power ${
+    mealPowerHasType(power.mealPower) && `: ${allTypes[power.type]}`
+  }`;

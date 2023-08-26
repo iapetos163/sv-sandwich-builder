@@ -37,6 +37,19 @@ describe('getTargetConfigs', () => {
     );
     expect(matchingEggConfig).toBeDefined();
   });
+
+  it('Returns valid configs for duplicate Normal type powers', () => {
+    const targetPowers = [
+      { mealPower: 6, type: TypeIndex.NORMAL, level: 2 },
+      { mealPower: 9, type: TypeIndex.NORMAL, level: 2 },
+      { mealPower: 1, type: TypeIndex.FIGHTING, level: 2 },
+    ];
+
+    const res = getTargetConfigs(targetPowers, 1);
+    expect(
+      res[0].find((tc) => tc.typeAllocation === 'ONE_THREE_TWO'),
+    ).not.toBeDefined();
+  });
 });
 
 describe('permutePowerConfigs', () => {

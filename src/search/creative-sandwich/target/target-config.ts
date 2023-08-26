@@ -54,7 +54,26 @@ export const getTargetConfigs = (
   }
 
   const repeatedType = getRepeatedType(targetPowers);
-  const hasSameTypes = !!repeatedType;
+  const hasSameTypes = repeatedType !== null;
+
+  const lv2s = targetPowers.filter((tp) => tp.level >= 2);
+
+  if (targetNumHerba >= 1 && hasSameTypes && lv2s.length >= 3) {
+    const c = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeGt: 280,
+      thirdTypeGte: 280,
+    } as const;
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 1 }];
+      }
+      if (tp.type === repeatedType) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 2 }];
+      }
+      return [{ ...c, typePlaceIndex: 2, mpPlaceIndex: 3 }];
+    });
+  }
 
   if (targetNumHerba >= 1 && hasSameTypes) {
     const c = { typeAllocation: 'ONE_ONE_THREE', firstTypeGt: 280 } as const;
@@ -72,8 +91,6 @@ export const getTargetConfigs = (
   const hasTitlePower = targetPowers.find(
     (tp) => tp.mealPower === MealPower.TITLE,
   );
-
-  const lv2s = targetPowers.filter((tp) => tp.level >= 2);
 
   if (targetNumHerba >= 1 && hasTitlePower && lv2s.length >= 3) {
     const oneOneThree = {
