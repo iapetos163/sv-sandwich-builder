@@ -1,0 +1,19 @@
+.line {
+  display: flex;
+  align-items: center;
+}
+
+.line > * {
+  margin-right: 5px;
+}
+
+.count {
+  color: #7ba06e;
+  font-weight: 600;
+}
+
+.icon {
+  background-color: var(--color-bg-light);
+  border: 2px solid var(--color-bright-green);
+  border-radius: 10px;
+}
