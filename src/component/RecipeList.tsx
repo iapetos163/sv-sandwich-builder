@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { ingredients } from '../data';
-import { Ingredient } from '../types';
+import { ingredients } from '@/data';
+import { Ingredient } from '@/types';
+import s from './RecipeList.module.css';
 
 const ingredientNames = ingredients.map((i) => i.name);
 const sortIngredientCounts = (counts: Record<string, number>) =>
@@ -41,13 +42,21 @@ const RecipeList = ({ fillings, condiments, className }: RecipeListProps) => {
   return (
     <div className={className}>
       {fillingCounts.map(({ name, count, imagePath }) => (
-        <div key={name}>
-          {count}x <img src={`assets/${imagePath}`} /> {name}
+        <div className={s.line} key={name}>
+          <div className={s.count}>{count}x</div>
+          <div>
+            <img className={s.icon} src={`assets/${imagePath}`} />
+          </div>
+          <div>{name}</div>
         </div>
       ))}
       {condimentCounts.map(({ name, count, imagePath }) => (
-        <div key={name}>
-          {count}x <img src={`assets/${imagePath}`} /> {name}
+        <div className={s.line} key={name}>
+          <div className={s.count}>{count}x</div>
+          <div>
+            <img className={s.icon} src={`assets/${imagePath}`} />
+          </div>
+          <div>{name}</div>
         </div>
       ))}
     </div>
