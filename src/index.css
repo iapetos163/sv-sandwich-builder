@@ -3,6 +3,10 @@ body {
   color: #1d261a;
   background-color: #f3f1e0;
   font-family: sans-serif;
+
+  --color-dark-gray: #1d261a;
+  --color-bg-light: #f3f1e0;
+  --color-bright-green: #bdf7ab;
 }
 
 header {
