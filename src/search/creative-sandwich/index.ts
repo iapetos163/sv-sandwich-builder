@@ -13,7 +13,7 @@ export const emptySandwich = {
 };
 
 const SCORE_THRESHOLD = 1.2;
-const RESULT_LIMIT = 5;
+const RESULT_LIMIT = 3;
 
 export const makeSandwichesForPowers = async (
   targetPowers: Power[],
