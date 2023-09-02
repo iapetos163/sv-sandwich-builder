@@ -12,7 +12,6 @@ import {
   makeSandwichesForPowers,
 } from '@/search';
 import { Meal, Power, Sandwich, SandwichRecipe } from '@/types';
-import s from './App.module.css';
 
 function App(): ReactElement {
   const [resultCreativeSandwich, setResultCreativeSandwich] =
@@ -106,41 +105,7 @@ function App(): ReactElement {
         <div className="sectionHeader">
           <h2>Results</h2>
         </div>
-        <div className={s.resultsContainer}>
-          {calculating && <>Calculating...</>}
-          {queryChanged && noResult && (
-            <>Input a Meal Power query above and press Calculate!.</>
-          )}
-          {!queryChanged && noResult && (
-            <>Could not create a sandwich with the requested power.</>
-          )}
-          {!calculating && resultMeal && (
-            <>
-              <h2>Restaurant Meal</h2>
-              <h3 className={s.resultSubheader}>
-                {resultMeal.name} (<PokeDollar />
-                {resultMeal.cost})
-              </h3>
-              <MealResult meal={resultMeal} />
-            </>
-          )}
-          {!calculating && resultRecipe && (
-            <>
-              <h2>Sandwich</h2>
-              <h3 className={s.resultSubheader}>
-                #{resultRecipe.number} {resultRecipe.name}
-              </h3>
-              <RecipeResult recipe={resultRecipe} />
-            </>
-          )}
-          {!calculating && resultCreativeSandwich && (
-            <>
-              <h2>Sandwich</h2>
-              <h3 className={s.resultSubheader}>Creative Mode</h3>
-              <SandwichResult sandwich={resultCreativeSandwich} />
-            </>
-          )}
-        </div>
+        {/* TODO */}
       </section>
       <section className="links">
         <div className="sectionHeader">
