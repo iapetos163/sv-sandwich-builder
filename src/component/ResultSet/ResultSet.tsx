@@ -2,6 +2,8 @@ import { HTMLAttributes, useEffect, useRef } from 'react';
 import { css } from 'styled-components';
 //@ts-ignore
 import type { SwiperContainer } from 'swiper/element';
+//@ts-ignore
+import type { SwiperModule } from 'swiper/types';
 import MealResult from '@/component/MealResult';
 import PokeDollar from '@/component/PokeDollar';
 import RecipeResult from '@/component/RecipeResult';
@@ -11,9 +13,12 @@ import s from './ResultSet.module.css';
 import { Result, ResultState, ResultType } from './types';
 
 let registered = false;
+const modules: SwiperModule[] = [];
 (async () => {
   try {
     const { register } = await import('swiper/element-bundle');
+    const { Navigation } = await import('swiper/modules');
+    modules.push(Navigation);
     register();
     registered = true;
   } catch (e) {
@@ -32,9 +37,19 @@ const ResultSet = ({ resultState, results }: ResultSetProps) => {
   useEffect(() => {
     if (!swiperRef.current || !registered) return;
     const swiper = swiperRef.current;
-    swiper.slidesPerView = 1.5;
+    swiper.modules = modules;
+    swiper.navigation = true;
+    swiper.slidesPerView = 1.2;
+    swiper.breakpoints = {
+      600: {
+        slidesPerView: 1.5,
+      },
+    };
     swiper.loop = true;
     swiper.centeredSlides = true;
+    swiper.slideToClickedSlide = true;
+    swiper.slideNextClass = s.slideInactive;
+    swiper.slidePrevClass = s.slideInactive;
     swiper.injectStyles = [
       css`
         .swiper-wrapper {

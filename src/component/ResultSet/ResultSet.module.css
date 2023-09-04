@@ -1,8 +1,18 @@
+.slideInactive .resultsContainer {
+  cursor: pointer;
+}
+
 .resultsContainer {
   text-align: center;
   background-color: #e2ddba;
   padding: 20px;
-  margin: 20px;
+  margin: 0 20px;
+}
+
+@media (max-width: 440px) {
+  .resultsContainer {
+    margin: 0 5px;
+  }
 }
 
 .resultsContainer h2 {
