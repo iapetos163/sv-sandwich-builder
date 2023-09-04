@@ -2,8 +2,7 @@
   text-align: center;
   background-color: #e2ddba;
   padding: 20px;
-  max-width: 600px;
-  min-width: 50%;
+  margin: 20px;
 }
 
 .resultsContainer h2 {

@@ -1,3 +1,7 @@
+import { HTMLAttributes, useEffect, useRef } from 'react';
+import { css } from 'styled-components';
+//@ts-ignore
+import type { SwiperContainer } from 'swiper/element';
 import MealResult from '@/component/MealResult';
 import PokeDollar from '@/component/PokeDollar';
 import RecipeResult from '@/component/RecipeResult';
@@ -6,12 +10,45 @@ import InitResult from './InitResult';
 import s from './ResultSet.module.css';
 import { Result, ResultState, ResultType } from './types';
 
+let registered = false;
+(async () => {
+  try {
+    const { register } = await import('swiper/element-bundle');
+    register();
+    registered = true;
+  } catch (e) {
+    console.error(e);
+  }
+})();
+
 export interface ResultSetProps {
   resultState: ResultState;
   results: Result[];
 }
 
 const ResultSet = ({ resultState, results }: ResultSetProps) => {
+  const swiperRef = useRef<SwiperContainer>(null);
+
+  useEffect(() => {
+    if (!swiperRef.current || !registered) return;
+    const swiper = swiperRef.current;
+    swiper.slidesPerView = 1.5;
+    swiper.loop = true;
+    swiper.centeredSlides = true;
+    swiper.injectStyles = [
+      css`
+        .swiper-wrapper {
+          align-items: center;
+        }
+      `.toString(),
+    ];
+    swiper.a11y = {
+      enabled: true,
+    };
+
+    swiper.initialize();
+  }, [results]);
+
   if (resultState === ResultState.INIT) return <InitResult />;
 
   if (resultState === ResultState.CALCULATING)
@@ -23,40 +60,69 @@ const ResultSet = ({ resultState, results }: ResultSetProps) => {
         Could not create a sandwich with the requested power.
       </div>
     );
+
+  const SetWrapper =
+    results.length > 1
+      ? ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
+          //@ts-ignore
+          <swiper-container {...props} ref={swiperRef} init="false">
+            {children}
+            {/* @ts-ignore */}
+          </swiper-container>
+        )
+      : ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
+          <div {...props}>{children}</div>
+        );
+  const ItemWrapper =
+    results.length > 1
+      ? ({
+          children,
+          ...props
+        }: HTMLAttributes<HTMLDivElement> & Record<string, any>) => (
+          //@ts-ignore
+          <swiper-slide {...props}>{children}</swiper-slide>
+        )
+      : ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
+          <div {...props}>{children}</div>
+        );
+
   return (
-    <>
-      {/* FIXME dont use index as key */}
-      {results.map(({ resultType, ...result }, i) => (
-        <div className={s.resultsContainer} key={`${resultType}_${i}`}>
-          {resultType === ResultType.MEAL && (
-            <>
-              <h2>Restaurant Meal</h2>
-              <h3 className={s.resultSubheader}>
-                {result.name} (<PokeDollar />
-                {result.cost})
-              </h3>
-              <MealResult meal={result} />
-            </>
-          )}
-          {resultType === ResultType.RECIPE && (
-            <>
-              <h2>Sandwich</h2>
-              <h3 className={s.resultSubheader}>
-                #{result.number} {result.name}
-              </h3>
-              <RecipeResult recipe={result} />
-            </>
-          )}
-          {resultType === ResultType.CREATIVE && (
-            <>
-              <h2>Sandwich</h2>
-              <h3 className={s.resultSubheader}>Creative Mode</h3>
-              <SandwichResult sandwich={result} />
-            </>
-          )}
-        </div>
+    <SetWrapper className={s.wrapper}>
+      {results.map((result, i) => (
+        <ItemWrapper
+          key={`${result.resultType}_${result.number ?? result.name ?? i}`}
+        >
+          <div className={s.resultsContainer}>
+            {result.resultType === ResultType.MEAL && (
+              <>
+                <h2>Restaurant Meal</h2>
+                <h3 className={s.resultSubheader}>
+                  {result.name} (<PokeDollar />
+                  {result.cost})
+                </h3>
+                <MealResult meal={result} />
+              </>
+            )}
+            {result.resultType === ResultType.RECIPE && (
+              <>
+                <h2>Sandwich</h2>
+                <h3 className={s.resultSubheader}>
+                  #{result.number} {result.name}
+                </h3>
+                <RecipeResult recipe={result} />
+              </>
+            )}
+            {result.resultType === ResultType.CREATIVE && (
+              <>
+                <h2>Sandwich</h2>
+                <h3 className={s.resultSubheader}>Creative Mode</h3>
+                <SandwichResult sandwich={result} />
+              </>
+            )}
+          </div>
+        </ItemWrapper>
       ))}
-    </>
+    </SetWrapper>
   );
 };
 export default ResultSet;

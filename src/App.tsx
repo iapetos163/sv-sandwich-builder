@@ -1,96 +1,66 @@
-import { ReactElement, useCallback, useMemo, useState } from 'react';
+import { ReactElement, useCallback, useState } from 'react';
 import { GitHub } from 'react-feather';
-import MealResult from '@/component/MealResult';
-import PokeDollar from '@/component/PokeDollar';
 import PowerQuery, { QueryOptions } from '@/component/PowerQuery';
-import RecipeResult from '@/component/RecipeResult';
-import SandwichResult from '@/component/SandwichResult';
-import { powersEqual } from '@/mechanics';
+import ResultSet, {
+  CreativeResult,
+  Result,
+  ResultState,
+  ResultType,
+} from '@/component/ResultSet';
 import {
   getMealForPowers,
   getRecipeForPowers,
   makeSandwichesForPowers,
 } from '@/search';
-import { Meal, Power, Sandwich, SandwichRecipe } from '@/types';
+import { Power } from '@/types';
+import s from './App.module.css';
+
+import 'swiper/css';
 
 function App(): ReactElement {
-  const [resultCreativeSandwich, setResultCreativeSandwich] =
-    useState<Sandwich | null>(null);
-  const [resultRecipe, setResultRecipe] = useState<SandwichRecipe | null>(null);
-  const [resultMeal, setResultMeal] = useState<Meal | null>(null);
-  const [queryPowers, setQueryPowers] = useState<Power[]>([]);
-  const [queryChanged, setQueryChanged] = useState(true);
-  const [calculating, setCalculating] = useState(false);
-  const [lastIncludeMeals, setLastIncludeMeals] = useState(true);
-  const [lastIncludeRecipes, setLastIncludeRecipes] = useState(true);
-  const [lastIncludeCreative, setLastIncludeCreative] = useState(true);
+  const [results, setResults] = useState<Result[]>([]);
+  const [resultState, setResultState] = useState<ResultState>(ResultState.INIT);
 
   const handleQuery = useCallback(
     (newQuery: Power[], options: QueryOptions = {}) => {
-      if (calculating) return;
+      if (resultState === ResultState.CALCULATING) return;
 
-      if (
-        queryPowers.length === 0 ||
-        newQuery.length !== queryPowers.length ||
-        lastIncludeMeals !== (options.includeMeals ?? false) ||
-        lastIncludeRecipes !== (options.includeRecipes ?? false) ||
-        lastIncludeCreative !== (options.includeCreative ?? false) ||
-        queryPowers.some((qp, i) => !powersEqual(qp, newQuery[i]))
-      ) {
-        setQueryChanged(true);
-      }
-      setQueryPowers(newQuery);
-      setLastIncludeMeals(options.includeMeals ?? false);
-      setLastIncludeRecipes(options.includeRecipes ?? false);
-      setLastIncludeCreative(options.includeCreative ?? false);
-
+      const results: Result[] = [];
       if (options.includeMeals) {
         const meal = getMealForPowers(newQuery);
         if (meal) {
-          setResultCreativeSandwich(null);
-          setResultRecipe(null);
-          setResultMeal(meal);
-          setQueryChanged(false);
-          return;
+          results.push({ resultType: ResultType.MEAL, ...meal });
         }
       }
-      setResultMeal(null);
 
       if (options.includeRecipes) {
         const recipe = getRecipeForPowers(newQuery);
         if (recipe) {
-          setResultCreativeSandwich(null);
-          setResultRecipe(recipe);
-          setQueryChanged(false);
-          return;
+          results.push({ resultType: ResultType.RECIPE, ...recipe });
         }
       }
-      setResultRecipe(null);
 
       if (options.includeCreative) {
-        setCalculating(true);
+        setResultState(ResultState.CALCULATING);
         setTimeout(async () => {
           const creativeSandwiches = await makeSandwichesForPowers(newQuery);
-          setResultCreativeSandwich(creativeSandwiches[0] ?? null);
-          setQueryChanged(false);
-          setCalculating(false);
+          results.push(
+            ...creativeSandwiches.map(
+              (s): CreativeResult => ({
+                resultType: ResultType.CREATIVE,
+                ...s,
+              }),
+            ),
+          );
+          setResults(results);
+          setResultState(ResultState.RESULT);
         }, 10);
+      } else {
+        setResults(results);
+        setResultState(ResultState.RESULT);
       }
-      setResultCreativeSandwich(null);
     },
-    [
-      calculating,
-      queryPowers,
-      lastIncludeMeals,
-      lastIncludeRecipes,
-      lastIncludeCreative,
-    ],
-  );
-
-  const noResult = useMemo(
-    () =>
-      !calculating && !resultCreativeSandwich && !resultRecipe && !resultMeal,
-    [calculating, resultCreativeSandwich, resultMeal, resultRecipe],
+    [resultState],
   );
 
   return (
@@ -99,13 +69,18 @@ function App(): ReactElement {
         <div className="sectionHeader">
           <h2>Query</h2>
         </div>
-        <PowerQuery onSubmit={handleQuery} enableSubmit={!calculating} />
+        <PowerQuery
+          onSubmit={handleQuery}
+          enableSubmit={resultState !== ResultState.CALCULATING}
+        />
       </section>
       <section>
         <div className="sectionHeader">
           <h2>Results</h2>
         </div>
-        {/* TODO */}
+        <div className={s.resultSetContainer}>
+          <ResultSet results={results} resultState={resultState} />
+        </div>
       </section>
       <section className="links">
         <div className="sectionHeader">

@@ -1,5 +1,4 @@
 import { Meal, Sandwich, SandwichRecipe } from '@/types';
-import s from './ResultSet.module.css';
 
 export enum ResultState {
   INIT = 'init',
@@ -13,7 +12,11 @@ export enum ResultType {
   CREATIVE = 'creative',
 }
 
-export type MealResult = Meal & { resultType: ResultType.MEAL };
+export type MealResult = Meal & { resultType: ResultType.MEAL; number?: never };
 export type RecipeResult = SandwichRecipe & { resultType: ResultType.RECIPE };
-export type CreativeResult = Sandwich & { resultType: ResultType.CREATIVE };
+export type CreativeResult = Sandwich & {
+  resultType: ResultType.CREATIVE;
+  number?: never;
+  name?: never;
+};
 export type Result = MealResult | RecipeResult | CreativeResult;
