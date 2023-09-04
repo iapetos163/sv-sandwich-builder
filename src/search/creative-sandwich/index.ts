@@ -12,11 +12,14 @@ export const emptySandwich = {
   powers: [],
 };
 
-export const makeSandwichForPowers = async (
+const SCORE_THRESHOLD = 1.2;
+const RESULT_LIMIT = 3;
+
+export const makeSandwichesForPowers = async (
   targetPowers: Power[],
-): Promise<Sandwich | null> => {
+): Promise<Sandwich[]> => {
   if (!requestedPowersValid(targetPowers)) {
-    return null;
+    return [];
   }
 
   const targets = selectInitialTargets({
@@ -31,33 +34,49 @@ export const makeSandwichForPowers = async (
   //     t.typesByPlace[0] === TypeIndex.DARK,
   // );
   // console.debug(expectedSuccessfulTargets);
-  const sandwiches = (
+  let sandwiches = (
     await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
   ).filter((s): s is SandwichResult => !!s);
+
+  if (sandwiches.length === 0) return [];
+
   sandwiches.sort((a, b) => a.score - b.score);
-  let result = sandwiches[0];
-  if (!result) return null;
+  sandwiches = sandwiches.slice(0, RESULT_LIMIT);
+  const initialScoreThreshold = sandwiches[0].score * SCORE_THRESHOLD;
+  const numInitialSandwiches = sandwiches.filter(
+    (s) => s.score <= initialScoreThreshold,
+  ).length;
+  const refinedSandwichLimit = Math.ceil(RESULT_LIMIT / numInitialSandwiches);
 
-  // console.debug(result.target);
-  // console.debug(JSON.stringify(result.model));
+  sandwiches = (
+    await Promise.all(
+      sandwiches.map(async (result) => {
+        if (result.target.arbitraryTypePlaceIndices.length > 0) {
+          const targets = refineTarget(result.target);
+          const sandwiches = (
+            await Promise.all(
+              targets.map((target) => makeSandwichForTarget(target)),
+            )
+          )
+            .filter((s): s is SandwichResult => !!s)
+            .filter((s) => s);
+          sandwiches.sort((a, b) => a.score - b.score);
+          return sandwiches.slice(0, refinedSandwichLimit);
+        } else {
+          return [result];
+        }
+      }),
+    )
+  ).flatMap((ss) => ss);
+  sandwiches.sort((a, b) => a.score - b.score);
 
-  if (result.target.arbitraryTypePlaceIndices.length > 0) {
-    const targets = refineTarget(result.target);
-    const sandwiches = (
-      await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
-    ).filter((s): s is SandwichResult => !!s);
-    sandwiches.sort((a, b) => a.score - b.score);
-    result = sandwiches[0];
-  }
+  return sandwiches.slice(0, RESULT_LIMIT).map((result) => {
+    const powers = getPowersForIngredients(
+      result.fillings.concat(result.condiments),
+    );
 
-  const powers = getPowersForIngredients(
-    result.fillings.concat(result.condiments),
-  );
-
-  return {
-    ...result,
-    powers,
-  };
+    return { ...result, powers };
+  });
 };
 
 type SandwichResult = {

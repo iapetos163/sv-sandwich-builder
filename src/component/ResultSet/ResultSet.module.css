@@ -1,0 +1,26 @@
+.slideInactive .resultsContainer {
+  cursor: pointer;
+}
+
+.resultsContainer {
+  text-align: center;
+  background-color: #e2ddba;
+  padding: 20px;
+  margin: 0 20px;
+}
+
+@media (max-width: 440px) {
+  .resultsContainer {
+    margin: 0 5px;
+  }
+}
+
+.resultsContainer h2 {
+  color: var(--color-dark-gray);
+  margin: 0 0 0.3em;
+}
+
+.resultSubheader {
+  font-weight: 600;
+  margin: 0.3em;
+}
