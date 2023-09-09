@@ -4,6 +4,7 @@ import { Model, solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
 import { getModel } from './model';
+import { sandwichIsSubset } from './subset';
 import { refineTarget, selectInitialTargets, Target } from './target';
 
 export const emptySandwich = {
@@ -70,16 +71,22 @@ export const makeSandwichesForPowers = async (
   ).flatMap((ss) => ss);
   sandwiches.sort((a, b) => a.score - b.score);
 
-  return sandwiches.slice(0, RESULT_LIMIT).map((result) => {
-    const powers = getPowersForIngredients(
-      result.fillings.concat(result.condiments),
-    );
+  // Filter out supersets
+  sandwiches = sandwiches
+    .slice(0, RESULT_LIMIT)
+    .reduce<SandwichResult[]>((sandwiches, sandwich) => {
+      const isSuperset = sandwiches.some((s) => sandwichIsSubset(s, sandwich));
+      if (isSuperset) return sandwiches;
+      return [...sandwiches, sandwich];
+    }, []);
 
-    return { ...result, powers };
-  });
+  return sandwiches.map((result) => ({
+    ...result,
+    powers: getPowersForIngredients(result.fillings.concat(result.condiments)),
+  }));
 };
 
-type SandwichResult = {
+export type SandwichResult = {
   score: number;
   fillings: Ingredient[];
   condiments: Ingredient[];
