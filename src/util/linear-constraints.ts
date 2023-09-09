@@ -16,7 +16,7 @@ export const generateLinearConstraints = (ingredients: IngredientEntry[]) => {
       coefficients: Object.fromEntries(
         ingredients.map((ing) => [
           ing.name,
-          ing.ingredientType === 'filling' ? 5 : ing.isHerbaMystica ? 35 : 1,
+          ing.ingredientType === 'filling' ? 5 : 1,
         ]),
       ),
     },

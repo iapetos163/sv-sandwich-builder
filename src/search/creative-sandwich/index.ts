@@ -4,8 +4,8 @@ import { Model, solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
 import { getModel } from './model';
-import { sandwichIsSubset } from './subset';
 import { refineTarget, selectInitialTargets, Target } from './target';
+import { sandwichIsSubset } from './util';
 
 export const emptySandwich = {
   fillings: [],
