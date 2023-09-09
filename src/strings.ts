@@ -1,5 +1,5 @@
 import { mealPowerHasType } from '@/mechanics';
-import { Power } from '@/types';
+import { Ingredient, Power } from '@/types';
 
 export const allTypes = [
   'Normal',
@@ -39,3 +39,13 @@ export const getPowerCopy = (power: Power) =>
   `Lv. ${power.level} ${mealPowerCopy[power.mealPower]} Power${
     mealPowerHasType(power.mealPower) ? `: ${allTypes[power.type]}` : ''
   }`;
+
+export const getSandwichKey = (
+  fillings: Ingredient[],
+  condiments: Ingredient[],
+) =>
+  fillings
+    .map(({ name }) => name)
+    .sort()
+    .concat(condiments.map(({ name }) => name).sort())
+    .join('_');
