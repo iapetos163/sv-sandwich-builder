@@ -73,12 +73,12 @@ export const makeSandwichesForPowers = async (
 
   // Filter out supersets
   sandwiches = sandwiches
-    .slice(0, RESULT_LIMIT)
     .reduce<SandwichResult[]>((sandwiches, sandwich) => {
       const isSuperset = sandwiches.some((s) => sandwichIsSubset(s, sandwich));
       if (isSuperset) return sandwiches;
       return [...sandwiches, sandwich];
-    }, []);
+    }, [])
+    .slice(0, RESULT_LIMIT);
 
   return sandwiches.map((result) => ({
     ...result,
