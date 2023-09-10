@@ -13,7 +13,6 @@ export const emptySandwich = {
   powers: [],
 };
 
-const SCORE_THRESHOLD = 9;
 const RESULT_LIMIT = 4;
 
 const filterSandwichResults = async (
@@ -22,32 +21,16 @@ const filterSandwichResults = async (
 ) => {
   sandwiches.sort((a, b) => a.score - b.score);
   sandwiches = sandwiches.slice(0, limit);
-  const initialScoreThreshold = sandwiches[0].score + SCORE_THRESHOLD;
-  const numInitialSandwiches = sandwiches.filter(
-    (s) => s.score <= initialScoreThreshold,
-  ).length;
-  const refinedSandwichLimit = Math.ceil(limit / numInitialSandwiches);
 
-  sandwiches = (
-    await Promise.all(
-      sandwiches.map(async (result) => {
-        if (result.target.arbitraryTypePlaceIndices.length > 0) {
-          const targets = refineTarget(result.target);
-          const sandwiches = (
-            await Promise.all(
-              targets.map((target) => makeSandwichForTarget(target)),
-            )
-          )
-            .filter((s): s is SandwichResult => !!s)
-            .filter((s) => s);
-          sandwiches.sort((a, b) => a.score - b.score);
-          return sandwiches.slice(0, refinedSandwichLimit);
-        } else {
-          return [result];
-        }
-      }),
-    )
-  ).flatMap((ss) => ss);
+  if (sandwiches[0].target.arbitraryTypePlaceIndices.length > 0) {
+    const targets = refineTarget(sandwiches[0].target);
+    const refined = (
+      await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
+    ).filter((s): s is SandwichResult => !!s);
+    refined.sort((a, b) => a.score - b.score);
+
+    sandwiches.push(...refined);
+  }
   sandwiches.sort((a, b) => a.score - b.score);
   return sandwiches;
 };

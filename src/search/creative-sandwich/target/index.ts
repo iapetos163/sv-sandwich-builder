@@ -1,3 +1,4 @@
+import { optimalTypes } from '@/data';
 import {
   Flavor,
   MealPower,
@@ -6,6 +7,7 @@ import {
   rangeTypes,
 } from '@/enum';
 import { getFlavorProfilesForPower, isHerbaMealPower } from '@/mechanics';
+import { getFlavorKey } from '@/strings';
 import { Power } from '@/types';
 import {
   getTypeTargetsByPlace,
@@ -72,15 +74,15 @@ export const selectInitialTargets = ({
     const targetConfigSets = permutePowerConfigs(targetPowers, targetConfigs);
 
     return targetConfigSets.flatMap((targetConfigSet) => {
-      const typeTargets = getTypeTargets(targetPowers, targetConfigSet);
       const mpTargets = getMpTargets(
         targetPowers,
         targetConfigSet,
         targetNumHerba > 0,
       );
-      return typeTargets.flatMap((tt) =>
-        mpTargets.map(
-          (mpt): Target => ({
+
+      return mpTargets.flatMap((mpt) =>
+        getTypeTargets(targetPowers, targetConfigSet, mpt).map(
+          (tt): Target => ({
             configSet: targetConfigSet,
             powers: targetPowers,
             numHerbaMystica: targetNumHerba,
@@ -93,7 +95,11 @@ export const selectInitialTargets = ({
   });
 };
 
-const getTypeTargets = (targetPowers: Power[], configSet: TargetConfig[]) => {
+const getTypeTargets = (
+  targetPowers: Power[],
+  configSet: TargetConfig[],
+  mpTarget: MpTarget,
+) => {
   const firstTypeGte = configSet.reduce((max, c) => {
     if (c.firstTypeGt) return Math.max(max, c.firstTypeGt + 1);
     if (c.firstTypeGte) return Math.max(max, c.firstTypeGte);
@@ -118,10 +124,22 @@ const getTypeTargets = (targetPowers: Power[], configSet: TargetConfig[]) => {
     configSet.map((c) => c.typePlaceIndex),
   );
 
+  let fillInTypes = rangeTypes;
+  if (mpTarget.boostPower !== null) {
+    const flavorKey = getFlavorKey(
+      mpTarget.flavorProfile!,
+      //@ts-ignore
+      mpTarget.mealPowersByPlace,
+    );
+    if (optimalTypes[flavorKey]) {
+      fillInTypes = [...optimalTypes[flavorKey], ...fillInTypes];
+    }
+  }
+
   const fillInAll = thirdTypeGte > 0;
   const typesByPlace = fillIn<TypeIndex>(
     targetTypes,
-    rangeTypes,
+    fillInTypes,
     fillInAll,
   ) as [TypeIndex, TypeIndex | null, TypeIndex | null];
 
@@ -143,11 +161,17 @@ const getTypeTargets = (targetPowers: Power[], configSet: TargetConfig[]) => {
   ];
 };
 
+export type MpTarget = {
+  mealPowersByPlace: (MealPower | null)[];
+  boostPower: MealPower | null;
+  flavorProfile?: [Flavor, Flavor];
+};
+
 const getMpTargets = (
   targetPowers: Power[],
   configSet: TargetConfig[],
   herba = false,
-) => {
+): MpTarget[] => {
   const mpBase = herba ? [MealPower.SPARKLING, MealPower.TITLE] : [];
   const mealPowersByPlace = getMealPowerTargetsByPlace(
     targetPowers,
