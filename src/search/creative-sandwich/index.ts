@@ -14,7 +14,43 @@ export const emptySandwich = {
 };
 
 const SCORE_THRESHOLD = 1.2;
-const RESULT_LIMIT = 3;
+const RESULT_LIMIT = 4;
+
+const filterSandwichResults = async (
+  sandwiches: SandwichResult[],
+  limit: number,
+) => {
+  sandwiches.sort((a, b) => a.score - b.score);
+  sandwiches = sandwiches.slice(0, limit);
+  const initialScoreThreshold = sandwiches[0].score * SCORE_THRESHOLD;
+  const numInitialSandwiches = sandwiches.filter(
+    (s) => s.score <= initialScoreThreshold,
+  ).length;
+  const refinedSandwichLimit = Math.ceil(limit / numInitialSandwiches);
+
+  sandwiches = (
+    await Promise.all(
+      sandwiches.map(async (result) => {
+        if (result.target.arbitraryTypePlaceIndices.length > 0) {
+          const targets = refineTarget(result.target);
+          const sandwiches = (
+            await Promise.all(
+              targets.map((target) => makeSandwichForTarget(target)),
+            )
+          )
+            .filter((s): s is SandwichResult => !!s)
+            .filter((s) => s);
+          sandwiches.sort((a, b) => a.score - b.score);
+          return sandwiches.slice(0, refinedSandwichLimit);
+        } else {
+          return [result];
+        }
+      }),
+    )
+  ).flatMap((ss) => ss);
+  sandwiches.sort((a, b) => a.score - b.score);
+  return sandwiches;
+};
 
 export const makeSandwichesForPowers = async (
   targetPowers: Power[],
@@ -41,35 +77,21 @@ export const makeSandwichesForPowers = async (
 
   if (sandwiches.length === 0) return [];
 
-  sandwiches.sort((a, b) => a.score - b.score);
-  sandwiches = sandwiches.slice(0, RESULT_LIMIT);
-  const initialScoreThreshold = sandwiches[0].score * SCORE_THRESHOLD;
-  const numInitialSandwiches = sandwiches.filter(
-    (s) => s.score <= initialScoreThreshold,
-  ).length;
-  const refinedSandwichLimit = Math.ceil(RESULT_LIMIT / numInitialSandwiches);
+  let sandwichesByNumHerba: SandwichResult[][] = [[], [], []];
+  sandwiches.forEach((sandwich) => {
+    const n = sandwich.target.numHerbaMystica;
+    sandwichesByNumHerba[n].push(sandwich);
+  });
+  sandwichesByNumHerba = sandwichesByNumHerba.filter((g) => g.length > 0);
+  const limitPerGroup = Math.ceil(RESULT_LIMIT / sandwichesByNumHerba.length);
 
   sandwiches = (
     await Promise.all(
-      sandwiches.map(async (result) => {
-        if (result.target.arbitraryTypePlaceIndices.length > 0) {
-          const targets = refineTarget(result.target);
-          const sandwiches = (
-            await Promise.all(
-              targets.map((target) => makeSandwichForTarget(target)),
-            )
-          )
-            .filter((s): s is SandwichResult => !!s)
-            .filter((s) => s);
-          sandwiches.sort((a, b) => a.score - b.score);
-          return sandwiches.slice(0, refinedSandwichLimit);
-        } else {
-          return [result];
-        }
-      }),
+      sandwichesByNumHerba.map((group) =>
+        filterSandwichResults(group, limitPerGroup),
+      ),
     )
-  ).flatMap((ss) => ss);
-  sandwiches.sort((a, b) => a.score - b.score);
+  ).flatMap((g) => g);
 
   // Filter out supersets
   sandwiches = sandwiches
