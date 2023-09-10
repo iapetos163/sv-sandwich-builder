@@ -8,6 +8,7 @@ import condiments from '../../source-data/condiments.json';
 import fillings from '../../source-data/fillings.json';
 import meals from '../../source-data/meals.json';
 import sandwiches from '../../source-data/sandwiches.json';
+import { getOptimalTypes } from './get-optimal-types';
 import { generateLinearConstraints } from './linear-constraints';
 
 export type IngredientEntry = {
@@ -223,9 +224,11 @@ const main = async () => {
   await outputJson('ingredients.json', ingredientsData);
   await outputJson('recipes.json', recipeData);
   await outputJson('meals.json', mealData);
+  const lc = generateLinearConstraints(ingredientsData);
+  await outputJson('linear-vars.json', lc);
   await outputJson(
-    'linear-vars.json',
-    generateLinearConstraints(ingredientsData),
+    'optimal-types.json',
+    await getOptimalTypes(lc, ingredientsData),
   );
 
   if (args['--skip-images']) return;
