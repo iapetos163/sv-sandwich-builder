@@ -213,7 +213,7 @@ export const evaluateBoosts = (
     .slice(0, 3)
     .filter(
       (mpBoost, i) =>
-        mpBoost.amount > 0 && assignedTypes[i] && assignedTypes[i].amount > 0,
+        mpBoost.amount > 0 && assignedTypes[i] && assignedTypes[i].amount >= 0,
     )
     .map(
       (mpBoost, i): Power => ({
