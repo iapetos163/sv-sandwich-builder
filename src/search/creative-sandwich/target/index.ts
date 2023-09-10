@@ -95,7 +95,7 @@ export const selectInitialTargets = ({
 
 const getTypeTargets = (targetPowers: Power[], configSet: TargetConfig[]) => {
   const firstTypeGte = configSet.reduce((max, c) => {
-    if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
+    if (c.firstTypeGt) return Math.max(max, c.firstTypeGt + 1);
     if (c.firstTypeGte) return Math.max(max, c.firstTypeGte);
     if (c.thirdTypeGte) return Math.max(max, c.thirdTypeGte);
     return max;
