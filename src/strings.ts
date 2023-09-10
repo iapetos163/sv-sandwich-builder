@@ -1,5 +1,6 @@
 import { mealPowerHasType } from '@/mechanics';
-import { Ingredient, Power } from '@/types';
+import type { Ingredient, Power } from '@/types';
+import type { Flavor, MealPower } from './enum';
 
 export const allTypes = [
   'Normal',
@@ -49,3 +50,10 @@ export const getSandwichKey = (
     .sort()
     .concat(condiments.map(({ name }) => name).sort())
     .join('_');
+export const getFlavorKey = (
+  flavors: [Flavor, Flavor],
+  mealPowersByPlace: [MealPower, MealPower | null],
+) => {
+  const key = `${flavors[0]}_${flavors[1]}_${mealPowersByPlace[0]}`;
+  return mealPowersByPlace[1] ? `${key}_${mealPowersByPlace[1]}` : key;
+};
