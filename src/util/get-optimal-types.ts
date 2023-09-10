@@ -98,7 +98,7 @@ export const getOptimalTypes = async (
             ingredients
               .map(({ name, typeVector }) => [
                 name,
-                rangeTypes.reduce((sum, t) => typeVector[t], 0),
+                rangeTypes.reduce((sum, t) => sum + typeVector[t], 0),
               ])
               .filter(([, v]) => v !== 0),
           ),
@@ -113,6 +113,7 @@ export const getOptimalTypes = async (
   const getEntry = async (target: MpTarget): Promise<Entry> => {
     const model = getModel(target);
     const solution = await solve(model);
+
     let typeBoosts: number[] = [];
     Object.entries(solution.variables).forEach(([name, count]) => {
       const ingredient = ingredients.find((i) => i.name === name);
