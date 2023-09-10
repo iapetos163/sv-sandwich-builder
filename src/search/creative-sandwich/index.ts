@@ -5,6 +5,7 @@ import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, Power, Sandwich } from '@/types';
 import { getModel } from './model';
 import { refineTarget, selectInitialTargets, Target } from './target';
+import { sandwichIsSubset } from './util';
 
 export const emptySandwich = {
   fillings: [],
@@ -12,8 +13,27 @@ export const emptySandwich = {
   powers: [],
 };
 
-const SCORE_THRESHOLD = 1.2;
-const RESULT_LIMIT = 3;
+const RESULT_LIMIT = 4;
+
+const filterSandwichResults = async (
+  sandwiches: SandwichResult[],
+  limit: number,
+) => {
+  sandwiches.sort((a, b) => a.score - b.score);
+  sandwiches = sandwiches.slice(0, limit);
+
+  if (sandwiches[0].target.arbitraryTypePlaceIndices.length > 0) {
+    const targets = refineTarget(sandwiches[0].target);
+    const refined = (
+      await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
+    ).filter((s): s is SandwichResult => !!s);
+    refined.sort((a, b) => a.score - b.score);
+
+    sandwiches.push(...refined);
+  }
+  sandwiches.sort((a, b) => a.score - b.score);
+  return sandwiches;
+};
 
 export const makeSandwichesForPowers = async (
   targetPowers: Power[],
@@ -40,46 +60,38 @@ export const makeSandwichesForPowers = async (
 
   if (sandwiches.length === 0) return [];
 
-  sandwiches.sort((a, b) => a.score - b.score);
-  sandwiches = sandwiches.slice(0, RESULT_LIMIT);
-  const initialScoreThreshold = sandwiches[0].score * SCORE_THRESHOLD;
-  const numInitialSandwiches = sandwiches.filter(
-    (s) => s.score <= initialScoreThreshold,
-  ).length;
-  const refinedSandwichLimit = Math.ceil(RESULT_LIMIT / numInitialSandwiches);
+  let sandwichesByNumHerba: SandwichResult[][] = [[], [], []];
+  sandwiches.forEach((sandwich) => {
+    const n = sandwich.target.numHerbaMystica;
+    sandwichesByNumHerba[n].push(sandwich);
+  });
+  sandwichesByNumHerba = sandwichesByNumHerba.filter((g) => g.length > 0);
+  const limitPerGroup = Math.ceil(RESULT_LIMIT / sandwichesByNumHerba.length);
 
   sandwiches = (
     await Promise.all(
-      sandwiches.map(async (result) => {
-        if (result.target.arbitraryTypePlaceIndices.length > 0) {
-          const targets = refineTarget(result.target);
-          const sandwiches = (
-            await Promise.all(
-              targets.map((target) => makeSandwichForTarget(target)),
-            )
-          )
-            .filter((s): s is SandwichResult => !!s)
-            .filter((s) => s);
-          sandwiches.sort((a, b) => a.score - b.score);
-          return sandwiches.slice(0, refinedSandwichLimit);
-        } else {
-          return [result];
-        }
-      }),
+      sandwichesByNumHerba.map((group) =>
+        filterSandwichResults(group, limitPerGroup),
+      ),
     )
-  ).flatMap((ss) => ss);
-  sandwiches.sort((a, b) => a.score - b.score);
+  ).flatMap((g) => g);
 
-  return sandwiches.slice(0, RESULT_LIMIT).map((result) => {
-    const powers = getPowersForIngredients(
-      result.fillings.concat(result.condiments),
-    );
+  // Filter out supersets
+  sandwiches = sandwiches
+    .reduce<SandwichResult[]>((sandwiches, sandwich) => {
+      const isSuperset = sandwiches.some((s) => sandwichIsSubset(s, sandwich));
+      if (isSuperset) return sandwiches;
+      return [...sandwiches, sandwich];
+    }, [])
+    .slice(0, RESULT_LIMIT);
 
-    return { ...result, powers };
-  });
+  return sandwiches.map((result) => ({
+    ...result,
+    powers: getPowersForIngredients(result.fillings.concat(result.condiments)),
+  }));
 };
 
-type SandwichResult = {
+export type SandwichResult = {
   score: number;
   fillings: Ingredient[];
   condiments: Ingredient[];

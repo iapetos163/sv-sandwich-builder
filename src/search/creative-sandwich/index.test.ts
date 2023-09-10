@@ -1,5 +1,6 @@
 import { MealPower, TypeIndex } from '@/enum';
 import { getPowersForIngredients, powerSetsMatch } from '@/mechanics';
+import { getSandwichKey } from '@/strings';
 import { makeSandwichesForPowers } from '.';
 
 describe('makeSandwichForPower', () => {
@@ -902,6 +903,27 @@ describe('makeSandwichForPower', () => {
       targetPowers,
     );
     expect(correctResult).toBe(true);
+  });
+
+  it('Excludes supersets', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EGG,
+        type: TypeIndex.NORMAL,
+        level: 2,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    const sandwichKeys = sandwiches.map((s) =>
+      getSandwichKey(s.fillings, s.condiments),
+    );
+    expect(sandwichKeys).toContain(
+      'Egg_Egg_Egg_Egg_Rice_Whipped Cream_Whipped Cream',
+    );
+    expect(sandwichKeys).not.toContain(
+      'Egg_Egg_Egg_Egg_Rice_Marmalade_Whipped Cream_Whipped Cream',
+    );
   });
 
   // it('Produces a sandwich with Lv 2 mp t', async () => {
