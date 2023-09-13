@@ -1,8 +1,8 @@
-import { meals } from '../data';
-import { powerSetsMatch } from '../mechanics';
-import { Meal, Power } from '../types';
+import { meals } from '@/data';
+import { powerSetsMatch } from '@/mechanics';
+import { Meal, Power } from '@/types';
 
-export const getMealForPowers = (targetPowers: Power[]) => {
+export const getMealsForPowers = (targetPowers: Power[]) => {
   const [optimalMeal] = meals.reduce<[Meal | null, number]>(
     ([optimal, lowestCost], meal) => {
       if (!powerSetsMatch(meal.powers, targetPowers)) {
@@ -17,5 +17,5 @@ export const getMealForPowers = (targetPowers: Power[]) => {
     [null, Infinity],
   );
 
-  return optimalMeal;
+  return optimalMeal ? [optimalMeal] : [];
 };

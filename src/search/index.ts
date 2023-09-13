@@ -1,3 +1,3 @@
 export { makeSandwichesForPowers } from './creative-sandwich';
-export { getRecipeForPowers } from './recipe';
-export { getMealForPowers } from './meal';
+export { getRecipesForPowers } from './recipe';
+export { getMealsForPowers } from './meal';

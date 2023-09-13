@@ -1,8 +1,8 @@
-import { recipes } from '../data';
-import { powerSetsMatch } from '../mechanics';
-import { Power, SandwichRecipe } from '../types';
+import { recipes } from '@/data';
+import { powerSetsMatch } from '@/mechanics';
+import { Power, SandwichRecipe } from '@/types';
 
-export const getRecipeForPowers = (targetPowers: Power[]) => {
+export const getRecipesForPowers = (targetPowers: Power[]) => {
   const [optimalRecipe] = recipes.reduce<[SandwichRecipe | null, number]>(
     ([optimal, lowestScore], recipe) => {
       if (!powerSetsMatch(recipe.powers, targetPowers)) {
@@ -22,5 +22,5 @@ export const getRecipeForPowers = (targetPowers: Power[]) => {
     [null, Infinity],
   );
 
-  return optimalRecipe;
+  return optimalRecipe ? [optimalRecipe] : [];
 };
