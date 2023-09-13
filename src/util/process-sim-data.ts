@@ -215,6 +215,11 @@ const main = async () => {
 
   const ingredientsData = parsedFillings.concat(parsedCondiments);
 
+  const mealLocations = new Set<string>();
+  mealData.forEach((meal) =>
+    meal.towns.forEach((town) => mealLocations.add(town)),
+  );
+
   const outputJson = async (filename: string, data: any) => {
     const outputPath = `src/data/${filename}`;
     await writeFile(outputPath, JSON.stringify(data));
@@ -224,6 +229,7 @@ const main = async () => {
   await outputJson('ingredients.json', ingredientsData);
   await outputJson('recipes.json', recipeData);
   await outputJson('meals.json', mealData);
+  await outputJson('locations.json', Array.from(mealLocations));
   const lc = generateLinearConstraints(ingredientsData);
   await outputJson('linear-vars.json', lc);
   await outputJson(

@@ -3,13 +3,15 @@ import { GitHub } from 'react-feather';
 import PowerQuery, { QueryOptions } from '@/component/PowerQuery';
 import ResultSet, {
   CreativeResult,
+  MealResult,
+  RecipeResult,
   Result,
   ResultState,
   ResultType,
 } from '@/component/ResultSet';
 import {
-  getMealForPowers,
-  getRecipeForPowers,
+  getMealsForPowers,
+  getRecipesForPowers,
   makeSandwichesForPowers,
 } from '@/search';
 import { Power } from '@/types';
@@ -27,17 +29,24 @@ function App(): ReactElement {
 
       const results: Result[] = [];
       if (options.includeMeals) {
-        const meal = getMealForPowers(newQuery);
-        if (meal) {
-          results.push({ resultType: ResultType.MEAL, ...meal });
-        }
+        const meals = getMealsForPowers(newQuery);
+        results.push(
+          ...meals.map(
+            (m): MealResult => ({ resultType: ResultType.MEAL, ...m }),
+          ),
+        );
       }
 
       if (options.includeRecipes) {
-        const recipe = getRecipeForPowers(newQuery);
-        if (recipe) {
-          results.push({ resultType: ResultType.RECIPE, ...recipe });
-        }
+        const recipes = getRecipesForPowers(newQuery);
+        results.push(
+          ...recipes.map(
+            (r): RecipeResult => ({
+              resultType: ResultType.RECIPE,
+              ...r,
+            }),
+          ),
+        );
       }
 
       if (options.includeCreative) {

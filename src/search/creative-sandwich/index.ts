@@ -13,7 +13,8 @@ export const emptySandwich = {
   powers: [],
 };
 
-const RESULT_LIMIT = 4;
+const RESULT_LIMIT = 6;
+const SCORE_THRESHOLD = 9;
 
 const filterSandwichResults = async (
   sandwiches: SandwichResult[],
@@ -32,7 +33,11 @@ const filterSandwichResults = async (
     sandwiches.push(...refined);
   }
   sandwiches.sort((a, b) => a.score - b.score);
-  return sandwiches;
+
+  const [{ score: lowestScore }] = sandwiches;
+  const scoreLimit = lowestScore + SCORE_THRESHOLD;
+
+  return sandwiches.filter((sandwich) => sandwich.score <= scoreLimit);
 };
 
 export const makeSandwichesForPowers = async (
