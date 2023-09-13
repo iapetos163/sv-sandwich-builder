@@ -2,20 +2,32 @@ import { meals } from '@/data';
 import { powerSetsMatch } from '@/mechanics';
 import { Meal, Power } from '@/types';
 
-export const getMealsForPowers = (targetPowers: Power[]) => {
-  const [optimalMeal] = meals.reduce<[Meal | null, number]>(
-    ([optimal, lowestCost], meal) => {
-      if (!powerSetsMatch(meal.powers, targetPowers)) {
-        return [optimal, lowestCost];
-      }
+const RESULT_LIMIT = 3;
 
-      if (meal.cost < lowestCost) {
-        return [meal, meal.cost];
-      }
-      return [optimal, lowestCost];
-    },
-    [null, Infinity],
+export const getMealsForPowers = (targetPowers: Power[]) => {
+  const matchingMeals = meals.filter((meal) =>
+    powerSetsMatch(meal.powers, targetPowers),
   );
 
-  return optimalMeal ? [optimalMeal] : [];
+  matchingMeals.sort((a, b) => a.cost - b.cost);
+
+  type Accum = { meals: Meal[]; covered: { [town: string]: true } };
+  // Different meals that cover as many towns as possible
+  const { meals: coveringMeals } = matchingMeals.reduce<Accum>(
+    ({ meals, covered }, meal) => {
+      if (meal.towns.some((town) => !covered[town])) {
+        return {
+          meals: [...meals, meal],
+          covered: {
+            ...covered,
+            ...Object.fromEntries(meal.towns.map((t) => [t, true])),
+          },
+        };
+      }
+      return { meals, covered };
+    },
+    { meals: [], covered: {} },
+  );
+
+  return coveringMeals.slice(0, RESULT_LIMIT);
 };
