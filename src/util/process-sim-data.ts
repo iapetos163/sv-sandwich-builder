@@ -2,8 +2,9 @@ import { writeFile } from 'fs/promises';
 import { basename, join as joinPath } from 'path';
 import arg from 'arg';
 import got from 'got';
+import ingredientNamesById from '@/data/ingredient-ids.json';
 import { allTypes } from '@/strings';
-import { Power } from '@/types';
+import { Power, Ingredient } from '@/types';
 import condiments from '../../source-data/condiments.json';
 import fillings from '../../source-data/fillings.json';
 import meals from '../../source-data/meals.json';
@@ -11,17 +12,7 @@ import sandwiches from '../../source-data/sandwiches.json';
 import { getOptimalTypes } from './get-optimal-types';
 import { generateLinearConstraints } from './linear-constraints';
 
-export type IngredientEntry = {
-  name: string;
-  flavorVector: number[];
-  baseMealPowerVector: number[];
-  typeVector: number[];
-  imagePath: string;
-  imageUrl: string;
-  pieces: number;
-  isHerbaMystica: boolean;
-  ingredientType: 'filling' | 'condiment';
-};
+type IngredientEntry = Ingredient & { imageUrl: string };
 
 type RecipeEntry = {
   number: string;
@@ -140,13 +131,17 @@ const main = async () => {
     '-s': '--skip-images',
   });
 
+  const ingredientIdsByName = Object.fromEntries(
+    Object.entries(ingredientNamesById).map(([id, name]) => [name, id]),
+  );
+
   const parsedCondiments = condiments.map(
     ({ name, imageUrl, powers, types, tastes }): IngredientEntry => {
       const flavorVector = getFlavorVector(tastes);
       const typeVector = getTypeVector(types);
       const mealPowerVector = getMealPowerVector(powers);
       return {
-        name,
+        id: ingredientIdsByName[name],
         isHerbaMystica: name.endsWith('Herba Mystica'),
         imagePath: `ingredient/${basename(imageUrl)}`,
         imageUrl,
@@ -161,12 +156,12 @@ const main = async () => {
 
   const parsedFillings = fillings.map(
     ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => {
-      const flavorVector = getFlavorVector(tastes, pieces);
-      const typeVector = getTypeVector(types, pieces);
-      const mealPowerVector = getMealPowerVector(powers, pieces);
+      const flavorVector = getFlavorVector(tastes);
+      const typeVector = getTypeVector(types);
+      const mealPowerVector = getMealPowerVector(powers);
       return {
         pieces,
-        name,
+        id: ingredientIdsByName[name],
         isHerbaMystica: false,
         imagePath: `ingredient/${basename(imageUrl)}`,
         imageUrl,
@@ -192,8 +187,8 @@ const main = async () => {
       }): RecipeEntry => ({
         name,
         number,
-        fillings,
-        condiments,
+        fillings: fillings.map((name) => ingredientIdsByName[name]),
+        condiments: condiments.map((name) => ingredientIdsByName[name]),
         gameLocation: location,
         imageUrl,
         imagePath: `sandwich/${basename(imageUrl)}`,

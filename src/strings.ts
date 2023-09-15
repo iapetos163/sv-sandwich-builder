@@ -46,9 +46,9 @@ export const getSandwichKey = (
   condiments: Ingredient[],
 ) =>
   fillings
-    .map(({ name }) => name)
+    .map(({ id }) => id)
     .sort()
-    .concat(condiments.map(({ name }) => name).sort())
+    .concat(condiments.map(({ id }) => id).sort())
     .join('_');
 export const getFlavorKey = (
   flavors: [Flavor, Flavor],

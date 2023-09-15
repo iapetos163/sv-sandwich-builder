@@ -8,7 +8,7 @@ export interface Power {
 }
 
 export interface Ingredient {
-  name: string;
+  id: string;
   isHerbaMystica: boolean;
   flavorVector: number[];
   baseMealPowerVector: number[];
