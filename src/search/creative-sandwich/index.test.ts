@@ -918,12 +918,8 @@ describe('makeSandwichForPower', () => {
     const sandwichKeys = sandwiches.map((s) =>
       getSandwichKey(s.fillings, s.condiments),
     );
-    expect(sandwichKeys).toContain(
-      'Egg_Egg_Egg_Egg_Rice_Whipped Cream_Whipped Cream',
-    );
-    expect(sandwichKeys).not.toContain(
-      'Egg_Egg_Egg_Egg_Rice_Marmalade_Whipped Cream_Whipped Cream',
-    );
+    expect(sandwichKeys).toContain('egg_egg_egg_egg_rice_whcrm_whcrm');
+    expect(sandwichKeys).not.toContain('egg_egg_egg_egg_rice_mmld_whcrm_whcrm');
   });
 
   // it('Produces a sandwich with Lv 2 mp t', async () => {

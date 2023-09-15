@@ -96,8 +96,8 @@ export const getOptimalTypes = async (
           name: 'Sum(T) >= 180',
           coefficients: Object.fromEntries(
             ingredients
-              .map(({ name, typeVector }) => [
-                name,
+              .map(({ id, typeVector }) => [
+                id,
                 rangeTypes.reduce((sum, t) => sum + typeVector[t], 0),
               ])
               .filter(([, v]) => v !== 0),
@@ -115,8 +115,8 @@ export const getOptimalTypes = async (
     const solution = await solve(model);
 
     let typeBoosts: number[] = [];
-    Object.entries(solution.variables).forEach(([name, count]) => {
-      const ingredient = ingredients.find((i) => i.name === name);
+    Object.entries(solution.variables).forEach(([id, count]) => {
+      const ingredient = ingredients.find((i) => i.id === id);
       if (!ingredient) return;
       typeBoosts = add(typeBoosts, scale(ingredient.typeVector, count));
     });
