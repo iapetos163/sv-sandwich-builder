@@ -66,5 +66,7 @@ export type LinearConstraints = {
   };
   constraints: {
     herbaMealPowerValue: Constraint;
+    specificHerba: Constraint;
+    anyHerba: Constraint;
   };
 };

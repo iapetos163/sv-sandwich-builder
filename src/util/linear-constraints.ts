@@ -152,5 +152,17 @@ export const generateLinearConstraints = (
       ),
       lowerBound: 1,
     },
+    specificHerba: {
+      coefficients: { hmany: 1 },
+      equals: 0,
+    },
+    anyHerba: {
+      coefficients: Object.fromEntries(
+        ingredients
+          .filter((i) => i.isHerbaMystica && i.id !== 'hmany')
+          .map((i) => [i.id, 1]),
+      ),
+      equals: 0,
+    },
   },
 });
