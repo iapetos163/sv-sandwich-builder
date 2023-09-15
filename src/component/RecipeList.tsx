@@ -1,13 +1,20 @@
 import { useMemo } from 'react';
-import { ingredients } from '../data';
-import { Ingredient } from '../types';
+import { ingredientNamesById, ingredients } from '@/data';
+import { Ingredient } from '@/types';
+import s from './RecipeList.module.css';
 
-const ingredientNames = ingredients.map((i) => i.name);
+const ingredientIds = ingredients.map((i) => i.id);
 const sortIngredientCounts = (counts: Record<string, number>) =>
   Object.entries(counts)
-    .map(([name, count]) => {
-      const index = ingredientNames.indexOf(name);
-      return { name, count, index, imagePath: ingredients[index].imagePath };
+    .map(([id, count]) => {
+      const index = ingredientIds.indexOf(id);
+      return {
+        id,
+        name: ingredientNamesById[id],
+        count,
+        index,
+        imagePath: ingredients[index].imagePath,
+      };
     })
     .sort((a, b) => a.index - b.index);
 
@@ -17,7 +24,7 @@ const ingredientCountReducer = (
 ) => {
   return {
     ...agg,
-    [ing.name]: (agg[ing.name] || 0) + 1,
+    [ing.id]: (agg[ing.id] || 0) + 1,
   };
 };
 
@@ -40,14 +47,22 @@ const RecipeList = ({ fillings, condiments, className }: RecipeListProps) => {
 
   return (
     <div className={className}>
-      {fillingCounts.map(({ name, count, imagePath }) => (
-        <div key={name}>
-          {count}x <img src={`assets/${imagePath}`} /> {name}
+      {fillingCounts.map(({ id, name, count, imagePath }) => (
+        <div className={s.line} key={id}>
+          <div className={s.count}>{count}x</div>
+          <div>
+            <img className={s.icon} src={`assets/${imagePath}`} />
+          </div>
+          <div>{name}</div>
         </div>
       ))}
-      {condimentCounts.map(({ name, count, imagePath }) => (
-        <div key={name}>
-          {count}x <img src={`assets/${imagePath}`} /> {name}
+      {condimentCounts.map(({ id, name, count, imagePath }) => (
+        <div className={s.line} key={id}>
+          <div className={s.count}>{count}x</div>
+          <div>
+            <img className={s.icon} src={`assets/${imagePath}`} />
+          </div>
+          <div>{name}</div>
         </div>
       ))}
     </div>

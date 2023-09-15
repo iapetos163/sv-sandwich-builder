@@ -10,7 +10,7 @@ export const getTypeTargetsByPlace = (
   targetPlaceIndices: number[],
 ): [TypeIndex | null, TypeIndex | null, TypeIndex | null] => {
   const targetFirstPlacePowerIndex = targetPlaceIndices.findIndex(
-    (pi) => pi === 0,
+    (pi, i) => pi === 0 && mealPowerHasType(targetPowers[i].mealPower),
   );
   const targetSecondPlacePowerIndex = targetPlaceIndices.findIndex(
     (pi) => pi === 1,
@@ -96,24 +96,22 @@ export const getMealPowerTargetsByPlace = (
 export const fillIn = <T>(
   arr: (T | null)[],
   selection: T[],
-): [T, ...(T | null)[]] => {
-  let [first, ...rest] = arr;
-  let encounteredValue = false;
+  fillAll = false,
+): (T | null)[] => {
+  const res = [...arr];
+  let encounteredValue = fillAll;
 
-  for (let i = rest.length - 1; i >= 0; i--) {
-    if (rest[i] === null && encounteredValue) {
-      rest[i] = selection.find(
-        (t) => t !== first && !rest.some((v) => v === t),
-      )!;
-    } else if (rest[i] !== null) {
+  for (let i = res.length - 1; i >= 0; i--) {
+    if (res[i] === null && encounteredValue) {
+      res[i] = selection.find((t) => !res.some((v) => v === t))!;
+    } else if (res[i] !== null) {
       encounteredValue = true;
     }
   }
 
-  // Assumption: encounteredValue || first !== null
-  if (first === null) {
-    first = selection.find((t) => !rest.some((v) => v === t))!;
+  if (res[0] === null) {
+    res[0] = selection[0];
   }
 
-  return [first, ...rest];
+  return res;
 };

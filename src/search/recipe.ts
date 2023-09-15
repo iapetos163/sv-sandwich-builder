@@ -1,26 +1,31 @@
-import { recipes } from '../data';
-import { powerSetsMatch } from '../mechanics';
-import { Power, SandwichRecipe } from '../types';
+import { recipes } from '@/data';
+import { powerSetsMatch } from '@/mechanics';
+import { Power, SandwichRecipe } from '@/types';
 
-export const getRecipeForPowers = (targetPowers: Power[]) => {
-  const [optimalRecipe] = recipes.reduce<[SandwichRecipe | null, number]>(
-    ([optimal, lowestScore], recipe) => {
-      if (!powerSetsMatch(recipe.powers, targetPowers)) {
-        return [optimal, lowestScore];
-      }
+const RESULT_LIMIT = 2;
+const SCORE_THRESHOLD = 9;
 
-      const score =
-        35 * recipe.condiments.filter((c) => c.isHerbaMystica).length +
-        5 * recipe.fillings.length +
-        recipe.condiments.length;
-
-      if (score < lowestScore) {
-        return [recipe, score];
-      }
-      return [optimal, lowestScore];
-    },
-    [null, Infinity],
+export const getRecipesForPowers = (
+  targetPowers: Power[],
+): SandwichRecipe[] => {
+  const matchingRecipes = recipes.filter((recipe) =>
+    powerSetsMatch(recipe.powers, targetPowers),
   );
+  if (matchingRecipes.length === 0) return [];
 
-  return optimalRecipe;
+  const scoredRecipes = matchingRecipes.map((recipe) => ({
+    ...recipe,
+    score:
+      35 * recipe.condiments.filter((c) => c.isHerbaMystica).length +
+      5 * recipe.fillings.length +
+      recipe.condiments.length,
+  }));
+
+  scoredRecipes.sort((a, b) => a.score - b.score);
+  const [{ score: lowestScore }] = scoredRecipes;
+  const scoreLimit = lowestScore + SCORE_THRESHOLD;
+
+  return scoredRecipes
+    .slice(0, RESULT_LIMIT)
+    .filter((recipe) => recipe.score <= scoreLimit);
 };

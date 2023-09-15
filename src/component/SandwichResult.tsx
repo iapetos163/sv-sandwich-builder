@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { mealPowerHasType } from '../mechanics';
-import { allTypes, mealPowerCopy } from '../strings';
-import { Ingredient, Sandwich } from '../types';
+import { getPowerCopy } from '@/strings';
+import { Ingredient, Sandwich } from '@/types';
 import RecipeList from './RecipeList';
 
 const StyledContainer = styled.div`
@@ -36,8 +35,7 @@ const SandwichResult = ({ sandwich, className }: SandwichResultProps) => {
       <div>
         {powers.map((power) => (
           <div key={`${power.type}${power.mealPower}`}>
-            Lv. {power.level} {mealPowerCopy[power.mealPower]} Power
-            {mealPowerHasType(power.mealPower) && `: ${allTypes[power.type]}`}
+            {getPowerCopy(power)}
           </div>
         ))}
       </div>

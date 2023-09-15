@@ -1847,11 +1847,7 @@
       }
     ],
     "shop": "Smoochurro",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Medali"
-    ],
+    "towns": ["Mesagoza", "Levincia", "Artazon", "Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/61.png"
   },
   {
@@ -1877,11 +1873,7 @@
       }
     ],
     "shop": "Smoochurro",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Medali"
-    ],
+    "towns": ["Mesagoza", "Levincia", "Artazon", "Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/62.png"
   },
   {
@@ -1907,11 +1899,7 @@
       }
     ],
     "shop": "Smoochurro",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Medali"
-    ],
+    "towns": ["Mesagoza", "Levincia", "Artazon", "Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/63.png"
   },
   {

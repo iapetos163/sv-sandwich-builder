@@ -4,7 +4,6 @@ import {
   evaluateBoosts,
   powersMatch,
   rankMealPowerBoosts,
-  rankTypeBoosts,
   requestedPowersValid,
 } from './powers';
 
@@ -80,6 +79,16 @@ describe('evaluateBoosts', () => {
 
     expect(boosts[0].mealPower).toBe(MealPower.EXP);
     expect(boosts[0].type).toBe(TypeIndex.GHOST);
+  });
+
+  it('returns 3 powers', () => {
+    const res = evaluateBoosts(
+      [-3, 48, 12, 0, 9, 0, 0, 0, 0, 84],
+      MealPower.CATCH,
+      [0, 0, 0, 0, 0, 0, 74, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    );
+
+    expect(res).toHaveLength(3);
   });
 });
 

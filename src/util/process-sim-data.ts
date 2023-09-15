@@ -2,25 +2,17 @@ import { writeFile } from 'fs/promises';
 import { basename, join as joinPath } from 'path';
 import arg from 'arg';
 import got from 'got';
-import condiments from '../source-data/condiments.json';
-import fillings from '../source-data/fillings.json';
-import meals from '../source-data/meals.json';
-import sandwiches from '../source-data/sandwiches.json';
-import { allTypes } from '../src/strings';
-import { Power } from '../src/types';
+import ingredientNamesById from '@/data/ingredient-ids.json';
+import { allTypes } from '@/strings';
+import { Power, Ingredient } from '@/types';
+import condiments from '../../source-data/condiments.json';
+import fillings from '../../source-data/fillings.json';
+import meals from '../../source-data/meals.json';
+import sandwiches from '../../source-data/sandwiches.json';
+import { getOptimalTypes } from './get-optimal-types';
 import { generateLinearConstraints } from './linear-constraints';
 
-export type IngredientEntry = {
-  name: string;
-  flavorVector: number[];
-  baseMealPowerVector: number[];
-  typeVector: number[];
-  imagePath: string;
-  imageUrl: string;
-  pieces: number;
-  isHerbaMystica: boolean;
-  ingredientType: 'filling' | 'condiment';
-};
+type IngredientEntry = Ingredient & { imageUrl: string };
 
 type RecipeEntry = {
   number: string;
@@ -139,13 +131,17 @@ const main = async () => {
     '-s': '--skip-images',
   });
 
+  const ingredientIdsByName = Object.fromEntries(
+    Object.entries(ingredientNamesById).map(([id, name]) => [name, id]),
+  );
+
   const parsedCondiments = condiments.map(
     ({ name, imageUrl, powers, types, tastes }): IngredientEntry => {
       const flavorVector = getFlavorVector(tastes);
       const typeVector = getTypeVector(types);
       const mealPowerVector = getMealPowerVector(powers);
       return {
-        name,
+        id: ingredientIdsByName[name],
         isHerbaMystica: name.endsWith('Herba Mystica'),
         imagePath: `ingredient/${basename(imageUrl)}`,
         imageUrl,
@@ -165,7 +161,7 @@ const main = async () => {
       const mealPowerVector = getMealPowerVector(powers, pieces);
       return {
         pieces,
-        name,
+        id: ingredientIdsByName[name],
         isHerbaMystica: false,
         imagePath: `ingredient/${basename(imageUrl)}`,
         imageUrl,
@@ -191,8 +187,8 @@ const main = async () => {
       }): RecipeEntry => ({
         name,
         number,
-        fillings,
-        condiments,
+        fillings: fillings.map((name) => ingredientIdsByName[name]),
+        condiments: condiments.map((name) => ingredientIdsByName[name]),
         gameLocation: location,
         imageUrl,
         imagePath: `sandwich/${basename(imageUrl)}`,
@@ -214,6 +210,11 @@ const main = async () => {
 
   const ingredientsData = parsedFillings.concat(parsedCondiments);
 
+  const mealLocations = new Set<string>();
+  mealData.forEach((meal) =>
+    meal.towns.forEach((town) => mealLocations.add(town)),
+  );
+
   const outputJson = async (filename: string, data: any) => {
     const outputPath = `src/data/${filename}`;
     await writeFile(outputPath, JSON.stringify(data));
@@ -223,9 +224,12 @@ const main = async () => {
   await outputJson('ingredients.json', ingredientsData);
   await outputJson('recipes.json', recipeData);
   await outputJson('meals.json', mealData);
+  await outputJson('locations.json', Array.from(mealLocations));
+  const lc = generateLinearConstraints(ingredientsData);
+  await outputJson('linear-vars.json', lc);
   await outputJson(
-    'linear-vars.json',
-    generateLinearConstraints(ingredientsData),
+    'optimal-types.json',
+    await getOptimalTypes(lc, ingredientsData),
   );
 
   if (args['--skip-images']) return;

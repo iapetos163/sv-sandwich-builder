@@ -12,7 +12,7 @@ const StyledFrameContainer = styled.div`
   justify-content: center;
 `;
 const StyledFrame = styled.div`
-  border: 2px solid #bdf7ab;
+  border: 2px solid var(--color-bright-green);
 `;
 
 const StyledImage = styled.img`

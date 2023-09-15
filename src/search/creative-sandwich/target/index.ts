@@ -1,3 +1,4 @@
+import { optimalTypes } from '@/data';
 import {
   Flavor,
   MealPower,
@@ -6,6 +7,7 @@ import {
   rangeTypes,
 } from '@/enum';
 import { getFlavorProfilesForPower, isHerbaMealPower } from '@/mechanics';
+import { getFlavorKey } from '@/strings';
 import { Power } from '@/types';
 import {
   getTypeTargetsByPlace,
@@ -29,6 +31,8 @@ export interface Target {
   configSet: TargetConfig[];
   numHerbaMystica: number;
   typesByPlace: [TypeIndex, TypeIndex | null, TypeIndex | null];
+  /** Place indexes of types that were chosen arbitrarily */
+  arbitraryTypePlaceIndices: number[];
   mealPowersByPlace: (MealPower | null)[];
   boostPower: MealPower | null;
   flavorProfile?: [Flavor, Flavor];
@@ -69,94 +73,198 @@ export const selectInitialTargets = ({
      */
     const targetConfigSets = permutePowerConfigs(targetPowers, targetConfigs);
 
-    return targetConfigSets.flatMap((targetConfigSet): Target[] => {
-      const targetTypes = getTypeTargetsByPlace(
+    return targetConfigSets.flatMap((targetConfigSet) => {
+      const mpTargets = getMpTargets(
         targetPowers,
-        targetConfigSet.map((c) => c.typePlaceIndex),
+        targetConfigSet,
+        targetNumHerba > 0,
       );
 
-      const typesByPlace = fillIn<TypeIndex>(targetTypes, rangeTypes) as [
-        TypeIndex,
-        TypeIndex | null,
-        TypeIndex | null,
-      ];
-
-      const mpBase =
-        targetNumHerba > 0 ? [MealPower.SPARKLING, MealPower.TITLE] : [];
-      const targetMps = getMealPowerTargetsByPlace(
-        targetPowers,
-        targetConfigSet.map((c) => c.mpPlaceIndex),
-        mpBase.length,
-      );
-      const mealPowersByPlace = fillIn<MealPower>(
-        [...mpBase, ...targetMps],
-        rangeMealPowers.filter((mp) => !isHerbaMealPower(mp)),
-      );
-
-      const firstTypeGte = targetConfigSet.reduce((max, c) => {
-        if (c.firstTypeGt) return Math.max(max, c.firstTypeGt - 1);
-        if (c.firstTypeGte) return Math.max(max, c.firstTypeGte);
-        if (c.thirdTypeGte) return Math.max(max, c.thirdTypeGte);
-        return max;
-      }, 0);
-
-      const thirdTypeGte = targetConfigSet.reduce(
-        (max, c) => Math.max(max, c.thirdTypeGte || 0),
-        0,
-      );
-      const firstTypeLte = targetConfigSet.reduce(
-        (max, c) => Math.min(max, c.firstTypeLte ?? Infinity),
-        Infinity,
-      );
-
-      const diff70 = targetConfigSet.some((t) => t.diff70);
-      const diff105 = targetConfigSet.some((t) => t.diff105);
-
-      const flavorIndependent = targetPowers.every((tp) =>
-        isHerbaMealPower(tp.mealPower),
-      );
-
-      if (flavorIndependent) {
-        return [
-          {
+      return mpTargets.flatMap((mpt) =>
+        getTypeTargets(targetPowers, targetConfigSet, mpt).map(
+          (tt): Target => ({
             configSet: targetConfigSet,
-            typeAllocation: targetConfigSet[0].typeAllocation,
-            numHerbaMystica: targetNumHerba,
             powers: targetPowers,
-            typesByPlace,
-            mealPowersByPlace,
-            boostPower: null,
-            firstTypeGte,
-            thirdTypeGte,
-            firstTypeLte,
-            diff70,
-            diff105,
-          },
-        ];
-      }
-
-      return targetPowers.flatMap((power) => {
-        const boostPower = power.mealPower;
-        const flavorProfiles = getFlavorProfilesForPower(power.mealPower);
-        if (flavorProfiles.length === 0) {
-          return [];
-        }
-        return flavorProfiles.map((flavorProfile) => ({
-          configSet: targetConfigSet,
-          typeAllocation: targetConfigSet[0].typeAllocation,
-          numHerbaMystica: targetNumHerba,
-          powers: targetPowers,
-          typesByPlace,
-          mealPowersByPlace,
-          boostPower,
-          flavorProfile,
-          firstTypeGte,
-          thirdTypeGte,
-          firstTypeLte,
-          diff70,
-          diff105,
-        }));
-      });
+            numHerbaMystica: targetNumHerba,
+            ...tt,
+            ...mpt,
+          }),
+        ),
+      );
     });
   });
 };
+
+const getTypeTargets = (
+  targetPowers: Power[],
+  configSet: TargetConfig[],
+  mpTarget: MpTarget,
+) => {
+  const firstTypeGte = configSet.reduce((max, c) => {
+    if (c.firstTypeGt) return Math.max(max, c.firstTypeGt + 1);
+    if (c.firstTypeGte) return Math.max(max, c.firstTypeGte);
+    if (c.thirdTypeGte) return Math.max(max, c.thirdTypeGte);
+    return max;
+  }, 0);
+
+  const thirdTypeGte = configSet.reduce(
+    (max, c) => Math.max(max, c.thirdTypeGte || 0),
+    0,
+  );
+  const firstTypeLte = configSet.reduce(
+    (max, c) => Math.min(max, c.firstTypeLte ?? Infinity),
+    Infinity,
+  );
+
+  const diff70 = configSet.some((t) => t.diff70);
+  const diff105 = configSet.some((t) => t.diff105);
+
+  const targetTypes = getTypeTargetsByPlace(
+    targetPowers,
+    configSet.map((c) => c.typePlaceIndex),
+  );
+
+  let fillInTypes = rangeTypes;
+  if (mpTarget.boostPower !== null) {
+    const flavorKey = getFlavorKey(
+      mpTarget.flavorProfile!,
+      //@ts-ignore
+      mpTarget.mealPowersByPlace,
+    );
+    if (optimalTypes[flavorKey]) {
+      fillInTypes = [...optimalTypes[flavorKey], ...fillInTypes];
+    }
+  }
+
+  const fillInAll = thirdTypeGte > 0;
+  const typesByPlace = fillIn<TypeIndex>(
+    targetTypes,
+    fillInTypes,
+    fillInAll,
+  ) as [TypeIndex, TypeIndex | null, TypeIndex | null];
+
+  const arbitraryTypePlaceIndices = typesByPlace
+    .map((t, i) => (t !== null && targetTypes[i] === null ? i : -1))
+    .filter((i) => i >= 0);
+
+  return [
+    {
+      typeAllocation: configSet[0].typeAllocation,
+      typesByPlace,
+      firstTypeGte,
+      thirdTypeGte,
+      firstTypeLte,
+      diff70,
+      diff105,
+      arbitraryTypePlaceIndices,
+    },
+  ];
+};
+
+export type MpTarget = {
+  mealPowersByPlace: (MealPower | null)[];
+  boostPower: MealPower | null;
+  flavorProfile?: [Flavor, Flavor];
+};
+
+const getMpTargets = (
+  targetPowers: Power[],
+  configSet: TargetConfig[],
+  herba = false,
+): MpTarget[] => {
+  const mpBase = herba ? [MealPower.SPARKLING, MealPower.TITLE] : [];
+  const mealPowersByPlace = getMealPowerTargetsByPlace(
+    targetPowers,
+    configSet.map((c) => c.mpPlaceIndex),
+    mpBase.length,
+  );
+  let mealPowersByPlaceArrays = [mealPowersByPlace];
+  if (mealPowersByPlace[0] === null) {
+    mealPowersByPlaceArrays = rangeMealPowers
+      .filter(
+        (mp) =>
+          !isHerbaMealPower(mp) && !mealPowersByPlace.some((mp2) => mp2 === mp),
+      )
+      .map((mpChoice) => [
+        mpChoice,
+        mealPowersByPlace[1],
+        mealPowersByPlace[2],
+      ]);
+  }
+  if (mealPowersByPlace[1] === null && mealPowersByPlace[2] !== null) {
+    mealPowersByPlaceArrays = mealPowersByPlaceArrays.flatMap(
+      (arr): [MealPower | null, MealPower | null, MealPower | null][] =>
+        rangeMealPowers
+          .filter(
+            (mp) => !isHerbaMealPower(mp) && !arr.some((mp2) => mp2 === mp),
+          )
+          .map((mpChoice) => [arr[0], mpChoice, arr[2]]),
+    );
+  }
+  const completeMpArrays = mealPowersByPlaceArrays.map((arr) => [
+    ...mpBase,
+    ...arr,
+  ]);
+
+  const flavorIndependent = targetPowers.every((tp) =>
+    isHerbaMealPower(tp.mealPower),
+  );
+
+  if (flavorIndependent) {
+    return completeMpArrays.map((mealPowersByPlace) => ({
+      mealPowersByPlace,
+      boostPower: null,
+    }));
+  }
+
+  return targetPowers.flatMap((power) => {
+    const boostPower = power.mealPower;
+    const flavorProfiles = getFlavorProfilesForPower(power.mealPower);
+    if (flavorProfiles.length === 0) {
+      return [];
+    }
+    return flavorProfiles.flatMap((flavorProfile) =>
+      completeMpArrays.map((mealPowersByPlace) => ({
+        mealPowersByPlace,
+        boostPower,
+        flavorProfile,
+      })),
+    );
+  });
+};
+
+/**
+ * Replace arbitrarily-chosen types with every possible combination
+ */
+export const refineTarget = (target: Target) =>
+  target.arbitraryTypePlaceIndices.reduce<Target[]>(
+    (targets, i) =>
+      targets.flatMap((target) =>
+        rangeTypes
+          .filter(
+            (t) =>
+              // Filter out types equal to some already-target type that wasn't arbitrarily chosen
+              !target.typesByPlace.some(
+                (t2, j) =>
+                  !target.arbitraryTypePlaceIndices.some((i) => i === j) &&
+                  t === t2,
+              ),
+          )
+          .map((t) => {
+            const typesByPlace: [
+              TypeIndex,
+              TypeIndex | null,
+              TypeIndex | null,
+            ] = [
+              target.typesByPlace[0],
+              target.typesByPlace[1],
+              target.typesByPlace[2],
+            ];
+            const arbitraryTypePlaceIndices =
+              target.arbitraryTypePlaceIndices.filter((j) => j !== i);
+            typesByPlace[i] = t;
+            return { ...target, typesByPlace, arbitraryTypePlaceIndices };
+          }),
+      ),
+    [target],
+  );

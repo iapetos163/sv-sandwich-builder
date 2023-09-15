@@ -8,7 +8,7 @@ export interface Power {
 }
 
 export interface Ingredient {
-  name: string;
+  id: string;
   isHerbaMystica: boolean;
   flavorVector: number[];
   baseMealPowerVector: number[];
@@ -59,7 +59,6 @@ export type LinearConstraints = {
     typeDiff105: Constraint[][];
   };
   coefficientSets: {
-    score: Record<string, number>;
     fillings: Record<string, number>;
     condiments: Record<string, number>;
     herba: Record<string, number>;
