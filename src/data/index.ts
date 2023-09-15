@@ -5,6 +5,7 @@ import type {
   Meal,
   LinearConstraints,
 } from '@/types';
+import ingredientNames from './ingredient-ids.json';
 import ingredientsData from './ingredients.json';
 import linearVarsData from './linear-vars.json';
 import mealsData from './meals.json';
@@ -31,3 +32,5 @@ export const optimalTypes = optimalTypesData as unknown as Record<
   string,
   [TypeIndex, TypeIndex]
 >;
+
+export const ingredientNamesById: Record<string, string> = ingredientNames;

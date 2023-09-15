@@ -118,8 +118,8 @@ const makeSandwichForTarget = async (
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
 
-  Object.entries(solution.variables).forEach(([name, count]) => {
-    const ingredient = ingredients.find((i) => i.name === name);
+  Object.entries(solution.variables).forEach(([id, count]) => {
+    const ingredient = ingredients.find((i) => i.id === id);
     if (!ingredient) return;
     if (ingredient.ingredientType === 'filling') {
       [...Array(count).keys()].forEach(() => fillings.push(ingredient));
