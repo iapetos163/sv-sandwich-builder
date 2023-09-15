@@ -11,8 +11,9 @@ import meals from '../../source-data/meals.json';
 import sandwiches from '../../source-data/sandwiches.json';
 import { getOptimalTypes } from './get-optimal-types';
 import { generateLinearConstraints } from './linear-constraints';
+import { rangeTypes } from '@/enum';
 
-type IngredientEntry = Ingredient & { imageUrl: string };
+type IngredientEntry = Ingredient & { imageUrl?: string };
 
 type RecipeEntry = {
   number: string;
@@ -36,7 +37,7 @@ type MealEntry = {
 };
 
 type ImageSource = {
-  imageUrl: string;
+  imageUrl?: string;
   imagePath: string;
 };
 
@@ -154,6 +155,20 @@ const main = async () => {
     },
   );
 
+  parsedCondiments.push({
+    id: 'hmany',
+    ingredientType: 'condiment',
+    isHerbaMystica: true,
+    imagePath: 'ingredient/anyherbamystica.png',
+    pieces: 1,
+    flavorVector: [],
+    typeVector: rangeTypes.map(() => 250),
+    baseMealPowerVector: getMealPowerVector([
+      { type: 'Title', amount: 1000 },
+      { type: 'Sparkling', amount: 1000 },
+    ]),
+  });
+
   const parsedFillings = fillings.map(
     ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => {
       const flavorVector = getFlavorVector(tastes, pieces);
@@ -240,6 +255,7 @@ const main = async () => {
     ...mealData,
   ];
   for (const { imageUrl, imagePath } of imageSources) {
+    if (!imageUrl) return;
     const res = await got(imageUrl, {
       responseType: 'buffer',
     });
