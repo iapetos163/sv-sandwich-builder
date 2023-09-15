@@ -114,11 +114,6 @@ export const getOptimalTypes = async (
     const model = getModel(target);
     const solution = await solve(model);
 
-    const fk = getFlavorKey(target.flavorProfile, target.mealPowersByPlace);
-    if (fk === '0_2_0_1') {
-      console.debug(solution, fk);
-    }
-
     let typeBoosts: number[] = [];
     Object.entries(solution.variables).forEach(([id, count]) => {
       const ingredient = ingredients.find((i) => i.id === id);
