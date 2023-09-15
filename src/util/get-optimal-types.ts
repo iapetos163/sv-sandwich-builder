@@ -98,7 +98,7 @@ export const getOptimalTypes = async (
             ingredients
               .map(({ id, typeVector }) => [
                 id,
-                rangeTypes.reduce((sum, t) => sum + typeVector[t], 0),
+                Math.max(...rangeTypes.map((t) => typeVector[t] ?? 0)) * 3,
               ])
               .filter(([, v]) => v !== 0),
           ),
@@ -114,6 +114,11 @@ export const getOptimalTypes = async (
     const model = getModel(target);
     const solution = await solve(model);
 
+    const fk = getFlavorKey(target.flavorProfile, target.mealPowersByPlace);
+    if (fk === '0_2_0_1') {
+      console.debug(solution, fk);
+    }
+
     let typeBoosts: number[] = [];
     Object.entries(solution.variables).forEach(([id, count]) => {
       const ingredient = ingredients.find((i) => i.id === id);
@@ -128,16 +133,20 @@ export const getOptimalTypes = async (
     ];
   };
 
+  const nonHerbaMealPowers = rangeMealPowers.filter(
+    (mp) => !isHerbaMealPower(mp),
+  );
+
   return Object.fromEntries(
     (
       await Promise.all(
-        rangeMealPowers.map(async (mp1) => {
+        nonHerbaMealPowers.map(async (mp1) => {
           const flavorProfiles = getFlavorProfilesForPower(mp1);
           return (
             await Promise.all(
               flavorProfiles.map((fp) =>
                 Promise.all(
-                  [...rangeMealPowers.filter((mp) => mp !== mp1), null].map(
+                  [...nonHerbaMealPowers.filter((mp) => mp !== mp1), null].map(
                     (mp2) =>
                       getEntry({
                         mealPowersByPlace: [mp1, mp2],
