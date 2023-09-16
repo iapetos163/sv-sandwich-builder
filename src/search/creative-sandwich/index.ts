@@ -92,6 +92,8 @@ export const makeSandwichesForPowers = async (
 
   return sandwiches.map((result) => ({
     ...result,
+    requiredPieceDrops: {},
+    optionalPieceDrops: {},
     powers: getPowersForIngredients(result.fillings.concat(result.condiments)),
   }));
 };

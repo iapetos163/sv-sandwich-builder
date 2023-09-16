@@ -24,13 +24,24 @@ export interface SandwichResultProps {
 }
 
 const SandwichResult = ({ sandwich, className }: SandwichResultProps) => {
-  const { fillings, condiments, powers } = sandwich;
+  const {
+    fillings,
+    condiments,
+    requiredPieceDrops,
+    optionalPieceDrops,
+    powers,
+  } = sandwich;
 
   return (
     <StyledContainer className={className}>
       <RecipeIcons fillings={fillings} condiments={condiments} />
       <h3>Recipe</h3>
-      <StyledRecipeList fillings={fillings} condiments={condiments} />
+      <StyledRecipeList
+        fillings={fillings}
+        condiments={condiments}
+        requiredPieceDrops={requiredPieceDrops}
+        optionalPieceDrops={optionalPieceDrops}
+      />
       <h3>Meal Powers</h3>
       <div>
         {powers.map((power) => (
