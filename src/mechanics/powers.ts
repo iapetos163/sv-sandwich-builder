@@ -1,5 +1,5 @@
 import { MealPower, TypeIndex } from '@/enum';
-import { TargetPower } from '@/types';
+import { ResultPower, TargetPower } from '@/types';
 
 export interface TypeBoost {
   type: TypeIndex;
@@ -224,7 +224,7 @@ export const evaluateBoosts = (
     );
 };
 
-export const powersMatch = (test: TargetPower, target: TargetPower) =>
+export const powersMatch = (test: ResultPower, target: TargetPower) =>
   test.level >= target.level &&
   test.mealPower === target.mealPower &&
   (!mealPowerHasType(test.mealPower) || test.type === target.type);
@@ -234,7 +234,7 @@ export const powersEqual = (a: TargetPower, b: TargetPower) =>
   a.mealPower === b.mealPower &&
   (!mealPowerHasType(a.mealPower) || a.type === b.type);
 
-export const powerSetsMatch = (test: TargetPower[], target: TargetPower[]) =>
+export const powerSetsMatch = (test: ResultPower[], target: TargetPower[]) =>
   target.every((tp) => test.some((p) => powersMatch(p, tp)));
 
 export const powerToString = (p: TargetPower) => {

@@ -2,12 +2,13 @@ import { recipes } from '@/data';
 import { getPowersForIngredients, powerSetsMatch } from '@/mechanics';
 import { makeSandwichesForPowers } from '@/search';
 import { getPowerCopy } from '@/strings';
+import { TargetPower } from '@/types';
 
 const main = async () => {
   for (const recipe of recipes) {
     const recipeIngredients = [...recipe.fillings, ...recipe.condiments];
 
-    const powers = getPowersForIngredients(recipeIngredients);
+    const powers = getPowersForIngredients(recipeIngredients) as TargetPower[];
 
     const builtSandwiches = await makeSandwichesForPowers(powers);
     if (builtSandwiches.length === 0) {

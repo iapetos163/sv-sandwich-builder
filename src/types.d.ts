@@ -1,10 +1,14 @@
 import { MealPower, TypeIndex } from './enum';
 import { Constraint, Objective } from './lp';
 
-export interface TargetPower {
-  mealPower: MealPower;
+export interface ResultPower {
+  mealPower?: MealPower;
   type: TypeIndex;
   level: number;
+}
+
+export interface TargetPower extends ResultPower {
+  mealPower: MealPower;
 }
 
 export interface Ingredient {
@@ -24,7 +28,7 @@ export interface Sandwich {
   // mealPowerBoosts: number[];
   // typeBoosts: number[];
   // flavorBoosts: number[];
-  powers: TargetPower[];
+  powers: ResultPower[];
   score: number;
 }
 
