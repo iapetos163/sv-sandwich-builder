@@ -171,9 +171,9 @@ const main = async () => {
 
   const parsedFillings = fillings.map(
     ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => {
-      const flavorVector = getFlavorVector(tastes, pieces);
-      const typeVector = getTypeVector(types, pieces);
-      const mealPowerVector = getMealPowerVector(powers, pieces);
+      const flavorVector = getFlavorVector(tastes);
+      const typeVector = getTypeVector(types);
+      const mealPowerVector = getMealPowerVector(powers);
       return {
         pieces,
         id: ingredientIdsByName[name],

@@ -62,7 +62,7 @@ export type LinearConstraints = {
     typeDiff105: Constraint[][];
   };
   coefficientSets: {
-    fillings: Record<string, number>;
+    fillingsTimes12: Record<string, number>;
     condiments: Record<string, number>;
     herba: Record<string, number>;
     typeValues: Record<string, number>[];
