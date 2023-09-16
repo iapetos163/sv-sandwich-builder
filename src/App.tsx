@@ -14,7 +14,7 @@ import {
   getRecipesForPowers,
   makeSandwichesForPowers,
 } from '@/search';
-import { Power } from '@/types';
+import { TargetPower } from '@/types';
 import s from './App.module.css';
 
 import 'swiper/css';
@@ -24,7 +24,7 @@ function App(): ReactElement {
   const [resultState, setResultState] = useState<ResultState>(ResultState.INIT);
 
   const handleQuery = useCallback(
-    (newQuery: Power[], options: QueryOptions = {}) => {
+    (newQuery: TargetPower[], options: QueryOptions = {}) => {
       if (resultState === ResultState.CALCULATING) return;
 
       const results: Result[] = [];

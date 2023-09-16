@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { MealPower, rangeMealPowers, rangeTypes, TypeIndex } from '../../enum';
 import { mealPowerHasType } from '../../mechanics';
 import { allTypes, mealPowerCopy } from '../../strings';
-import { Power } from '../../types';
+import { TargetPower } from '../../types';
 
 const StyledLevelController = styled.div`
   display: flex;
@@ -45,8 +45,8 @@ const StyledLevelDisplay = styled.div`
 
 export interface PowerSelectorProps {
   onRemove: () => void;
-  onChange: (power: Power | null) => void;
-  override?: Power | null;
+  onChange: (power: TargetPower | null) => void;
+  override?: TargetPower | null;
   allowedTypes: boolean[];
   allowedMealPowers: boolean[];
   removable?: boolean;

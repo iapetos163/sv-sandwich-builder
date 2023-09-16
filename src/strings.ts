@@ -1,5 +1,5 @@
 import { mealPowerHasType } from '@/mechanics';
-import type { Ingredient, Power } from '@/types';
+import type { Ingredient, TargetPower } from '@/types';
 import type { Flavor, MealPower } from './enum';
 
 export const allTypes = [
@@ -36,7 +36,7 @@ export const mealPowerCopy = [
   'Encounter',
 ];
 
-export const getPowerCopy = (power: Power) =>
+export const getPowerCopy = (power: TargetPower) =>
   `Lv. ${power.level} ${mealPowerCopy[power.mealPower]} Power${
     mealPowerHasType(power.mealPower) ? `: ${allTypes[power.type]}` : ''
   }`;

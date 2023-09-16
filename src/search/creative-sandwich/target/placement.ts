@@ -1,12 +1,12 @@
 import { MealPower, TypeIndex } from '@/enum';
 import { mealPowerHasType } from '@/mechanics';
-import { Power } from '@/types';
+import { TargetPower } from '@/types';
 
 /**
  * @returns [index of first type, index of second type, index of third type]
  */
 export const getTypeTargetsByPlace = (
-  targetPowers: Power[],
+  targetPowers: TargetPower[],
   targetPlaceIndices: number[],
 ): [TypeIndex | null, TypeIndex | null, TypeIndex | null] => {
   const targetFirstPlacePowerIndex = targetPlaceIndices.findIndex(
@@ -59,7 +59,7 @@ export const getTypeTargetsByPlace = (
 };
 
 export const getMealPowerTargetsByPlace = (
-  targetPowers: Power[],
+  targetPowers: TargetPower[],
   targetPlaceIndices: number[],
   firstIndex = 0,
 ): [MealPower | null, MealPower | null, MealPower | null] => {

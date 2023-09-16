@@ -5,7 +5,7 @@ import got from 'got';
 import ingredientNamesById from '@/data/ingredient-ids.json';
 import { rangeTypes } from '@/enum';
 import { allTypes } from '@/strings';
-import { Power, Ingredient } from '@/types';
+import { TargetPower, Ingredient } from '@/types';
 import condiments from '../../source-data/condiments.json';
 import fillings from '../../source-data/fillings.json';
 import meals from '../../source-data/meals.json';
@@ -20,7 +20,7 @@ type RecipeEntry = {
   name: string;
   fillings: string[];
   condiments: string[];
-  powers: Power[];
+  powers: TargetPower[];
   imagePath: string;
   imageUrl: string;
   gameLocation: string;
@@ -29,7 +29,7 @@ type RecipeEntry = {
 type MealEntry = {
   name: string;
   cost: number;
-  powers: Power[];
+  powers: TargetPower[];
   shop: string;
   towns: string[];
   imageUrl: string;
@@ -103,23 +103,23 @@ const getTypeVector = (
 };
 
 const dataMealPowerNames = [
-  'Egg Power',
-  'Catching Power',
-  'Exp. Point Power',
-  'Item Drop Power',
-  'Raid Power',
-  'Sparkling Power',
-  'Title Power',
-  'Humungo Power',
-  'Teensy Power',
-  'Encounter Power',
+  'Egg TargetPower',
+  'Catching TargetPower',
+  'Exp. Point TargetPower',
+  'Item Drop TargetPower',
+  'Raid TargetPower',
+  'Sparkling TargetPower',
+  'Title TargetPower',
+  'Humungo TargetPower',
+  'Teensy TargetPower',
+  'Encounter TargetPower',
 ];
 
 const effectToPower = (effect: {
   name: string;
   type: string;
   level: string;
-}): Power => ({
+}): TargetPower => ({
   mealPower: dataMealPowerNames.indexOf(effect.name),
   type: effect.type ? allTypes.indexOf(effect.type) : 0,
   level: parseInt(effect.level),

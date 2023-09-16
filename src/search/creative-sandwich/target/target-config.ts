@@ -1,6 +1,6 @@
 import { MealPower, TypeIndex } from '../../../enum';
 import { getRepeatedType, mealPowerHasType } from '../../../mechanics';
-import { Power } from '../../../types';
+import { TargetPower } from '../../../types';
 
 export type TypeAllocation =
   | 'ONE_ONE_ONE'
@@ -37,7 +37,7 @@ export const configsEqual = (a: TargetConfig, b: TargetConfig) =>
   a.mpPlaceIndex === b.mpPlaceIndex;
 
 export const getTargetConfigs = (
-  targetPowers: Power[],
+  targetPowers: TargetPower[],
   targetNumHerba: number,
 ): TargetConfig[][] => {
   if (targetNumHerba >= 2) {
@@ -381,9 +381,9 @@ export const getTargetConfigs = (
 };
 
 export const selectPowersAtTargetPositions = (
-  powers: Power[],
+  powers: TargetPower[],
   configSet: TargetConfig[],
-): (Power | undefined)[] => {
+): (TargetPower | undefined)[] => {
   const leadingTitle = powers[0]?.mealPower === MealPower.TITLE;
   return configSet.map(
     (c) => powers[leadingTitle ? c.mpPlaceIndex - 1 : c.mpPlaceIndex],
@@ -395,7 +395,7 @@ export const selectPowersAtTargetPositions = (
  * to an array config combinations
  */
 export const permutePowerConfigs = (
-  powers: Power[],
+  powers: TargetPower[],
   configs: TargetConfig[][],
 ): TargetConfig[][] => {
   type RecurseArgs = {
