@@ -179,6 +179,7 @@ export const getModel = ({
         upperBound: multiplayer ? 8 : 4,
         lowerBound: 1,
       },
+      flavorProfile ? lc.constraints.specificHerba : lc.constraints.anyHerba,
       ...piecesConstraints,
       ...constraints,
     ],
