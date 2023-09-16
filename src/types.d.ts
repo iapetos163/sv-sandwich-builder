@@ -1,10 +1,14 @@
 import { MealPower, TypeIndex } from './enum';
 import { Constraint, Objective } from './lp';
 
-export interface Power {
-  mealPower: MealPower;
+export interface ResultPower {
+  mealPower?: MealPower;
   type: TypeIndex;
   level: number;
+}
+
+export interface TargetPower extends ResultPower {
+  mealPower: MealPower;
 }
 
 export interface Ingredient {
@@ -24,7 +28,7 @@ export interface Sandwich {
   // mealPowerBoosts: number[];
   // typeBoosts: number[];
   // flavorBoosts: number[];
-  powers: Power[];
+  powers: ResultPower[];
   score: number;
 }
 
@@ -33,7 +37,7 @@ export interface SandwichRecipe {
   name: string;
   fillings: Ingredient[];
   condiments: Ingredient[];
-  powers: Power[];
+  powers: TargetPower[];
   imagePath: string;
   gameLocation: string;
 }
@@ -41,7 +45,7 @@ export interface SandwichRecipe {
 export interface Meal {
   name: string;
   cost: number;
-  powers: Power[];
+  powers: TargetPower[];
   shop: string;
   towns: string[];
   imagePath: string;
@@ -66,5 +70,7 @@ export type LinearConstraints = {
   };
   constraints: {
     herbaMealPowerValue: Constraint;
+    specificHerba: Constraint;
+    anyHerba: Constraint;
   };
 };

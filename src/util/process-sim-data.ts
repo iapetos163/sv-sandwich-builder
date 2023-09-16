@@ -3,8 +3,9 @@ import { basename, join as joinPath } from 'path';
 import arg from 'arg';
 import got from 'got';
 import ingredientNamesById from '@/data/ingredient-ids.json';
+import { rangeTypes } from '@/enum';
 import { allTypes } from '@/strings';
-import { Power, Ingredient } from '@/types';
+import { TargetPower, Ingredient } from '@/types';
 import condiments from '../../source-data/condiments.json';
 import fillings from '../../source-data/fillings.json';
 import meals from '../../source-data/meals.json';
@@ -12,14 +13,14 @@ import sandwiches from '../../source-data/sandwiches.json';
 import { getOptimalTypes } from './get-optimal-types';
 import { generateLinearConstraints } from './linear-constraints';
 
-type IngredientEntry = Ingredient & { imageUrl: string };
+type IngredientEntry = Ingredient & { imageUrl?: string };
 
 type RecipeEntry = {
   number: string;
   name: string;
   fillings: string[];
   condiments: string[];
-  powers: Power[];
+  powers: TargetPower[];
   imagePath: string;
   imageUrl: string;
   gameLocation: string;
@@ -28,7 +29,7 @@ type RecipeEntry = {
 type MealEntry = {
   name: string;
   cost: number;
-  powers: Power[];
+  powers: TargetPower[];
   shop: string;
   towns: string[];
   imageUrl: string;
@@ -36,7 +37,7 @@ type MealEntry = {
 };
 
 type ImageSource = {
-  imageUrl: string;
+  imageUrl?: string;
   imagePath: string;
 };
 
@@ -118,7 +119,7 @@ const effectToPower = (effect: {
   name: string;
   type: string;
   level: string;
-}): Power => ({
+}): TargetPower => ({
   mealPower: dataMealPowerNames.indexOf(effect.name),
   type: effect.type ? allTypes.indexOf(effect.type) : 0,
   level: parseInt(effect.level),
@@ -153,6 +154,20 @@ const main = async () => {
       };
     },
   );
+
+  parsedCondiments.push({
+    id: 'hmany',
+    ingredientType: 'condiment',
+    isHerbaMystica: true,
+    imagePath: 'ingredient/anyherbamystica.png',
+    pieces: 1,
+    flavorVector: [],
+    typeVector: rangeTypes.map(() => 250),
+    baseMealPowerVector: getMealPowerVector([
+      { type: 'Title', amount: 1000 },
+      { type: 'Sparkling', amount: 1000 },
+    ]),
+  });
 
   const parsedFillings = fillings.map(
     ({ name, imageUrl, powers, types, tastes, pieces }): IngredientEntry => {
@@ -240,6 +255,7 @@ const main = async () => {
     ...mealData,
   ];
   for (const { imageUrl, imagePath } of imageSources) {
+    if (!imageUrl) return;
     const res = await got(imageUrl, {
       responseType: 'buffer',
     });

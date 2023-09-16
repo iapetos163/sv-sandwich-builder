@@ -1,5 +1,5 @@
 import { mealPowerHasType } from '@/mechanics';
-import type { Ingredient, Power } from '@/types';
+import type { Ingredient, ResultPower, TargetPower } from '@/types';
 import type { Flavor, MealPower } from './enum';
 
 export const allTypes = [
@@ -36,9 +36,13 @@ export const mealPowerCopy = [
   'Encounter',
 ];
 
-export const getPowerCopy = (power: Power) =>
-  `Lv. ${power.level} ${mealPowerCopy[power.mealPower]} Power${
-    mealPowerHasType(power.mealPower) ? `: ${allTypes[power.type]}` : ''
+export const getPowerCopy = (power: ResultPower) =>
+  `Lv. ${power.level} ${
+    power.mealPower !== undefined ? mealPowerCopy[power.mealPower] : '???'
+  } Power${
+    power.mealPower === undefined || mealPowerHasType(power.mealPower)
+      ? `: ${allTypes[power.type]}`
+      : ''
   }`;
 
 export const getSandwichKey = (

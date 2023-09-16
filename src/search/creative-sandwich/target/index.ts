@@ -8,7 +8,7 @@ import {
 } from '@/enum';
 import { getFlavorProfilesForPower, isHerbaMealPower } from '@/mechanics';
 import { getFlavorKey } from '@/strings';
-import { Power } from '@/types';
+import { TargetPower } from '@/types';
 import {
   getTypeTargetsByPlace,
   fillIn,
@@ -26,7 +26,7 @@ export { allocationHasMaxes } from './target-config';
 export type { TargetConfig };
 
 export interface Target {
-  powers: Power[];
+  powers: TargetPower[];
   typeAllocation: TypeAllocation;
   configSet: TargetConfig[];
   numHerbaMystica: number;
@@ -46,7 +46,7 @@ export interface Target {
 }
 
 export interface SelectInitialTargetsProps {
-  targetPowers: Power[];
+  targetPowers: TargetPower[];
   /** @default true */
   avoidHerbaMystica?: boolean;
 }
@@ -96,7 +96,7 @@ export const selectInitialTargets = ({
 };
 
 const getTypeTargets = (
-  targetPowers: Power[],
+  targetPowers: TargetPower[],
   configSet: TargetConfig[],
   mpTarget: MpTarget,
 ) => {
@@ -168,7 +168,7 @@ export type MpTarget = {
 };
 
 const getMpTargets = (
-  targetPowers: Power[],
+  targetPowers: TargetPower[],
   configSet: TargetConfig[],
   herba = false,
 ): MpTarget[] => {

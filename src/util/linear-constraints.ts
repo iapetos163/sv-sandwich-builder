@@ -35,7 +35,7 @@ export const generateLinearConstraints = (
                 ingredients
                   .map(({ id, flavorVector }) => [
                     id,
-                    flavorVector[fa] - flavorVector[fb],
+                    (flavorVector[fa] ?? 0) - (flavorVector[fb] ?? 0),
                   ])
                   .filter(([, v]) => v !== 0),
               ),
@@ -53,7 +53,8 @@ export const generateLinearConstraints = (
                 ingredients
                   .map(({ id, baseMealPowerVector }) => [
                     id,
-                    baseMealPowerVector[mpa] - baseMealPowerVector[mpb],
+                    (baseMealPowerVector[mpa] ?? 0) -
+                      (baseMealPowerVector[mpb] ?? 0),
                   ])
                   .filter(([, v]) => v !== 0),
               ),
@@ -71,7 +72,7 @@ export const generateLinearConstraints = (
                 ingredients
                   .map(({ id, typeVector }) => [
                     id,
-                    typeVector[ta] - typeVector[tb],
+                    (typeVector[ta] ?? 0) - (typeVector[tb] ?? 0),
                   ])
                   .filter(([, v]) => v !== 0),
               ),
@@ -89,7 +90,7 @@ export const generateLinearConstraints = (
                 ingredients
                   .map(({ id, typeVector }) => [
                     id,
-                    typeVector[ta] - 1.5 * typeVector[tb],
+                    (typeVector[ta] ?? 0) - 1.5 * (typeVector[tb] ?? 0),
                   ])
                   .filter(([, v]) => v !== 0),
               ),
@@ -107,7 +108,7 @@ export const generateLinearConstraints = (
                 ingredients
                   .map(({ id, typeVector }) => [
                     id,
-                    typeVector[ta] - typeVector[tb],
+                    (typeVector[ta] ?? 0) - (typeVector[tb] ?? 0),
                   ])
                   .filter(([, v]) => v !== 0),
               ),
@@ -151,6 +152,18 @@ export const generateLinearConstraints = (
           .map((i) => [i.id, i.baseMealPowerVector[MealPower.SPARKLING]]),
       ),
       lowerBound: 1,
+    },
+    specificHerba: {
+      coefficients: { hmany: 1 },
+      equals: 0,
+    },
+    anyHerba: {
+      coefficients: Object.fromEntries(
+        ingredients
+          .filter((i) => i.isHerbaMystica && i.id !== 'hmany')
+          .map((i) => [i.id, 1]),
+      ),
+      equals: 0,
     },
   },
 });

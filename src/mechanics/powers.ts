@@ -1,5 +1,5 @@
 import { MealPower, TypeIndex } from '@/enum';
-import { Power } from '@/types';
+import { ResultPower, TargetPower } from '@/types';
 
 export interface TypeBoost {
   type: TypeIndex;
@@ -107,15 +107,15 @@ export const calculateLevels = (
   return [1, 1, 1];
 };
 
-const getUniqueMealPowers = (powers: Power[]) =>
+const getUniqueMealPowers = (powers: TargetPower[]) =>
   Object.keys(
     powers.reduce((agg, tp) => ({ [tp.mealPower]: true, ...agg }), {}),
   );
 
-const getUniqueTypes = (powers: Power[]) =>
+const getUniqueTypes = (powers: TargetPower[]) =>
   Object.keys(powers.reduce((agg, tp) => ({ [tp.type]: true, ...agg }), {}));
 
-export const getRepeatedType = (powers: Power[]): TypeIndex | null => {
+export const getRepeatedType = (powers: TargetPower[]): TypeIndex | null => {
   const typedPowers = powers.filter((p) => mealPowerHasType(p.mealPower));
   if (getUniqueTypes(typedPowers).length === typedPowers.length) {
     return null;
@@ -126,7 +126,7 @@ export const getRepeatedType = (powers: Power[]): TypeIndex | null => {
     : typedPowers[1].type;
 };
 
-export const requestedPowersValid = (powers: Power[]) => {
+export const requestedPowersValid = (powers: TargetPower[]) => {
   if (getUniqueMealPowers(powers).length < powers.length) {
     return false;
   }
@@ -216,7 +216,7 @@ export const evaluateBoosts = (
         mpBoost.amount > 0 && assignedTypes[i] && assignedTypes[i].amount >= 0,
     )
     .map(
-      (mpBoost, i): Power => ({
+      (mpBoost, i): TargetPower => ({
         mealPower: mpBoost.mealPower,
         type: assignedTypes[i].type,
         level: assignedLevels[i],
@@ -224,20 +224,20 @@ export const evaluateBoosts = (
     );
 };
 
-export const powersMatch = (test: Power, target: Power) =>
+export const powersMatch = (test: ResultPower, target: TargetPower) =>
   test.level >= target.level &&
   test.mealPower === target.mealPower &&
   (!mealPowerHasType(test.mealPower) || test.type === target.type);
 
-export const powersEqual = (a: Power, b: Power) =>
+export const powersEqual = (a: TargetPower, b: TargetPower) =>
   a.level === b.level &&
   a.mealPower === b.mealPower &&
   (!mealPowerHasType(a.mealPower) || a.type === b.type);
 
-export const powerSetsMatch = (test: Power[], target: Power[]) =>
+export const powerSetsMatch = (test: ResultPower[], target: TargetPower[]) =>
   target.every((tp) => test.some((p) => powersMatch(p, tp)));
 
-export const powerToString = (p: Power) => {
+export const powerToString = (p: TargetPower) => {
   if (!mealPowerHasType(p.mealPower)) {
     return `Lv. ${p.level} ${p.mealPower}`;
   }

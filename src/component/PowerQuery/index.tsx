@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { rangeMealPowers, rangeTypes } from '../../enum';
-import { Power } from '../../types';
+import { TargetPower } from '../../types';
 import PowerSelector from './PowerSelector';
 
 const StyledContainer = styled.div``;
@@ -43,34 +43,38 @@ export interface QueryOptions {
 }
 
 export interface PowerQueryProps {
-  onSubmit: (queryPowers: Power[], options?: QueryOptions) => void;
+  onSubmit: (queryPowers: TargetPower[], options?: QueryOptions) => void;
   enableSubmit: boolean;
 }
 
 const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
-  const [firstQueryPower, setFirstQueryPower] = useState<Power | null>(null);
-  const [secondQueryPower, setSecondQueryPower] = useState<Power | null>(null);
-  const [thirdQueryPower, setThirdQueryPower] = useState<Power | null>(null);
-  const [firstQueryOverride, setFirstQueryOverride] = useState<Power | null>(
+  const [firstQueryPower, setFirstQueryPower] = useState<TargetPower | null>(
     null,
   );
+  const [secondQueryPower, setSecondQueryPower] = useState<TargetPower | null>(
+    null,
+  );
+  const [thirdQueryPower, setThirdQueryPower] = useState<TargetPower | null>(
+    null,
+  );
+  const [firstQueryOverride, setFirstQueryOverride] =
+    useState<TargetPower | null>(null);
   const [includeMeals, setIncludeMeals] = useState(true);
   const [includeRecipes, setIncludeRecipes] = useState(true);
   const [includeCreative, setIncludeCreative] = useState(true);
-  const [secondQueryOverride, setSecondQueryOverride] = useState<Power | null>(
-    null,
-  );
+  const [secondQueryOverride, setSecondQueryOverride] =
+    useState<TargetPower | null>(null);
 
   const [showSecond, setShowSecond] = useState(false);
   const [showThird, setShowThird] = useState(false);
 
-  const handleSetFirstPower = useCallback((power: Power | null) => {
+  const handleSetFirstPower = useCallback((power: TargetPower | null) => {
     setFirstQueryPower(power);
   }, []);
-  const handleSetSecondPower = useCallback((power: Power | null) => {
+  const handleSetSecondPower = useCallback((power: TargetPower | null) => {
     setSecondQueryPower(power);
   }, []);
-  const handleSetThirdPower = useCallback((power: Power | null) => {
+  const handleSetThirdPower = useCallback((power: TargetPower | null) => {
     setThirdQueryPower(power);
   }, []);
 
@@ -126,7 +130,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
         firstQueryPower,
         secondQueryPower,
         thirdQueryPower,
-      ].filter((p): p is Power => !!p);
+      ].filter((p): p is TargetPower => !!p);
       if (powers.length > 0)
         onSubmit(powers, { includeMeals, includeRecipes, includeCreative });
     },

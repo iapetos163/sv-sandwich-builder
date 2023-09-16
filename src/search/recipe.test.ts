@@ -1,10 +1,10 @@
 import { MealPower, TypeIndex } from '@/enum';
-import { Power } from '@/types';
+import { TargetPower } from '@/types';
 import { getRecipesForPowers } from './recipe';
 
 describe('getRecipesForPowers', () => {
   it('correctly matches the target level', () => {
-    const targetPowers: Power[] = [
+    const targetPowers: TargetPower[] = [
       {
         mealPower: MealPower.EGG,
         type: TypeIndex.NORMAL,

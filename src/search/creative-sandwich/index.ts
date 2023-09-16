@@ -2,7 +2,7 @@ import { ingredients } from '@/data';
 // import { Flavor, MealPower, TypeIndex } from '@/enum';
 import { Model, solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
-import { Ingredient, Power, Sandwich } from '@/types';
+import { Ingredient, TargetPower, Sandwich } from '@/types';
 import { getModel } from './model';
 import { refineTarget, selectInitialTargets, Target } from './target';
 import { sandwichIsSubset } from './util';
@@ -41,7 +41,7 @@ const filterSandwichResults = async (
 };
 
 export const makeSandwichesForPowers = async (
-  targetPowers: Power[],
+  targetPowers: TargetPower[],
 ): Promise<Sandwich[]> => {
   if (!requestedPowersValid(targetPowers)) {
     return [];

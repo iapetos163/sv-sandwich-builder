@@ -1,12 +1,12 @@
 import { recipes } from '@/data';
 import { powerSetsMatch } from '@/mechanics';
-import { Power, SandwichRecipe } from '@/types';
+import { TargetPower, SandwichRecipe } from '@/types';
 
 const RESULT_LIMIT = 2;
 const SCORE_THRESHOLD = 9;
 
 export const getRecipesForPowers = (
-  targetPowers: Power[],
+  targetPowers: TargetPower[],
 ): SandwichRecipe[] => {
   const matchingRecipes = recipes.filter((recipe) =>
     powerSetsMatch(recipe.powers, targetPowers),

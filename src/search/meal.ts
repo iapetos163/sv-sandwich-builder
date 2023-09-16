@@ -1,10 +1,10 @@
 import { meals } from '@/data';
 import { powerSetsMatch } from '@/mechanics';
-import { Meal, Power } from '@/types';
+import { Meal, TargetPower } from '@/types';
 
 const RESULT_LIMIT = 3;
 
-export const getMealsForPowers = (targetPowers: Power[]) => {
+export const getMealsForPowers = (targetPowers: TargetPower[]) => {
   const matchingMeals = meals.filter((meal) =>
     powerSetsMatch(meal.powers, targetPowers),
   );

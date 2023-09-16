@@ -922,6 +922,95 @@ describe('makeSandwichForPower', () => {
     expect(sandwichKeys).not.toContain('egg_egg_egg_egg_rice_mmld_whcrm_whcrm');
   });
 
+  it('Includes "Any Herba Mystica" when sparkling power is requested', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.SPARKLING,
+        type: TypeIndex.DARK,
+        level: 1,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    //
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(ingredients),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+
+    const herba = sandwich.condiments.filter((c) => c.isHerbaMystica);
+    expect(herba.length).toBeGreaterThan(0);
+
+    const specificHerba = herba.find((hm) => hm.id !== 'hmany');
+    expect(specificHerba).not.toBeDefined();
+  });
+
+  it('Includes "Any Herba Mystica" when title power is requested', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.TITLE,
+        type: TypeIndex.DRAGON,
+        level: 1,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    //
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(ingredients),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+
+    const herba = sandwich.condiments.filter((c) => c.isHerbaMystica);
+    expect(herba.length).toBeGreaterThan(0);
+
+    const specificHerba = herba.find((hm) => hm.id !== 'hmany');
+    expect(specificHerba).not.toBeDefined();
+  });
+
+  it('Does not include "Any Herba Mystica" when any power that is not title or sparkling is requested', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.TITLE,
+        type: TypeIndex.ELECTRIC,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.FAIRY,
+        level: 1,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    //
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(ingredients),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+
+    const herba = sandwich.condiments.filter((c) => c.isHerbaMystica);
+    expect(herba.length).toBeGreaterThan(0);
+
+    const anyHerba = herba.find((hm) => hm.id === 'hmany');
+    expect(anyHerba).not.toBeDefined();
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', async () => {
   //   const targetPowers = [
   //     {
@@ -930,13 +1019,13 @@ describe('makeSandwichForPower', () => {
   //       level: 2,
   //     },
   //   ];
-  //   const sandwiches =  await makeSandwichesForPowers(targetPowers);
+  //   const sandwiches = await makeSandwichesForPowers(targetPowers);
 
   //   //
   //   expect(sandwiches.length).toBeGreaterThanOrEqual(1);
-  // const sandwich = sandwiches[0];
+  //   const sandwich = sandwiches[0];
   //   const ingredients = sandwich.fillings.concat(sandwich.condiments);
-  //   console.debug(`${ingredients.map((i) => i.name).join(', ')}`);
+  //   console.debug(`${ingredients.map((i) => i.id).join(' ')}`);
 
   //   const correctResult = powerSetsMatch(
   //     getPowersForIngredients(ingredients),
