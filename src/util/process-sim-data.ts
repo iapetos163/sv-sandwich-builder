@@ -3,6 +3,7 @@ import { basename, join as joinPath } from 'path';
 import arg from 'arg';
 import got from 'got';
 import ingredientNamesById from '@/data/ingredient-ids.json';
+import { rangeTypes } from '@/enum';
 import { allTypes } from '@/strings';
 import { Power, Ingredient } from '@/types';
 import condiments from '../../source-data/condiments.json';
@@ -11,7 +12,6 @@ import meals from '../../source-data/meals.json';
 import sandwiches from '../../source-data/sandwiches.json';
 import { getOptimalTypes } from './get-optimal-types';
 import { generateLinearConstraints } from './linear-constraints';
-import { rangeTypes } from '@/enum';
 
 type IngredientEntry = Ingredient & { imageUrl?: string };
 
