@@ -103,16 +103,16 @@ const getTypeVector = (
 };
 
 const dataMealPowerNames = [
-  'Egg TargetPower',
-  'Catching TargetPower',
-  'Exp. Point TargetPower',
-  'Item Drop TargetPower',
-  'Raid TargetPower',
-  'Sparkling TargetPower',
-  'Title TargetPower',
-  'Humungo TargetPower',
-  'Teensy TargetPower',
-  'Encounter TargetPower',
+  'Egg Power',
+  'Catching Power',
+  'Exp. Point Power',
+  'Item Drop Power',
+  'Raid Power',
+  'Sparkling Power',
+  'Title Power',
+  'Humungo Power',
+  'Teensy Power',
+  'Encounter Power',
 ];
 
 const effectToPower = (effect: {
