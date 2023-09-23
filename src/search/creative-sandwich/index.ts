@@ -90,9 +90,9 @@ export const makeSandwichesForPowers = async (
     }, [])
     .slice(0, RESULT_LIMIT);
 
-  return sandwiches.map((result) => ({
+  return sandwiches.map(({ pieceDrops, ...result }) => ({
     ...result,
-    requiredPieceDrops: {},
+    requiredPieceDrops: pieceDrops,
     optionalPieceDrops: {},
     powers: getPowersForIngredients(result.fillings.concat(result.condiments)),
   }));
@@ -102,6 +102,7 @@ export type SandwichResult = {
   score: number;
   fillings: Ingredient[];
   condiments: Ingredient[];
+  pieceDrops: Record<string, number>;
   model: Model;
   target: Target;
 };
@@ -119,16 +120,24 @@ const makeSandwichForTarget = async (
 
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
+  const pieceDrops: Record<string, number> = {};
 
   Object.entries(solution.variables).forEach(([id, count]) => {
     const ingredient = ingredients.find((i) => i.id === id);
     if (!ingredient) return;
     if (ingredient.ingredientType === 'filling') {
-      [...Array(count).keys()].forEach(() => fillings.push(ingredient));
+      const inventoryCount = Math.ceil(count / ingredient.pieces);
+      const piecesMod = count % ingredient.pieces;
+      if (piecesMod > 0) {
+        pieceDrops[ingredient.id] = ingredient.pieces - piecesMod;
+      }
+      [...Array(inventoryCount).keys()].forEach(() =>
+        fillings.push(ingredient),
+      );
     } else {
       [...Array(count).keys()].forEach(() => condiments.push(ingredient));
     }
   });
 
-  return { fillings, condiments, score, model, target };
+  return { fillings, condiments, score, model, pieceDrops, target };
 };
