@@ -110,7 +110,7 @@ const PowerSelector = ({
     }
     onChange({
       mealPower: selectedMealPower,
-      type: selectedType!,
+      type: selectedType ?? 0,
       level: selectedLevel,
     });
   }, [selectedMealPower, selectedType, onChange, selectedLevel, maxLevel]);
