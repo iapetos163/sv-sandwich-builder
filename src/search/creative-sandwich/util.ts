@@ -1,4 +1,4 @@
-import type { SandwichResult } from '.';
+import type { SandwichResult } from './types';
 
 type Accum = { bIds: string[]; isSubset: boolean };
 

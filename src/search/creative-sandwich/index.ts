@@ -1,10 +1,11 @@
 import { ingredients } from '@/data';
 // import { Flavor, MealPower, TypeIndex } from '@/enum';
-import { Model, solve } from '@/lp';
+import { solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, TargetPower, Sandwich } from '@/types';
 import { getModel } from './model';
 import { refineTarget, selectInitialTargets, Target } from './target';
+import { SandwichResult } from './types';
 import { sandwichIsSubset } from './util';
 
 export const emptySandwich = {
@@ -90,21 +91,10 @@ export const makeSandwichesForPowers = async (
     }, [])
     .slice(0, RESULT_LIMIT);
 
-  return sandwiches.map(({ pieceDrops, ...result }) => ({
+  return sandwiches.map((result) => ({
     ...result,
-    requiredPieceDrops: pieceDrops,
-    optionalPieceDrops: {},
     powers: getPowersForIngredients(result.fillings.concat(result.condiments)),
   }));
-};
-
-export type SandwichResult = {
-  score: number;
-  fillings: Ingredient[];
-  condiments: Ingredient[];
-  pieceDrops: Record<string, number>;
-  model: Model;
-  target: Target;
 };
 
 const makeSandwichForTarget = async (
@@ -139,5 +129,13 @@ const makeSandwichForTarget = async (
     }
   });
 
-  return { fillings, condiments, score, model, pieceDrops, target };
+  return {
+    fillings,
+    condiments,
+    score,
+    model,
+    requiredPieceDrops: pieceDrops,
+    optionalPieceDrops: {},
+    target,
+  };
 };
