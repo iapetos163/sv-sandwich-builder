@@ -1,4 +1,3 @@
-import { ingredients } from '@/data';
 import { Ingredient, ResultPower } from '@/types';
 import { add, scale } from '@/vector-math';
 import { evaluateBoosts, isHerbaMealPower } from './powers';

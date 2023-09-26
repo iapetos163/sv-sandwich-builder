@@ -4,6 +4,7 @@ import { solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, TargetPower, Sandwich } from '@/types';
 import { getModel } from './model';
+import { combineDrops } from './pieces';
 import { refineTarget, selectInitialTargets, Target } from './target';
 import { SandwichResult } from './types';
 import { sandwichIsSubset } from './util';
@@ -93,7 +94,10 @@ export const makeSandwichesForPowers = async (
 
   return sandwiches.map((result) => ({
     ...result,
-    powers: getPowersForIngredients(result.fillings.concat(result.condiments)),
+    powers: getPowersForIngredients(
+      result.fillings.concat(result.condiments),
+      combineDrops(result.requiredPieceDrops, result.optionalPieceDrops),
+    ),
   }));
 };
 
