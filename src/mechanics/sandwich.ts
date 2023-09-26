@@ -33,17 +33,17 @@ export const getPowersForIngredients = (
   const { mealPowerBoosts, typeBoosts, flavorBoosts } =
     ingredientsWithDrops.reduce(
       ({ mealPowerBoosts, typeBoosts, flavorBoosts }, ingredient) => ({
-        mealPowerBoosts: scale(
-          add(mealPowerBoosts, ingredient.baseMealPowerVector),
-          ingredient.pieces,
+        mealPowerBoosts: add(
+          mealPowerBoosts,
+          scale(ingredient.baseMealPowerVector, ingredient.pieces),
         ),
-        typeBoosts: scale(
-          add(typeBoosts, ingredient.typeVector),
-          ingredient.pieces,
+        typeBoosts: add(
+          typeBoosts,
+          scale(ingredient.typeVector, ingredient.pieces),
         ),
-        flavorBoosts: scale(
-          add(flavorBoosts, ingredient.flavorVector),
-          ingredient.pieces,
+        flavorBoosts: add(
+          flavorBoosts,
+          scale(ingredient.flavorVector, ingredient.pieces),
         ),
       }),
       init,
