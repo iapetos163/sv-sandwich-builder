@@ -13,15 +13,15 @@ describe('rankFlavorBoosts', () => {
     expect(ranked[2].flavor).toBe(Flavor.BITTER);
   });
 
-  it('Breaks ties using Sweet > Sour > Salty > Bitter > Hot', () => {
+  it('Breaks ties using Sweet > Salty > Sour > Bitter > Hot', () => {
     const flavorVector = rangeFlavors.map(() => 0);
     flavorVector[Flavor.SOUR] = 1;
     flavorVector[Flavor.SWEET] = 1;
     flavorVector[Flavor.SALTY] = 1;
     const ranked = rankFlavorBoosts(flavorVector);
     expect(ranked[0].flavor).toBe(Flavor.SWEET);
-    expect(ranked[1].flavor).toBe(Flavor.SOUR);
-    expect(ranked[2].flavor).toBe(Flavor.SALTY);
+    expect(ranked[2].flavor).toBe(Flavor.SOUR);
+    expect(ranked[1].flavor).toBe(Flavor.SALTY);
   });
 });
 
