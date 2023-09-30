@@ -13,7 +13,7 @@ export const combineDrops = (
 
 export const adjustForDroppedPieces = (
   sandwich: SandwichResult,
-): SandwichResult => {
+): SandwichResult | null => {
   const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
   const resultRequiredDrops: Record<string, number> =
@@ -52,6 +52,7 @@ export const adjustForDroppedPieces = (
     // Test making piece drops optional
     let numOptionalDrops = 0;
     while (
+      powers.length > 0 &&
       powerSetsMatch(powers, sandwich.target.powers) &&
       numOptionalDrops < numRequiredDrops
     ) {
@@ -77,7 +78,17 @@ export const adjustForDroppedPieces = (
     resultOptionalDrops[fillingId] = numOptionalDrops;
   }
 
-  // TODO?: check that sandwich is viable at this point
+  const finalPowers = getPowersForIngredients(
+    ingredients,
+    combineDrops(resultRequiredDrops, resultOptionalDrops),
+  );
+  if (
+    finalPowers.length === 0 ||
+    !powerSetsMatch(finalPowers, sandwich.target.powers)
+  ) {
+    return null;
+  }
+
   return {
     ...sandwich,
     requiredPieceDrops: resultRequiredDrops,

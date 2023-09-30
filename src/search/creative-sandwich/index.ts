@@ -4,7 +4,7 @@ import { solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, TargetPower, Sandwich } from '@/types';
 import { getModel } from './model';
-import { combineDrops } from './pieces';
+import { adjustForDroppedPieces, combineDrops } from './pieces';
 import { refineTarget, selectInitialTargets, Target } from './target';
 import { SandwichResult } from './types';
 import { sandwichIsSubset } from './util';
@@ -29,7 +29,10 @@ const filterSandwichResults = async (
     const targets = refineTarget(sandwiches[0].target);
     const refined = (
       await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
-    ).filter((s): s is SandwichResult => !!s);
+    )
+      .filter((s): s is SandwichResult => !!s)
+      .map(adjustForDroppedPieces)
+      .filter((s): s is SandwichResult => !!s);
     refined.sort((a, b) => a.score - b.score);
 
     sandwiches.push(...refined);
@@ -63,7 +66,10 @@ export const makeSandwichesForPowers = async (
   // console.debug(expectedSuccessfulTargets);
   let sandwiches = (
     await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
-  ).filter((s): s is SandwichResult => !!s);
+  )
+    .filter((s): s is SandwichResult => !!s)
+    .map(adjustForDroppedPieces)
+    .filter((s): s is SandwichResult => !!s);
 
   if (sandwiches.length === 0) return [];
 
