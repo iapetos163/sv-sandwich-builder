@@ -1,7 +1,7 @@
 export enum Flavor {
   SWEET,
-  SOUR,
   SALTY,
+  SOUR,
   BITTER,
   SPICY,
 }
