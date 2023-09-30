@@ -30,7 +30,7 @@ describe('getPowersForIngredients', () => {
     const pb = ingredients.find((i) => i.id === 'pbtr')!;
     const pickle = ingredients.find((i) => i.id === 'pkl')!;
 
-    const res = getPowersForIngredients([pickle, pb]);
+    const res = getPowersForIngredients([pickle, pb], {});
 
     const eggPower = res.find((p) => p.mealPower === MealPower.EGG);
     expect(eggPower).toBeDefined();
