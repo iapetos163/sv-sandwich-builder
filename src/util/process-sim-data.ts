@@ -41,7 +41,7 @@ type ImageSource = {
   imagePath: string;
 };
 
-export const flavors = ['Sweet', 'Sour', 'Salty', 'Bitter', 'Hot'];
+export const flavors = ['Sweet', 'Salty', 'Sour', 'Bitter', 'Hot'];
 
 export const mealPowers = [
   'Egg',

@@ -1,4 +1,5 @@
 import { ingredients } from '@/data';
+import { MealPower, TypeIndex } from '@/enum';
 import { getPowersForIngredients } from './sandwich';
 import { isHerbaMealPower } from '.';
 
@@ -23,5 +24,20 @@ describe('getPowersForIngredients', () => {
       (p) => p.mealPower !== undefined,
     );
     expect(definedNonHerba).not.toBeDefined();
+  });
+
+  it('returns the correct powers for a PB and pickle sandwich', () => {
+    const pb = ingredients.find((i) => i.id === 'pbtr')!;
+    const pickle = ingredients.find((i) => i.id === 'pkl')!;
+
+    const res = getPowersForIngredients([pickle, pb]);
+
+    const eggPower = res.find((p) => p.mealPower === MealPower.EGG);
+    expect(eggPower).toBeDefined();
+
+    const catchFighting = res.find(
+      (p) => p.mealPower === MealPower.CATCH && p.type === TypeIndex.FIGHTING,
+    );
+    expect(catchFighting).not.toBeDefined();
   });
 });
