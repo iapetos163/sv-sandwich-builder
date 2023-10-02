@@ -18,7 +18,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -48,7 +48,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -79,7 +79,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -104,7 +104,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -128,7 +128,7 @@ describe('makeSandwichForPower', () => {
     expect(ingredients.length).toBeLessThanOrEqual(7);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -149,7 +149,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -174,7 +174,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -206,7 +206,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -231,7 +231,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -256,7 +256,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -277,7 +277,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -298,7 +298,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -320,7 +320,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -341,7 +341,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -362,7 +362,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -389,7 +389,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -419,7 +419,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -447,7 +447,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -474,7 +474,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -504,7 +504,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -532,7 +532,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -561,7 +561,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -589,7 +589,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -625,7 +625,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -669,7 +669,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -706,7 +706,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -742,7 +742,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -776,7 +776,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -808,7 +808,7 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -867,7 +867,7 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -899,7 +899,7 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -938,7 +938,7 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -966,7 +966,7 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -999,7 +999,7 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(ingredients, {}),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1028,7 +1028,7 @@ describe('makeSandwichForPower', () => {
   //   console.debug(`${ingredients.map((i) => i.id).join(' ')}`);
 
   //   const correctResult = powerSetsMatch(
-  //     getPowersForIngredients(ingredients),
+  //     getPowersForIngredients(ingredients, {}),
   //     targetPowers,
   //   );
   //   expect(correctResult).toBe(true);
