@@ -77,7 +77,7 @@ export const solve = async (model: Model) => {
 
   const {
     result: { vars, z, status },
-  } = await glpk.solve(transformedModel);
+  } = await glpk.solve(transformedModel, { tmlim: 3 });
 
   return {
     status:
