@@ -1,36 +1,8 @@
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
-import styled from 'styled-components';
-import { rangeMealPowers, rangeTypes } from '../../enum';
-import { TargetPower } from '../../types';
+import { rangeMealPowers, rangeTypes } from '@/enum';
+import { TargetPower } from '@/types';
+import styles from './PowerQuery.module.css';
 import PowerSelector from './PowerSelector';
-
-const StyledContainer = styled.div``;
-const StyledGrid = styled.div`
-  display: grid;
-  align-items: center;
-  grid-template: auto auto auto auto / 55fr 45fr auto auto;
-  /* gap: 5px 0; */
-`;
-
-const StyledHeading = styled.div`
-  font-weight: bold;
-  font-size: 0.9em;
-`;
-
-const StyledAdd = styled.div`
-  grid-column: 1 4;
-`;
-
-const StyledOptionsContainer = styled.div`
-  margin: 10px 0;
-  font-size: 0.9em;
-  > * {
-    margin-right: 10px;
-  }
-  label {
-    user-select: none;
-  }
-`;
 
 const allowedMealPowers = rangeMealPowers.map(() => true);
 
@@ -145,12 +117,14 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     ],
   );
   return (
-    <StyledContainer>
+    <div>
       <form onSubmit={handleSubmit}>
-        <StyledGrid>
-          <StyledHeading>Power</StyledHeading>
-          <StyledHeading>Type</StyledHeading>
-          <StyledHeading style={{ paddingLeft: '0.5rem' }}>Level</StyledHeading>
+        <div className={styles.grid}>
+          <div className={styles.heading}>Power</div>
+          <div className={styles.heading}>Type</div>
+          <div className={styles.heading} style={{ paddingLeft: '0.5rem' }}>
+            Level
+          </div>
           <div />
           <PowerSelector
             onRemove={handleRemoveFirst}
@@ -184,13 +158,13 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
             />
           )}
           {!showThird && (
-            <StyledAdd>
+            <div className={styles.add}>
               <button onClick={handleAddPower}>Add another power</button>
-            </StyledAdd>
+            </div>
           )}
-        </StyledGrid>
-        <StyledOptionsContainer>
-          <StyledHeading>Options</StyledHeading>
+        </div>
+        <div className={styles.optionsContainer}>
+          <div className={styles.heading}>Options</div>
           <div>
             <label>
               <input
@@ -221,12 +195,12 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               Creative mode sandwiches
             </label>
           </div>
-        </StyledOptionsContainer>
+        </div>
         <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
         </button>
       </form>
-    </StyledContainer>
+    </div>
   );
 };
 export default PowerQuery;

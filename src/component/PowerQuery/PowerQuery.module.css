@@ -1,0 +1,28 @@
+.grid {
+  display: grid;
+  align-items: center;
+  grid-template: auto auto auto auto / 55fr 45fr auto auto;
+  /* gap: 5px 0; */
+}
+
+.heading {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.add {
+  grid-column: 1 4;
+}
+
+.optionsContainer {
+  margin: 10px 0;
+  font-size: 0.9em;
+}
+
+.optionsContainer > * {
+  margin-right: 10px;
+}
+
+.optionsContainer label {
+  user-select: none;
+}
