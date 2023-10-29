@@ -1127,6 +1127,35 @@ describe('makeSandwichForPower', () => {
     expect(anyHerba).not.toBeDefined();
   });
 
+  it('Produces a sandwich for Lv 1 Encounter Normal and Lv 1 Exp Normal', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.NORMAL,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.NORMAL,
+        level: 1,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', async () => {
   //   const targetPowers = [
   //     {
