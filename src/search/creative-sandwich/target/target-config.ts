@@ -88,7 +88,7 @@ export const getTargetConfigs = (
     (tp) => mealPowerHasType(tp.mealPower) && tp.type !== repeatedType,
   );
 
-  const lv3s = targetPowers.filter((tp) => tp.level >= 2);
+  const lv3s = targetPowers.filter((tp) => tp.level >= 3);
 
   if (
     targetNumHerba >= 1 &&
