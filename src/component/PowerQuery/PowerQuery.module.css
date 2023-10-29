@@ -1,0 +1,35 @@
+.grid {
+  display: grid;
+  align-items: center;
+  grid-template: auto auto auto auto / 55fr 45fr auto auto;
+  /* gap: 5px 0; */
+}
+
+.heading {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.add {
+  grid-column: 1 4;
+}
+
+.optionsContainer {
+  margin: 20px 0 10px;
+  display: flex;
+}
+
+.optionsContainer > * {
+  margin-right: 10px;
+}
+
+.optionsContainer label {
+  user-select: none;
+  font-size: 0.9em;
+  display: inline-flex;
+  align-items: center;
+}
+
+.optionsContainer input {
+  margin-right: 5px;
+}
