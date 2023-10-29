@@ -111,6 +111,7 @@ const makeSandwichForTarget = async (
   target: Target,
   multiplayer = false,
 ): Promise<SandwichResult | null> => {
+  const maxFillings = multiplayer ? 12 : 6;
   const model = getModel({ multiplayer, target });
 
   const solution = await solve(model);
@@ -138,6 +139,10 @@ const makeSandwichForTarget = async (
       [...Array(count).keys()].forEach(() => condiments.push(ingredient));
     }
   });
+
+  if (fillings.length > maxFillings) {
+    return null;
+  }
 
   return {
     fillings,
