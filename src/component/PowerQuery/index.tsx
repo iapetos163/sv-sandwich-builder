@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
+import Checkbox from '@/component/Checkbox';
 import { rangeMealPowers, rangeTypes } from '@/enum';
 import { TargetPower } from '@/types';
 import styles from './PowerQuery.module.css';
@@ -83,16 +84,16 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     setShowThird(false);
   }, []);
 
-  const toggleMeals = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeMeals(event.target.checked);
+  const toggleMeals = useCallback((checked: boolean) => {
+    setIncludeMeals(checked);
   }, []);
 
-  const toggleRecipes = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeRecipes(event.target.checked);
+  const toggleRecipes = useCallback((checked: boolean) => {
+    setIncludeRecipes(checked);
   }, []);
 
-  const toggleCreative = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeCreative(event.target.checked);
+  const toggleCreative = useCallback((checked: boolean) => {
+    setIncludeCreative(checked);
   }, []);
 
   const handleSubmit = useCallback(
@@ -166,35 +167,32 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
         <div className={styles.optionsContainer}>
           <div className={styles.heading}>Options</div>
           <div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={includeMeals}
-                onChange={toggleMeals}
-              ></input>{' '}
-              Restaurant meals
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={includeRecipes}
-                onChange={toggleRecipes}
-              ></input>{' '}
-              Sandwich recipes
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={includeCreative}
-                onChange={toggleCreative}
-              ></input>{' '}
-              Creative mode sandwiches
-            </label>
+            <div>
+              <label>
+                <Checkbox
+                  checked={includeMeals}
+                  onCheckedChange={toggleMeals}
+                />
+                Restaurant meals
+              </label>
+            </div>
+            <div>
+              <label>
+                <Checkbox
+                  checked={includeRecipes}
+                  onCheckedChange={toggleRecipes}
+                />
+                Sandwich recipes
+              </label>
+            </div>
+            <div>
+              <label>
+                <Checkbox
+                  checked={includeCreative}
+                  onCheckedChange={toggleCreative}
+                />
+                Creative mode sandwiches
+              </label>
             </div>
           </div>
         </div>

@@ -1,0 +1,30 @@
+.checkbox {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: 1px solid var(--color-dark-gray);
+  border-radius: 0;
+  padding: 0;
+  position: relative;
+}
+
+.checkbox:focus {
+  box-shadow: 0 0 2px 1px var(--color-bright-green);
+}
+
+.checkbox[data-state='checked'] {
+  background-color: var(--color-bright-green);
+}
+
+.check {
+  position: absolute;
+  top: 0px;
+  left: -1px;
+  width: 16px;
+  height: 16px;
+}
+
+.check svg {
+  width: 16px;
+  height: 16px;
+}
