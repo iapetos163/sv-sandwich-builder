@@ -1156,6 +1156,40 @@ describe('makeSandwichForPower', () => {
     expect(correctResult).toBe(true);
   });
 
+  it('Does not exceed 6 different fillings in single-player', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.NORMAL,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.NORMAL,
+        level: 1,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    sandwiches.forEach((sandwich) => {
+      const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+      const correctResult = powerSetsMatch(
+        getPowersForIngredients(
+          ingredients,
+          combineDrops(
+            sandwich.optionalPieceDrops,
+            sandwich.requiredPieceDrops,
+          ),
+        ),
+        targetPowers,
+      );
+      expect(correctResult).toBe(true);
+
+      expect(sandwich.fillings.length).toBeLessThanOrEqual(6);
+    });
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', async () => {
   //   const targetPowers = [
   //     {
