@@ -1,10 +1,12 @@
 import { ingredients } from '@/data';
 // import { Flavor, MealPower, TypeIndex } from '@/enum';
-import { Model, solve } from '@/lp';
+import { solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, TargetPower, Sandwich } from '@/types';
 import { getModel } from './model';
+import { adjustForDroppedPieces, combineDrops } from './pieces';
 import { refineTarget, selectInitialTargets, Target } from './target';
+import { SandwichResult } from './types';
 import { sandwichIsSubset } from './util';
 
 export const emptySandwich = {
@@ -27,7 +29,10 @@ const filterSandwichResults = async (
     const targets = refineTarget(sandwiches[0].target);
     const refined = (
       await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
-    ).filter((s): s is SandwichResult => !!s);
+    )
+      .filter((s): s is SandwichResult => !!s)
+      .map(adjustForDroppedPieces)
+      .filter((s): s is SandwichResult => !!s);
     refined.sort((a, b) => a.score - b.score);
 
     sandwiches.push(...refined);
@@ -61,7 +66,10 @@ export const makeSandwichesForPowers = async (
   // console.debug(expectedSuccessfulTargets);
   let sandwiches = (
     await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
-  ).filter((s): s is SandwichResult => !!s);
+  )
+    .filter((s): s is SandwichResult => !!s)
+    .map(adjustForDroppedPieces)
+    .filter((s): s is SandwichResult => !!s);
 
   if (sandwiches.length === 0) return [];
 
@@ -92,22 +100,18 @@ export const makeSandwichesForPowers = async (
 
   return sandwiches.map((result) => ({
     ...result,
-    powers: getPowersForIngredients(result.fillings.concat(result.condiments)),
+    powers: getPowersForIngredients(
+      result.fillings.concat(result.condiments),
+      combineDrops(result.requiredPieceDrops, result.optionalPieceDrops),
+    ),
   }));
-};
-
-export type SandwichResult = {
-  score: number;
-  fillings: Ingredient[];
-  condiments: Ingredient[];
-  model: Model;
-  target: Target;
 };
 
 const makeSandwichForTarget = async (
   target: Target,
   multiplayer = false,
 ): Promise<SandwichResult | null> => {
+  const maxFillings = multiplayer ? 12 : 6;
   const model = getModel({ multiplayer, target });
 
   const solution = await solve(model);
@@ -117,16 +121,36 @@ const makeSandwichForTarget = async (
 
   const fillings: Ingredient[] = [];
   const condiments: Ingredient[] = [];
+  const pieceDrops: Record<string, number> = {};
 
   Object.entries(solution.variables).forEach(([id, count]) => {
     const ingredient = ingredients.find((i) => i.id === id);
     if (!ingredient) return;
     if (ingredient.ingredientType === 'filling') {
-      [...Array(count).keys()].forEach(() => fillings.push(ingredient));
+      const inventoryCount = Math.ceil(count / ingredient.pieces);
+      const piecesMod = count % ingredient.pieces;
+      if (piecesMod > 0) {
+        pieceDrops[ingredient.id] = ingredient.pieces - piecesMod;
+      }
+      [...Array(inventoryCount).keys()].forEach(() =>
+        fillings.push(ingredient),
+      );
     } else {
       [...Array(count).keys()].forEach(() => condiments.push(ingredient));
     }
   });
 
-  return { fillings, condiments, score, model, target };
+  if (fillings.length > maxFillings) {
+    return null;
+  }
+
+  return {
+    fillings,
+    condiments,
+    score,
+    model,
+    requiredPieceDrops: pieceDrops,
+    optionalPieceDrops: {},
+    target,
+  };
 };

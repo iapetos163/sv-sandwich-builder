@@ -25,9 +25,8 @@ export interface Ingredient {
 export interface Sandwich {
   fillings: Ingredient[];
   condiments: Ingredient[];
-  // mealPowerBoosts: number[];
-  // typeBoosts: number[];
-  // flavorBoosts: number[];
+  optionalPieceDrops: Record<string, number>;
+  requiredPieceDrops: Record<string, number>;
   powers: ResultPower[];
   score: number;
 }
@@ -63,7 +62,7 @@ export type LinearConstraints = {
     typeDiff105: Constraint[][];
   };
   coefficientSets: {
-    fillings: Record<string, number>;
+    fillingsTimes12: Record<string, number>;
     condiments: Record<string, number>;
     herba: Record<string, number>;
     typeValues: Record<string, number>[];

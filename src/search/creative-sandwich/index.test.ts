@@ -1,6 +1,7 @@
 import { MealPower, TypeIndex } from '@/enum';
 import { getPowersForIngredients, powerSetsMatch } from '@/mechanics';
 import { getSandwichKey } from '@/strings';
+import { combineDrops } from './pieces';
 import { makeSandwichesForPowers } from '.';
 
 describe('makeSandwichForPower', () => {
@@ -18,7 +19,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -48,7 +52,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -79,7 +86,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -104,7 +114,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -125,13 +138,21 @@ describe('makeSandwichForPower', () => {
     expect(sandwiches.length).toBeGreaterThanOrEqual(1);
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
-    expect(ingredients.length).toBeLessThanOrEqual(7);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
+
+    const numFillingPieces = sandwich.fillings.reduce(
+      (sum, ing) => sum + ing.pieces,
+      0,
+    );
+    expect(numFillingPieces).toBeLessThan(13);
   });
 
   it('Produces a sandwich with Lv 2 Exp Dark', async () => {
@@ -149,7 +170,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -174,7 +198,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -206,7 +233,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -231,14 +261,19 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
 
-    const numFillings = sandwich.fillings.length;
-
-    expect(numFillings).toBeLessThanOrEqual(5);
+    const numFillingPieces = sandwich.fillings.reduce(
+      (sum, ing) => sum + ing.pieces,
+      0,
+    );
+    expect(numFillingPieces).toBeLessThan(13);
   });
 
   it('Produces a sandwich with Lv 2 Teensy Fighting', async () => {
@@ -256,7 +291,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -277,7 +315,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -298,7 +339,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -320,7 +364,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -341,7 +388,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -362,7 +412,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -389,19 +442,23 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
 
-    const numIngredients = ingredients.length;
-    const numFillings = sandwich.fillings.length;
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
 
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numFillings).toBeLessThanOrEqual(4);
-    // Can do it in 6
-    expect(numIngredients).toBeLessThanOrEqual(7);
+
+    const numFillingPieces = sandwich.fillings.reduce(
+      (sum, ing) => sum + ing.pieces,
+      0,
+    );
+    expect(numFillingPieces).toBeLessThan(12);
   });
 
   it('Produces a sandwich with Lv 3 Humungo Poison', async () => {
@@ -419,7 +476,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -447,7 +507,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -474,19 +537,22 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
 
-    const numIngredients = ingredients.length;
-    const numFillings = sandwich.fillings.length;
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
-
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numFillings).toBeLessThanOrEqual(4);
-    // You can do it in 7 but the algo has a hard time so i'll give it leeway
-    expect(numIngredients).toBeLessThanOrEqual(8);
+
+    const numFillingPieces = sandwich.fillings.reduce(
+      (sum, ing) => sum + ing.pieces,
+      0,
+    );
+    expect(numFillingPieces).toBeLessThan(12);
   });
 
   it('Produces a sandwich with Lv 3 Teensy Steel', async () => {
@@ -504,18 +570,22 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
 
-    const numIngredients = ingredients.length;
-    const numFillings = sandwich.fillings.length;
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
-
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numFillings).toBeLessThanOrEqual(4);
-    expect(numIngredients).toBeLessThanOrEqual(6);
+
+    const numFillingPieces = sandwich.fillings.reduce(
+      (sum, ing) => sum + ing.pieces,
+      0,
+    );
+    expect(numFillingPieces).toBeLessThan(12);
   });
   it('Produces a sandwich with Lv 3 Catch Water', async () => {
     const targetPowers = [
@@ -532,18 +602,22 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
 
-    const numIngredients = ingredients.length;
-    const numFillings = sandwich.fillings.length;
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
-
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numFillings).toBeLessThanOrEqual(4);
-    expect(numIngredients).toBeLessThanOrEqual(7);
+
+    const numFillingPieces = sandwich.fillings.reduce(
+      (sum, ing) => sum + ing.pieces,
+      0,
+    );
+    expect(numFillingPieces).toBeLessThan(8);
   });
 
   it('Produces a sandwich with Lv 3 Egg', async () => {
@@ -561,18 +635,22 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
 
-    const numIngredients = ingredients.length;
-    const numFillings = sandwich.fillings.length;
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
-
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numFillings).toBeLessThanOrEqual(4);
-    expect(numIngredients).toBeLessThanOrEqual(6);
+
+    const numFillingPieces = sandwich.fillings.reduce(
+      (sum, ing) => sum + ing.pieces,
+      0,
+    );
+    expect(numFillingPieces).toBeLessThan(12);
   });
   it('Produces a sandwich with Lv 3 Encounter Bug', async () => {
     const targetPowers = [
@@ -589,18 +667,22 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
 
-    const numIngredients = ingredients.length;
-    const numFillings = sandwich.fillings.length;
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
-
     expect(numHerba).toBeLessThanOrEqual(1);
-    expect(numFillings).toBeLessThanOrEqual(4);
-    expect(numIngredients).toBeLessThanOrEqual(6);
+
+    const numFillingPieces = sandwich.fillings.reduce(
+      (sum, ing) => sum + ing.pieces,
+      0,
+    );
+    expect(numFillingPieces).toBeLessThan(10);
   });
 
   it('Produces a sandwich with Lv 1 Egg and Lv 2 Catch Dark', async () => {
@@ -625,7 +707,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -669,7 +754,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -706,7 +794,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -742,7 +833,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -776,7 +870,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -808,7 +905,10 @@ describe('makeSandwichForPower', () => {
     const sandwich = sandwiches[0];
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -867,7 +967,10 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -899,28 +1002,32 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
   });
 
-  it('Excludes supersets', async () => {
-    const targetPowers = [
-      {
-        mealPower: MealPower.EGG,
-        type: TypeIndex.NORMAL,
-        level: 2,
-      },
-    ];
-    const sandwiches = await makeSandwichesForPowers(targetPowers);
+  // FIXME expected result no longer applies
+  // it('Excludes supersets', async () => {
+  //   const targetPowers = [
+  //     {
+  //       mealPower: MealPower.EGG,
+  //       type: TypeIndex.NORMAL,
+  //       level: 2,
+  //     },
+  //   ];
+  //   const sandwiches = await makeSandwichesForPowers(targetPowers);
 
-    const sandwichKeys = sandwiches.map((s) =>
-      getSandwichKey(s.fillings, s.condiments),
-    );
-    expect(sandwichKeys).toContain('egg_egg_egg_egg_rice_whcrm_whcrm');
-    expect(sandwichKeys).not.toContain('egg_egg_egg_egg_rice_mmld_whcrm_whcrm');
-  });
+  //   const sandwichKeys = sandwiches.map((s) =>
+  //     getSandwichKey(s.fillings, s.condiments),
+  //   );
+  //   expect(sandwichKeys).toContain('egg_egg_egg_egg_rice_whcrm_whcrm');
+  //   expect(sandwichKeys).not.toContain('egg_egg_egg_egg_rice_mmld_whcrm_whcrm');
+  // });
 
   it('Includes "Any Herba Mystica" when sparkling power is requested', async () => {
     const targetPowers = [
@@ -938,7 +1045,10 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -966,7 +1076,10 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -999,7 +1112,10 @@ describe('makeSandwichForPower', () => {
     const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
     const correctResult = powerSetsMatch(
-      getPowersForIngredients(ingredients),
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1009,6 +1125,69 @@ describe('makeSandwichForPower', () => {
 
     const anyHerba = herba.find((hm) => hm.id === 'hmany');
     expect(anyHerba).not.toBeDefined();
+  });
+
+  it('Produces a sandwich for Lv 1 Encounter Normal and Lv 1 Exp Normal', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.NORMAL,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.NORMAL,
+        level: 1,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+  });
+
+  it('Does not exceed 6 different fillings in single-player', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.NORMAL,
+        level: 1,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.NORMAL,
+        level: 1,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    sandwiches.forEach((sandwich) => {
+      const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+      const correctResult = powerSetsMatch(
+        getPowersForIngredients(
+          ingredients,
+          combineDrops(
+            sandwich.optionalPieceDrops,
+            sandwich.requiredPieceDrops,
+          ),
+        ),
+        targetPowers,
+      );
+      expect(correctResult).toBe(true);
+
+      expect(sandwich.fillings.length).toBeLessThanOrEqual(6);
+    });
   });
 
   // it('Produces a sandwich with Lv 2 mp t', async () => {
@@ -1028,7 +1207,7 @@ describe('makeSandwichForPower', () => {
   //   console.debug(`${ingredients.map((i) => i.id).join(' ')}`);
 
   //   const correctResult = powerSetsMatch(
-  //     getPowersForIngredients(ingredients),
+  //     getPowersForIngredients(ingredients, combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),),
   //     targetPowers,
   //   );
   //   expect(correctResult).toBe(true);

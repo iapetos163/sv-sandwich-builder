@@ -8,7 +8,10 @@ const main = async () => {
   for (const recipe of recipes) {
     const recipeIngredients = [...recipe.fillings, ...recipe.condiments];
 
-    const powers = getPowersForIngredients(recipeIngredients) as TargetPower[];
+    const powers = getPowersForIngredients(
+      recipeIngredients,
+      {},
+    ) as TargetPower[];
 
     const builtSandwiches = await makeSandwichesForPowers(powers);
     if (builtSandwiches.length === 0) {

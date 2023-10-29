@@ -6,7 +6,7 @@ const getPiecesConstraints = (ingredients: Ingredient[], limit: number) =>
     .filter((i) => i.pieces > 2)
     .map((i) => ({
       coefficients: { [i.id]: 1 },
-      upperBound: Math.floor(limit / i.pieces),
+      upperBound: limit,
     }));
 
 export const generateLinearConstraints = (
@@ -118,11 +118,10 @@ export const generateLinearConstraints = (
     ),
   },
   coefficientSets: {
-    fillings: Object.fromEntries(
+    fillingsTimes12: Object.fromEntries(
       ingredients
         .filter((i) => i.ingredientType === 'filling')
-        .map((i) => i.id)
-        .map((n) => [n, 1]),
+        .map((i) => [i.id, 12 / i.pieces]),
     ),
     condiments: Object.fromEntries(
       ingredients

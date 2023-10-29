@@ -8,14 +8,14 @@ describe('getPowersForIngredients', () => {
     const tomato = ingredients.find((i) => i.id === 'chtom')!;
     const butter = ingredients.find((i) => i.id === 'but')!;
     const sandwichIngredients = [tomato, tomato, tomato, tomato, butter];
-    const res = getPowersForIngredients(sandwichIngredients);
+    const res = getPowersForIngredients(sandwichIngredients, {});
     expect(res).toHaveLength(3);
   });
 
   it('returns a power without specified meal power when hmany is present', () => {
     const tomato = ingredients.find((i) => i.id === 'chtom')!;
     const hmany = ingredients.find((i) => i.id === 'hmany')!;
-    const res = getPowersForIngredients([tomato, hmany]);
+    const res = getPowersForIngredients([tomato, hmany], {});
 
     const nonHerbaPowers = res.filter(
       (p) => p.mealPower === undefined || !isHerbaMealPower(p.mealPower),
@@ -30,7 +30,7 @@ describe('getPowersForIngredients', () => {
     const pb = ingredients.find((i) => i.id === 'pbtr')!;
     const pickle = ingredients.find((i) => i.id === 'pkl')!;
 
-    const res = getPowersForIngredients([pickle, pb]);
+    const res = getPowersForIngredients([pickle, pb], {});
 
     const eggPower = res.find((p) => p.mealPower === MealPower.EGG);
     expect(eggPower).toBeDefined();

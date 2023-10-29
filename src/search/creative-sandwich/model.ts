@@ -170,8 +170,8 @@ export const getModel = ({
         coefficients: lc.coefficientSets.herba,
       },
       {
-        coefficients: lc.coefficientSets.fillings,
-        upperBound: multiplayer ? 12 : 6,
+        coefficients: lc.coefficientSets.fillingsTimes12,
+        upperBound: multiplayer ? 144 : 72,
         lowerBound: 1,
       },
       {

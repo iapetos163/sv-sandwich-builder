@@ -82,9 +82,9 @@ export const getOptimalTypes = async (
           coefficients: lc.coefficientSets.herba,
         },
         {
-          coefficients: lc.coefficientSets.fillings,
-          upperBound: 6,
-          lowerBound: 1,
+          coefficients: lc.coefficientSets.fillingsTimes12,
+          upperBound: 72,
+          lowerBound: 12,
         },
         {
           coefficients: lc.coefficientSets.condiments,

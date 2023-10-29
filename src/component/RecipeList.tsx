@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { useMemo } from 'react';
 import { ingredientNamesById, ingredients } from '@/data';
 import { Ingredient } from '@/types';
@@ -31,10 +32,21 @@ const ingredientCountReducer = (
 interface RecipeListProps {
   fillings: Ingredient[];
   condiments: Ingredient[];
+  optionalPieceDrops?: Record<string, number>;
+  requiredPieceDrops?: Record<string, number>;
   className?: string;
 }
 
-const RecipeList = ({ fillings, condiments, className }: RecipeListProps) => {
+const piecesCopy = (numPieces: number) =>
+  `${numPieces} piece${numPieces > 1 ? 's' : ''}`;
+
+const RecipeList = ({
+  fillings,
+  condiments,
+  optionalPieceDrops = {},
+  requiredPieceDrops = {},
+  className,
+}: RecipeListProps) => {
   const fillingCounts = useMemo(() => {
     const counts = fillings.reduce(ingredientCountReducer, {});
     return sortIngredientCounts(counts);
@@ -53,7 +65,19 @@ const RecipeList = ({ fillings, condiments, className }: RecipeListProps) => {
           <div>
             <img className={s.icon} src={`assets/${imagePath}`} />
           </div>
-          <div>{name}</div>
+          <div>
+            <div>{name}</div>
+            {!!requiredPieceDrops[id] && (
+              <div className={classNames(s.pieceDrops, s.required)}>
+                MUST drop {piecesCopy(requiredPieceDrops[id])}
+              </div>
+            )}
+            {!!optionalPieceDrops[id] && (
+              <div className={s.pieceDrops}>
+                OK to drop {piecesCopy(optionalPieceDrops[id])}
+              </div>
+            )}
+          </div>
         </div>
       ))}
       {condimentCounts.map(({ id, name, count, imagePath }) => (

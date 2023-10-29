@@ -8,7 +8,7 @@
 }
 
 .count {
-  color: #7ba06e;
+  color: var(--color-green);
   font-weight: 600;
 }
 
@@ -16,4 +16,14 @@
   background-color: var(--color-bg-light);
   border: 2px solid var(--color-bright-green);
   border-radius: 10px;
+}
+
+.pieceDrops {
+  color: var(--color-green);
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.required {
+  color: var(--color-scarlet);
 }

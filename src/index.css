@@ -7,6 +7,8 @@ body {
   --color-dark-gray: #1d261a;
   --color-bg-light: #f3f1e0;
   --color-bright-green: #bdf7ab;
+  --color-green: #7ba06e;
+  --color-scarlet: #db280b;
 }
 
 header {
@@ -24,7 +26,7 @@ header h2 {
 }
 
 #title-tag {
-  color: #db280b;
+  color: var(--color-scarlet);
   text-transform: uppercase;
   position: absolute;
   bottom: -0.6em;
