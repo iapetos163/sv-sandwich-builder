@@ -45,7 +45,7 @@ const ResultSet = ({ resultState, results }: ResultSetProps) => {
         slidesPerView: 1.5,
       },
     };
-    swiper.loop = true;
+    swiper.loop = results.length >= 4;
     swiper.centeredSlides = true;
     swiper.slideToClickedSlide = true;
     swiper.slideNextClass = s.slideInactive;
