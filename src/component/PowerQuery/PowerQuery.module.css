@@ -15,8 +15,8 @@
 }
 
 .optionsContainer {
-  margin: 10px 0;
-  font-size: 0.9em;
+  margin: 20px 0 10px;
+  display: flex;
 }
 
 .optionsContainer > * {
@@ -25,4 +25,11 @@
 
 .optionsContainer label {
   user-select: none;
+  font-size: 0.9em;
+  display: inline-flex;
+  align-items: center;
+}
+
+.optionsContainer input {
+  margin-right: 5px;
 }

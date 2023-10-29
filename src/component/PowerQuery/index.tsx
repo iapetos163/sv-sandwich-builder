@@ -166,6 +166,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
         <div className={styles.optionsContainer}>
           <div className={styles.heading}>Options</div>
           <div>
+          <div>
             <label>
               <input
                 type="checkbox"
@@ -194,6 +195,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               ></input>{' '}
               Creative mode sandwiches
             </label>
+            </div>
           </div>
         </div>
         <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
