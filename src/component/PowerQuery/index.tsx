@@ -113,7 +113,12 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
         thirdQueryPower,
       ].filter((p): p is TargetPower => !!p);
       if (powers.length > 0)
-        onSubmit(powers, { includeMeals, includeRecipes, includeCreative });
+        onSubmit(powers, {
+          includeMeals,
+          includeRecipes,
+          includeCreative,
+          multiplayer,
+        });
     },
     [
       firstQueryPower,
@@ -123,6 +128,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
       includeMeals,
       includeRecipes,
       includeCreative,
+      multiplayer,
     ],
   );
   return (
