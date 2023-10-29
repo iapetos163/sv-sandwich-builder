@@ -55,6 +55,116 @@ export const getTargetConfigs = (
 
   const repeatedType = getRepeatedType(targetPowers);
   const hasSameTypes = repeatedType !== null;
+  const allSameType = targetPowers.every(
+    (tp) => mealPowerHasType(tp.mealPower) && tp.type === repeatedType,
+  );
+
+  const hasTitlePower = targetPowers.find(
+    (tp) => tp.mealPower === MealPower.TITLE,
+  );
+
+  if (
+    targetNumHerba >= 1 &&
+    allSameType &&
+    targetPowers.length >= 2 &&
+    (targetPowers.length >= 3 || !hasTitlePower)
+  ) {
+    const c = {
+      typeAllocation: 'ONE_ONE_ONE',
+      firstTypeGt: 480,
+    } as const;
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 1 }];
+      }
+      return [
+        { ...c, typePlaceIndex: 0, mpPlaceIndex: 2 },
+        { ...c, typePlaceIndex: 0, mpPlaceIndex: 3 },
+      ];
+    });
+  }
+
+  const hasDifferentTypes = targetPowers.some(
+    (tp) => mealPowerHasType(tp.mealPower) && tp.type !== repeatedType,
+  );
+
+  const lv3s = targetPowers.filter((tp) => tp.level >= 2);
+
+  if (
+    targetNumHerba >= 1 &&
+    lv3s.length >= 2 &&
+    (!hasTitlePower || lv3s.length >= 3) &&
+    hasDifferentTypes
+  ) {
+    const c = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeLte: 480,
+      thirdTypeGte: 380,
+    } as const;
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 1 }];
+      }
+      if (mealPowerHasType(tp.mealPower) && tp.type !== repeatedType) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 3 }];
+      }
+      return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 2 }];
+    });
+  }
+
+  if (targetNumHerba >= 1 && lv3s.length >= 1 && hasDifferentTypes) {
+    const c = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeLte: 480,
+      firstTypeGte: 380,
+    } as const;
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 1 }];
+      }
+
+      if (mealPowerHasType(tp.mealPower) && tp.type !== repeatedType) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 3 }];
+      }
+      return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 2 }];
+    });
+  }
+
+  if (
+    targetNumHerba >= 1 &&
+    lv3s.length >= 2 &&
+    (!hasTitlePower || lv3s.length >= 3)
+  ) {
+    const c = {
+      typeAllocation: 'ONE_ONE_THREE',
+      thirdTypeGte: 380,
+    } as const;
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 1 }];
+      }
+      return [
+        { ...c, typePlaceIndex: 0, mpPlaceIndex: 2 },
+        { ...c, typePlaceIndex: 0, mpPlaceIndex: 3 },
+      ];
+    });
+  }
+
+  if (targetNumHerba >= 1 && lv3s.length >= 1) {
+    const c = {
+      typeAllocation: 'ONE_ONE_THREE',
+      firstTypeGte: 380,
+    } as const;
+    return targetPowers.map((tp): TargetConfig[] => {
+      if (tp.mealPower === MealPower.TITLE) {
+        return [{ ...c, typePlaceIndex: 0, mpPlaceIndex: 1 }];
+      }
+      return [
+        { ...c, typePlaceIndex: 0, mpPlaceIndex: 2 },
+        { ...c, typePlaceIndex: 0, mpPlaceIndex: 3 },
+      ];
+    });
+  }
 
   const lv2s = targetPowers.filter((tp) => tp.level >= 2);
 
@@ -87,10 +197,6 @@ export const getTargetConfigs = (
       return [{ ...c, typePlaceIndex: 2, mpPlaceIndex: 3 }];
     });
   }
-
-  const hasTitlePower = targetPowers.find(
-    (tp) => tp.mealPower === MealPower.TITLE,
-  );
 
   if (targetNumHerba >= 1 && hasTitlePower && lv2s.length >= 3) {
     const oneOneThree = {
