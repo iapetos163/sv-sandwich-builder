@@ -1,5 +1,6 @@
 import { ingredients } from '@/data';
 // import { Flavor, MealPower, TypeIndex } from '@/enum';
+import { Flavor } from '@/enum';
 import { solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, TargetPower, Sandwich } from '@/types';
@@ -47,8 +48,9 @@ const filterSandwichResults = async (
 
 export const makeSandwichesForPowers = async (
   targetPowers: TargetPower[],
+  multiplayer = false,
 ): Promise<Sandwich[]> => {
-  if (!requestedPowersValid(targetPowers)) {
+  if (!requestedPowersValid(targetPowers, multiplayer)) {
     return [];
   }
 
@@ -65,7 +67,9 @@ export const makeSandwichesForPowers = async (
   // );
   // console.debug(expectedSuccessfulTargets);
   let sandwiches = (
-    await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
+    await Promise.all(
+      targets.map((target) => makeSandwichForTarget(target, multiplayer)),
+    )
   )
     .filter((s): s is SandwichResult => !!s)
     .map(adjustForDroppedPieces)

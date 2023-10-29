@@ -12,6 +12,7 @@ export interface QueryOptions {
   includeMeals?: boolean;
   includeRecipes?: boolean;
   includeCreative?: boolean;
+  multiplayer?: boolean;
 }
 
 export interface PowerQueryProps {
@@ -34,6 +35,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const [includeMeals, setIncludeMeals] = useState(true);
   const [includeRecipes, setIncludeRecipes] = useState(true);
   const [includeCreative, setIncludeCreative] = useState(true);
+  const [multiplayer, setMultiplayer] = useState(false);
   const [secondQueryOverride, setSecondQueryOverride] =
     useState<TargetPower | null>(null);
 
@@ -94,6 +96,13 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const toggleCreative = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setIncludeCreative(event.target.checked);
   }, []);
+
+  const toggleMultiplayer = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setMultiplayer(event.target.checked);
+    },
+    [],
+  );
 
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
@@ -166,35 +175,45 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
         <div className={styles.optionsContainer}>
           <div className={styles.heading}>Options</div>
           <div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={includeMeals}
-                onChange={toggleMeals}
-              ></input>{' '}
-              Restaurant meals
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={includeRecipes}
-                onChange={toggleRecipes}
-              ></input>{' '}
-              Sandwich recipes
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={includeCreative}
-                onChange={toggleCreative}
-              ></input>{' '}
-              Creative mode sandwiches
-            </label>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={includeMeals}
+                  onChange={toggleMeals}
+                ></input>{' '}
+                Restaurant meals
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={includeRecipes}
+                  onChange={toggleRecipes}
+                ></input>{' '}
+                Sandwich recipes
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={includeCreative}
+                  onChange={toggleCreative}
+                ></input>{' '}
+                Creative mode sandwiches
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={multiplayer}
+                  onChange={toggleMultiplayer}
+                ></input>{' '}
+                Multiplayer
+              </label>
             </div>
           </div>
         </div>

@@ -52,7 +52,10 @@ function App(): ReactElement {
       if (options.includeCreative) {
         setResultState(ResultState.CALCULATING);
         setTimeout(async () => {
-          const creativeSandwiches = await makeSandwichesForPowers(newQuery);
+          const creativeSandwiches = await makeSandwichesForPowers(
+            newQuery,
+            options.multiplayer,
+          );
           results.push(
             ...creativeSandwiches.map(
               (s): CreativeResult => ({
