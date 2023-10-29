@@ -22,6 +22,7 @@ const SCORE_THRESHOLD = 9;
 const filterSandwichResults = async (
   sandwiches: SandwichResult[],
   limit: number,
+  multiplayer = false,
 ) => {
   sandwiches.sort((a, b) => a.score - b.score);
   sandwiches = sandwiches.slice(0, limit);
@@ -29,7 +30,9 @@ const filterSandwichResults = async (
   if (sandwiches[0].target.arbitraryTypePlaceIndices.length > 0) {
     const targets = refineTarget(sandwiches[0].target);
     const refined = (
-      await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
+      await Promise.all(
+        targets.map((target) => makeSandwichForTarget(target, multiplayer)),
+      )
     )
       .filter((s): s is SandwichResult => !!s)
       .map(adjustForDroppedPieces)
@@ -88,7 +91,7 @@ export const makeSandwichesForPowers = async (
   sandwiches = (
     await Promise.all(
       sandwichesByNumHerba.map((group) =>
-        filterSandwichResults(group, limitPerGroup),
+        filterSandwichResults(group, limitPerGroup, multiplayer),
       ),
     )
   ).flatMap((g) => g);
