@@ -1,5 +1,9 @@
 import { MealPower, TypeIndex } from '../../../enum';
-import { getRepeatedType, mealPowerHasType } from '../../../mechanics';
+import {
+  getRepeatedType,
+  mealPowerHasType,
+  powersEqual,
+} from '../../../mechanics';
 import { TargetPower } from '../../../types';
 
 export type TypeAllocation =
@@ -84,9 +88,11 @@ export const getTargetConfigs = (
     });
   }
 
-  const hasDifferentTypes = targetPowers.some(
-    (tp) => mealPowerHasType(tp.mealPower) && tp.type !== repeatedType,
-  );
+  const hasDifferentTypes =
+    targetPowers.length > 1 &&
+    targetPowers.some(
+      (tp) => mealPowerHasType(tp.mealPower) && tp.type !== repeatedType,
+    );
 
   const lv3s = targetPowers.filter((tp) => tp.level >= 3);
 
