@@ -1190,6 +1190,66 @@ describe('makeSandwichForPower', () => {
     });
   });
 
+  it('Produces a sandwich with Lv 3 Encounter Bug and Lv 3 Humungo Bug with multiplayer enabled', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.BUG,
+        level: 3,
+      },
+      {
+        mealPower: MealPower.HUMUNGO,
+        type: TypeIndex.BUG,
+        level: 3,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers, true);
+
+    // chrz chrz ptsld ptsld ptsld ptsld ptsld crmch crmch crmch hmslt
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+  });
+
+  it('Produces a sandwich with Lv 3 Exp Grass and Lv 2 Humungo Grass with multiplayer enabled', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.GRASS,
+        level: 3,
+      },
+      {
+        mealPower: MealPower.HUMUNGO,
+        type: TypeIndex.GRASS,
+        level: 2,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers, true);
+
+    // 8x rice bsl bsl chili oil hmslt
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+  });
+
   // it('Produces a sandwich with Lv 2 mp t', async () => {
   //   const targetPowers = [
   //     {

@@ -50,6 +50,35 @@ describe('getTargetConfigs', () => {
       res[0].find((tc) => tc.typeAllocation === 'ONE_THREE_TWO'),
     ).not.toBeDefined();
   });
+
+  it('yields results for Lv 3 Encounter Bug and Lv 3 Humungo Bug and 1 HM', () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.BUG,
+        level: 3,
+      },
+      {
+        mealPower: MealPower.HUMUNGO,
+        type: TypeIndex.BUG,
+        level: 3,
+      },
+    ];
+    const res = getTargetConfigs(targetPowers, 1);
+    expect(res.length).toBeGreaterThan(0);
+  });
+
+  it('yields flexible results for Lv 3 Exp Ice and 1 HM', () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.EXP,
+        type: TypeIndex.ICE,
+        level: 3,
+      },
+    ];
+    const res = getTargetConfigs(targetPowers, 1);
+    expect(res[0].length).toBeGreaterThan(1);
+  });
 });
 
 describe('permutePowerConfigs', () => {

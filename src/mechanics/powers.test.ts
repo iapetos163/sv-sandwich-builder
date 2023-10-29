@@ -130,4 +130,51 @@ describe('requestedPowersValid', () => {
 
     expect(res).toBe(true);
   });
+
+  it('Returns false for Lv 3 Title Bug, Lv 3 Encounter Bug, and Lv 3 Humungo Bug in single player', () => {
+    const res = requestedPowersValid([
+      {
+        mealPower: MealPower.TITLE,
+        type: TypeIndex.BUG,
+        level: 3,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.BUG,
+        level: 3,
+      },
+      {
+        mealPower: MealPower.HUMUNGO,
+        type: TypeIndex.BUG,
+        level: 3,
+      },
+    ]);
+
+    expect(res).toBe(false);
+  });
+
+  it('Returns true for Lv 3 Title Bug, Lv 3 Encounter Bug, and Lv 3 Humungo Bug in multiplayer', () => {
+    const res = requestedPowersValid(
+      [
+        {
+          mealPower: MealPower.TITLE,
+          type: TypeIndex.BUG,
+          level: 3,
+        },
+        {
+          mealPower: MealPower.ENCOUNTER,
+          type: TypeIndex.BUG,
+          level: 3,
+        },
+        {
+          mealPower: MealPower.HUMUNGO,
+          type: TypeIndex.BUG,
+          level: 3,
+        },
+      ],
+      true,
+    );
+
+    expect(res).toBe(true);
+  });
 });

@@ -126,7 +126,10 @@ export const getRepeatedType = (powers: TargetPower[]): TypeIndex | null => {
     : typedPowers[1].type;
 };
 
-export const requestedPowersValid = (powers: TargetPower[]) => {
+export const requestedPowersValid = (
+  powers: TargetPower[],
+  multiplayer = false,
+) => {
   if (getUniqueMealPowers(powers).length < powers.length) {
     return false;
   }
@@ -139,13 +142,22 @@ export const requestedPowersValid = (powers: TargetPower[]) => {
     return false;
   }
 
-  if (!sparkling && uniqueTypes.length === 1 && typedPowers.length >= 3) {
+  if (
+    !sparkling &&
+    uniqueTypes.length === 1 &&
+    typedPowers.length >= 3 &&
+    !multiplayer
+  ) {
     return false;
   }
 
   const title = powers.find((p) => p.mealPower === MealPower.TITLE);
 
   if (sparkling && !title && powers.length >= 3) {
+    return false;
+  }
+
+  if (!title && uniqueTypes.length === 1 && typedPowers.length >= 3) {
     return false;
   }
 

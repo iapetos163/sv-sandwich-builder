@@ -1,5 +1,6 @@
 import { ingredients } from '@/data';
 // import { Flavor, MealPower, TypeIndex } from '@/enum';
+import { Flavor } from '@/enum';
 import { solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, TargetPower, Sandwich } from '@/types';
@@ -21,6 +22,7 @@ const SCORE_THRESHOLD = 9;
 const filterSandwichResults = async (
   sandwiches: SandwichResult[],
   limit: number,
+  multiplayer = false,
 ) => {
   sandwiches.sort((a, b) => a.score - b.score);
   sandwiches = sandwiches.slice(0, limit);
@@ -28,7 +30,9 @@ const filterSandwichResults = async (
   if (sandwiches[0].target.arbitraryTypePlaceIndices.length > 0) {
     const targets = refineTarget(sandwiches[0].target);
     const refined = (
-      await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
+      await Promise.all(
+        targets.map((target) => makeSandwichForTarget(target, multiplayer)),
+      )
     )
       .filter((s): s is SandwichResult => !!s)
       .map(adjustForDroppedPieces)
@@ -47,8 +51,9 @@ const filterSandwichResults = async (
 
 export const makeSandwichesForPowers = async (
   targetPowers: TargetPower[],
+  multiplayer = false,
 ): Promise<Sandwich[]> => {
-  if (!requestedPowersValid(targetPowers)) {
+  if (!requestedPowersValid(targetPowers, multiplayer)) {
     return [];
   }
 
@@ -65,7 +70,9 @@ export const makeSandwichesForPowers = async (
   // );
   // console.debug(expectedSuccessfulTargets);
   let sandwiches = (
-    await Promise.all(targets.map((target) => makeSandwichForTarget(target)))
+    await Promise.all(
+      targets.map((target) => makeSandwichForTarget(target, multiplayer)),
+    )
   )
     .filter((s): s is SandwichResult => !!s)
     .map(adjustForDroppedPieces)
@@ -84,7 +91,7 @@ export const makeSandwichesForPowers = async (
   sandwiches = (
     await Promise.all(
       sandwichesByNumHerba.map((group) =>
-        filterSandwichResults(group, limitPerGroup),
+        filterSandwichResults(group, limitPerGroup, multiplayer),
       ),
     )
   ).flatMap((g) => g);
