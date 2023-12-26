@@ -5,6 +5,7 @@ import { combineDrops } from './pieces';
 import { makeSandwichesForPowers } from '.';
 
 describe('makeSandwichForPower', () => {
+  // TODO compare
   it('Produces a sandwich with Lv 3 Sparkling Ground', async () => {
     const targetPowers = [
       {
@@ -850,6 +851,7 @@ describe('makeSandwichForPower', () => {
     expect(numIngredients).toBeLessThanOrEqual(7);
   });
 
+  // TODO compare
   it('Produces a sandwich with Lv 3 Sparkling Ice and Lv 3 Exp Ice', async () => {
     const targetPowers = [
       {
@@ -918,6 +920,7 @@ describe('makeSandwichForPower', () => {
     expect(numHerba).toBe(0);
   });
 
+  // TODO compare
   // The optimal sandwich for these powers is easier than #44 Avocado Sandwich
   it('Does NOT naively produce #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catch Dark', async () => {
     const sandwiches = await makeSandwichesForPowers([
