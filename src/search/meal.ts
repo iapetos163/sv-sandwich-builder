@@ -9,7 +9,15 @@ export const getMealsForPowers = (targetPowers: TargetPower[]) => {
     powerSetsMatch(meal.powers, targetPowers),
   );
 
-  matchingMeals.sort((a, b) => a.cost - b.cost);
+  matchingMeals.sort((a, b) => {
+    if (a.currency !== 'bp' && b.currency === 'bp') {
+      return -1;
+    }
+    if (a.currency === 'bp' && b.currency !== 'bp') {
+      return 1;
+    }
+    return a.cost - b.cost;
+  });
 
   type Accum = { meals: Meal[]; covered: { [town: string]: true } };
   // Different meals that cover as many towns as possible
