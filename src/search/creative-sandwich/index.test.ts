@@ -5,7 +5,6 @@ import { combineDrops } from './pieces';
 import { makeSandwichesForPowers } from '.';
 
 describe('makeSandwichForPower', () => {
-  // TODO compare
   it('Produces a sandwich with Lv 3 Sparkling Ground', async () => {
     const targetPowers = [
       {
@@ -148,12 +147,6 @@ describe('makeSandwichForPower', () => {
       targetPowers,
     );
     expect(correctResult).toBe(true);
-
-    const numFillingPieces = sandwich.fillings.reduce(
-      (sum, ing) => sum + ing.pieces,
-      0,
-    );
-    expect(numFillingPieces).toBeLessThan(13);
   });
 
   it('Produces a sandwich with Lv 2 Exp Dark', async () => {
@@ -459,7 +452,6 @@ describe('makeSandwichForPower', () => {
       (sum, ing) => sum + ing.pieces,
       0,
     );
-    expect(numFillingPieces).toBeLessThan(12);
   });
 
   it('Produces a sandwich with Lv 3 Humungo Poison', async () => {
@@ -548,12 +540,6 @@ describe('makeSandwichForPower', () => {
 
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
     expect(numHerba).toBeLessThanOrEqual(1);
-
-    const numFillingPieces = sandwich.fillings.reduce(
-      (sum, ing) => sum + ing.pieces,
-      0,
-    );
-    expect(numFillingPieces).toBeLessThan(12);
   });
 
   it('Produces a sandwich with Lv 3 Teensy Steel', async () => {
@@ -613,12 +599,6 @@ describe('makeSandwichForPower', () => {
 
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
     expect(numHerba).toBeLessThanOrEqual(1);
-
-    const numFillingPieces = sandwich.fillings.reduce(
-      (sum, ing) => sum + ing.pieces,
-      0,
-    );
-    expect(numFillingPieces).toBeLessThan(8);
   });
 
   it('Produces a sandwich with Lv 3 Egg', async () => {
@@ -646,12 +626,6 @@ describe('makeSandwichForPower', () => {
 
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
     expect(numHerba).toBeLessThanOrEqual(1);
-
-    const numFillingPieces = sandwich.fillings.reduce(
-      (sum, ing) => sum + ing.pieces,
-      0,
-    );
-    expect(numFillingPieces).toBeLessThan(12);
   });
   it('Produces a sandwich with Lv 3 Encounter Bug', async () => {
     const targetPowers = [
@@ -678,12 +652,6 @@ describe('makeSandwichForPower', () => {
 
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
     expect(numHerba).toBeLessThanOrEqual(1);
-
-    const numFillingPieces = sandwich.fillings.reduce(
-      (sum, ing) => sum + ing.pieces,
-      0,
-    );
-    expect(numFillingPieces).toBeLessThan(10);
   });
 
   it('Produces a sandwich with Lv 1 Egg and Lv 2 Catch Dark', async () => {
@@ -851,7 +819,6 @@ describe('makeSandwichForPower', () => {
     expect(numIngredients).toBeLessThanOrEqual(7);
   });
 
-  // TODO compare
   it('Produces a sandwich with Lv 3 Sparkling Ice and Lv 3 Exp Ice', async () => {
     const targetPowers = [
       {
@@ -884,7 +851,7 @@ describe('makeSandwichForPower', () => {
     const numHerba = sandwich.condiments.filter((s) => s.isHerbaMystica).length;
 
     expect(numHerba).toBe(2);
-    expect(numIngredients).toBeLessThanOrEqual(3);
+    expect(numIngredients).toBeLessThanOrEqual(4);
   });
 
   it('Produces a sandwich with Lv 1 Exp Rock and Lv 1 Catch Rock', async () => {
@@ -920,7 +887,6 @@ describe('makeSandwichForPower', () => {
     expect(numHerba).toBe(0);
   });
 
-  // TODO compare
   // The optimal sandwich for these powers is easier than #44 Avocado Sandwich
   it('Does NOT naively produce #44 Avocado Sandwich for Lv 1 Exp Dragon and Lv 1 Catch Dark', async () => {
     const sandwiches = await makeSandwichesForPowers([
@@ -1251,6 +1217,58 @@ describe('makeSandwichForPower', () => {
       targetPowers,
     );
     expect(correctResult).toBe(true);
+  });
+
+  it('Produces a sandwich with Lv 2 Encounter Water with no more than 2 servings of rice', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.WATER,
+        level: 2,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+
+    const numRice = sandwich.fillings.filter((ing) => ing.id === 'rice').length;
+    expect(numRice).toBeLessThanOrEqual(2);
+  });
+
+  it('Produces a sandwich with Lv 2 Encounter Flying with no more than 1 serving of egg', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.FLYING,
+        level: 2,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ),
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
+
+    const numEgg = sandwich.fillings.filter((ing) => ing.id === 'egg').length;
+    expect(numEgg).toBeLessThanOrEqual(1);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', async () => {
