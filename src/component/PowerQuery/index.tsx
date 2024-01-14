@@ -9,7 +9,9 @@ const allowedMealPowers = rangeMealPowers.map(() => true);
 const allowedTypes = rangeTypes.map(() => true);
 
 export interface QueryOptions {
-  includeMeals?: boolean;
+  includePaldeaMeals?: boolean;
+  includeKitakamiMeals?: boolean;
+  includeBlueberryMeals?: boolean;
   includeRecipes?: boolean;
   includeCreative?: boolean;
   multiplayer?: boolean;
@@ -35,6 +37,9 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   const [includeMeals, setIncludeMeals] = useState(true);
   const [includeRecipes, setIncludeRecipes] = useState(true);
   const [includeCreative, setIncludeCreative] = useState(true);
+  const [includePaldeaMeals, setIncludePaldeaMeals] = useState(true);
+  const [includeKitakamiMeals, setIncludeKitakamiMeals] = useState(false);
+  const [includeBlueberryMeals, setIncludeBlueberryMeals] = useState(false);
   const [multiplayer, setMultiplayer] = useState(false);
   const [secondQueryOverride, setSecondQueryOverride] =
     useState<TargetPower | null>(null);
@@ -89,6 +94,27 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     setIncludeMeals(event.target.checked);
   }, []);
 
+  const togglePaldeaMeals = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setIncludePaldeaMeals(event.target.checked);
+    },
+    [],
+  );
+
+  const toggleKitakamiMeals = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setIncludeKitakamiMeals(event.target.checked);
+    },
+    [],
+  );
+
+  const toggleBlueberryMeals = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setIncludeBlueberryMeals(event.target.checked);
+    },
+    [],
+  );
+
   const toggleRecipes = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setIncludeRecipes(event.target.checked);
   }, []);
@@ -114,7 +140,9 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
       ].filter((p): p is TargetPower => !!p);
       if (powers.length > 0)
         onSubmit(powers, {
-          includeMeals,
+          includePaldeaMeals: includeMeals && includePaldeaMeals,
+          includeKitakamiMeals: includeMeals && includeKitakamiMeals,
+          includeBlueberryMeals: includeMeals && includeBlueberryMeals,
           includeRecipes,
           includeCreative,
           multiplayer,
@@ -126,6 +154,9 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
       thirdQueryPower,
       onSubmit,
       includeMeals,
+      includePaldeaMeals,
+      includeKitakamiMeals,
+      includeBlueberryMeals,
       includeRecipes,
       includeCreative,
       multiplayer,
@@ -190,6 +221,41 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 ></input>{' '}
                 Restaurant meals
               </label>
+            </div>
+            <div>
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    disabled={!includeMeals}
+                    checked={includePaldeaMeals}
+                    onChange={togglePaldeaMeals}
+                  ></input>{' '}
+                  Paldea
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    disabled={!includeMeals}
+                    checked={includeKitakamiMeals}
+                    onChange={toggleKitakamiMeals}
+                  ></input>{' '}
+                  Kitakami
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    disabled={!includeMeals}
+                    checked={includeBlueberryMeals}
+                    onChange={toggleBlueberryMeals}
+                  ></input>{' '}
+                  Blueberry Academy (cost BP)
+                </label>
+              </div>
             </div>
             <div>
               <label>

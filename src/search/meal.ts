@@ -4,9 +4,36 @@ import { Meal, TargetPower } from '@/types';
 
 const RESULT_LIMIT = 3;
 
-export const getMealsForPowers = (targetPowers: TargetPower[]) => {
-  const matchingMeals = meals.filter((meal) =>
-    powerSetsMatch(meal.powers, targetPowers),
+export interface MealsSearchOptions {
+  excludePaldea?: boolean;
+  kitakami?: boolean;
+  blueberry?: boolean;
+}
+
+const matchesOptions = (meal: Meal, options: MealsSearchOptions) => {
+  const {
+    excludePaldea = false,
+    kitakami = false,
+    blueberry = false,
+  } = options;
+  return (
+    (!excludePaldea ||
+      meal.towns.some(
+        (town) => town === 'Kitakami Hall' || town === 'Blueberry Academy',
+      )) &&
+    (kitakami || meal.towns.some((town) => town !== 'Kitakami Hall')) &&
+    (blueberry || meal.towns.some((town) => town !== 'Blueberry Academy'))
+  );
+};
+
+export const getMealsForPowers = (
+  targetPowers: TargetPower[],
+  options: MealsSearchOptions = {},
+) => {
+  const matchingMeals = meals.filter(
+    (meal) =>
+      matchesOptions(meal, options) &&
+      powerSetsMatch(meal.powers, targetPowers),
   );
 
   matchingMeals.sort((a, b) => {
