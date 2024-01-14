@@ -72,7 +72,7 @@ const ResultSet = ({ resultState, results }: ResultSetProps) => {
   if (results.length === 0)
     return (
       <div className={s.resultsContainer}>
-        Could not create a sandwich with the requested power.
+        Could not create a sandwich with the requested powers.
       </div>
     );
 

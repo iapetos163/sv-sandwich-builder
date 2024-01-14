@@ -1,3 +1,4 @@
+import fillingScores from '@/data/filling-scores.json';
 import { MealPower, rangeFlavors, rangeMealPowers, rangeTypes } from '@/enum';
 import { LinearConstraints, Ingredient } from '@/types';
 
@@ -17,7 +18,9 @@ export const generateLinearConstraints = (
     coefficients: Object.fromEntries(
       ingredients.map((ing) => [
         ing.id,
-        ing.ingredientType === 'filling' ? 5 : 1,
+        ing.ingredientType === 'filling'
+          ? fillingScores[ing.id as keyof typeof fillingScores]
+          : 1,
       ]),
     ),
   },
