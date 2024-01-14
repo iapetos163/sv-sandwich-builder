@@ -1,1 +1,1225 @@
-[{"name":"Zesty Sandwich","shop":"Every Wich Way","towns":["Alfornada","Cortondo","Levincia","Artazon","Medali","Mesagoza","Porto Marinada","Montenevera","Cascarrafa"],"cost":1750,"imageUrl":"https://www.serebii.net/scarletviolet/meals/1.png","imagePath":"meal/1.png","powers":[{"mealPower":7,"type":13,"level":1},{"mealPower":2,"type":1,"level":1},{"mealPower":9,"type":10,"level":1}]},{"name":"Jam Sandwich","shop":"Every Wich Way","towns":["Alfornada","Cortondo","Levincia","Artazon","Medali","Mesagoza","Porto Marinada","Montenevera","Cascarrafa"],"cost":850,"imageUrl":"https://www.serebii.net/scarletviolet/meals/2.png","imagePath":"meal/2.png","powers":[{"mealPower":1,"type":1,"level":1},{"mealPower":3,"type":13,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Tropical Sandwich","shop":"Every Wich Way","towns":["Alfornada","Cortondo","Levincia","Artazon","Medali","Mesagoza","Porto Marinada","Montenevera","Cascarrafa"],"cost":1450,"imageUrl":"https://www.serebii.net/scarletviolet/meals/3.png","imagePath":"meal/3.png","powers":[{"mealPower":0,"type":0,"level":1},{"mealPower":9,"type":1,"level":1},{"mealPower":1,"type":15,"level":1}]},{"name":"Marmalade Sandwich","shop":"Every Wich Way","towns":["Alfornada","Cortondo","Levincia","Artazon","Medali","Mesagoza","Porto Marinada","Montenevera","Cascarrafa"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/4.png","imagePath":"meal/4.png","powers":[{"mealPower":3,"type":1,"level":1},{"mealPower":1,"type":5,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Avocado Sandwich","shop":"Every Wich Way","towns":["Alfornada","Cortondo","Levincia","Artazon","Medali","Mesagoza","Porto Marinada","Montenevera","Cascarrafa"],"cost":1200,"imageUrl":"https://www.serebii.net/scarletviolet/meals/5.png","imagePath":"meal/5.png","powers":[{"mealPower":2,"type":15,"level":1},{"mealPower":9,"type":12,"level":1},{"mealPower":1,"type":16,"level":1}]},{"name":"Paella de Paldea","shop":"Go-For-Broke Grill","towns":["Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":1800,"imageUrl":"https://www.serebii.net/scarletviolet/meals/6.png","imagePath":"meal/6.png","powers":[{"mealPower":7,"type":16,"level":1},{"mealPower":0,"type":0,"level":1},{"mealPower":3,"type":10,"level":1}]},{"name":"Fruit Punch","shop":"Go-For-Broke Grill","towns":["Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/7.png","imagePath":"meal/7.png","powers":[{"mealPower":1,"type":13,"level":1},{"mealPower":9,"type":17,"level":1},{"mealPower":8,"type":10,"level":1}]},{"name":"Escalivada","shop":"Go-For-Broke Grill","towns":["Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":1500,"imageUrl":"https://www.serebii.net/scarletviolet/meals/8.png","imagePath":"meal/8.png","powers":[{"mealPower":4,"type":14,"level":1},{"mealPower":9,"type":15,"level":1},{"mealPower":2,"type":13,"level":1}]},{"name":"Potato Tortilla","shop":"Go-For-Broke Grill","towns":["Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":1600,"imageUrl":"https://www.serebii.net/scarletviolet/meals/9.png","imagePath":"meal/9.png","powers":[{"mealPower":3,"type":3,"level":1},{"mealPower":7,"type":11,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Klawf al Ajillo","shop":"Go-For-Broke Grill","towns":["Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":1500,"imageUrl":"https://www.serebii.net/scarletviolet/meals/10.png","imagePath":"meal/10.png","powers":[{"mealPower":9,"type":12,"level":1},{"mealPower":2,"type":5,"level":1},{"mealPower":4,"type":17,"level":1}]},{"name":"Seafood Pinchos","shop":"Seafood Fresco","towns":["Levincia","Medali","Mesagoza"],"cost":1500,"imageUrl":"https://www.serebii.net/scarletviolet/meals/11.png","imagePath":"meal/11.png","powers":[{"mealPower":9,"type":10,"level":1},{"mealPower":4,"type":16,"level":1},{"mealPower":2,"type":7,"level":1}]},{"name":"Arroz con Leche","shop":"Seafood Fresco","towns":["Levincia","Medali","Mesagoza"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/12.png","imagePath":"meal/12.png","powers":[{"mealPower":3,"type":8,"level":1},{"mealPower":1,"type":11,"level":1},{"mealPower":7,"type":4,"level":1}]},{"name":"Ceviche","shop":"Seafood Fresco","towns":["Levincia","Medali","Mesagoza"],"cost":1300,"imageUrl":"https://www.serebii.net/scarletviolet/meals/13.png","imagePath":"meal/13.png","powers":[{"mealPower":7,"type":6,"level":1},{"mealPower":2,"type":1,"level":1},{"mealPower":3,"type":4,"level":1}]},{"name":"Smoked Fillet with Herbs","shop":"Seafood Fresco","towns":["Levincia","Medali","Mesagoza"],"cost":1400,"imageUrl":"https://www.serebii.net/scarletviolet/meals/14.png","imagePath":"meal/14.png","powers":[{"mealPower":0,"type":0,"level":1},{"mealPower":8,"type":7,"level":1},{"mealPower":2,"type":17,"level":1}]},{"name":"Seafood Pasta","shop":"Seafood Fresco","towns":["Levincia","Medali","Mesagoza"],"cost":1600,"imageUrl":"https://www.serebii.net/scarletviolet/meals/15.png","imagePath":"meal/15.png","powers":[{"mealPower":8,"type":11,"level":1},{"mealPower":3,"type":5,"level":1},{"mealPower":4,"type":2,"level":1}]},{"name":"Four-Piece Sushi (Flower Set)","shop":"Sushi High Roller","towns":["Levincia","Medali"],"cost":2000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/16.png","imagePath":"meal/16.png","powers":[{"mealPower":1,"type":8,"level":1},{"mealPower":2,"type":6,"level":1},{"mealPower":8,"type":15,"level":1}]},{"name":"Four-Piece Sushi (Bird Set)","shop":"Sushi High Roller","towns":["Levincia","Medali"],"cost":2000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/17.png","imagePath":"meal/17.png","powers":[{"mealPower":8,"type":12,"level":1},{"mealPower":1,"type":15,"level":1},{"mealPower":4,"type":11,"level":1}]},{"name":"Four-Piece Sushi (Wind Set)","shop":"Sushi High Roller","towns":["Levincia","Medali"],"cost":2000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/18.png","imagePath":"meal/18.png","powers":[{"mealPower":3,"type":5,"level":1},{"mealPower":8,"type":14,"level":1},{"mealPower":2,"type":6,"level":1}]},{"name":"Four-Piece Sushi (Moon Set)","shop":"Sushi High Roller","towns":["Levincia","Medali"],"cost":2000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/19.png","imagePath":"meal/19.png","powers":[{"mealPower":2,"type":1,"level":1},{"mealPower":4,"type":4,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Miso Soup","shop":"Sushi High Roller","towns":["Levincia","Medali"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/20.png","imagePath":"meal/20.png","powers":[{"mealPower":7,"type":2,"level":1},{"mealPower":3,"type":10,"level":1},{"mealPower":1,"type":14,"level":1}]},{"name":"Exclusive Four-Piece Sushi (Frost Set)","shop":"Sushi High Roller Sp","towns":["Montenevera"],"cost":4000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/21.png","imagePath":"meal/21.png","powers":[{"mealPower":4,"type":10,"level":2},{"mealPower":0,"type":0,"level":1},{"mealPower":3,"type":8,"level":1}]},{"name":"Exclusive Four-Piece Sushi (Graupel Set)","shop":"Sushi High Roller Sp","towns":["Montenevera"],"cost":4000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/22.png","imagePath":"meal/22.png","powers":[{"mealPower":2,"type":6,"level":2},{"mealPower":8,"type":13,"level":1},{"mealPower":4,"type":12,"level":1}]},{"name":"Exclusive Four-Piece Sushi (Hail Set)","shop":"Sushi High Roller Sp","towns":["Montenevera"],"cost":4000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/23.png","imagePath":"meal/23.png","powers":[{"mealPower":3,"type":15,"level":2},{"mealPower":0,"type":0,"level":1},{"mealPower":8,"type":12,"level":1}]},{"name":"Exclusive Four-Piece Sushi (Sleet Set)","shop":"Sushi High Roller Sp","towns":["Montenevera"],"cost":4000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/24.png","imagePath":"meal/24.png","powers":[{"mealPower":7,"type":8,"level":2},{"mealPower":2,"type":3,"level":1},{"mealPower":4,"type":5,"level":1}]},{"name":"Consommé","shop":"Sushi High Roller Sp","towns":["Montenevera"],"cost":3500,"imageUrl":"https://www.serebii.net/scarletviolet/meals/25.png","imagePath":"meal/25.png","powers":[{"mealPower":1,"type":7,"level":2},{"mealPower":7,"type":10,"level":1},{"mealPower":9,"type":9,"level":1}]},{"name":"Mapo Tofu","shop":"Jade Palace Garden","towns":["Levincia","Medali","Mesagoza","Cascarrafa"],"cost":1700,"imageUrl":"https://www.serebii.net/scarletviolet/meals/26.png","imagePath":"meal/26.png","powers":[{"mealPower":9,"type":9,"level":1},{"mealPower":3,"type":2,"level":1},{"mealPower":8,"type":13,"level":1}]},{"name":"Annin Tofu","shop":"Jade Palace Garden","towns":["Levincia","Medali","Mesagoza","Cascarrafa"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/27.png","imagePath":"meal/27.png","powers":[{"mealPower":0,"type":0,"level":1},{"mealPower":4,"type":7,"level":1},{"mealPower":8,"type":14,"level":1}]},{"name":"Pickled Toedscool and Cucumber","shop":"Jade Palace Garden","towns":["Levincia","Medali","Mesagoza","Cascarrafa"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/28.png","imagePath":"meal/28.png","powers":[{"mealPower":8,"type":7,"level":1},{"mealPower":0,"type":0,"level":1},{"mealPower":3,"type":5,"level":1}]},{"name":"Pepper Steak","shop":"Jade Palace Garden","towns":["Levincia","Medali","Mesagoza","Cascarrafa"],"cost":1700,"imageUrl":"https://www.serebii.net/scarletviolet/meals/29.png","imagePath":"meal/29.png","powers":[{"mealPower":3,"type":3,"level":1},{"mealPower":8,"type":11,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Ramen","shop":"Jade Palace Garden","towns":["Levincia","Medali","Mesagoza","Cascarrafa"],"cost":1600,"imageUrl":"https://www.serebii.net/scarletviolet/meals/30.png","imagePath":"meal/30.png","powers":[{"mealPower":7,"type":4,"level":1},{"mealPower":1,"type":0,"level":1},{"mealPower":4,"type":16,"level":1}]},{"name":"Galette de la Maman","shop":"Gastronome En Famille","towns":["Alfornada","Levincia","Medali","Cascarrafa"],"cost":3000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/31.png","imagePath":"meal/31.png","powers":[{"mealPower":7,"type":15,"level":2},{"mealPower":1,"type":12,"level":1},{"mealPower":4,"type":9,"level":1}]},{"name":"Compote du Fils","shop":"Gastronome En Famille","towns":["Alfornada","Levincia","Medali","Cascarrafa"],"cost":2800,"imageUrl":"https://www.serebii.net/scarletviolet/meals/32.png","imagePath":"meal/32.png","powers":[{"mealPower":0,"type":0,"level":2},{"mealPower":2,"type":2,"level":1},{"mealPower":9,"type":17,"level":1}]},{"name":"Ratatouille du Grand-père","shop":"Gastronome En Famille","towns":["Alfornada","Levincia","Medali","Cascarrafa"],"cost":3600,"imageUrl":"https://www.serebii.net/scarletviolet/meals/33.png","imagePath":"meal/33.png","powers":[{"mealPower":3,"type":13,"level":2},{"mealPower":9,"type":14,"level":1},{"mealPower":1,"type":5,"level":1}]},{"name":"Quiche de la Grand-mère","shop":"Gastronome En Famille","towns":["Alfornada","Levincia","Medali","Cascarrafa"],"cost":3400,"imageUrl":"https://www.serebii.net/scarletviolet/meals/34.png","imagePath":"meal/34.png","powers":[{"mealPower":1,"type":14,"level":2},{"mealPower":2,"type":17,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Pot-au-Feu de la Fille","shop":"Gastronome En Famille","towns":["Alfornada","Levincia","Medali","Cascarrafa"],"cost":3800,"imageUrl":"https://www.serebii.net/scarletviolet/meals/35.png","imagePath":"meal/35.png","powers":[{"mealPower":8,"type":8,"level":2},{"mealPower":3,"type":9,"level":1},{"mealPower":2,"type":2,"level":1}]},{"name":"Dry Curry","shop":"Barato's","towns":["Levincia","Artazon","Mesagoza"],"cost":1800,"imageUrl":"https://www.serebii.net/scarletviolet/meals/36.png","imagePath":"meal/36.png","powers":[{"mealPower":7,"type":17,"level":1},{"mealPower":4,"type":4,"level":1},{"mealPower":1,"type":10,"level":1}]},{"name":"Chocolate-Vanilla Fruit Parfait","shop":"Barato's","towns":["Levincia","Artazon","Mesagoza"],"cost":1400,"imageUrl":"https://www.serebii.net/scarletviolet/meals/37.png","imagePath":"meal/37.png","powers":[{"mealPower":1,"type":4,"level":1},{"mealPower":3,"type":16,"level":1},{"mealPower":2,"type":3,"level":1}]},{"name":"Lemon Gelato","shop":"Barato's","towns":["Levincia","Artazon","Mesagoza"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/38.png","imagePath":"meal/38.png","powers":[{"mealPower":3,"type":7,"level":1},{"mealPower":7,"type":5,"level":1},{"mealPower":2,"type":0,"level":1}]},{"name":"Caesar Salad","shop":"Barato's","towns":["Levincia","Artazon","Mesagoza"],"cost":1300,"imageUrl":"https://www.serebii.net/scarletviolet/meals/39.png","imagePath":"meal/39.png","powers":[{"mealPower":2,"type":2,"level":1},{"mealPower":8,"type":0,"level":1},{"mealPower":3,"type":9,"level":1}]},{"name":"Salisbury Steak with Fried Fixings","shop":"Barato's","towns":["Levincia","Artazon","Mesagoza"],"cost":1900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/40.png","imagePath":"meal/40.png","powers":[{"mealPower":0,"type":0,"level":1},{"mealPower":9,"type":2,"level":1},{"mealPower":1,"type":17,"level":1}]},{"name":"Spicy Potatoes","shop":"Seabreeze Café","towns":["Alfornada","Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":1450,"imageUrl":"https://www.serebii.net/scarletviolet/meals/41.png","imagePath":"meal/41.png","powers":[{"mealPower":9,"type":15,"level":1},{"mealPower":8,"type":16,"level":1},{"mealPower":2,"type":11,"level":1}]},{"name":"Alfajores","shop":"Seabreeze Café","towns":["Alfornada","Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/42.png","imagePath":"meal/42.png","powers":[{"mealPower":4,"type":1,"level":1},{"mealPower":1,"type":8,"level":1},{"mealPower":7,"type":16,"level":1}]},{"name":"Lemon Soda","shop":"Seabreeze Café","towns":["Alfornada","Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/43.png","imagePath":"meal/43.png","powers":[{"mealPower":8,"type":16,"level":1},{"mealPower":0,"type":0,"level":1},{"mealPower":2,"type":10,"level":1}]},{"name":"Coffee","shop":"Seabreeze Café","towns":["Alfornada","Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":850,"imageUrl":"https://www.serebii.net/scarletviolet/meals/44.png","imagePath":"meal/44.png","powers":[{"mealPower":3,"type":10,"level":1},{"mealPower":2,"type":11,"level":1},{"mealPower":7,"type":8,"level":1}]},{"name":"Quesadilla","shop":"Seabreeze Café","towns":["Alfornada","Levincia","Artazon","Medali","Mesagoza","Cascarrafa"],"cost":1600,"imageUrl":"https://www.serebii.net/scarletviolet/meals/45.png","imagePath":"meal/45.png","powers":[{"mealPower":4,"type":7,"level":1},{"mealPower":0,"type":0,"level":1},{"mealPower":1,"type":13,"level":1}]},{"name":"Five-Alarm Sandwich","shop":"Cafeteria","towns":["Naranja Academy","Uva Academy"],"cost":1700,"imageUrl":"https://www.serebii.net/scarletviolet/meals/46.png","imagePath":"meal/46.png","powers":[{"mealPower":0,"type":0,"level":1},{"mealPower":8,"type":8,"level":1},{"mealPower":4,"type":13,"level":1}]},{"name":"Peanut Butter Sandwich","shop":"Cafeteria","towns":["Naranja Academy","Uva Academy"],"cost":1020,"imageUrl":"https://www.serebii.net/scarletviolet/meals/47.png","imagePath":"meal/47.png","powers":[{"mealPower":2,"type":17,"level":1},{"mealPower":9,"type":12,"level":1},{"mealPower":8,"type":4,"level":1}]},{"name":"Potato Salad Sandwich","shop":"Cafeteria","towns":["Naranja Academy","Uva Academy"],"cost":1200,"imageUrl":"https://www.serebii.net/scarletviolet/meals/48.png","imagePath":"meal/48.png","powers":[{"mealPower":3,"type":11,"level":1},{"mealPower":1,"type":5,"level":1},{"mealPower":8,"type":7,"level":1}]},{"name":"Pickle Sandwich","shop":"Cafeteria","towns":["Naranja Academy","Uva Academy"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/49.png","imagePath":"meal/49.png","powers":[{"mealPower":1,"type":16,"level":1},{"mealPower":9,"type":5,"level":1},{"mealPower":7,"type":15,"level":1}]},{"name":"Egg Sandwich","shop":"Cafeteria","towns":["Naranja Academy","Uva Academy"],"cost":980,"imageUrl":"https://www.serebii.net/scarletviolet/meals/50.png","imagePath":"meal/50.png","powers":[{"mealPower":7,"type":1,"level":1},{"mealPower":0,"type":0,"level":1},{"mealPower":3,"type":3,"level":1}]},{"name":"Mustard Rice Ball","shop":"Treasure Eatery","towns":["Medali"],"cost":750,"imageUrl":"https://www.serebii.net/scarletviolet/meals/51.png","imagePath":"meal/51.png","powers":[{"mealPower":9,"type":5,"level":1},{"mealPower":1,"type":14,"level":1},{"mealPower":7,"type":12,"level":1}]},{"name":"Sweet Adzuki Bean Soup","shop":"Treasure Eatery","towns":["Medali"],"cost":800,"imageUrl":"https://www.serebii.net/scarletviolet/meals/52.png","imagePath":"meal/52.png","powers":[{"mealPower":2,"type":0,"level":1},{"mealPower":3,"type":8,"level":1},{"mealPower":9,"type":3,"level":1}]},{"name":"Homemade Umeboshi","shop":"Treasure Eatery","towns":["Medali"],"cost":500,"imageUrl":"https://www.serebii.net/scarletviolet/meals/53.png","imagePath":"meal/53.png","powers":[{"mealPower":8,"type":9,"level":1},{"mealPower":2,"type":7,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Bitter Melon Stir-Fry","shop":"Treasure Eatery","towns":["Medali"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/54.png","imagePath":"meal/54.png","powers":[{"mealPower":3,"type":4,"level":1},{"mealPower":7,"type":7,"level":1},{"mealPower":9,"type":5,"level":1}]},{"name":"Soba Noodle Soup","shop":"Treasure Eatery","towns":["Medali"],"cost":920,"imageUrl":"https://www.serebii.net/scarletviolet/meals/55.png","imagePath":"meal/55.png","powers":[{"mealPower":0,"type":0,"level":1},{"mealPower":9,"type":9,"level":1},{"mealPower":4,"type":11,"level":1}]},{"name":"Dandan Noodles","shop":"Kofu Lounge","towns":["Cascarrafa"],"cost":3600,"imageUrl":"https://www.serebii.net/scarletviolet/meals/56.png","imagePath":"meal/56.png","powers":[{"mealPower":3,"type":9,"level":2},{"mealPower":7,"type":11,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Tofu Pudding","shop":"Kofu Lounge","towns":["Cascarrafa"],"cost":3000,"imageUrl":"https://www.serebii.net/scarletviolet/meals/57.png","imagePath":"meal/57.png","powers":[{"mealPower":2,"type":3,"level":2},{"mealPower":9,"type":13,"level":1},{"mealPower":4,"type":14,"level":1}]},{"name":"Hot and Sour Soup","shop":"Kofu Lounge","towns":["Cascarrafa"],"cost":3200,"imageUrl":"https://www.serebii.net/scarletviolet/meals/58.png","imagePath":"meal/58.png","powers":[{"mealPower":0,"type":0,"level":2},{"mealPower":3,"type":17,"level":1},{"mealPower":7,"type":1,"level":1}]},{"name":"Oolong Tea","shop":"Kofu Lounge","towns":["Cascarrafa"],"cost":2800,"imageUrl":"https://www.serebii.net/scarletviolet/meals/59.png","imagePath":"meal/59.png","powers":[{"mealPower":8,"type":15,"level":2},{"mealPower":1,"type":7,"level":1},{"mealPower":3,"type":14,"level":1}]},{"name":"House Special Hot Pot","shop":"Kofu Lounge","towns":["Cascarrafa"],"cost":3800,"imageUrl":"https://www.serebii.net/scarletviolet/meals/60.png","imagePath":"meal/60.png","powers":[{"mealPower":7,"type":5,"level":2},{"mealPower":2,"type":13,"level":1},{"mealPower":1,"type":8,"level":1}]},{"name":"Churro","shop":"Smoochurro","towns":["Mesagoza","Levincia","Artazon","Medali"],"cost":850,"imageUrl":"https://www.serebii.net/scarletviolet/meals/61.png","imagePath":"meal/61.png","powers":[{"mealPower":2,"type":13,"level":1},{"mealPower":1,"type":4,"level":1},{"mealPower":8,"type":9,"level":1}]},{"name":"Chocolate Churro","shop":"Smoochurro","towns":["Mesagoza","Levincia","Artazon","Medali"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/62.png","imagePath":"meal/62.png","powers":[{"mealPower":9,"type":13,"level":1},{"mealPower":3,"type":6,"level":1},{"mealPower":4,"type":0,"level":1}]},{"name":"Cinnamon Churro","shop":"Smoochurro","towns":["Mesagoza","Levincia","Artazon","Medali"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/63.png","imagePath":"meal/63.png","powers":[{"mealPower":1,"type":15,"level":1},{"mealPower":0,"type":0,"level":1},{"mealPower":8,"type":11,"level":1}]},{"name":"Pinchitos","shop":"Chic Kebab","towns":["Levincia","Artazon","Medali","Mesagoza","Montenevera","Cascarrafa"],"cost":1200,"imageUrl":"https://www.serebii.net/scarletviolet/meals/64.png","imagePath":"meal/64.png","powers":[{"mealPower":3,"type":16,"level":1},{"mealPower":8,"type":15,"level":1},{"mealPower":2,"type":5,"level":1}]},{"name":"Grilled Rice Balls","shop":"Chic Kebab","towns":["Levincia","Artazon","Medali","Mesagoza","Montenevera","Cascarrafa"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/65.png","imagePath":"meal/65.png","powers":[{"mealPower":9,"type":17,"level":1},{"mealPower":8,"type":12,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Strawberry Chocolate Crepe","shop":"Kanto Crepes","towns":["Levincia","Artazon","Mesagoza","Porto Marinada"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/66.png","imagePath":"meal/66.png","powers":[{"mealPower":4,"type":10,"level":1},{"mealPower":1,"type":17,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Strawberry Whipped Cream Crepe","shop":"Kanto Crepes","towns":["Levincia","Artazon","Mesagoza","Porto Marinada"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/67.png","imagePath":"meal/67.png","powers":[{"mealPower":2,"type":4,"level":1},{"mealPower":7,"type":14,"level":1},{"mealPower":9,"type":12,"level":1}]},{"name":"Chocolate Banana Crepe","shop":"Kanto Crepes","towns":["Levincia","Artazon","Mesagoza","Porto Marinada"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/68.png","imagePath":"meal/68.png","powers":[{"mealPower":0,"type":0,"level":1},{"mealPower":9,"type":10,"level":1},{"mealPower":8,"type":8,"level":1}]},{"name":"Mint Chocolate Ice Cream","shop":"Sugar-N-Ice","towns":["Cortondo","Levincia","Artazon","Los Platos","Medali","Mesagoza","Porto Marinada","Cascarrafa"],"cost":950,"imageUrl":"https://www.serebii.net/scarletviolet/meals/69.png","imagePath":"meal/69.png","powers":[{"mealPower":4,"type":17,"level":1},{"mealPower":7,"type":8,"level":1},{"mealPower":0,"type":0,"level":1}]},{"name":"Fizzy-Pop Ice Cream","shop":"Sugar-N-Ice","towns":["Cortondo","Levincia","Artazon","Los Platos","Medali","Mesagoza","Porto Marinada","Cascarrafa"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/70.png","imagePath":"meal/70.png","powers":[{"mealPower":2,"type":0,"level":1},{"mealPower":1,"type":10,"level":1},{"mealPower":7,"type":9,"level":1}]},{"name":"Strawberry Ice Cream","shop":"Sugar-N-Ice","towns":["Cortondo","Levincia","Artazon","Los Platos","Medali","Mesagoza","Porto Marinada","Cascarrafa"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/71.png","imagePath":"meal/71.png","powers":[{"mealPower":0,"type":0,"level":1},{"mealPower":2,"type":10,"level":1},{"mealPower":4,"type":5,"level":1}]},{"name":"Mango Ice Cream","shop":"Sugar-N-Ice","towns":["Cortondo","Levincia","Artazon","Los Platos","Medali","Mesagoza","Porto Marinada","Cascarrafa"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/72.png","imagePath":"meal/72.png","powers":[{"mealPower":8,"type":0,"level":1},{"mealPower":4,"type":15,"level":1},{"mealPower":1,"type":12,"level":1}]},{"name":"Nacli Salt Ice Cream","shop":"Sugar-N-Ice","towns":["Cortondo","Levincia","Artazon","Los Platos","Medali","Mesagoza","Porto Marinada","Cascarrafa"],"cost":900,"imageUrl":"https://www.serebii.net/scarletviolet/meals/73.png","imagePath":"meal/73.png","powers":[{"mealPower":7,"type":14,"level":1},{"mealPower":3,"type":11,"level":1},{"mealPower":1,"type":16,"level":1}]},{"name":"Teriyaki Ice Cream","shop":"Sugar-N-Ice","towns":["Cortondo","Levincia","Artazon","Los Platos","Medali","Mesagoza","Porto Marinada","Cascarrafa"],"cost":1150,"imageUrl":"https://www.serebii.net/scarletviolet/meals/74.png","imagePath":"meal/74.png","powers":[{"mealPower":3,"type":6,"level":1},{"mealPower":4,"type":1,"level":1},{"mealPower":0,"type":0,"level":1}]}]
+[
+  {
+    "name": "Zesty Sandwich",
+    "shop": "Every Wich Way",
+    "towns": [
+      "Alfornada",
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Montenevera",
+      "Cascarrafa"
+    ],
+    "cost": 1750,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/1.png",
+    "imagePath": "meal/1.png",
+    "powers": [
+      { "mealPower": 7, "type": 13, "level": 1 },
+      { "mealPower": 2, "type": 1, "level": 1 },
+      { "mealPower": 9, "type": 10, "level": 1 }
+    ]
+  },
+  {
+    "name": "Jam Sandwich",
+    "shop": "Every Wich Way",
+    "towns": [
+      "Alfornada",
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Montenevera",
+      "Cascarrafa"
+    ],
+    "cost": 850,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/2.png",
+    "imagePath": "meal/2.png",
+    "powers": [
+      { "mealPower": 1, "type": 1, "level": 1 },
+      { "mealPower": 3, "type": 13, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Tropical Sandwich",
+    "shop": "Every Wich Way",
+    "towns": [
+      "Alfornada",
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Montenevera",
+      "Cascarrafa"
+    ],
+    "cost": 1450,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/3.png",
+    "imagePath": "meal/3.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 9, "type": 1, "level": 1 },
+      { "mealPower": 1, "type": 15, "level": 1 }
+    ]
+  },
+  {
+    "name": "Marmalade Sandwich",
+    "shop": "Every Wich Way",
+    "towns": [
+      "Alfornada",
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Montenevera",
+      "Cascarrafa"
+    ],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/4.png",
+    "imagePath": "meal/4.png",
+    "powers": [
+      { "mealPower": 3, "type": 1, "level": 1 },
+      { "mealPower": 1, "type": 5, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Avocado Sandwich",
+    "shop": "Every Wich Way",
+    "towns": [
+      "Alfornada",
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Montenevera",
+      "Cascarrafa"
+    ],
+    "cost": 1200,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/5.png",
+    "imagePath": "meal/5.png",
+    "powers": [
+      { "mealPower": 2, "type": 15, "level": 1 },
+      { "mealPower": 9, "type": 12, "level": 1 },
+      { "mealPower": 1, "type": 16, "level": 1 }
+    ]
+  },
+  {
+    "name": "Paella de Paldea",
+    "shop": "Go-For-Broke Grill",
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 1800,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/6.png",
+    "imagePath": "meal/6.png",
+    "powers": [
+      { "mealPower": 7, "type": 16, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 3, "type": 10, "level": 1 }
+    ]
+  },
+  {
+    "name": "Fruit Punch",
+    "shop": "Go-For-Broke Grill",
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/7.png",
+    "imagePath": "meal/7.png",
+    "powers": [
+      { "mealPower": 1, "type": 13, "level": 1 },
+      { "mealPower": 9, "type": 17, "level": 1 },
+      { "mealPower": 8, "type": 10, "level": 1 }
+    ]
+  },
+  {
+    "name": "Escalivada",
+    "shop": "Go-For-Broke Grill",
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 1500,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/8.png",
+    "imagePath": "meal/8.png",
+    "powers": [
+      { "mealPower": 4, "type": 14, "level": 1 },
+      { "mealPower": 9, "type": 15, "level": 1 },
+      { "mealPower": 2, "type": 13, "level": 1 }
+    ]
+  },
+  {
+    "name": "Potato Tortilla",
+    "shop": "Go-For-Broke Grill",
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 1600,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/9.png",
+    "imagePath": "meal/9.png",
+    "powers": [
+      { "mealPower": 3, "type": 3, "level": 1 },
+      { "mealPower": 7, "type": 11, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Klawf al Ajillo",
+    "shop": "Go-For-Broke Grill",
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 1500,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/10.png",
+    "imagePath": "meal/10.png",
+    "powers": [
+      { "mealPower": 9, "type": 12, "level": 1 },
+      { "mealPower": 2, "type": 5, "level": 1 },
+      { "mealPower": 4, "type": 17, "level": 1 }
+    ]
+  },
+  {
+    "name": "Seafood Pinchos",
+    "shop": "Seafood Fresco",
+    "towns": ["Levincia", "Medali", "Mesagoza"],
+    "cost": 1500,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/11.png",
+    "imagePath": "meal/11.png",
+    "powers": [
+      { "mealPower": 9, "type": 10, "level": 1 },
+      { "mealPower": 4, "type": 16, "level": 1 },
+      { "mealPower": 2, "type": 7, "level": 1 }
+    ]
+  },
+  {
+    "name": "Arroz con Leche",
+    "shop": "Seafood Fresco",
+    "towns": ["Levincia", "Medali", "Mesagoza"],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/12.png",
+    "imagePath": "meal/12.png",
+    "powers": [
+      { "mealPower": 3, "type": 8, "level": 1 },
+      { "mealPower": 1, "type": 11, "level": 1 },
+      { "mealPower": 7, "type": 4, "level": 1 }
+    ]
+  },
+  {
+    "name": "Ceviche",
+    "shop": "Seafood Fresco",
+    "towns": ["Levincia", "Medali", "Mesagoza"],
+    "cost": 1300,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/13.png",
+    "imagePath": "meal/13.png",
+    "powers": [
+      { "mealPower": 7, "type": 6, "level": 1 },
+      { "mealPower": 2, "type": 1, "level": 1 },
+      { "mealPower": 3, "type": 4, "level": 1 }
+    ]
+  },
+  {
+    "name": "Smoked Fillet with Herbs",
+    "shop": "Seafood Fresco",
+    "towns": ["Levincia", "Medali", "Mesagoza"],
+    "cost": 1400,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/14.png",
+    "imagePath": "meal/14.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 8, "type": 7, "level": 1 },
+      { "mealPower": 2, "type": 17, "level": 1 }
+    ]
+  },
+  {
+    "name": "Seafood Pasta",
+    "shop": "Seafood Fresco",
+    "towns": ["Levincia", "Medali", "Mesagoza"],
+    "cost": 1600,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/15.png",
+    "imagePath": "meal/15.png",
+    "powers": [
+      { "mealPower": 8, "type": 11, "level": 1 },
+      { "mealPower": 3, "type": 5, "level": 1 },
+      { "mealPower": 4, "type": 2, "level": 1 }
+    ]
+  },
+  {
+    "name": "Four-Piece Sushi (Flower Set)",
+    "shop": "Sushi High Roller",
+    "towns": ["Levincia", "Medali"],
+    "cost": 2000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/16.png",
+    "imagePath": "meal/16.png",
+    "powers": [
+      { "mealPower": 1, "type": 8, "level": 1 },
+      { "mealPower": 2, "type": 6, "level": 1 },
+      { "mealPower": 8, "type": 15, "level": 1 }
+    ]
+  },
+  {
+    "name": "Four-Piece Sushi (Bird Set)",
+    "shop": "Sushi High Roller",
+    "towns": ["Levincia", "Medali"],
+    "cost": 2000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/17.png",
+    "imagePath": "meal/17.png",
+    "powers": [
+      { "mealPower": 8, "type": 12, "level": 1 },
+      { "mealPower": 1, "type": 15, "level": 1 },
+      { "mealPower": 4, "type": 11, "level": 1 }
+    ]
+  },
+  {
+    "name": "Four-Piece Sushi (Wind Set)",
+    "shop": "Sushi High Roller",
+    "towns": ["Levincia", "Medali"],
+    "cost": 2000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/18.png",
+    "imagePath": "meal/18.png",
+    "powers": [
+      { "mealPower": 3, "type": 5, "level": 1 },
+      { "mealPower": 8, "type": 14, "level": 1 },
+      { "mealPower": 2, "type": 6, "level": 1 }
+    ]
+  },
+  {
+    "name": "Four-Piece Sushi (Moon Set)",
+    "shop": "Sushi High Roller",
+    "towns": ["Levincia", "Medali"],
+    "cost": 2000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/19.png",
+    "imagePath": "meal/19.png",
+    "powers": [
+      { "mealPower": 2, "type": 1, "level": 1 },
+      { "mealPower": 4, "type": 4, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Miso Soup",
+    "shop": "Sushi High Roller",
+    "towns": ["Levincia", "Medali"],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/20.png",
+    "imagePath": "meal/20.png",
+    "powers": [
+      { "mealPower": 7, "type": 2, "level": 1 },
+      { "mealPower": 3, "type": 10, "level": 1 },
+      { "mealPower": 1, "type": 14, "level": 1 }
+    ]
+  },
+  {
+    "name": "Exclusive Four-Piece Sushi (Frost Set)",
+    "shop": "Sushi High Roller Sp",
+    "towns": ["Montenevera"],
+    "cost": 4000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/21.png",
+    "imagePath": "meal/21.png",
+    "powers": [
+      { "mealPower": 4, "type": 10, "level": 2 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 3, "type": 8, "level": 1 }
+    ]
+  },
+  {
+    "name": "Exclusive Four-Piece Sushi (Graupel Set)",
+    "shop": "Sushi High Roller Sp",
+    "towns": ["Montenevera"],
+    "cost": 4000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/22.png",
+    "imagePath": "meal/22.png",
+    "powers": [
+      { "mealPower": 2, "type": 6, "level": 2 },
+      { "mealPower": 8, "type": 13, "level": 1 },
+      { "mealPower": 4, "type": 12, "level": 1 }
+    ]
+  },
+  {
+    "name": "Exclusive Four-Piece Sushi (Hail Set)",
+    "shop": "Sushi High Roller Sp",
+    "towns": ["Montenevera"],
+    "cost": 4000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/23.png",
+    "imagePath": "meal/23.png",
+    "powers": [
+      { "mealPower": 3, "type": 15, "level": 2 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 8, "type": 12, "level": 1 }
+    ]
+  },
+  {
+    "name": "Exclusive Four-Piece Sushi (Sleet Set)",
+    "shop": "Sushi High Roller Sp",
+    "towns": ["Montenevera"],
+    "cost": 4000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/24.png",
+    "imagePath": "meal/24.png",
+    "powers": [
+      { "mealPower": 7, "type": 8, "level": 2 },
+      { "mealPower": 2, "type": 3, "level": 1 },
+      { "mealPower": 4, "type": 5, "level": 1 }
+    ]
+  },
+  {
+    "name": "Consommé",
+    "shop": "Sushi High Roller Sp",
+    "towns": ["Montenevera"],
+    "cost": 3500,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/25.png",
+    "imagePath": "meal/25.png",
+    "powers": [
+      { "mealPower": 1, "type": 7, "level": 2 },
+      { "mealPower": 7, "type": 10, "level": 1 },
+      { "mealPower": 9, "type": 9, "level": 1 }
+    ]
+  },
+  {
+    "name": "Mapo Tofu",
+    "shop": "Jade Palace Garden",
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 1700,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/26.png",
+    "imagePath": "meal/26.png",
+    "powers": [
+      { "mealPower": 9, "type": 9, "level": 1 },
+      { "mealPower": 3, "type": 2, "level": 1 },
+      { "mealPower": 8, "type": 13, "level": 1 }
+    ]
+  },
+  {
+    "name": "Annin Tofu",
+    "shop": "Jade Palace Garden",
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/27.png",
+    "imagePath": "meal/27.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 4, "type": 7, "level": 1 },
+      { "mealPower": 8, "type": 14, "level": 1 }
+    ]
+  },
+  {
+    "name": "Pickled Toedscool and Cucumber",
+    "shop": "Jade Palace Garden",
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/28.png",
+    "imagePath": "meal/28.png",
+    "powers": [
+      { "mealPower": 8, "type": 7, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 3, "type": 5, "level": 1 }
+    ]
+  },
+  {
+    "name": "Pepper Steak",
+    "shop": "Jade Palace Garden",
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 1700,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/29.png",
+    "imagePath": "meal/29.png",
+    "powers": [
+      { "mealPower": 3, "type": 3, "level": 1 },
+      { "mealPower": 8, "type": 11, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Ramen",
+    "shop": "Jade Palace Garden",
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
+    "cost": 1600,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/30.png",
+    "imagePath": "meal/30.png",
+    "powers": [
+      { "mealPower": 7, "type": 4, "level": 1 },
+      { "mealPower": 1, "type": 0, "level": 1 },
+      { "mealPower": 4, "type": 16, "level": 1 }
+    ]
+  },
+  {
+    "name": "Galette de la Maman",
+    "shop": "Gastronome En Famille",
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
+    "cost": 3000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/31.png",
+    "imagePath": "meal/31.png",
+    "powers": [
+      { "mealPower": 7, "type": 15, "level": 2 },
+      { "mealPower": 1, "type": 12, "level": 1 },
+      { "mealPower": 4, "type": 9, "level": 1 }
+    ]
+  },
+  {
+    "name": "Compote du Fils",
+    "shop": "Gastronome En Famille",
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
+    "cost": 2800,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/32.png",
+    "imagePath": "meal/32.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 2 },
+      { "mealPower": 2, "type": 2, "level": 1 },
+      { "mealPower": 9, "type": 17, "level": 1 }
+    ]
+  },
+  {
+    "name": "Ratatouille du Grand-père",
+    "shop": "Gastronome En Famille",
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
+    "cost": 3600,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/33.png",
+    "imagePath": "meal/33.png",
+    "powers": [
+      { "mealPower": 3, "type": 13, "level": 2 },
+      { "mealPower": 9, "type": 14, "level": 1 },
+      { "mealPower": 1, "type": 5, "level": 1 }
+    ]
+  },
+  {
+    "name": "Quiche de la Grand-mère",
+    "shop": "Gastronome En Famille",
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
+    "cost": 3400,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/34.png",
+    "imagePath": "meal/34.png",
+    "powers": [
+      { "mealPower": 1, "type": 14, "level": 2 },
+      { "mealPower": 2, "type": 17, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Pot-au-Feu de la Fille",
+    "shop": "Gastronome En Famille",
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
+    "cost": 3800,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/35.png",
+    "imagePath": "meal/35.png",
+    "powers": [
+      { "mealPower": 8, "type": 8, "level": 2 },
+      { "mealPower": 3, "type": 9, "level": 1 },
+      { "mealPower": 2, "type": 2, "level": 1 }
+    ]
+  },
+  {
+    "name": "Dry Curry",
+    "shop": "Barato's",
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
+    "cost": 1800,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/36.png",
+    "imagePath": "meal/36.png",
+    "powers": [
+      { "mealPower": 7, "type": 17, "level": 1 },
+      { "mealPower": 4, "type": 4, "level": 1 },
+      { "mealPower": 1, "type": 10, "level": 1 }
+    ]
+  },
+  {
+    "name": "Chocolate-Vanilla Fruit Parfait",
+    "shop": "Barato's",
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
+    "cost": 1400,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/37.png",
+    "imagePath": "meal/37.png",
+    "powers": [
+      { "mealPower": 1, "type": 4, "level": 1 },
+      { "mealPower": 3, "type": 16, "level": 1 },
+      { "mealPower": 2, "type": 3, "level": 1 }
+    ]
+  },
+  {
+    "name": "Lemon Gelato",
+    "shop": "Barato's",
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/38.png",
+    "imagePath": "meal/38.png",
+    "powers": [
+      { "mealPower": 3, "type": 7, "level": 1 },
+      { "mealPower": 7, "type": 5, "level": 1 },
+      { "mealPower": 2, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Caesar Salad",
+    "shop": "Barato's",
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
+    "cost": 1300,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/39.png",
+    "imagePath": "meal/39.png",
+    "powers": [
+      { "mealPower": 2, "type": 2, "level": 1 },
+      { "mealPower": 8, "type": 0, "level": 1 },
+      { "mealPower": 3, "type": 9, "level": 1 }
+    ]
+  },
+  {
+    "name": "Salisbury Steak with Fried Fixings",
+    "shop": "Barato's",
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
+    "cost": 1900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/40.png",
+    "imagePath": "meal/40.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 9, "type": 2, "level": 1 },
+      { "mealPower": 1, "type": 17, "level": 1 }
+    ]
+  },
+  {
+    "name": "Spicy Potatoes",
+    "shop": "Seabreeze Café",
+    "towns": [
+      "Alfornada",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Cascarrafa"
+    ],
+    "cost": 1450,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/41.png",
+    "imagePath": "meal/41.png",
+    "powers": [
+      { "mealPower": 9, "type": 15, "level": 1 },
+      { "mealPower": 8, "type": 16, "level": 1 },
+      { "mealPower": 2, "type": 11, "level": 1 }
+    ]
+  },
+  {
+    "name": "Alfajores",
+    "shop": "Seabreeze Café",
+    "towns": [
+      "Alfornada",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Cascarrafa"
+    ],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/42.png",
+    "imagePath": "meal/42.png",
+    "powers": [
+      { "mealPower": 4, "type": 1, "level": 1 },
+      { "mealPower": 1, "type": 8, "level": 1 },
+      { "mealPower": 7, "type": 16, "level": 1 }
+    ]
+  },
+  {
+    "name": "Lemon Soda",
+    "shop": "Seabreeze Café",
+    "towns": [
+      "Alfornada",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Cascarrafa"
+    ],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/43.png",
+    "imagePath": "meal/43.png",
+    "powers": [
+      { "mealPower": 8, "type": 16, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 2, "type": 10, "level": 1 }
+    ]
+  },
+  {
+    "name": "Coffee",
+    "shop": "Seabreeze Café",
+    "towns": [
+      "Alfornada",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Cascarrafa"
+    ],
+    "cost": 850,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/44.png",
+    "imagePath": "meal/44.png",
+    "powers": [
+      { "mealPower": 3, "type": 10, "level": 1 },
+      { "mealPower": 2, "type": 11, "level": 1 },
+      { "mealPower": 7, "type": 8, "level": 1 }
+    ]
+  },
+  {
+    "name": "Quesadilla",
+    "shop": "Seabreeze Café",
+    "towns": [
+      "Alfornada",
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Cascarrafa"
+    ],
+    "cost": 1600,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/45.png",
+    "imagePath": "meal/45.png",
+    "powers": [
+      { "mealPower": 4, "type": 7, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 1, "type": 13, "level": 1 }
+    ]
+  },
+  {
+    "name": "Five-Alarm Sandwich",
+    "shop": "Cafeteria",
+    "towns": ["Naranja Academy", "Uva Academy"],
+    "cost": 1700,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/46.png",
+    "imagePath": "meal/46.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 8, "type": 8, "level": 1 },
+      { "mealPower": 4, "type": 13, "level": 1 }
+    ]
+  },
+  {
+    "name": "Peanut Butter Sandwich",
+    "shop": "Cafeteria",
+    "towns": ["Naranja Academy", "Uva Academy"],
+    "cost": 1020,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/47.png",
+    "imagePath": "meal/47.png",
+    "powers": [
+      { "mealPower": 2, "type": 17, "level": 1 },
+      { "mealPower": 9, "type": 12, "level": 1 },
+      { "mealPower": 8, "type": 4, "level": 1 }
+    ]
+  },
+  {
+    "name": "Potato Salad Sandwich",
+    "shop": "Cafeteria",
+    "towns": ["Naranja Academy", "Uva Academy"],
+    "cost": 1200,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/48.png",
+    "imagePath": "meal/48.png",
+    "powers": [
+      { "mealPower": 3, "type": 11, "level": 1 },
+      { "mealPower": 1, "type": 5, "level": 1 },
+      { "mealPower": 8, "type": 7, "level": 1 }
+    ]
+  },
+  {
+    "name": "Pickle Sandwich",
+    "shop": "Cafeteria",
+    "towns": ["Naranja Academy", "Uva Academy"],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/49.png",
+    "imagePath": "meal/49.png",
+    "powers": [
+      { "mealPower": 1, "type": 16, "level": 1 },
+      { "mealPower": 9, "type": 5, "level": 1 },
+      { "mealPower": 7, "type": 15, "level": 1 }
+    ]
+  },
+  {
+    "name": "Egg Sandwich",
+    "shop": "Cafeteria",
+    "towns": ["Naranja Academy", "Uva Academy"],
+    "cost": 980,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/50.png",
+    "imagePath": "meal/50.png",
+    "powers": [
+      { "mealPower": 7, "type": 1, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 3, "type": 3, "level": 1 }
+    ]
+  },
+  {
+    "name": "Mustard Rice Ball",
+    "shop": "Treasure Eatery",
+    "towns": ["Medali"],
+    "cost": 750,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/51.png",
+    "imagePath": "meal/51.png",
+    "powers": [
+      { "mealPower": 9, "type": 5, "level": 1 },
+      { "mealPower": 1, "type": 14, "level": 1 },
+      { "mealPower": 7, "type": 12, "level": 1 }
+    ]
+  },
+  {
+    "name": "Sweet Adzuki Bean Soup",
+    "shop": "Treasure Eatery",
+    "towns": ["Medali"],
+    "cost": 800,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/52.png",
+    "imagePath": "meal/52.png",
+    "powers": [
+      { "mealPower": 2, "type": 0, "level": 1 },
+      { "mealPower": 3, "type": 8, "level": 1 },
+      { "mealPower": 9, "type": 3, "level": 1 }
+    ]
+  },
+  {
+    "name": "Homemade Umeboshi",
+    "shop": "Treasure Eatery",
+    "towns": ["Medali"],
+    "cost": 500,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/53.png",
+    "imagePath": "meal/53.png",
+    "powers": [
+      { "mealPower": 8, "type": 9, "level": 1 },
+      { "mealPower": 2, "type": 7, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Bitter Melon Stir-Fry",
+    "shop": "Treasure Eatery",
+    "towns": ["Medali"],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/54.png",
+    "imagePath": "meal/54.png",
+    "powers": [
+      { "mealPower": 3, "type": 4, "level": 1 },
+      { "mealPower": 7, "type": 7, "level": 1 },
+      { "mealPower": 9, "type": 5, "level": 1 }
+    ]
+  },
+  {
+    "name": "Soba Noodle Soup",
+    "shop": "Treasure Eatery",
+    "towns": ["Medali"],
+    "cost": 920,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/55.png",
+    "imagePath": "meal/55.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 9, "type": 9, "level": 1 },
+      { "mealPower": 4, "type": 11, "level": 1 }
+    ]
+  },
+  {
+    "name": "Dandan Noodles",
+    "shop": "Kofu Lounge",
+    "towns": ["Cascarrafa"],
+    "cost": 3600,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/56.png",
+    "imagePath": "meal/56.png",
+    "powers": [
+      { "mealPower": 3, "type": 9, "level": 2 },
+      { "mealPower": 7, "type": 11, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Tofu Pudding",
+    "shop": "Kofu Lounge",
+    "towns": ["Cascarrafa"],
+    "cost": 3000,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/57.png",
+    "imagePath": "meal/57.png",
+    "powers": [
+      { "mealPower": 2, "type": 3, "level": 2 },
+      { "mealPower": 9, "type": 13, "level": 1 },
+      { "mealPower": 4, "type": 14, "level": 1 }
+    ]
+  },
+  {
+    "name": "Hot and Sour Soup",
+    "shop": "Kofu Lounge",
+    "towns": ["Cascarrafa"],
+    "cost": 3200,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/58.png",
+    "imagePath": "meal/58.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 2 },
+      { "mealPower": 3, "type": 17, "level": 1 },
+      { "mealPower": 7, "type": 1, "level": 1 }
+    ]
+  },
+  {
+    "name": "Oolong Tea",
+    "shop": "Kofu Lounge",
+    "towns": ["Cascarrafa"],
+    "cost": 2800,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/59.png",
+    "imagePath": "meal/59.png",
+    "powers": [
+      { "mealPower": 8, "type": 15, "level": 2 },
+      { "mealPower": 1, "type": 7, "level": 1 },
+      { "mealPower": 3, "type": 14, "level": 1 }
+    ]
+  },
+  {
+    "name": "House Special Hot Pot",
+    "shop": "Kofu Lounge",
+    "towns": ["Cascarrafa"],
+    "cost": 3800,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/60.png",
+    "imagePath": "meal/60.png",
+    "powers": [
+      { "mealPower": 7, "type": 5, "level": 2 },
+      { "mealPower": 2, "type": 13, "level": 1 },
+      { "mealPower": 1, "type": 8, "level": 1 }
+    ]
+  },
+  {
+    "name": "Churro",
+    "shop": "Smoochurro",
+    "towns": ["Mesagoza", "Levincia", "Artazon", "Medali"],
+    "cost": 850,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/61.png",
+    "imagePath": "meal/61.png",
+    "powers": [
+      { "mealPower": 2, "type": 13, "level": 1 },
+      { "mealPower": 1, "type": 4, "level": 1 },
+      { "mealPower": 8, "type": 9, "level": 1 }
+    ]
+  },
+  {
+    "name": "Chocolate Churro",
+    "shop": "Smoochurro",
+    "towns": ["Mesagoza", "Levincia", "Artazon", "Medali"],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/62.png",
+    "imagePath": "meal/62.png",
+    "powers": [
+      { "mealPower": 9, "type": 13, "level": 1 },
+      { "mealPower": 3, "type": 6, "level": 1 },
+      { "mealPower": 4, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Cinnamon Churro",
+    "shop": "Smoochurro",
+    "towns": ["Mesagoza", "Levincia", "Artazon", "Medali"],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/63.png",
+    "imagePath": "meal/63.png",
+    "powers": [
+      { "mealPower": 1, "type": 15, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 8, "type": 11, "level": 1 }
+    ]
+  },
+  {
+    "name": "Pinchitos",
+    "shop": "Chic Kebab",
+    "towns": [
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Montenevera",
+      "Cascarrafa"
+    ],
+    "cost": 1200,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/64.png",
+    "imagePath": "meal/64.png",
+    "powers": [
+      { "mealPower": 3, "type": 16, "level": 1 },
+      { "mealPower": 8, "type": 15, "level": 1 },
+      { "mealPower": 2, "type": 5, "level": 1 }
+    ]
+  },
+  {
+    "name": "Grilled Rice Balls",
+    "shop": "Chic Kebab",
+    "towns": [
+      "Levincia",
+      "Artazon",
+      "Medali",
+      "Mesagoza",
+      "Montenevera",
+      "Cascarrafa"
+    ],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/65.png",
+    "imagePath": "meal/65.png",
+    "powers": [
+      { "mealPower": 9, "type": 17, "level": 1 },
+      { "mealPower": 8, "type": 12, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Strawberry Chocolate Crepe",
+    "shop": "Kanto Crepes",
+    "towns": ["Levincia", "Artazon", "Mesagoza", "Porto Marinada"],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/66.png",
+    "imagePath": "meal/66.png",
+    "powers": [
+      { "mealPower": 4, "type": 10, "level": 1 },
+      { "mealPower": 1, "type": 17, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Strawberry Whipped Cream Crepe",
+    "shop": "Kanto Crepes",
+    "towns": ["Levincia", "Artazon", "Mesagoza", "Porto Marinada"],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/67.png",
+    "imagePath": "meal/67.png",
+    "powers": [
+      { "mealPower": 2, "type": 4, "level": 1 },
+      { "mealPower": 7, "type": 14, "level": 1 },
+      { "mealPower": 9, "type": 12, "level": 1 }
+    ]
+  },
+  {
+    "name": "Chocolate Banana Crepe",
+    "shop": "Kanto Crepes",
+    "towns": ["Levincia", "Artazon", "Mesagoza", "Porto Marinada"],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/68.png",
+    "imagePath": "meal/68.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 9, "type": 10, "level": 1 },
+      { "mealPower": 8, "type": 8, "level": 1 }
+    ]
+  },
+  {
+    "name": "Mint Chocolate Ice Cream",
+    "shop": "Sugar-N-Ice",
+    "towns": [
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Los Platos",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Cascarrafa"
+    ],
+    "cost": 950,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/69.png",
+    "imagePath": "meal/69.png",
+    "powers": [
+      { "mealPower": 4, "type": 17, "level": 1 },
+      { "mealPower": 7, "type": 8, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Fizzy-Pop Ice Cream",
+    "shop": "Sugar-N-Ice",
+    "towns": [
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Los Platos",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Cascarrafa"
+    ],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/70.png",
+    "imagePath": "meal/70.png",
+    "powers": [
+      { "mealPower": 2, "type": 0, "level": 1 },
+      { "mealPower": 1, "type": 10, "level": 1 },
+      { "mealPower": 7, "type": 9, "level": 1 }
+    ]
+  },
+  {
+    "name": "Strawberry Ice Cream",
+    "shop": "Sugar-N-Ice",
+    "towns": [
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Los Platos",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Cascarrafa"
+    ],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/71.png",
+    "imagePath": "meal/71.png",
+    "powers": [
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 2, "type": 10, "level": 1 },
+      { "mealPower": 4, "type": 5, "level": 1 }
+    ]
+  },
+  {
+    "name": "Mango Ice Cream",
+    "shop": "Sugar-N-Ice",
+    "towns": [
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Los Platos",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Cascarrafa"
+    ],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/72.png",
+    "imagePath": "meal/72.png",
+    "powers": [
+      { "mealPower": 8, "type": 0, "level": 1 },
+      { "mealPower": 4, "type": 15, "level": 1 },
+      { "mealPower": 1, "type": 12, "level": 1 }
+    ]
+  },
+  {
+    "name": "Nacli Salt Ice Cream",
+    "shop": "Sugar-N-Ice",
+    "towns": [
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Los Platos",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Cascarrafa"
+    ],
+    "cost": 900,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/73.png",
+    "imagePath": "meal/73.png",
+    "powers": [
+      { "mealPower": 7, "type": 14, "level": 1 },
+      { "mealPower": 3, "type": 11, "level": 1 },
+      { "mealPower": 1, "type": 16, "level": 1 }
+    ]
+  },
+  {
+    "name": "Teriyaki Ice Cream",
+    "shop": "Sugar-N-Ice",
+    "towns": [
+      "Cortondo",
+      "Levincia",
+      "Artazon",
+      "Los Platos",
+      "Medali",
+      "Mesagoza",
+      "Porto Marinada",
+      "Cascarrafa"
+    ],
+    "cost": 1150,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/74.png",
+    "imagePath": "meal/74.png",
+    "powers": [
+      { "mealPower": 3, "type": 6, "level": 1 },
+      { "mealPower": 4, "type": 1, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  },
+  {
+    "name": "Flower Ice Cream (Cup)",
+    "shop": "Ice Cream Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 800,
+    "imagePath": "meal/75.png",
+    "powers": [
+      { "mealPower": 9, "type": 16, "level": 1 },
+      { "mealPower": 4, "type": 3, "level": 1 },
+      { "mealPower": 7, "type": 13, "level": 1 }
+    ]
+  },
+  {
+    "name": "Flower Ice Cream (Cone)",
+    "shop": "Ice Cream Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 800,
+    "imagePath": "meal/76.png",
+    "powers": [
+      { "mealPower": 1, "type": 2, "level": 2 },
+      { "mealPower": 3, "type": 0, "level": 1 },
+      { "mealPower": 2, "type": 12, "level": 1 }
+    ]
+  },
+  {
+    "name": "Kitakami Fried Noodles",
+    "shop": "Fried Noodles Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 900,
+    "imagePath": "meal/???.png",
+    "powers": [
+      { "mealPower": 1, "type": 3, "level": 2 },
+      { "mealPower": 3, "type": 15, "level": 1 },
+      { "mealPower": 7, "type": 1, "level": 1 }
+    ]
+  },
+  {
+    "name": "Candy Apple",
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 500,
+    "imagePath": "meal/???.png",
+    "powers": [
+      { "mealPower": 9, "type": 4, "level": 1 },
+      { "mealPower": 7, "type": 3, "level": 1 },
+      { "mealPower": 3, "type": 17, "level": 1 }
+    ]
+  },
+  {
+    "name": "Green Candy Apple",
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 500,
+    "imagePath": "meal/???.png",
+    "powers": [
+      { "mealPower": 7, "type": 0, "level": 1 },
+      { "mealPower": 2, "type": 8, "level": 1 },
+      { "mealPower": 2, "type": 10, "level": 1 }
+    ]
+  },
+  {
+    "name": "Candy Rawst Berries",
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 700,
+    "imagePath": "meal/???.png",
+    "powers": [
+      { "mealPower": 9, "type": 7, "level": 1 },
+      { "mealPower": 8, "type": 4, "level": 1 },
+      { "mealPower": 1, "type": 14, "level": 1 }
+    ]
+  },
+  {
+    "name": "Candy Razz Berry",
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 700,
+    "imagePath": "meal/???.png",
+    "powers": [
+      { "mealPower": 8, "type": 3, "level": 1 },
+      { "mealPower": 3, "type": 12, "level": 1 },
+      { "mealPower": 2, "type": 16, "level": 1 }
+    ]
+  },
+  {
+    "name": "Candy Leppa Berry",
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 700,
+    "imagePath": "meal/???.png",
+    "powers": [
+      { "mealPower": 9, "type": 8, "level": 1 },
+      { "mealPower": 2, "type": 14, "level": 1 },
+      { "mealPower": 8, "type": 6, "level": 1 }
+    ]
+  },
+  {
+    "name": "Candy Pinap Berry",
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"],
+    "cost": 700,
+    "imagePath": "meal/???.png",
+    "powers": [
+      { "mealPower": 8, "type": 15, "level": 1 },
+      { "mealPower": 4, "type": 8, "level": 1 },
+      { "mealPower": 0, "type": 0, "level": 1 }
+    ]
+  }
+]
