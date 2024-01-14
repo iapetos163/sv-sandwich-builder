@@ -202,13 +202,7 @@
       }
     ],
     "shop": "Go-For-Broke Grill",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/6.png"
   },
   {
@@ -234,13 +228,7 @@
       }
     ],
     "shop": "Go-For-Broke Grill",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/7.png"
   },
   {
@@ -266,13 +254,7 @@
       }
     ],
     "shop": "Go-For-Broke Grill",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/8.png"
   },
   {
@@ -298,13 +280,7 @@
       }
     ],
     "shop": "Go-For-Broke Grill",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/9.png"
   },
   {
@@ -330,13 +306,7 @@
       }
     ],
     "shop": "Go-For-Broke Grill",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Artazon", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/10.png"
   },
   {
@@ -362,11 +332,7 @@
       }
     ],
     "shop": "Seafood Fresco",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/11.png"
   },
   {
@@ -392,11 +358,7 @@
       }
     ],
     "shop": "Seafood Fresco",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/12.png"
   },
   {
@@ -422,11 +384,7 @@
       }
     ],
     "shop": "Seafood Fresco",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/13.png"
   },
   {
@@ -452,11 +410,7 @@
       }
     ],
     "shop": "Seafood Fresco",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/14.png"
   },
   {
@@ -482,11 +436,7 @@
       }
     ],
     "shop": "Seafood Fresco",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/15.png"
   },
   {
@@ -512,10 +462,7 @@
       }
     ],
     "shop": "Sushi High Roller",
-    "towns": [
-      "Levincia",
-      "Medali"
-    ],
+    "towns": ["Levincia", "Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/16.png"
   },
   {
@@ -541,10 +488,7 @@
       }
     ],
     "shop": "Sushi High Roller",
-    "towns": [
-      "Levincia",
-      "Medali"
-    ],
+    "towns": ["Levincia", "Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/17.png"
   },
   {
@@ -570,10 +514,7 @@
       }
     ],
     "shop": "Sushi High Roller",
-    "towns": [
-      "Levincia",
-      "Medali"
-    ],
+    "towns": ["Levincia", "Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/18.png"
   },
   {
@@ -599,10 +540,7 @@
       }
     ],
     "shop": "Sushi High Roller",
-    "towns": [
-      "Levincia",
-      "Medali"
-    ],
+    "towns": ["Levincia", "Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/19.png"
   },
   {
@@ -628,10 +566,7 @@
       }
     ],
     "shop": "Sushi High Roller",
-    "towns": [
-      "Levincia",
-      "Medali"
-    ],
+    "towns": ["Levincia", "Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/20.png"
   },
   {
@@ -657,9 +592,7 @@
       }
     ],
     "shop": "Sushi High Roller Sp",
-    "towns": [
-      "Montenevera"
-    ],
+    "towns": ["Montenevera"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/21.png"
   },
   {
@@ -685,9 +618,7 @@
       }
     ],
     "shop": "Sushi High Roller Sp",
-    "towns": [
-      "Montenevera"
-    ],
+    "towns": ["Montenevera"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/22.png"
   },
   {
@@ -713,9 +644,7 @@
       }
     ],
     "shop": "Sushi High Roller Sp",
-    "towns": [
-      "Montenevera"
-    ],
+    "towns": ["Montenevera"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/23.png"
   },
   {
@@ -741,9 +670,7 @@
       }
     ],
     "shop": "Sushi High Roller Sp",
-    "towns": [
-      "Montenevera"
-    ],
+    "towns": ["Montenevera"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/24.png"
   },
   {
@@ -769,9 +696,7 @@
       }
     ],
     "shop": "Sushi High Roller Sp",
-    "towns": [
-      "Montenevera"
-    ],
+    "towns": ["Montenevera"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/25.png"
   },
   {
@@ -797,12 +722,7 @@
       }
     ],
     "shop": "Jade Palace Garden",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/26.png"
   },
   {
@@ -828,12 +748,7 @@
       }
     ],
     "shop": "Jade Palace Garden",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/27.png"
   },
   {
@@ -859,12 +774,7 @@
       }
     ],
     "shop": "Jade Palace Garden",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/28.png"
   },
   {
@@ -890,12 +800,7 @@
       }
     ],
     "shop": "Jade Palace Garden",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/29.png"
   },
   {
@@ -921,12 +826,7 @@
       }
     ],
     "shop": "Jade Palace Garden",
-    "towns": [
-      "Levincia",
-      "Medali",
-      "Mesagoza",
-      "Cascarrafa"
-    ],
+    "towns": ["Levincia", "Medali", "Mesagoza", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/30.png"
   },
   {
@@ -952,12 +852,7 @@
       }
     ],
     "shop": "Gastronome En Famille",
-    "towns": [
-      "Alfornada",
-      "Levincia",
-      "Medali",
-      "Cascarrafa"
-    ],
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/31.png"
   },
   {
@@ -983,12 +878,7 @@
       }
     ],
     "shop": "Gastronome En Famille",
-    "towns": [
-      "Alfornada",
-      "Levincia",
-      "Medali",
-      "Cascarrafa"
-    ],
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/32.png"
   },
   {
@@ -1014,12 +904,7 @@
       }
     ],
     "shop": "Gastronome En Famille",
-    "towns": [
-      "Alfornada",
-      "Levincia",
-      "Medali",
-      "Cascarrafa"
-    ],
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/33.png"
   },
   {
@@ -1045,12 +930,7 @@
       }
     ],
     "shop": "Gastronome En Famille",
-    "towns": [
-      "Alfornada",
-      "Levincia",
-      "Medali",
-      "Cascarrafa"
-    ],
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/34.png"
   },
   {
@@ -1076,12 +956,7 @@
       }
     ],
     "shop": "Gastronome En Famille",
-    "towns": [
-      "Alfornada",
-      "Levincia",
-      "Medali",
-      "Cascarrafa"
-    ],
+    "towns": ["Alfornada", "Levincia", "Medali", "Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/35.png"
   },
   {
@@ -1107,11 +982,7 @@
       }
     ],
     "shop": "Barato's",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/36.png"
   },
   {
@@ -1137,11 +1008,7 @@
       }
     ],
     "shop": "Barato's",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/37.png"
   },
   {
@@ -1167,11 +1034,7 @@
       }
     ],
     "shop": "Barato's",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/38.png"
   },
   {
@@ -1197,11 +1060,7 @@
       }
     ],
     "shop": "Barato's",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/39.png"
   },
   {
@@ -1227,11 +1086,7 @@
       }
     ],
     "shop": "Barato's",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Mesagoza"
-    ],
+    "towns": ["Levincia", "Artazon", "Mesagoza"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/40.png"
   },
   {
@@ -1422,10 +1277,7 @@
       }
     ],
     "shop": "Cafeteria",
-    "towns": [
-      "Naranja Academy",
-      "Uva Academy"
-    ],
+    "towns": ["Naranja Academy", "Uva Academy"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/46.png"
   },
   {
@@ -1451,10 +1303,7 @@
       }
     ],
     "shop": "Cafeteria",
-    "towns": [
-      "Naranja Academy",
-      "Uva Academy"
-    ],
+    "towns": ["Naranja Academy", "Uva Academy"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/47.png"
   },
   {
@@ -1480,10 +1329,7 @@
       }
     ],
     "shop": "Cafeteria",
-    "towns": [
-      "Naranja Academy",
-      "Uva Academy"
-    ],
+    "towns": ["Naranja Academy", "Uva Academy"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/48.png"
   },
   {
@@ -1509,10 +1355,7 @@
       }
     ],
     "shop": "Cafeteria",
-    "towns": [
-      "Naranja Academy",
-      "Uva Academy"
-    ],
+    "towns": ["Naranja Academy", "Uva Academy"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/49.png"
   },
   {
@@ -1538,10 +1381,7 @@
       }
     ],
     "shop": "Cafeteria",
-    "towns": [
-      "Naranja Academy",
-      "Uva Academy"
-    ],
+    "towns": ["Naranja Academy", "Uva Academy"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/50.png"
   },
   {
@@ -1567,9 +1407,7 @@
       }
     ],
     "shop": "Treasure Eatery",
-    "towns": [
-      "Medali"
-    ],
+    "towns": ["Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/51.png"
   },
   {
@@ -1595,9 +1433,7 @@
       }
     ],
     "shop": "Treasure Eatery",
-    "towns": [
-      "Medali"
-    ],
+    "towns": ["Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/52.png"
   },
   {
@@ -1623,9 +1459,7 @@
       }
     ],
     "shop": "Treasure Eatery",
-    "towns": [
-      "Medali"
-    ],
+    "towns": ["Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/53.png"
   },
   {
@@ -1651,9 +1485,7 @@
       }
     ],
     "shop": "Treasure Eatery",
-    "towns": [
-      "Medali"
-    ],
+    "towns": ["Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/54.png"
   },
   {
@@ -1679,9 +1511,7 @@
       }
     ],
     "shop": "Treasure Eatery",
-    "towns": [
-      "Medali"
-    ],
+    "towns": ["Medali"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/55.png"
   },
   {
@@ -1707,9 +1537,7 @@
       }
     ],
     "shop": "Kofu Lounge",
-    "towns": [
-      "Cascarrafa"
-    ],
+    "towns": ["Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/56.png"
   },
   {
@@ -1735,9 +1563,7 @@
       }
     ],
     "shop": "Kofu Lounge",
-    "towns": [
-      "Cascarrafa"
-    ],
+    "towns": ["Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/57.png"
   },
   {
@@ -1763,9 +1589,7 @@
       }
     ],
     "shop": "Kofu Lounge",
-    "towns": [
-      "Cascarrafa"
-    ],
+    "towns": ["Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/58.png"
   },
   {
@@ -1791,9 +1615,7 @@
       }
     ],
     "shop": "Kofu Lounge",
-    "towns": [
-      "Cascarrafa"
-    ],
+    "towns": ["Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/59.png"
   },
   {
@@ -1819,9 +1641,7 @@
       }
     ],
     "shop": "Kofu Lounge",
-    "towns": [
-      "Cascarrafa"
-    ],
+    "towns": ["Cascarrafa"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/60.png"
   },
   {
@@ -1991,12 +1811,7 @@
       }
     ],
     "shop": "Kanto Crepes",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Mesagoza",
-      "Porto Marinada"
-    ],
+    "towns": ["Levincia", "Artazon", "Mesagoza", "Porto Marinada"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/66.png"
   },
   {
@@ -2022,12 +1837,7 @@
       }
     ],
     "shop": "Kanto Crepes",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Mesagoza",
-      "Porto Marinada"
-    ],
+    "towns": ["Levincia", "Artazon", "Mesagoza", "Porto Marinada"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/67.png"
   },
   {
@@ -2053,12 +1863,7 @@
       }
     ],
     "shop": "Kanto Crepes",
-    "towns": [
-      "Levincia",
-      "Artazon",
-      "Mesagoza",
-      "Porto Marinada"
-    ],
+    "towns": ["Levincia", "Artazon", "Mesagoza", "Porto Marinada"],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/68.png"
   },
   {
@@ -2270,5 +2075,174 @@
       "Cascarrafa"
     ],
     "imageUrl": "https://www.serebii.net/scarletviolet/meals/74.png"
+  },
+  {
+    "name": "Kitakami Fried Noodles",
+    "description": "The Maillard reaction that occurs when browning the sauce leads to an absolutely irresistible aroma and flavor.",
+    "cost": "900",
+    "effects": [
+      {
+        "name": "Catching Power",
+        "type": "Poison",
+        "level": "2"
+      },
+      {
+        "name": "Item Drop Power",
+        "type": "Dragon",
+        "level": "1"
+      },
+      {
+        "name": "Humungo Power",
+        "type": "Fighting",
+        "level": "1"
+      }
+    ],
+    "shop": "Fried Noodles Stand",
+    "towns": ["Kitakami Hall"]
+  },
+
+  {
+    "name": "Candy Apple",
+    "description": "The apple beneath the candy coating is from the land of Kitakami, giving this treat its great flavor.",
+    "cost": "500",
+    "effects": [
+      {
+        "name": "Encounter Power",
+        "type": "Ground",
+        "level": "1"
+      },
+      {
+        "name": "Humungo Power",
+        "type": "Poison",
+        "level": "1"
+      },
+      {
+        "name": "Item Drop Power",
+        "type": "Fairy",
+        "level": "1"
+      }
+    ],
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"]
+  },
+  {
+    "name": "Green Candy Apple",
+    "description": "Green apples from the land of Kitakami have a strong acidity, which pairs perfectly with a candy coating.",
+    "cost": "500",
+    "effects": [
+      {
+        "name": "Humungo Power",
+        "type": "Normal",
+        "level": "1"
+      },
+      {
+        "name": "Exp. Point Power",
+        "type": "Steel",
+        "level": "1"
+      },
+      {
+        "name": "Exp. Point Power",
+        "type": "Water",
+        "level": "1"
+      }
+    ],
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"]
+  },
+  {
+    "name": "Candy Rawst Berries",
+    "description": "It tastes incredibly bitter to humans, but there's no end to the children who buy it, fooled by its appetizing look.",
+    "cost": "700",
+    "effects": [
+      {
+        "name": "Encounter Power",
+        "type": "Ghost",
+        "level": "1"
+      },
+      {
+        "name": "Teensy Power",
+        "type": "Ground",
+        "level": "1"
+      },
+      {
+        "name": "Catching Power",
+        "type": "Ice",
+        "level": "1"
+      }
+    ],
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"]
+  },
+  {
+    "name": "Candy Razz Berry",
+    "description": "This treat is 100 percent spicy-dry Razz Berry, causing any human who tries it to make an indescribable face.",
+    "cost": "700",
+    "effects": [
+      {
+        "name": "Teensy Power",
+        "type": "Poison",
+        "level": "1"
+      },
+      {
+        "name": "Item Drop Power",
+        "type": "Electric",
+        "level": "1"
+      },
+      {
+        "name": "Exp. Point Power",
+        "type": "Dark",
+        "level": "1"
+      }
+    ],
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"]
+  },
+  {
+    "name": "Candy Leppa Berry",
+    "description": "This Berry treat is easier to stomach than the others, and its complex flavor is popular among connoisseurs.",
+    "cost": "700",
+    "effects": [
+      {
+        "name": "Encounter Power",
+        "type": "Steel",
+        "level": "1"
+      },
+      {
+        "name": "Exp. Point Power",
+        "type": "Ice",
+        "level": "1"
+      },
+      {
+        "name": "Teensy Power",
+        "type": "Bug",
+        "level": "1"
+      }
+    ],
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"]
+  },
+  {
+    "name": "Candy Pinap Berry",
+    "description": "The sweetness of the candy coating and the spicy-sour taste of the Pinap Berry form a perfect combination.",
+    "cost": "700",
+    "effects": [
+      {
+        "name": "Teensy Power",
+        "type": "Dragon",
+        "level": "1"
+      },
+      {
+        "name": "Raid Power",
+        "type": "Steel",
+        "level": "1"
+      },
+      {
+        "name": "Egg Power",
+        "type": "",
+        "level": "1"
+      }
+    ],
+    "shop": "Candy Fruit Stand",
+    "towns": ["Kitakami Hall"]
   }
 ]

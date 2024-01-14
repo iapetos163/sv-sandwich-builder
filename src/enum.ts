@@ -38,6 +38,7 @@ export enum TypeIndex {
   DRAGON,
   DARK,
   FAIRY,
+  ALL_TYPES,
 }
 
 export const rangeFlavors = [...Array(5).keys()];
