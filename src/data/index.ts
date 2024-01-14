@@ -24,7 +24,7 @@ export const recipes: SandwichRecipe[] = recipesData.map((recipe) => ({
   ),
 }));
 
-export const meals: Meal[] = mealsData;
+export const meals = mealsData as Meal[];
 
 export const linearConstraints = linearVarsData as unknown as LinearConstraints;
 

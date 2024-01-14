@@ -1,4 +1,4 @@
-import { MealPower, TypeIndex } from './enum';
+import { Currency, MealPower, TypeIndex } from './enum';
 import { Constraint, Objective } from './lp';
 
 export interface ResultPower {
@@ -43,6 +43,7 @@ export interface SandwichRecipe {
 
 export interface Meal {
   name: string;
+  currency: Currency;
   cost: number;
   powers: TargetPower[];
   shop: string;
