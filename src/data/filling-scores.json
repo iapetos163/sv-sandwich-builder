@@ -1,42 +1,42 @@
 {
-  "ptsld": 20,
-  "ndls": 20,
+  "ptsld": 33,
+  "ndls": 33,
 
-  "egg": 19,
+  "egg": 32,
 
-  "pttor": 18,
+  "pttor": 31,
 
-  "rice": 17,
-  "brgr": 17,
+  "rice": 30,
+  "brgr": 30,
 
-  "ff": 16,
+  "ff": 24,
 
-  "let": 15,
+  "let": 19,
 
   "tofu": 14,
   "bcn": 14,
 
-  "chrz": 13,
-  "hssg": 13,
+  "chrz": 9,
+  "hssg": 9,
 
-  "kstk": 12,
+  "kstk": 9,
 
-  "chtom": 11,
-  "kw": 11,
-  "pnpl": 11,
-  "straw": 11,
+  "chtom": 8,
+  "kw": 8,
+  "pnpl": 8,
+  "straw": 8,
 
-  "tom": 10,
+  "tom": 7,
 
-  "apl": 9,
+  "apl": 7,
 
-  "onn": 8,
-  "ronn": 8,
+  "onn": 7,
+  "ronn": 7,
 
-  "chs": 7,
-  "ham": 7,
-  "pro": 7,
-  "smf": 7,
+  "chs": 6,
+  "ham": 6,
+  "pro": 6,
+  "smf": 6,
 
   "bnn": 6,
   "cuc": 6,
