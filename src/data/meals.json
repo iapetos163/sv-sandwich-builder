@@ -1369,5 +1369,58 @@
       { "mealPower": 4, "type": 8, "level": 1 },
       { "mealPower": 0, "type": 0, "level": 1 }
     ]
+  },
+  {
+    "name": "Academy Pizza",
+    "shop": "Cafeteria",
+    "towns": ["Blueberry Academy"],
+    "currency": "bp",
+    "cost": 50,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/89.png",
+    "imagePath": "meal/89.png",
+    "powers": [
+      { "mealPower": 8, "type": 18, "level": 2 },
+      { "mealPower": 4, "type": 18, "level": 1 }
+    ]
+  },
+  {
+    "name": "Academy Shake",
+    "shop": "Cafeteria",
+    "towns": ["Blueberry Academy"],
+    "currency": "bp",
+    "cost": 100,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/90.png",
+    "imagePath": "meal/90.png",
+    "powers": [
+      { "mealPower": 3, "type": 18, "level": 2 },
+      { "mealPower": 6, "type": 18, "level": 1 }
+    ]
+  },
+  {
+    "name": "Academy Fries",
+    "shop": "Cafeteria",
+    "towns": ["Blueberry Academy"],
+    "currency": "bp",
+    "cost": 50,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/91.png",
+    "imagePath": "meal/91.png",
+    "powers": [
+      { "mealPower": 7, "type": 18, "level": 2 },
+      { "mealPower": 2, "type": 18, "level": 1 }
+    ]
+  },
+  {
+    "name": "Academy Special",
+    "shop": "Cafeteria",
+    "towns": ["Blueberry Academy"],
+    "currency": "bp",
+    "cost": 150,
+    "imageUrl": "https://www.serebii.net/scarletviolet/meals/92.png",
+    "imagePath": "meal/92.png",
+    "powers": [
+      { "mealPower": 1, "type": 18, "level": 2 },
+      { "mealPower": 0, "type": 0, "level": 1 },
+      { "mealPower": 5, "type": 18, "level": 1 }
+    ]
   }
 ]
