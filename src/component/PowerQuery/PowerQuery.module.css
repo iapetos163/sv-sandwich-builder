@@ -33,3 +33,11 @@
 .optionsContainer input {
   margin-right: 5px;
 }
+
+.suboptionsContainer {
+  padding-left: 1.2rem;
+}
+
+.optionsContainer .disabledOption {
+  color: var(--color-gray);
+}

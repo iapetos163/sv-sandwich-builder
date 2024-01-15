@@ -222,8 +222,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 Restaurant meals
               </label>
             </div>
-            <div>
-              <div>
+            <div className={styles.suboptionsContainer}>
+              <div className={includeMeals ? '' : styles.disabledOption}>
                 <label>
                   <input
                     type="checkbox"
@@ -234,7 +234,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                   Paldea
                 </label>
               </div>
-              <div>
+              <div className={includeMeals ? '' : styles.disabledOption}>
                 <label>
                   <input
                     type="checkbox"
@@ -245,7 +245,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                   Kitakami
                 </label>
               </div>
-              <div>
+              <div className={includeMeals ? '' : styles.disabledOption}>
                 <label>
                   <input
                     type="checkbox"
