@@ -28,8 +28,16 @@ function App(): ReactElement {
       if (resultState === ResultState.CALCULATING) return;
 
       const results: Result[] = [];
-      if (options.includeMeals) {
-        const meals = getMealsForPowers(newQuery);
+      if (
+        options.includePaldeaMeals ||
+        options.includeKitakamiMeals ||
+        options.includeBlueberryMeals
+      ) {
+        const meals = getMealsForPowers(newQuery, {
+          excludePaldea: !options.includePaldeaMeals,
+          kitakami: options.includeKitakamiMeals,
+          blueberry: options.includeBlueberryMeals,
+        });
         results.push(
           ...meals.map(
             (m): MealResult => ({ resultType: ResultType.MEAL, ...m }),

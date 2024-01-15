@@ -21,6 +21,7 @@ export const allTypes = [
   'Dragon',
   'Dark',
   'Fairy',
+  'All',
 ];
 
 export const mealPowerCopy = [

@@ -1,4 +1,10 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { rangeMealPowers, rangeTypes } from '@/enum';
 import { TargetPower } from '@/types';
 import styles from './PowerQuery.module.css';
@@ -9,10 +15,22 @@ const allowedMealPowers = rangeMealPowers.map(() => true);
 const allowedTypes = rangeTypes.map(() => true);
 
 export interface QueryOptions {
-  includeMeals?: boolean;
+  includePaldeaMeals?: boolean;
+  includeKitakamiMeals?: boolean;
+  includeBlueberryMeals?: boolean;
   includeRecipes?: boolean;
   includeCreative?: boolean;
   multiplayer?: boolean;
+}
+
+interface SelectedOptions {
+  includeMeals: boolean;
+  includePaldeaMeals: boolean;
+  includeKitakamiMeals: boolean;
+  includeBlueberryMeals: boolean;
+  includeRecipes: boolean;
+  includeCreative: boolean;
+  multiplayer: boolean;
 }
 
 export interface PowerQueryProps {
@@ -32,10 +50,16 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   );
   const [firstQueryOverride, setFirstQueryOverride] =
     useState<TargetPower | null>(null);
-  const [includeMeals, setIncludeMeals] = useState(true);
-  const [includeRecipes, setIncludeRecipes] = useState(true);
-  const [includeCreative, setIncludeCreative] = useState(true);
-  const [multiplayer, setMultiplayer] = useState(false);
+
+  const [options, setOptions] = useState<SelectedOptions>({
+    includeMeals: true,
+    includePaldeaMeals: true,
+    includeKitakamiMeals: false,
+    includeBlueberryMeals: false,
+    includeRecipes: true,
+    includeCreative: true,
+    multiplayer: false,
+  });
   const [secondQueryOverride, setSecondQueryOverride] =
     useState<TargetPower | null>(null);
 
@@ -86,20 +110,50 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   }, []);
 
   const toggleMeals = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeMeals(event.target.checked);
+    setOptions((prev) => ({ ...prev, includeMeals: event.target.checked }));
   }, []);
 
+  const togglePaldeaMeals = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setOptions((prev) => ({
+        ...prev,
+        includePaldeaMeals: event.target.checked,
+      }));
+    },
+    [],
+  );
+
+  const toggleKitakamiMeals = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setOptions((prev) => ({
+        ...prev,
+        includeKitakamiMeals: event.target.checked,
+      }));
+    },
+    [],
+  );
+
+  const toggleBlueberryMeals = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setOptions((prev) => ({
+        ...prev,
+        includeBlueberryMeals: event.target.checked,
+      }));
+    },
+    [],
+  );
+
   const toggleRecipes = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeRecipes(event.target.checked);
+    setOptions((prev) => ({ ...prev, includeRecipes: event.target.checked }));
   }, []);
 
   const toggleCreative = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeCreative(event.target.checked);
+    setOptions((prev) => ({ ...prev, includeCreative: event.target.checked }));
   }, []);
 
   const toggleMultiplayer = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setMultiplayer(event.target.checked);
+      setOptions((prev) => ({ ...prev, multiplayer: event.target.checked }));
     },
     [],
   );
@@ -114,23 +168,37 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
       ].filter((p): p is TargetPower => !!p);
       if (powers.length > 0)
         onSubmit(powers, {
-          includeMeals,
-          includeRecipes,
-          includeCreative,
-          multiplayer,
+          includePaldeaMeals:
+            options.includeMeals && options.includePaldeaMeals,
+          includeKitakamiMeals:
+            options.includeMeals && options.includeKitakamiMeals,
+          includeBlueberryMeals:
+            options.includeMeals && options.includeBlueberryMeals,
+          includeRecipes: options.includeRecipes,
+          includeCreative: options.includeCreative,
+          multiplayer: options.multiplayer,
         });
     },
-    [
-      firstQueryPower,
-      secondQueryPower,
-      thirdQueryPower,
-      onSubmit,
-      includeMeals,
-      includeRecipes,
-      includeCreative,
-      multiplayer,
-    ],
+    [firstQueryPower, secondQueryPower, thirdQueryPower, onSubmit, options],
   );
+
+  // Restore options from storage
+  useEffect(() => {
+    try {
+      const optionsItem = localStorage.getItem('sandwichOptions');
+      if (!optionsItem) return;
+      const storedOptions = JSON.parse(optionsItem);
+      setOptions((prev) => ({ ...prev, ...storedOptions }));
+    } catch (e) {
+      // pass
+    }
+  }, []);
+
+  // Save options to storage
+  useEffect(() => {
+    localStorage.setItem('sandwichOptions', JSON.stringify(options));
+  }, [options]);
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -185,17 +253,58 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               <label>
                 <input
                   type="checkbox"
-                  checked={includeMeals}
+                  checked={options.includeMeals}
                   onChange={toggleMeals}
                 ></input>{' '}
                 Restaurant meals
               </label>
             </div>
+            <div className={styles.suboptionsContainer}>
+              <div
+                className={options.includeMeals ? '' : styles.disabledOption}
+              >
+                <label>
+                  <input
+                    type="checkbox"
+                    disabled={!options.includeMeals}
+                    checked={options.includePaldeaMeals}
+                    onChange={togglePaldeaMeals}
+                  ></input>{' '}
+                  Paldea
+                </label>
+              </div>
+              <div
+                className={options.includeMeals ? '' : styles.disabledOption}
+              >
+                <label>
+                  <input
+                    type="checkbox"
+                    disabled={!options.includeMeals}
+                    checked={options.includeKitakamiMeals}
+                    onChange={toggleKitakamiMeals}
+                  ></input>{' '}
+                  Kitakami
+                </label>
+              </div>
+              <div
+                className={options.includeMeals ? '' : styles.disabledOption}
+              >
+                <label>
+                  <input
+                    type="checkbox"
+                    disabled={!options.includeMeals}
+                    checked={options.includeBlueberryMeals}
+                    onChange={toggleBlueberryMeals}
+                  ></input>{' '}
+                  Blueberry Academy (cost BP)
+                </label>
+              </div>
+            </div>
             <div>
               <label>
                 <input
                   type="checkbox"
-                  checked={includeRecipes}
+                  checked={options.includeRecipes}
                   onChange={toggleRecipes}
                 ></input>{' '}
                 Sandwich recipes
@@ -205,7 +314,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               <label>
                 <input
                   type="checkbox"
-                  checked={includeCreative}
+                  checked={options.includeCreative}
                   onChange={toggleCreative}
                 ></input>{' '}
                 Creative mode sandwiches
@@ -215,7 +324,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               <label>
                 <input
                   type="checkbox"
-                  checked={multiplayer}
+                  checked={options.multiplayer}
                   onChange={toggleMultiplayer}
                 ></input>{' '}
                 Multiplayer

@@ -130,6 +130,9 @@ const main = async () => {
     '--skip-images': Boolean,
 
     '-s': '--skip-images',
+    '--model-only': Boolean,
+
+    '-m': '--model-only',
   });
 
   const ingredientIdsByName = Object.fromEntries(
@@ -188,6 +191,22 @@ const main = async () => {
     },
   );
 
+  const ingredientsData = parsedFillings.concat(parsedCondiments);
+
+  const outputJson = async (filename: string, data: any) => {
+    const outputPath = `src/data/${filename}`;
+    await writeFile(outputPath, JSON.stringify(data));
+    console.log(`Exported ${outputPath}`);
+  };
+
+  await outputJson('ingredients.json', ingredientsData);
+  const lc = generateLinearConstraints(ingredientsData);
+  await outputJson('linear-vars.json', lc);
+  await outputJson(
+    'optimal-types.json',
+    await getOptimalTypes(lc, ingredientsData),
+  );
+
   const recipeData = sandwiches
     .filter((s) => s.number !== '-1' && s.number !== '0')
     .map(
@@ -223,29 +242,16 @@ const main = async () => {
     }),
   );
 
-  const ingredientsData = parsedFillings.concat(parsedCondiments);
+  if (!args['--model-only']) {
+    const mealLocations = new Set<string>();
+    mealData.forEach((meal) =>
+      meal.towns.forEach((town) => mealLocations.add(town)),
+    );
 
-  const mealLocations = new Set<string>();
-  mealData.forEach((meal) =>
-    meal.towns.forEach((town) => mealLocations.add(town)),
-  );
-
-  const outputJson = async (filename: string, data: any) => {
-    const outputPath = `src/data/${filename}`;
-    await writeFile(outputPath, JSON.stringify(data));
-    console.log(`Exported ${outputPath}`);
-  };
-
-  await outputJson('ingredients.json', ingredientsData);
-  await outputJson('recipes.json', recipeData);
-  await outputJson('meals.json', mealData);
-  await outputJson('locations.json', Array.from(mealLocations));
-  const lc = generateLinearConstraints(ingredientsData);
-  await outputJson('linear-vars.json', lc);
-  await outputJson(
-    'optimal-types.json',
-    await getOptimalTypes(lc, ingredientsData),
-  );
+    await outputJson('recipes.json', recipeData);
+    await outputJson('meals.json', mealData);
+    await outputJson('locations.json', Array.from(mealLocations));
+  }
 
   if (args['--skip-images']) return;
 

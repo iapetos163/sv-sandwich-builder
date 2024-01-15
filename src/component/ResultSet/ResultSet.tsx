@@ -8,6 +8,7 @@ import MealResult from '@/component/MealResult';
 import PokeDollar from '@/component/PokeDollar';
 import RecipeResult from '@/component/RecipeResult';
 import SandwichResult from '@/component/SandwichResult';
+import { Currency } from '@/enum';
 import InitResult from './InitResult';
 import s from './ResultSet.module.css';
 import { Result, ResultState, ResultType } from './types';
@@ -112,8 +113,14 @@ const ResultSet = ({ resultState, results }: ResultSetProps) => {
               <>
                 <h2>Restaurant Meal</h2>
                 <h3 className={s.resultSubheader}>
-                  {result.name} (<PokeDollar />
-                  {result.cost})
+                  {result.name}{' '}
+                  {result.currency === Currency.POKE && (
+                    <>
+                      (<PokeDollar />
+                      {result.cost})
+                    </>
+                  )}
+                  {result.currency === Currency.BP && `(${result.cost} BP)`}
                 </h3>
                 <MealResult meal={result} />
               </>
