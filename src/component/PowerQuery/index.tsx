@@ -1,4 +1,10 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { rangeMealPowers, rangeTypes } from '@/enum';
 import { TargetPower } from '@/types';
 import styles from './PowerQuery.module.css';
@@ -175,6 +181,24 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     },
     [firstQueryPower, secondQueryPower, thirdQueryPower, onSubmit, options],
   );
+
+  // Restore options from storage
+  useEffect(() => {
+    try {
+      const optionsItem = localStorage.getItem('sandwichOptions');
+      if (!optionsItem) return;
+      const storedOptions = JSON.parse(optionsItem);
+      setOptions((prev) => ({ ...prev, ...storedOptions }));
+    } catch (e) {
+      // pass
+    }
+  }, []);
+
+  // Save options to storage
+  useEffect(() => {
+    localStorage.setItem('sandwichOptions', JSON.stringify(options));
+  }, [options]);
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
