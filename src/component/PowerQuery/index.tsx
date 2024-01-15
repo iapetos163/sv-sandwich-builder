@@ -17,6 +17,16 @@ export interface QueryOptions {
   multiplayer?: boolean;
 }
 
+interface SelectedOptions {
+  includeMeals: boolean;
+  includePaldeaMeals: boolean;
+  includeKitakamiMeals: boolean;
+  includeBlueberryMeals: boolean;
+  includeRecipes: boolean;
+  includeCreative: boolean;
+  multiplayer: boolean;
+}
+
 export interface PowerQueryProps {
   onSubmit: (queryPowers: TargetPower[], options?: QueryOptions) => void;
   enableSubmit: boolean;
@@ -34,13 +44,16 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   );
   const [firstQueryOverride, setFirstQueryOverride] =
     useState<TargetPower | null>(null);
-  const [includeMeals, setIncludeMeals] = useState(true);
-  const [includeRecipes, setIncludeRecipes] = useState(true);
-  const [includeCreative, setIncludeCreative] = useState(true);
-  const [includePaldeaMeals, setIncludePaldeaMeals] = useState(true);
-  const [includeKitakamiMeals, setIncludeKitakamiMeals] = useState(false);
-  const [includeBlueberryMeals, setIncludeBlueberryMeals] = useState(false);
-  const [multiplayer, setMultiplayer] = useState(false);
+
+  const [options, setOptions] = useState<SelectedOptions>({
+    includeMeals: true,
+    includePaldeaMeals: true,
+    includeKitakamiMeals: false,
+    includeBlueberryMeals: false,
+    includeRecipes: true,
+    includeCreative: true,
+    multiplayer: false,
+  });
   const [secondQueryOverride, setSecondQueryOverride] =
     useState<TargetPower | null>(null);
 
@@ -91,41 +104,50 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
   }, []);
 
   const toggleMeals = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeMeals(event.target.checked);
+    setOptions((prev) => ({ ...prev, includeMeals: event.target.checked }));
   }, []);
 
   const togglePaldeaMeals = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setIncludePaldeaMeals(event.target.checked);
+      setOptions((prev) => ({
+        ...prev,
+        includePaldeaMeals: event.target.checked,
+      }));
     },
     [],
   );
 
   const toggleKitakamiMeals = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setIncludeKitakamiMeals(event.target.checked);
+      setOptions((prev) => ({
+        ...prev,
+        includeKitakamiMeals: event.target.checked,
+      }));
     },
     [],
   );
 
   const toggleBlueberryMeals = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setIncludeBlueberryMeals(event.target.checked);
+      setOptions((prev) => ({
+        ...prev,
+        includeBlueberryMeals: event.target.checked,
+      }));
     },
     [],
   );
 
   const toggleRecipes = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeRecipes(event.target.checked);
+    setOptions((prev) => ({ ...prev, includeRecipes: event.target.checked }));
   }, []);
 
   const toggleCreative = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setIncludeCreative(event.target.checked);
+    setOptions((prev) => ({ ...prev, includeCreative: event.target.checked }));
   }, []);
 
   const toggleMultiplayer = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setMultiplayer(event.target.checked);
+      setOptions((prev) => ({ ...prev, multiplayer: event.target.checked }));
     },
     [],
   );
@@ -140,27 +162,18 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
       ].filter((p): p is TargetPower => !!p);
       if (powers.length > 0)
         onSubmit(powers, {
-          includePaldeaMeals: includeMeals && includePaldeaMeals,
-          includeKitakamiMeals: includeMeals && includeKitakamiMeals,
-          includeBlueberryMeals: includeMeals && includeBlueberryMeals,
-          includeRecipes,
-          includeCreative,
-          multiplayer,
+          includePaldeaMeals:
+            options.includeMeals && options.includePaldeaMeals,
+          includeKitakamiMeals:
+            options.includeMeals && options.includeKitakamiMeals,
+          includeBlueberryMeals:
+            options.includeMeals && options.includeBlueberryMeals,
+          includeRecipes: options.includeRecipes,
+          includeCreative: options.includeCreative,
+          multiplayer: options.multiplayer,
         });
     },
-    [
-      firstQueryPower,
-      secondQueryPower,
-      thirdQueryPower,
-      onSubmit,
-      includeMeals,
-      includePaldeaMeals,
-      includeKitakamiMeals,
-      includeBlueberryMeals,
-      includeRecipes,
-      includeCreative,
-      multiplayer,
-    ],
+    [firstQueryPower, secondQueryPower, thirdQueryPower, onSubmit, options],
   );
   return (
     <div>
@@ -216,41 +229,47 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               <label>
                 <input
                   type="checkbox"
-                  checked={includeMeals}
+                  checked={options.includeMeals}
                   onChange={toggleMeals}
                 ></input>{' '}
                 Restaurant meals
               </label>
             </div>
             <div className={styles.suboptionsContainer}>
-              <div className={includeMeals ? '' : styles.disabledOption}>
+              <div
+                className={options.includeMeals ? '' : styles.disabledOption}
+              >
                 <label>
                   <input
                     type="checkbox"
-                    disabled={!includeMeals}
-                    checked={includePaldeaMeals}
+                    disabled={!options.includeMeals}
+                    checked={options.includePaldeaMeals}
                     onChange={togglePaldeaMeals}
                   ></input>{' '}
                   Paldea
                 </label>
               </div>
-              <div className={includeMeals ? '' : styles.disabledOption}>
+              <div
+                className={options.includeMeals ? '' : styles.disabledOption}
+              >
                 <label>
                   <input
                     type="checkbox"
-                    disabled={!includeMeals}
-                    checked={includeKitakamiMeals}
+                    disabled={!options.includeMeals}
+                    checked={options.includeKitakamiMeals}
                     onChange={toggleKitakamiMeals}
                   ></input>{' '}
                   Kitakami
                 </label>
               </div>
-              <div className={includeMeals ? '' : styles.disabledOption}>
+              <div
+                className={options.includeMeals ? '' : styles.disabledOption}
+              >
                 <label>
                   <input
                     type="checkbox"
-                    disabled={!includeMeals}
-                    checked={includeBlueberryMeals}
+                    disabled={!options.includeMeals}
+                    checked={options.includeBlueberryMeals}
                     onChange={toggleBlueberryMeals}
                   ></input>{' '}
                   Blueberry Academy (cost BP)
@@ -261,7 +280,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               <label>
                 <input
                   type="checkbox"
-                  checked={includeRecipes}
+                  checked={options.includeRecipes}
                   onChange={toggleRecipes}
                 ></input>{' '}
                 Sandwich recipes
@@ -271,7 +290,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               <label>
                 <input
                   type="checkbox"
-                  checked={includeCreative}
+                  checked={options.includeCreative}
                   onChange={toggleCreative}
                 ></input>{' '}
                 Creative mode sandwiches
@@ -281,7 +300,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
               <label>
                 <input
                   type="checkbox"
-                  checked={multiplayer}
+                  checked={options.multiplayer}
                   onChange={toggleMultiplayer}
                 ></input>{' '}
                 Multiplayer
