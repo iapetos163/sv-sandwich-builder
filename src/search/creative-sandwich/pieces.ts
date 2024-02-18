@@ -16,15 +16,18 @@ export const adjustForDroppedPieces = (
 ): SandwichResult | null => {
   const ingredients = sandwich.fillings.concat(sandwich.condiments);
 
+  // The sandwich initially doesn't differentiate
+  // between required and optional piece drops
+  // So all possible drops are initially "required"
   const resultRequiredDrops: Record<string, number> =
     sandwich.requiredPieceDrops;
   const resultOptionalDrops: Record<string, number> = {};
 
-  // TODO: prioritize fillings by difficulty
   for (const fillingId of Object.keys(resultRequiredDrops)) {
     const drops = combineDrops(resultRequiredDrops, resultOptionalDrops);
     let powers = getPowersForIngredients(ingredients, drops);
 
+    // If sandwich has too many drops,
     // Remove required drops until sandwich doesn't have too many drops
     let numRequiredDrops = drops[fillingId];
     while (powers.length === 0 && numRequiredDrops > 0) {
@@ -35,14 +38,14 @@ export const adjustForDroppedPieces = (
       });
     }
 
-    // Still too many drops
+    // If sandwich still has too many drops
     // Modify required drops and move on to next filling
     if (powers.length === 0) {
       resultRequiredDrops[fillingId] = numRequiredDrops;
       continue;
     }
 
-    // Removing required drops made the sandwich no longer viable
+    // If removing required drops made the sandwich no longer viable
     // Change nothing and try the next filling
     if (!powerSetsMatch(powers, sandwich.target.powers)) {
       continue;
