@@ -21,6 +21,7 @@ export interface QueryOptions {
   includeRecipes?: boolean;
   includeCreative?: boolean;
   multiplayer?: boolean;
+  noHerba?: boolean;
 }
 
 interface SelectedOptions {
@@ -31,6 +32,7 @@ interface SelectedOptions {
   includeRecipes: boolean;
   includeCreative: boolean;
   multiplayer: boolean;
+  noHerba: boolean;
 }
 
 export interface PowerQueryProps {
@@ -59,6 +61,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     includeRecipes: true,
     includeCreative: true,
     multiplayer: false,
+    noHerba: true,
+
   });
   const [secondQueryOverride, setSecondQueryOverride] =
     useState<TargetPower | null>(null);
@@ -158,6 +162,13 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     [],
   );
 
+  const toggleHerba = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setOptions((prev) => ({ ...prev, noHerba: event.target.checked }));
+    },
+    [],
+  );
+
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
       evt.preventDefault();
@@ -177,6 +188,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
           includeRecipes: options.includeRecipes,
           includeCreative: options.includeCreative,
           multiplayer: options.multiplayer,
+          noHerba: options.noHerba,
         });
     },
     [firstQueryPower, secondQueryPower, thirdQueryPower, onSubmit, options],
@@ -319,6 +331,21 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 ></input>{' '}
                 Creative mode sandwiches
               </label>
+            </div>
+            <div className={styles.suboptionsContainer}>
+              <div
+                className={options.includeCreative ? '' : styles.disabledOption}
+              >
+                <label>
+                  <input
+                    type="checkbox"
+                    disabled={!options.includeCreative}
+                    checked={options.noHerba}
+                    onChange={toggleHerba}
+                  ></input>{' '}
+                  No Herba Mystica
+                </label>
+              </div>
             </div>
             <div>
               <label>

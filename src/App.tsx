@@ -63,6 +63,7 @@ function App(): ReactElement {
           const creativeSandwiches = await makeSandwichesForPowers(
             newQuery,
             options.multiplayer,
+            options.noHerba,
           );
           results.push(
             ...creativeSandwiches.map(
