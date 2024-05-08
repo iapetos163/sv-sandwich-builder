@@ -61,7 +61,7 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     includeRecipes: true,
     includeCreative: true,
     multiplayer: false,
-    noHerba: true,
+    noHerba: false,
 
   });
   const [secondQueryOverride, setSecondQueryOverride] =
