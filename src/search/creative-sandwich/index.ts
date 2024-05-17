@@ -54,7 +54,7 @@ const filterSandwichResults = async (
 export const makeSandwichesForPowers = async (
   targetPowers: TargetPower[],
   multiplayer = false,
-  noHerba = true,
+  noHerba = false,
 ): Promise<Sandwich[]> => {
   if (!requestedPowersValid(targetPowers, multiplayer)) {
     return [];
