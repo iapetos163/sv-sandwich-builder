@@ -16,7 +16,7 @@ export const emptySandwich = {
   powers: [],
 };
 
-const RESULT_LIMIT = 6;
+const RESULT_LIMIT = 20; //6 is too little
 const SCORE_THRESHOLD = 9;
 
 const filterSandwichResults = async (
@@ -54,6 +54,7 @@ const filterSandwichResults = async (
 export const makeSandwichesForPowers = async (
   targetPowers: TargetPower[],
   multiplayer = false,
+  noHerba = true,
 ): Promise<Sandwich[]> => {
   if (!requestedPowersValid(targetPowers, multiplayer)) {
     return [];
@@ -88,6 +89,11 @@ export const makeSandwichesForPowers = async (
     sandwichesByNumHerba[n].push(sandwich);
   });
   sandwichesByNumHerba = sandwichesByNumHerba.filter((g) => g.length > 0);
+  if (noHerba) {
+    if (sandwichesByNumHerba[0].length === 0) return [];
+    sandwichesByNumHerba[1] = [];
+    sandwichesByNumHerba[2] = [];
+  }
   const limitPerGroup = Math.ceil(RESULT_LIMIT / sandwichesByNumHerba.length);
 
   sandwiches = (
