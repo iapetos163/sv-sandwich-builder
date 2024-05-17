@@ -83,26 +83,31 @@ export const makeSandwichesForPowers = async (
 
   if (sandwiches.length === 0) return [];
 
-  let sandwichesByNumHerba: SandwichResult[][] = [[], [], []];
+  let sandwichesByTargetNumHerba: SandwichResult[][] = [[], [], []];
   sandwiches.forEach((sandwich) => {
     const n = sandwich.target.numHerbaMystica;
-    sandwichesByNumHerba[n].push(sandwich);
+    sandwichesByTargetNumHerba[n].push(sandwich);
   });
-  sandwichesByNumHerba = sandwichesByNumHerba.filter((g) => g.length > 0);
-  if (noHerba) {
-    if (sandwichesByNumHerba[0].length === 0) return [];
-    sandwichesByNumHerba[1] = [];
-    sandwichesByNumHerba[2] = [];
-  }
-  const limitPerGroup = Math.ceil(RESULT_LIMIT / sandwichesByNumHerba.length);
+  sandwichesByTargetNumHerba = sandwichesByTargetNumHerba.filter(
+    (g) => g.length > 0,
+  );
+  const limitPerGroup = Math.ceil(
+    RESULT_LIMIT / sandwichesByTargetNumHerba.length,
+  );
 
   sandwiches = (
     await Promise.all(
-      sandwichesByNumHerba.map((group) =>
+      sandwichesByTargetNumHerba.map((group) =>
         filterSandwichResults(group, limitPerGroup, multiplayer),
       ),
     )
   ).flatMap((g) => g);
+
+  if (noHerba) {
+    sandwiches = sandwiches.filter((s) =>
+      s.condiments.every((c) => !c.isHerbaMystica),
+    );
+  }
 
   // Filter out supersets
   sandwiches = sandwiches
