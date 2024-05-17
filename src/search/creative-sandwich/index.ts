@@ -27,6 +27,8 @@ const filterSandwichResults = async (
   sandwiches.sort((a, b) => a.score - b.score);
   sandwiches = sandwiches.slice(0, limit);
 
+  if (sandwiches.length === 0) return [];
+
   if (sandwiches[0].target.arbitraryTypePlaceIndices.length > 0) {
     const targets = refineTarget(sandwiches[0].target);
     const refined = (
