@@ -62,7 +62,7 @@ function App(): ReactElement {
         setTimeout(async () => {
           const creativeSandwiches = await makeSandwichesForPowers(
             newQuery,
-            options.multiplayer,
+            options.multiplayer ? 2 : 1, // TODO
             options.noHerba,
           );
           results.push(

@@ -1172,7 +1172,7 @@ describe('makeSandwichForPower', () => {
         level: 3,
       },
     ];
-    const sandwiches = await makeSandwichesForPowers(targetPowers, true);
+    const sandwiches = await makeSandwichesForPowers(targetPowers, 2);
 
     // chrz chrz ptsld ptsld ptsld ptsld ptsld crmch crmch crmch hmslt
     expect(sandwiches.length).toBeGreaterThanOrEqual(1);
@@ -1202,7 +1202,7 @@ describe('makeSandwichForPower', () => {
         level: 2,
       },
     ];
-    const sandwiches = await makeSandwichesForPowers(targetPowers, true);
+    const sandwiches = await makeSandwichesForPowers(targetPowers, 2);
 
     // 8x rice bsl bsl chili oil hmslt
     expect(sandwiches.length).toBeGreaterThanOrEqual(1);

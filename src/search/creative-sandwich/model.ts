@@ -6,7 +6,7 @@ import { Target } from './target';
 
 type ModelParams = {
   target: Target;
-  multiplayer: boolean;
+  numPlayers: number;
 };
 
 export const getModel = ({
@@ -23,11 +23,12 @@ export const getModel = ({
     diff70,
     diff105,
   },
-  multiplayer,
+  numPlayers,
 }: ModelParams): Model => {
-  const piecesConstraints = multiplayer
-    ? lc.constraintSets.multiplayerPieces
-    : lc.constraintSets.singlePlayerPieces;
+  const piecesConstraints =
+    numPlayers > 1
+      ? lc.constraintSets.multiplayerPieces
+      : lc.constraintSets.singlePlayerPieces;
 
   const constraints: Constraint[] = [];
 
@@ -171,12 +172,12 @@ export const getModel = ({
       },
       {
         coefficients: lc.coefficientSets.fillingsTimes12,
-        upperBound: multiplayer ? 144 : 72,
+        upperBound: numPlayers * 72,
         lowerBound: 1,
       },
       {
         coefficients: lc.coefficientSets.condiments,
-        upperBound: multiplayer ? 8 : 4,
+        upperBound: numPlayers * 4,
         lowerBound: 1,
       },
       flavorProfile ? lc.constraints.specificHerba : lc.constraints.anyHerba,

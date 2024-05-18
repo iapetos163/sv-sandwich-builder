@@ -1,6 +1,4 @@
 import { ingredients } from '@/data';
-// import { Flavor, MealPower, TypeIndex } from '@/enum';
-import { Flavor } from '@/enum';
 import { solve } from '@/lp';
 import { requestedPowersValid, getPowersForIngredients } from '@/mechanics';
 import { Ingredient, TargetPower, Sandwich } from '@/types';
@@ -22,7 +20,7 @@ const SCORE_THRESHOLD = 9;
 const filterSandwichResults = async (
   sandwiches: SandwichResult[],
   limit: number,
-  multiplayer = false,
+  numPlayers = 1,
 ) => {
   sandwiches.sort((a, b) => a.score - b.score);
   sandwiches = sandwiches.slice(0, limit);
@@ -33,7 +31,7 @@ const filterSandwichResults = async (
     const targets = refineTarget(sandwiches[0].target);
     const refined = (
       await Promise.all(
-        targets.map((target) => makeSandwichForTarget(target, multiplayer)),
+        targets.map((target) => makeSandwichForTarget(target, numPlayers)),
       )
     )
       .filter((s): s is SandwichResult => !!s)
@@ -53,10 +51,10 @@ const filterSandwichResults = async (
 
 export const makeSandwichesForPowers = async (
   targetPowers: TargetPower[],
-  multiplayer = false,
+  numPlayers = 1,
   noHerba = false,
 ): Promise<Sandwich[]> => {
-  if (!requestedPowersValid(targetPowers, multiplayer)) {
+  if (!requestedPowersValid(targetPowers, numPlayers > 1)) {
     return [];
   }
 
@@ -74,7 +72,7 @@ export const makeSandwichesForPowers = async (
   // console.debug(expectedSuccessfulTargets);
   let sandwiches = (
     await Promise.all(
-      targets.map((target) => makeSandwichForTarget(target, multiplayer)),
+      targets.map((target) => makeSandwichForTarget(target, numPlayers)),
     )
   )
     .filter((s): s is SandwichResult => !!s)
@@ -98,7 +96,7 @@ export const makeSandwichesForPowers = async (
   sandwiches = (
     await Promise.all(
       sandwichesByTargetNumHerba.map((group) =>
-        filterSandwichResults(group, limitPerGroup, multiplayer),
+        filterSandwichResults(group, limitPerGroup, numPlayers),
       ),
     )
   ).flatMap((g) => g);
@@ -129,10 +127,10 @@ export const makeSandwichesForPowers = async (
 
 const makeSandwichForTarget = async (
   target: Target,
-  multiplayer = false,
+  numPlayers: number,
 ): Promise<SandwichResult | null> => {
-  const maxFillings = multiplayer ? 12 : 6;
-  const model = getModel({ multiplayer, target });
+  const maxFillings = numPlayers * 6;
+  const model = getModel({ numPlayers, target });
 
   const solution = await solve(model);
   if (solution.status === 'infeasible') return null;
