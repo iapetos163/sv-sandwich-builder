@@ -1,3 +1,4 @@
+import { Button, Checkbox } from '@mantine/core';
 import {
   ChangeEvent,
   FormEvent,
@@ -62,7 +63,6 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     includeCreative: true,
     multiplayer: false,
     noHerba: false,
-
   });
   const [secondQueryOverride, setSecondQueryOverride] =
     useState<TargetPower | null>(null);
@@ -162,12 +162,9 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
     [],
   );
 
-  const toggleHerba = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setOptions((prev) => ({ ...prev, noHerba: event.target.checked }));
-    },
-    [],
-  );
+  const toggleHerba = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setOptions((prev) => ({ ...prev, noHerba: event.target.checked }));
+  }, []);
 
   const handleSubmit = useCallback(
     (evt: FormEvent) => {
@@ -254,7 +251,9 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
           )}
           {!showThird && (
             <div className={styles.add}>
-              <button onClick={handleAddPower}>Add another power</button>
+              <Button onClick={handleAddPower} variant="outline">
+                Add another power
+              </Button>
             </div>
           )}
         </div>
@@ -263,11 +262,10 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
           <div>
             <div>
               <label>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={options.includeMeals}
                   onChange={toggleMeals}
-                ></input>{' '}
+                />{' '}
                 Restaurant meals
               </label>
             </div>
@@ -276,12 +274,11 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 className={options.includeMeals ? '' : styles.disabledOption}
               >
                 <label>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     disabled={!options.includeMeals}
                     checked={options.includePaldeaMeals}
                     onChange={togglePaldeaMeals}
-                  ></input>{' '}
+                  />{' '}
                   Paldea
                 </label>
               </div>
@@ -289,12 +286,11 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 className={options.includeMeals ? '' : styles.disabledOption}
               >
                 <label>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     disabled={!options.includeMeals}
                     checked={options.includeKitakamiMeals}
                     onChange={toggleKitakamiMeals}
-                  ></input>{' '}
+                  />{' '}
                   Kitakami
                 </label>
               </div>
@@ -302,33 +298,30 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 className={options.includeMeals ? '' : styles.disabledOption}
               >
                 <label>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     disabled={!options.includeMeals}
                     checked={options.includeBlueberryMeals}
                     onChange={toggleBlueberryMeals}
-                  ></input>{' '}
+                  />{' '}
                   Blueberry Academy (cost BP)
                 </label>
               </div>
             </div>
             <div>
               <label>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={options.includeRecipes}
                   onChange={toggleRecipes}
-                ></input>{' '}
+                />{' '}
                 Sandwich recipes
               </label>
             </div>
             <div>
               <label>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={options.includeCreative}
                   onChange={toggleCreative}
-                ></input>{' '}
+                />{' '}
                 Creative mode sandwiches
               </label>
             </div>
@@ -337,31 +330,29 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 className={options.includeCreative ? '' : styles.disabledOption}
               >
                 <label>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     disabled={!options.includeCreative}
                     checked={options.noHerba}
                     onChange={toggleHerba}
-                  ></input>{' '}
+                  />{' '}
                   No Herba Mystica
                 </label>
               </div>
             </div>
             <div>
               <label>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={options.multiplayer}
                   onChange={toggleMultiplayer}
-                ></input>{' '}
+                />{' '}
                 Multiplayer
               </label>
             </div>
           </div>
         </div>
-        <button type="submit" disabled={!firstQueryPower || !enableSubmit}>
+        <Button type="submit" disabled={!firstQueryPower || !enableSubmit}>
           Calculate!
-        </button>
+        </Button>
       </form>
     </div>
   );

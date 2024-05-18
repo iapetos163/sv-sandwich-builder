@@ -1,3 +1,4 @@
+import { MantineProvider, Stack, Text, Title } from '@mantine/core';
 import { ReactElement, useCallback, useState } from 'react';
 import { GitHub } from 'react-feather';
 import PowerQuery, { QueryOptions } from '@/component/PowerQuery';
@@ -17,6 +18,7 @@ import {
 import { TargetPower } from '@/types';
 import s from './App.module.css';
 
+import '@mantine/core/styles.css';
 import 'swiper/css';
 
 function App(): ReactElement {
@@ -85,60 +87,62 @@ function App(): ReactElement {
   );
 
   return (
-    <>
-      <section>
-        <div className="sectionHeader">
-          <h2>Query</h2>
-        </div>
-        <PowerQuery
-          onSubmit={handleQuery}
-          enableSubmit={resultState !== ResultState.CALCULATING}
-        />
-      </section>
-      <section>
-        <div className="sectionHeader">
-          <h2>Results</h2>
-        </div>
-        <div className={s.resultSetContainer}>
-          <ResultSet results={results} resultState={resultState} />
-        </div>
-      </section>
-      <section className="links">
-        <div className="sectionHeader">
-          <h2>Links</h2>
-        </div>
-        <p>
-          <a
-            href="https://github.com/iapetos163/sv-sandwich-builder/issues"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <GitHub /> Report a bug on GitHub
-          </a>
-        </p>
-        <p>
-          <a
-            href="https://github.com/iapetos163/sv-sandwich-builder"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <GitHub /> View project source on GitHub
-          </a>
-        </p>
-        <p>
-          This project would not have been possible without data and code from
-          the{' '}
-          <a
-            href="https://cecilbowen.github.io/pokemon-sandwich-simulator/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Pokémon&nbsp;Sandwich&nbsp;Simulator
-          </a>
-          .
-        </p>
-      </section>
-    </>
+    <MantineProvider>
+      <Stack>
+        <Stack component="section">
+          <div className="sectionHeader">
+            <Title order={2}>Query</Title>
+          </div>
+          <PowerQuery
+            onSubmit={handleQuery}
+            enableSubmit={resultState !== ResultState.CALCULATING}
+          />
+        </Stack>
+        <Stack component="section">
+          <div className="sectionHeader">
+            <Title order={2}>Results</Title>
+          </div>
+          <div className={s.resultSetContainer}>
+            <ResultSet results={results} resultState={resultState} />
+          </div>
+        </Stack>
+        <Stack component="section" className="links">
+          <div className="sectionHeader">
+            <Title order={2}>Links</Title>
+          </div>
+          <Text>
+            <a
+              href="https://github.com/iapetos163/sv-sandwich-builder/issues"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <GitHub /> Report a bug on GitHub
+            </a>
+          </Text>
+          <Text>
+            <a
+              href="https://github.com/iapetos163/sv-sandwich-builder"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <GitHub /> View project source on GitHub
+            </a>
+          </Text>
+          <Text>
+            This project would not have been possible without data and code from
+            the{' '}
+            <a
+              href="https://cecilbowen.github.io/pokemon-sandwich-simulator/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Pokémon&nbsp;Sandwich&nbsp;Simulator
+            </a>
+            .
+          </Text>
+        </Stack>
+      </Stack>
+    </MantineProvider>
   );
 }
 

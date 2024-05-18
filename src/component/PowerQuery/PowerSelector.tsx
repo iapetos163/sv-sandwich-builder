@@ -1,3 +1,4 @@
+import { ActionIcon, Button, Select } from '@mantine/core';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'react-feather';
 import styled from 'styled-components';
@@ -72,16 +73,12 @@ const PowerSelector = ({
     setSelectedLevel((prev) => (prev <= maxLevel ? prev : maxLevel));
   }, [maxLevel]);
 
-  const handleChangeMealPower = (evt: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMealPower(
-      evt.target.value ? (parseInt(evt.target.value) as MealPower) : null,
-    );
+  const handleChangeMealPower = (value: string | null) => {
+    setSelectedMealPower(value ? (parseInt(value) as MealPower) : null);
   };
 
-  const handleChangeType = (evt: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedType(
-      evt.target.value ? (parseInt(evt.target.value) as TypeIndex) : null,
-    );
+  const handleChangeType = (value: string | null) => {
+    setSelectedType(value ? (parseInt(value) as TypeIndex) : null);
   };
 
   const decrementLevel = () => {
@@ -127,59 +124,62 @@ const PowerSelector = ({
     <>
       {/* <div>{isInvalid && <AlertCircle />}</div> */}
       <div>
-        <select
-          value={selectedMealPower ?? ''}
+        <Select
+          value={String(selectedMealPower ?? '')}
           onChange={handleChangeMealPower}
-        >
-          <option></option>
-          {rangeMealPowers.map((powerIndex) => (
-            <option
-              key={powerIndex}
-              value={powerIndex}
-              disabled={!allowedMealPowers[powerIndex]}
-            >
-              {mealPowerCopy[powerIndex]}
-            </option>
-          ))}
-        </select>
+          data={[
+            '',
+            ...rangeMealPowers.map((powerIndex) => ({
+              value: String(powerIndex),
+              disabled: !allowedMealPowers[powerIndex],
+              label: mealPowerCopy[powerIndex],
+            })),
+          ]}
+        />
       </div>
       <div>
         {!selectedMealPower ||
           (mealPowerHasType(selectedMealPower) && (
-            <select value={selectedType ?? ''} onChange={handleChangeType}>
-              <option></option>
-              {rangeTypes.map((t) => (
-                <option key={t} value={t} disabled={!allowedTypes[t]}>
-                  {allTypes[t]}
-                </option>
-              ))}
-            </select>
+            <Select
+              value={String(selectedType ?? '')}
+              onChange={handleChangeType}
+              data={[
+                '',
+                ...rangeTypes.map((t) => ({
+                  value: String(t),
+                  disabled: !allowedTypes[t],
+                  label: allTypes[t],
+                })),
+              ]}
+            />
           ))}
       </div>
       <StyledLevelController>
-        <button
+        <ActionIcon
+          variant="subtle"
           type="button"
           onClick={decrementLevel}
           disabled={selectedLevel <= 1}
         >
           <ChevronLeft />
-        </button>
+        </ActionIcon>
         <StyledLevelDisplay>{selectedLevel}</StyledLevelDisplay>
 
-        <button
+        <ActionIcon
+          variant="subtle"
           type="button"
           onClick={incrementLevel}
           disabled={selectedLevel >= maxLevel}
         >
           <ChevronRight />
-        </button>
+        </ActionIcon>
       </StyledLevelController>
 
       <div style={{ flexShrink: 0, flexBasis: 30 }}>
         {removable && (
-          <button type="button" onClick={onRemove}>
+          <ActionIcon variant="subtle" type="button" onClick={onRemove}>
             <X />
-          </button>
+          </ActionIcon>
         )}
       </div>
     </>
