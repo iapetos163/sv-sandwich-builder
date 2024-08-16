@@ -17,7 +17,7 @@ describe('getPowersForIngredients', () => {
     const hmany = ingredients.find((i) => i.id === 'hmany')!;
     const res = getPowersForIngredients([tomato, hmany], {});
 
-    const nonHerbaPowers = res.filter(
+    const nonHerbaPowers = res.powers.filter(
       (p) => p.mealPower === undefined || !isHerbaMealPower(p.mealPower),
     );
     const definedNonHerba = nonHerbaPowers.find(
@@ -32,12 +32,20 @@ describe('getPowersForIngredients', () => {
 
     const res = getPowersForIngredients([pickle, pb], {});
 
-    const eggPower = res.find((p) => p.mealPower === MealPower.EGG);
+    const eggPower = res.powers.find((p) => p.mealPower === MealPower.EGG);
     expect(eggPower).toBeDefined();
 
-    const catchFighting = res.find(
+    const catchFighting = res.powers.find(
       (p) => p.mealPower === MealPower.CATCH && p.type === TypeIndex.FIGHTING,
     );
     expect(catchFighting).not.toBeDefined();
+  });
+
+  it('returns powers for a two-star sandwich', () => {
+    const watercress = ingredients.find((i) => i.id === 'wcrs')!;
+    const pepper = ingredients.find((i) => i.id === 'pep')!;
+
+    const res = getPowersForIngredients([watercress, pepper], { wcrs: 2 });
+    expect(res).toHaveLength(3);
   });
 });

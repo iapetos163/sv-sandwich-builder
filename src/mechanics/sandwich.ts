@@ -3,10 +3,15 @@ import { add, scale } from '@/vector-math';
 import { evaluateBoosts, isHerbaMealPower } from './powers';
 import { getBoostedMealPower, rankFlavorBoosts } from './taste';
 
+export interface PowersForIngredientsRes {
+  powers: ResultPower[];
+  stars: number;
+}
+
 export const getPowersForIngredients = (
   ingredients: Ingredient[],
   pieceDrops: Record<string, number>,
-): ResultPower[] => {
+): PowersForIngredientsRes => {
   const init = {
     mealPowerBoosts: [] as number[],
     typeBoosts: [] as number[],
@@ -18,10 +23,10 @@ export const getPowersForIngredients = (
     .reduce((sum, ing) => sum + ing.pieces, 0);
   const allowedDrops = Math.floor(totalFillingPieces / 2);
   const totalDrops = Object.values(pieceDrops).reduce((sum, v) => sum + v, 0);
-  // TODO: handle two stars
-  if (totalDrops > allowedDrops) {
-    return [];
+  if (totalDrops === totalFillingPieces) {
+    return { powers: [], stars: 0 };
   }
+  const twoStars = totalDrops > allowedDrops;
 
   const ingredientsWithDrops = ingredients.concat(
     Object.entries(pieceDrops).map(([id, numDropped]) => ({
@@ -51,11 +56,16 @@ export const getPowersForIngredients = (
 
   const rankedFlavorBoosts = rankFlavorBoosts(flavorBoosts);
   const boostedPower = getBoostedMealPower(rankedFlavorBoosts);
-  const powers = evaluateBoosts(mealPowerBoosts, boostedPower, typeBoosts);
+  let powers: ResultPower[] = evaluateBoosts(
+    mealPowerBoosts,
+    boostedPower,
+    typeBoosts,
+    twoStars,
+  );
   if (ingredients.some(({ id }) => id === 'hmany')) {
-    return powers.map(({ mealPower, ...power }) =>
-      isHerbaMealPower(mealPower) ? { mealPower, ...power } : power,
+    powers = powers.map(({ mealPower, ...power }) =>
+      isHerbaMealPower(mealPower!) ? { mealPower, ...power } : power,
     );
   }
-  return powers;
+  return { powers, stars: twoStars ? 2 : 3 };
 };

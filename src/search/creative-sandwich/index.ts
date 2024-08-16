@@ -120,7 +120,7 @@ export const makeSandwichesForPowers = async (
 
   return sandwiches.map((result) => ({
     ...result,
-    powers: getPowersForIngredients(
+    ...getPowersForIngredients(
       result.fillings.concat(result.condiments),
       combineDrops(result.requiredPieceDrops, result.optionalPieceDrops),
     ),
@@ -172,5 +172,6 @@ const makeSandwichForTarget = async (
     requiredPieceDrops: pieceDrops,
     optionalPieceDrops: {},
     target,
+    stars: 3,
   };
 };
