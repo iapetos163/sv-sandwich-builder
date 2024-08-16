@@ -10,4 +10,5 @@ export type SandwichResult = {
   requiredPieceDrops: Record<string, number>;
   model: Model;
   target: Target;
+  stars: number;
 };

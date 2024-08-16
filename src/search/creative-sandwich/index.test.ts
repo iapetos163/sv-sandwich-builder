@@ -22,7 +22,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -55,7 +55,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -89,7 +89,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -117,7 +117,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -143,7 +143,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -167,7 +167,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -195,7 +195,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -230,7 +230,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -258,7 +258,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -288,7 +288,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -312,7 +312,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -336,7 +336,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -361,7 +361,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -385,7 +385,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -409,7 +409,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -439,7 +439,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -472,7 +472,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -503,7 +503,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -533,7 +533,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -560,7 +560,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -592,7 +592,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -619,7 +619,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -645,7 +645,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -679,7 +679,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -726,7 +726,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -766,7 +766,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -805,7 +805,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -842,7 +842,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -877,7 +877,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -939,7 +939,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -974,7 +974,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1017,7 +1017,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1048,7 +1048,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1084,7 +1084,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1119,7 +1119,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1150,7 +1150,7 @@ describe('makeSandwichForPower', () => {
             sandwich.optionalPieceDrops,
             sandwich.requiredPieceDrops,
           ),
-        ),
+        ).powers,
         targetPowers,
       );
       expect(correctResult).toBe(true);
@@ -1183,7 +1183,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1213,7 +1213,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1236,7 +1236,7 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
@@ -1262,13 +1262,42 @@ describe('makeSandwichForPower', () => {
       getPowersForIngredients(
         ingredients,
         combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
-      ),
+      ).powers,
       targetPowers,
     );
     expect(correctResult).toBe(true);
 
     const numEgg = sandwich.fillings.filter((ing) => ing.id === 'egg').length;
     expect(numEgg).toBeLessThanOrEqual(1);
+  });
+
+  it('Produces a sandwich with Lv 3 Sparkling Ice and Lv 3 Encounter Ice', async () => {
+    const targetPowers = [
+      {
+        mealPower: MealPower.SPARKLING,
+        type: TypeIndex.ICE,
+        level: 3,
+      },
+      {
+        mealPower: MealPower.ENCOUNTER,
+        type: TypeIndex.ICE,
+        level: 3,
+      },
+    ];
+    const sandwiches = await makeSandwichesForPowers(targetPowers);
+
+    expect(sandwiches.length).toBeGreaterThanOrEqual(1);
+    const sandwich = sandwiches[0];
+    const ingredients = sandwich.fillings.concat(sandwich.condiments);
+
+    const correctResult = powerSetsMatch(
+      getPowersForIngredients(
+        ingredients,
+        combineDrops(sandwich.optionalPieceDrops, sandwich.requiredPieceDrops),
+      ).powers,
+      targetPowers,
+    );
+    expect(correctResult).toBe(true);
   });
 
   // it('Produces a sandwich with Lv 2 mp t', async () => {

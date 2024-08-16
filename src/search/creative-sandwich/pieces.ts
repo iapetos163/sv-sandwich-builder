@@ -25,17 +25,17 @@ export const adjustForDroppedPieces = (
 
   for (const fillingId of Object.keys(resultRequiredDrops)) {
     const drops = combineDrops(resultRequiredDrops, resultOptionalDrops);
-    let powers = getPowersForIngredients(ingredients, drops);
+    let { powers } = getPowersForIngredients(ingredients, drops);
 
     // If sandwich has too many drops,
     // Remove required drops until sandwich doesn't have too many drops
     let numRequiredDrops = drops[fillingId];
     while (powers.length === 0 && numRequiredDrops > 0) {
       numRequiredDrops -= 1;
-      powers = getPowersForIngredients(ingredients, {
+      ({ powers } = getPowersForIngredients(ingredients, {
         ...drops,
         [fillingId]: numRequiredDrops,
-      });
+      }));
     }
 
     // If sandwich still has too many drops
@@ -64,7 +64,7 @@ export const adjustForDroppedPieces = (
         ...resultRequiredDrops,
         [fillingId]: numRequiredDrops - numOptionalDrops,
       };
-      powers = getPowersForIngredients(ingredients, drops);
+      ({ powers } = getPowersForIngredients(ingredients, drops));
     }
 
     // Loop ended when sandwich was no longer viable
@@ -81,7 +81,7 @@ export const adjustForDroppedPieces = (
     resultOptionalDrops[fillingId] = numOptionalDrops;
   }
 
-  const finalPowers = getPowersForIngredients(
+  const { powers: finalPowers, stars } = getPowersForIngredients(
     ingredients,
     combineDrops(resultRequiredDrops, resultOptionalDrops),
   );
@@ -94,6 +94,7 @@ export const adjustForDroppedPieces = (
 
   return {
     ...sandwich,
+    stars,
     requiredPieceDrops: resultRequiredDrops,
     optionalPieceDrops: resultOptionalDrops,
   };

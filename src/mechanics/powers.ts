@@ -205,7 +205,9 @@ export const evaluateBoosts = (
   mealPowerVector: number[],
   boostedMealPower: MealPower | null,
   typeVector: number[],
+  twoStars = false,
 ) => {
+  // TODO twoStars
   const rankedMealPowerBoosts = rankMealPowerBoosts(
     mealPowerVector,
     boostedMealPower,
@@ -250,10 +252,3 @@ export const powersEqual = (a: TargetPower, b: TargetPower) =>
 
 export const powerSetsMatch = (test: ResultPower[], target: TargetPower[]) =>
   target.every((tp) => test.some((p) => powersMatch(p, tp)));
-
-export const powerToString = (p: TargetPower) => {
-  if (!mealPowerHasType(p.mealPower)) {
-    return `Lv. ${p.level} ${p.mealPower}`;
-  }
-  return `Lv. ${p.level} ${p.mealPower} ${p.type}`;
-};
