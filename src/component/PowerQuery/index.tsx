@@ -265,8 +265,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 <Checkbox
                   checked={options.includeMeals}
                   onChange={toggleMeals}
-                />{' '}
-                Restaurant meals
+                  label="Restaurant meals"
+                />
               </label>
             </div>
             <div className={styles.suboptionsContainer}>
@@ -278,8 +278,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                     disabled={!options.includeMeals}
                     checked={options.includePaldeaMeals}
                     onChange={togglePaldeaMeals}
-                  />{' '}
-                  Paldea
+                    label="Paldea"
+                  />
                 </label>
               </div>
               <div
@@ -290,8 +290,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                     disabled={!options.includeMeals}
                     checked={options.includeKitakamiMeals}
                     onChange={toggleKitakamiMeals}
-                  />{' '}
-                  Kitakami
+                    label="Kitakami"
+                  />
                 </label>
               </div>
               <div
@@ -302,8 +302,9 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                     disabled={!options.includeMeals}
                     checked={options.includeBlueberryMeals}
                     onChange={toggleBlueberryMeals}
-                  />{' '}
-                  Blueberry Academy (cost BP)
+                    label="Blueberry Academy (cost BP"
+                  />
+                  )
                 </label>
               </div>
             </div>
@@ -312,8 +313,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 <Checkbox
                   checked={options.includeRecipes}
                   onChange={toggleRecipes}
-                />{' '}
-                Sandwich recipes
+                  label="Sandwich recipes"
+                />
               </label>
             </div>
             <div>
@@ -321,8 +322,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 <Checkbox
                   checked={options.includeCreative}
                   onChange={toggleCreative}
-                />{' '}
-                Creative mode sandwiches
+                  label="Creative mode sandwiches"
+                />
               </label>
             </div>
             <div className={styles.suboptionsContainer}>
@@ -334,8 +335,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                     disabled={!options.includeCreative}
                     checked={options.noHerba}
                     onChange={toggleHerba}
-                  />{' '}
-                  No Herba Mystica
+                    label="No Herba Mystica"
+                  />
                 </label>
               </div>
             </div>
@@ -344,8 +345,8 @@ const PowerQuery = ({ onSubmit, enableSubmit }: PowerQueryProps) => {
                 <Checkbox
                   checked={options.multiplayer}
                   onChange={toggleMultiplayer}
-                />{' '}
-                Multiplayer
+                  label="Multiplayer"
+                />
               </label>
             </div>
           </div>

@@ -90,9 +90,12 @@ function App(): ReactElement {
     <MantineProvider>
       <Stack>
         <Stack component="section">
-          <div className="sectionHeader">
+          <Title order={2} className="sectionHeader2">
+            <span>Query</span>
+          </Title>
+          {/* <div className="sectionHeader">
             <Title order={2}>Query</Title>
-          </div>
+          </div> */}
           <PowerQuery
             onSubmit={handleQuery}
             enableSubmit={resultState !== ResultState.CALCULATING}
